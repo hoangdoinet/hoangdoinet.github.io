@@ -1,7 +1,9 @@
 {
+  "id": "pha-thuoc-sat-trung",
   "name": "Tính lượng thuốc sát trùng",
   "short_name": "Pha thuốc",
-  "start_url": "./index.html",
+  "description": "Tính nhanh lượng thuốc sát trùng theo tỷ lệ và dạng thuốc. Có thể cài như ứng dụng Android & iOS, dùng offline.",
+  "start_url": "./?source=pwa",
   "scope": "./",
   "display": "standalone",
   "background_color": "#0b1220",
@@ -12,5 +14,18 @@
     { "src": "./icons/icon-1024.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any" },
     { "src": "./icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
     { "src": "./icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "Pha 1:400",
+      "short_name": "1:400",
+      "url": "./?source=shortcut&ratio=1:400"
+    },
+    {
+      "name": "Pha 1:800",
+      "short_name": "1:800",
+      "url": "./?source=shortcut&ratio=1:800"
+    }
+  ],
+  "categories": ["tools", "utilities"]
 }
