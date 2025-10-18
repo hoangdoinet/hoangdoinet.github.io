@@ -10,7 +10,7 @@
   <meta name="keywords" content="tính thuốc sát trùng, pha thuốc, thuốc sát trùng trại heo, pha thuốc chăn nuôi, thuốc nước, thuốc bột, ứng dụng offline, ATSH, an toàn sinh học">
   <meta name="author" content="Hoàng Đợi">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://hoangdoinet.github.io/pha-thuoc/">
+  <link rel="canonical" href="https://hoangdoinet.github.io/pha-thuoc/"/>
 
   <!-- Open Graph -->
   <meta property="og:title" content="Tính lượng thuốc sát trùng – Cài đặt như ứng dụng di động">
@@ -30,100 +30,62 @@
   <!-- PWA -->
   <meta name="theme-color" content="#22c55e"/>
   <link rel="manifest" href="./manifest.webmanifest">
-  <!-- Dùng icon 1024 mới làm favicon & apple-touch -->
   <link rel="icon" href="./icons/icon-1024.png" sizes="1024x1024">
   <link rel="apple-touch-icon" href="./icons/icon-1024.png">
-  <!-- Thêm icon 192 cho trình duyệt cũ (không bắt buộc) -->
   <link rel="icon" href="./icons/icon-192.png" sizes="192x192">
-
-  <!-- iOS web app -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Pha thuốc">
 
   <style>
     :root{
       --bg:#0b1220; --card:#0f172a; --text:#e5e7eb; --muted:#94a3b8;
-      --accent:#22c55e; --border:#1f2937; --info:#0ea5e9; --danger:#ef4444;
-      /* màu splash như mẫu */
-      :root{ --brand1:#22c55e; --brand2:#16a34a; }
+      --accent:#22c55e; --border:#94a3b8; --info:#0ea5e9; --danger:#ef4444;
+      --brand1:#22c55e; --brand2:#16a34a; /* ✅ move vào chung 1 :root (sửa lỗi lặp :root) */
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
       background:linear-gradient(180deg,#0b1220,#0e1a33);color:var(--text);min-height:100vh}
 
-    /* ===================== SPLASH (theo mẫu) ===================== */
-    #splash{
-      position:fixed; inset:0;
-      padding: calc(env(safe-area-inset-top,0) + 16px) 16px calc(env(safe-area-inset-bottom,0) + 16px);
-      background:
-        radial-gradient(120% 90% at 50% -10%, #fff3 0%, #0000 60%),
-        linear-gradient(180deg,var(--brand1),var(--brand2));
-      color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center;
-      z-index:9999; text-align:center; transition:opacity .7s ease, visibility .7s;
-    }
-    #splash.hidden{ opacity:0; visibility:hidden; }
-
-    .logo-wrap{ position:relative; width:140px; height:140px; filter:drop-shadow(0 10px 24px rgba(0,0,0,.28)); }
-    .logo-img{
-      width:100%; height:100%; border-radius:24%;
-      animation: popIn 900ms cubic-bezier(.2,.7,.2,1) both, glow 1.6s .9s ease-in-out 2 alternate;
-      will-change: transform, filter;
-    }
-    .logo-wrap::after{
-      content:""; position:absolute; inset:-8%;
-      background: linear-gradient(75deg, transparent 30%, #fff6 48%, #fff9 52%, transparent 70%);
-      transform: translateX(-120%) rotate(8deg);
-      border-radius:28%;
-      animation: sweep 1.1s .35s ease-out forwards;
-      pointer-events:none; mix-blend-mode:overlay;
-    }
-    .app-name{
-      margin-top:14px; font-size:24px; font-weight:800; letter-spacing:.8px;
-      overflow:hidden; white-space:nowrap; border-right:2px solid rgba(255,255,255,.85);
-      width:0; animation: typing 1.4s .45s steps(18,end) forwards, caret .9s step-end infinite;
-      text-shadow: 0 1px 2px #0003;
-    }
-    .meta{ margin-top:8px; font-size:14px; opacity:.95 }
-    .meta b{ font-weight:800 }
-
-    /* Ẩn app tới khi splash tắt */
-    #app{ visibility:hidden; }
-    body.ready #app{ visibility:visible; }
-
-    /* Keyframes */
-    @keyframes popIn{ 0%{ transform: scale(.6) rotate(-8deg); opacity:0 } 60%{ transform: scale(1.08) rotate(3deg); opacity:1 } 100%{ transform: scale(1) rotate(0) } }
-    @keyframes glow{ from{ filter: drop-shadow(0 10px 24px rgba(0,0,0,.28)) brightness(1) saturate(1) } to{ filter: drop-shadow(0 12px 34px rgba(0,0,0,.35)) brightness(1.08) saturate(1.1) } }
-    @keyframes sweep{ to{ transform: translateX(120%) rotate(8deg); opacity:0 } }
-    @keyframes typing{ from{ width:0 } to{ width:100% } }
-    @keyframes caret{ 50%{ border-color: transparent } }
-
-    @media (prefers-reduced-motion: reduce){
-      .logo-img, .logo-wrap::after, .app-name{ animation: none !important }
-      #splash{ transition: opacity .2s ease, visibility .2s }
-    }
+    /* ===================== SPLASH ===================== */
+    #splash{position:fixed;inset:0;padding:calc(env(safe-area-inset-top,0) + 16px) 16px calc(env(safe-area-inset-bottom,0) + 16px);
+      background:radial-gradient(120% 90% at 50% -10%, #fff3 0%, #0000 60%),linear-gradient(180deg,var(--brand1),var(--brand2));
+      color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;text-align:center;transition:opacity .7s ease,visibility .7s}
+    #splash.hidden{opacity:0;visibility:hidden}
+    .logo-wrap{position:relative;width:140px;height:140px;filter:drop-shadow(0 10px 24px rgba(0,0,0,.28))}
+    .logo-img{width:100%;height:100%;border-radius:24%;animation:popIn 900ms cubic-bezier(.2,.7,.2,1) both,glow 1.6s .9s ease-in-out 2 alternate;will-change:transform,filter}
+    .logo-wrap::after{content:"";position:absolute;inset:-8%;background:linear-gradient(75deg,transparent 30%,#fff6 48%,#fff9 52%,transparent 70%);transform:translateX(-120%) rotate(8deg);border-radius:28%;animation:sweep 1.1s .35s ease-out forwards;pointer-events:none;mix-blend-mode:overlay}
+    .app-name{margin-top:14px;font-size:24px;font-weight:800;letter-spacing:.8px;overflow:hidden;white-space:nowrap;border-right:2px solid rgba(255,255,255,.85);width:0;animation:typing 1.4s .45s steps(18,end) forwards,caret .9s step-end infinite;text-shadow:0 1px 2px #0003}
+    .meta{margin-top:8px;font-size:14px;opacity:.95}
+    .meta b{font-weight:800}
+    #app{visibility:hidden}
+    body.ready #app{visibility:visible}
+    @keyframes popIn{0%{transform:scale(.6) rotate(-8deg);opacity:0}60%{transform:scale(1.08) rotate(3deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+    @keyframes glow{from{filter:drop-shadow(0 10px 24px rgba(0,0,0,.28)) brightness(1) saturate(1)}to{filter:drop-shadow(0 12px 34px rgba(0,0,0,.35)) brightness(1.08) saturate(1.1)}}
+    @keyframes sweep{to{transform:translateX(120%) rotate(8deg);opacity:0}}
+    @keyframes typing{from{width:0}to{width:100%}}
+    @keyframes caret{50%{border-color:transparent}}
+    @media (prefers-reduced-motion: reduce){.logo-img,.logo-wrap::after,.app-name{animation:none !important}#splash{transition:opacity .2s ease,visibility .2s}}
     /* =================== /SPLASH =================== */
 
     .wrap{max-width:860px;margin:32px auto;padding:0 16px}
     header.hero{text-align:center;margin-bottom:16px}
     header.hero h1{font-size:28px;margin:0}
-    .badge{display:inline-block;background:rgba(34,197,94,.15);padding:4px 10px;
-      border-radius:20px;font-size:12px;color:#86efac;margin-top:6px}
-    .card{background:rgba(255,255,255,.02);border:1px solid var(--border);
-      border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.35);padding:20px}
+    .badge{display:inline-block;background:rgba(34,197,94,.15);padding:4px 10px;border-radius:20px;font-size:12px;color:#86efac;margin-top:6px}
+    .card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.35);padding:20px}
     .group{margin-bottom:16px}
     label{display:block;margin-bottom:6px;font-size:14px;color:var(--muted)}
+
+    /* Segmented control */
     .segmented{display:flex;border:1px solid var(--border);border-radius:999px;overflow:hidden}
     .segmented input{display:none}
-    .segmented label{flex:1;text-align:center;padding:10px;cursor:pointer;color:var(--muted)}
-    .segmented input:checked + label{background:var(--accent);color:#052e14;font-weight:600}
-    select,input{width:100%;padding:10px;border:1px solid var(--border);border-radius:12px;
-      background:#0b1020;color:var(--text);font-size:16px}
+    .segmented label{flex:1;text-align:center;padding:10px 14px;cursor:pointer;color:var(--muted);position:relative;user-select:none;transition:all .2s ease}
+    .segmented input:checked + label{background:var(--accent);color:#052e14;font-weight:700; /* ✅ tràn viền dưới */ margin-bottom:-1px; padding-bottom:calc(10px + 1px)}
+
+    select,input{width:100%;padding:10px;border:1px solid var(--border);border-radius:12px;background:#0b1020;color:var(--text);font-size:16px}
     select:focus,input:focus{outline:none;border-color:var(--accent)}
+
     .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-    .chip{padding:6px 16px;border:1px solid var(--border);border-radius:20px;
-      background:rgba(255,255,255,.03);cursor:pointer;font-size:13px;color:var(--muted)}
-    .chip:hover{border-color:var(--accent);color:#a7f3d0}
+    .chip{padding:6px 16px;border:1px solid var(--border);border-radius:20px;background:rgba(255,255,255,.03);cursor:pointer;font-size:13px;color:#fff}
+    .chip:hover{border-color:var(--accent);color:#86efac}
+
     .alert{border-radius:14px;padding:12px;margin-top:12px;display:none}
     .alert-info{background:rgba(14,165,233,.12);border:1px solid rgba(14,165,233,.35);color:#bae6fd}
     .alert-danger{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);color:#fecaca}
@@ -131,17 +93,14 @@
   </style>
 </head>
 <body>
-  <!-- 🌾 Splash theo mẫu -->
+  <!-- 🌾 Splash -->
   <div id="splash" role="status" aria-label="Đang khởi động ứng dụng">
-    <div class="logo-wrap">
-      <img src="./icons/icon-1024.png" class="logo-img" alt="Logo Tính lượng thuốc sát trùng" width="140" height="140">
-    </div>
+    <div class="logo-wrap"><img src="./icons/icon-1024.png" class="logo-img" alt="Logo Tính lượng thuốc sát trùng" width="140" height="140"></div>
     <div class="app-name" aria-hidden="true">PHA THUỐC SÁT TRÙNG</div>
-    <div class="meta">Phiên bản: <b>v1.0.0</b></div>
+    <div class="meta">Phiên bản: <b>v1.0.1</b></div>
     <div class="meta">Tác giả: <b>Hoàng Đợi</b></div>
   </div>
 
-  <!-- Bọc toàn bộ app để ẩn tới khi splash xong -->
   <div id="app">
     <!-- iOS hướng dẫn -->
     <div class="ios-tip" id="iosTip" style="display:none;background:rgba(15,23,42,.95);padding:12px 14px;border-radius:14px;border:1px solid #1f2937;font-size:14px;backdrop-filter:blur(6px);position:fixed;left:12px;right:12px;bottom:12px;z-index:50">
@@ -155,7 +114,7 @@
     <div class="wrap">
       <header class="hero">
         <h1>Tính lượng thuốc sát trùng</h1>
-        <div class="badge">Phiên bản: v1.0.0</div>
+        <div class="badge">Phiên bản: v1.0.1</div>
       </header>
 
       <main class="card">
@@ -200,10 +159,10 @@
 
         <div class="group">
           <label for="litersOfWater">Số lượng nước (lít)</label>
-          <input type="number" id="litersOfWater" step="0.1" min="0" placeholder="Nhập số lít nước cần sử dụng" required>
+          <input type="number" id="litersOfWater" step="0.1" min="0" inputmode="decimal" placeholder="Nhập số lít nước cần sử dụng" required>
         </div>
 
-        <div class="alert alert-info" id="result"></div>
+        <div class="alert alert-info" id="result" aria-live="polite"></div>
         <div class="alert alert-danger" id="error">Bạn chưa <strong>chọn tỷ lệ thuốc</strong> để hiển thị kết quả.</div>
       </main>
 
@@ -212,46 +171,28 @@
   </div>
 
   <script>
-    // Đăng ký Service Worker (offline-lockdown)
+    // Đăng ký Service Worker (đặt đúng tên file tồn tại thực tế)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', async () => {
-        try {
-          await navigator.serviceWorker.register('./service-worker.js', { scope: './', updateViaCache: 'none' });
-        } catch (e) { console.warn('SW register failed', e); }
+        try { await navigator.serviceWorker.register('./service-worker.js', { scope: './', updateViaCache: 'none' }); }
+        catch (e) { console.warn('SW register failed', e); }
       });
     }
 
-    // Ẩn splash khi trang sẵn sàng hoặc sau timeout dự phòng
-    const hideSplash = () => {
-      const el = document.getElementById('splash');
-      if (!el || el.classList.contains('hidden')) return;
-      el.classList.add('hidden');
-      document.body.classList.add('ready');
-    };
-    // Khi tải xong + thêm buffer để animation kết thúc “đã”
+    // Splash control
+    const hideSplash = () => { const el = document.getElementById('splash'); if(!el||el.classList.contains('hidden')) return; el.classList.add('hidden'); document.body.classList.add('ready'); };
     window.addEventListener('load', () => { setTimeout(hideSplash, 2200); });
-    // Dự phòng cứng nếu vì lý do nào đó load bị chậm
     setTimeout(hideSplash, 3000);
 
     // A2HS Android
-    let deferredPrompt;
-    const btnInstall = document.getElementById('btnInstall');
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault(); deferredPrompt = e; btnInstall.style.display = 'inline-block';
-    });
-    btnInstall.addEventListener('click', async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt(); await deferredPrompt.userChoice;
-      btnInstall.style.display = 'none'; deferredPrompt = null;
-    });
+    let deferredPrompt; const btnInstall = document.getElementById('btnInstall');
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; btnInstall.style.display = 'inline-block'; });
+    btnInstall.addEventListener('click', async () => { if(!deferredPrompt) return; deferredPrompt.prompt(); await deferredPrompt.userChoice; btnInstall.style.display = 'none'; deferredPrompt = null; });
 
     // iOS tip
     function isIos(){return /iphone|ipad|ipod/i.test(navigator.userAgent)}
     function isStandalone(){return navigator.standalone || window.matchMedia('(display-mode: standalone)').matches}
-    window.addEventListener('load',()=>{
-      if(isIos()&&!isStandalone()) document.getElementById('iosTip').style.display='block';
-      document.getElementById('iosClose').onclick=()=>document.getElementById('iosTip').remove();
-    });
+    window.addEventListener('load',()=>{ if(isIos()&&!isStandalone()) document.getElementById('iosTip').style.display='block'; document.getElementById('iosClose').onclick=()=>document.getElementById('iosTip').remove(); });
 
     // Tính toán
     function calculate(){
@@ -262,26 +203,21 @@
       const result=document.getElementById('result');
       error.style.display='none'; result.style.display='none';
       if(!liters) return;
-      if(!type){ error.style.display='block'; return; }
+      if(!type){ error.style.display='block'; error.innerHTML='Bạn chưa <strong>Chọn tỷ lệ thuốc</strong> để hiển thị kết quả.'; return; }
       if(isNaN(liters)||liters<=0){ error.style.display='block'; error.innerHTML='Bạn chưa <strong>Nhập lượng nước</strong> để hiển thị kết quả.'; return; }
       const ratios={'1:100':100,'1:200':200,'1:300':300,'1:400':400,'1:500':500,'1:600':600,'1:700':700,'1:800':800,'1:900':900,'1:1000':1000};
       const volume=(1000/ratios[type])*liters;
-      const display=form==='powder'?volume.toFixed(0)+' gram':(Number.isInteger(volume)?volume:volume.toFixed(2))+' ml';
+      const display=(form==='powder') ? (Math.round(volume)+' gram') : ((Number.isInteger(volume)?volume:volume.toFixed(2))+' ml');
       result.style.display='block';
       result.innerHTML=`Với tỷ lệ <strong>${type}</strong>, cần pha:<br><strong>${liters} lít</strong> nước = <strong>${display}</strong> thuốc`;
     }
     document.getElementById('litersOfWater').addEventListener('input',calculate);
     document.getElementById('medicineType').addEventListener('change',calculate);
     document.querySelectorAll('input[name="medicineFormType"]').forEach(r=>r.addEventListener('change',calculate));
-    document.getElementById('ratioChips').addEventListener('click',e=>{
-      const c=e.target.closest('.chip'); if(!c) return;
-      document.getElementById('medicineType').value=c.getAttribute('data-ratio');
-      calculate();
-    });
+    document.getElementById('ratioChips').addEventListener('click',e=>{ const c=e.target.closest('.chip'); if(!c) return; document.getElementById('medicineType').value=c.getAttribute('data-ratio'); calculate(); });
 
     // Shortcut ratio từ URL
-    const p=new URLSearchParams(location.search); const r=p.get('ratio');
-    if(r){ document.getElementById('medicineType').value=r; calculate(); }
+    const p=new URLSearchParams(location.search); const r=p.get('ratio'); if(r){ document.getElementById('medicineType').value=r; calculate(); }
   </script>
 </body>
 </html>
