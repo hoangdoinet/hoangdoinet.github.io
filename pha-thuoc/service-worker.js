@@ -1,5 +1,5 @@
 /* service-worker.js — OFFLINE LOCKDOWN (GH Pages friendly) */
-const APP_VERSION  = 'lock-1.0.1';
+const APP_VERSION  = 'lock-1.0.2';
 const CACHE_STATIC = `static-${APP_VERSION}`;
 
 // Tự tính base path theo vị trí SW (hợp với GitHub Pages subpath)
@@ -11,6 +11,7 @@ const CORE = [
   'index.html',
   'manifest.webmanifest',
   'service-worker.js',
+  'icons/icon-96.png',
   'icons/icon-192.png',
   'icons/icon-512.png',
   'icons/icon-1024.png',
@@ -56,7 +57,6 @@ self.addEventListener('activate', (event) => {
   })());
 });
 
-// ========== CHIẾN LƯỢC ==========
 /**
  * - Điều hướng (HTML): luôn trả index.html từ cache (App Shell) ⇒ mở app ngay cả khi 404/đứt mạng.
  * - Tài nguyên same-origin (png/css/js): cache-first + làm mới ngầm (stale-while-revalidate).

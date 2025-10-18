@@ -27,6 +27,11 @@
   <meta name="twitter:description" content="Pha thuốc sát trùng chính xác theo tỷ lệ, hoạt động offline, cài đặt như ứng dụng di động.">
   <meta name="twitter:image" content="https://hoangdoinet.github.io/pha-thuoc/icons/og-image-1200.png">
 
+  <!-- iOS web app -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Pha thuốc">
+
   <!-- PWA -->
   <meta name="theme-color" content="#22c55e"/>
   <link rel="manifest" href="./manifest.webmanifest">
@@ -83,8 +88,19 @@
     select:focus,input:focus{outline:none;border-color:var(--accent)}
 
     .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-    .chip{padding:6px 16px;border:1px solid var(--border);border-radius:20px;background:rgba(255,255,255,.03);cursor:pointer;font-size:13px;color:#fff}
-    .chip:hover{border-color:var(--accent);color:#86efac}
+    .chip{
+      padding:6px 16px;border:1px solid var(--border);border-radius:20px;
+      background:rgba(255,255,255,.03);cursor:pointer;font-size:13px;color:#fff;
+      transition:background .2s ease, color .2s ease, border-color .2s ease, transform .06s ease;
+    }
+    .chip:hover{ border-color:var(--accent); color:#86efac; background:rgba(34,197,94,.12) }
+    /* ✅ Giữ hiệu ứng hover khi đã chọn */
+    .chip.is-active,
+    .chip[aria-pressed="true"]{
+      border-color:var(--accent);
+      color:#86efac;
+      background:rgba(34,197,94,.12);
+    }
 
     .alert{border-radius:14px;padding:12px;margin-top:12px;display:none}
     .alert-info{background:rgba(14,165,233,.12);border:1px solid rgba(14,165,233,.35);color:#bae6fd}
@@ -95,9 +111,9 @@
 <body>
   <!-- 🌾 Splash -->
   <div id="splash" role="status" aria-label="Đang khởi động ứng dụng">
-    <div class="logo-wrap"><img src="./icons/icon-1024.png" class="logo-img" alt="Logo Tính lượng thuốc sát trùng" width="140" height="140"></div>
+    <div class="logo-wrap"><img src="./icons/icon-512.png" class="logo-img" alt="Logo Tính lượng thuốc sát trùng" width="140" height="140"></div>
     <div class="app-name" aria-hidden="true">PHA THUỐC SÁT TRÙNG</div>
-    <div class="meta">Phiên bản: <b>v1.0.1</b></div>
+    <div class="meta">Phiên bản: <b>v1.0.2</b></div>
     <div class="meta">Tác giả: <b>Hoàng Đợi</b></div>
   </div>
 
@@ -114,7 +130,7 @@
     <div class="wrap">
       <header class="hero">
         <h1>Tính lượng thuốc sát trùng</h1>
-        <div class="badge">Phiên bản: v1.0.1</div>
+        <div class="badge">Phiên bản: v1.0.2</div>
       </header>
 
       <main class="card">
@@ -213,11 +229,49 @@
     }
     document.getElementById('litersOfWater').addEventListener('input',calculate);
     document.getElementById('medicineType').addEventListener('change',calculate);
-    document.querySelectorAll('input[name="medicineFormType"]').forEach(r=>r.addEventListener('change',calculate));
-    document.getElementById('ratioChips').addEventListener('click',e=>{ const c=e.target.closest('.chip'); if(!c) return; document.getElementById('medicineType').value=c.getAttribute('data-ratio'); calculate(); });
+    document.querySelectorAll('input[name="medicineFormType"]').forEach(r=>{ r.addEventListener('change',calculate); });
 
-    // Shortcut ratio từ URL
-    const p=new URLSearchParams(location.search); const r=p.get('ratio'); if(r){ document.getElementById('medicineType').value=r; calculate(); }
+    // ✅ Giữ hiệu ứng hover khi chip đã chọn + đồng bộ với <select>
+    const selectRatio = document.getElementById('medicineType');
+    const chipWrap = document.getElementById('ratioChips');
+    const chips = [...chipWrap.querySelectorAll('.chip')];
+
+    function setActiveChip(ratio){
+      chips.forEach(ch=>{
+        const active = ch.dataset.ratio === ratio;
+        ch.classList.toggle('is-active', active);
+        ch.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+    }
+
+    // Click chip -> set select + active + tính
+    chipWrap.addEventListener('click', e=>{
+      const c = e.target.closest('.chip'); if(!c) return;
+      const ratio = c.getAttribute('data-ratio');
+      selectRatio.value = ratio;
+      setActiveChip(ratio);
+      calculate();
+    });
+
+    // Thay đổi select -> cập nhật chip đang chọn
+    selectRatio.addEventListener('change', ()=> setActiveChip(selectRatio.value));
+
+    // A11y: cho chip bấm bằng Enter/Space
+    chips.forEach(ch=>{
+      ch.setAttribute('role','button');
+      ch.setAttribute('tabindex','0');
+      ch.setAttribute('aria-pressed','false');
+      ch.addEventListener('keydown', e=>{
+        if(e.key===' '||e.key==='Enter'){ e.preventDefault(); ch.click(); }
+      });
+    });
+
+    // Shortcut ratio từ URL (và set trạng thái chip ban đầu)
+    const p=new URLSearchParams(location.search);
+    const r=p.get('ratio');
+    if(r){ selectRatio.value=r; }
+    setActiveChip(selectRatio.value || r || '');
+    if(selectRatio.value) calculate();
   </script>
 </body>
 </html>

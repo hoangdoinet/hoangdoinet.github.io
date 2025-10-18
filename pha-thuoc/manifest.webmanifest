@@ -19,17 +19,44 @@
     {
       "name": "Pha 1:200",
       "short_name": "Tỷ lệ 1:200",
-      "url": "./?source=shortcut&ratio=1:200"
+      "url": "./?source=shortcut&ratio=1:200",
+      "description": "Tính nhanh với tỷ lệ pha 1:200",
+      "icons": [
+        {
+          "src": "./icons/icon-96.png",
+          "sizes": "96x96",
+          "type": "image/png",
+          "purpose": "any"
+        }
+      ]
     },
     {
       "name": "Pha 1:400",
       "short_name": "Tỷ lệ 1:400",
-      "url": "./?source=shortcut&ratio=1:400"
+      "url": "./?source=shortcut&ratio=1:400",
+      "description": "Tính nhanh với tỷ lệ pha 1:400",
+      "icons": [
+        {
+          "src": "./icons/icon-96.png",
+          "sizes": "96x96",
+          "type": "image/png",
+          "purpose": "any"
+        }
+      ]
     },
     {
       "name": "Pha 1:800",
       "short_name": "Tỷ lệ 1:800",
-      "url": "./?source=shortcut&ratio=1:800"
+      "url": "./?source=shortcut&ratio=1:800",
+      "description": "Tính nhanh với tỷ lệ pha 1:800",
+      "icons": [
+        {
+          "src": "./icons/icon-96.png",
+          "sizes": "96x96",
+          "type": "image/png",
+          "purpose": "any"
+        }
+      ]
     }
   ],
   "categories": ["tools", "utilities"]
