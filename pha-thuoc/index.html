@@ -30,9 +30,10 @@
   <!-- PWA -->
   <meta name="theme-color" content="#22c55e"/>
   <link rel="manifest" href="./manifest.webmanifest">
-  <!-- Icon -->
+  <!-- Dùng icon 1024 mới làm favicon & apple-touch -->
   <link rel="icon" href="./icons/icon-1024.png" sizes="1024x1024">
   <link rel="apple-touch-icon" href="./icons/icon-1024.png">
+  <!-- Thêm icon 192 cho trình duyệt cũ (không bắt buộc) -->
   <link rel="icon" href="./icons/icon-192.png" sizes="192x192">
 
   <!-- iOS web app -->
@@ -44,14 +45,14 @@
     :root{
       --bg:#0b1220; --card:#0f172a; --text:#e5e7eb; --muted:#94a3b8;
       --accent:#22c55e; --border:#1f2937; --info:#0ea5e9; --danger:#ef4444;
-      /* màu splash */
-      --brand1:#22c55e; --brand2:#16a34a;
+      /* màu splash như mẫu */
+      :root{ --brand1:#22c55e; --brand2:#16a34a; }
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
       background:linear-gradient(180deg,#0b1220,#0e1a33);color:var(--text);min-height:100vh}
 
-    /* ===================== SPLASH ===================== */
+    /* ===================== SPLASH (theo mẫu) ===================== */
     #splash{
       position:fixed; inset:0;
       padding: calc(env(safe-area-inset-top,0) + 16px) 16px calc(env(safe-area-inset-bottom,0) + 16px);
@@ -62,6 +63,7 @@
       z-index:9999; text-align:center; transition:opacity .7s ease, visibility .7s;
     }
     #splash.hidden{ opacity:0; visibility:hidden; }
+
     .logo-wrap{ position:relative; width:140px; height:140px; filter:drop-shadow(0 10px 24px rgba(0,0,0,.28)); }
     .logo-img{
       width:100%; height:100%; border-radius:24%;
@@ -126,47 +128,10 @@
     .alert-info{background:rgba(14,165,233,.12);border:1px solid rgba(14,165,233,.35);color:#bae6fd}
     .alert-danger{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);color:#fecaca}
     footer{text-align:center;opacity:.7;padding:18px 12px;font-size:13px}
-
-    /* ============ MODAL CÀI ĐẶT (A2HS) ============ */
-    .install-modal {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.6);
-      display: none; /* mặc định ẩn */
-      align-items: center; justify-content: center;
-      z-index: 99999;
-      backdrop-filter: blur(4px);
-    }
-    .install-content {
-      background: #0f172a;
-      color: #e5e7eb;
-      padding: 24px;
-      border-radius: 20px;
-      max-width: 380px; width: 90%;
-      text-align: center;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-      animation: modalIn 0.4s ease;
-      border: 1px solid #1f2937;
-    }
-    .install-content h2 { margin: 0 0 8px; font-size: 22px; color: var(--accent); }
-    .install-content p { font-size: 15px; line-height: 1.5; margin: 0 0 16px; }
-    .install-actions { display: flex; gap: 12px; justify-content: center; }
-    .install-actions .btn-primary,
-    .install-actions .btn-secondary {
-      flex: 1; padding: 12px; border-radius: 12px; font-size: 16px; font-weight: 600;
-      cursor: pointer; border: none; transition: background 0.2s;
-    }
-    .btn-primary { background: var(--accent); color: #063016; }
-    .btn-primary:hover { background: #16a34a; }
-    .btn-secondary { background: #1e293b; color: #e2e8f0; }
-    .btn-secondary:hover { background: #334155; }
-    @keyframes modalIn {
-      from { opacity: 0; transform: translateY(30px) scale(0.95); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
   </style>
 </head>
 <body>
-  <!-- 🌾 Splash -->
+  <!-- 🌾 Splash theo mẫu -->
   <div id="splash" role="status" aria-label="Đang khởi động ứng dụng">
     <div class="logo-wrap">
       <img src="./icons/icon-1024.png" class="logo-img" alt="Logo Tính lượng thuốc sát trùng" width="140" height="140">
@@ -174,18 +139,6 @@
     <div class="app-name" aria-hidden="true">PHA THUỐC SÁT TRÙNG</div>
     <div class="meta">Phiên bản: <b>v1.0.0</b></div>
     <div class="meta">Tác giả: <b>Hoàng Đợi</b></div>
-  </div>
-
-  <!-- 📥 Modal Cài đặt Ứng dụng -->
-  <div class="install-modal" id="installModal" aria-hidden="true">
-    <div class="install-content" role="dialog" aria-modal="true" aria-labelledby="installTitle">
-      <h2 id="installTitle">📲 Cài đặt ứng dụng</h2>
-      <p>Thêm <b>Pha Thuốc Sát Trùng</b> vào màn hình chính để dùng nhanh và không cần mạng.</p>
-      <div class="install-actions">
-        <button id="installNow" class="btn-primary">Cài đặt ngay</button>
-        <button id="installLater" class="btn-secondary">Để sau</button>
-      </div>
-    </div>
   </div>
 
   <!-- Bọc toàn bộ app để ẩn tới khi splash xong -->
@@ -196,7 +149,7 @@
       <b style="color:#86efac">Mẹo:</b> Trên iPhone/iPad → Safari → <b>Chia sẻ</b> → <b>Thêm vào MH chính</b> để cài như ứng dụng.
     </div>
 
-    <!-- Android cài đặt (nút dự phòng thủ công) -->
+    <!-- Android cài đặt -->
     <button class="install-btn" id="btnInstall" style="display:none;position:fixed;right:14px;bottom:14px;background:#22c55e;color:#063016;border:none;border-radius:14px;padding:12px 14px;font-weight:700;box-shadow:0 10px 24px rgba(0,0,0,.25)">📥 Cài đặt ứng dụng</button>
 
     <div class="wrap">
@@ -268,54 +221,28 @@
       });
     }
 
-    // Ẩn splash
+    // Ẩn splash khi trang sẵn sàng hoặc sau timeout dự phòng
     const hideSplash = () => {
       const el = document.getElementById('splash');
       if (!el || el.classList.contains('hidden')) return;
       el.classList.add('hidden');
       document.body.classList.add('ready');
     };
-    window.addEventListener('load', () => { setTimeout(hideSplash, 2800); });
-    setTimeout(hideSplash, 5000);
+    // Khi tải xong + thêm buffer để animation kết thúc “đã”
+    window.addEventListener('load', () => { setTimeout(hideSplash, 2200); });
+    // Dự phòng cứng nếu vì lý do nào đó load bị chậm
+    setTimeout(hideSplash, 3000);
 
-    // ===== A2HS Android + Modal =====
+    // A2HS Android
     let deferredPrompt;
-    const installModal = document.getElementById('installModal');
-    const btnNow = document.getElementById('installNow');
-    const btnLater = document.getElementById('installLater');
     const btnInstall = document.getElementById('btnInstall');
-
     window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      // Hiện modal nếu chưa từng dismiss
-      if (localStorage.getItem('installDismissed') !== 'true') {
-        setTimeout(() => { installModal.style.display = 'flex'; }, 2000);
-      }
-      // Hiện nút dự phòng thủ công
-      btnInstall.style.display = 'inline-block';
+      e.preventDefault(); deferredPrompt = e; btnInstall.style.display = 'inline-block';
     });
-
-    btnNow.addEventListener('click', async () => {
-      installModal.style.display = 'none';
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      btnInstall.style.display = 'none';
-    });
-
-    btnLater.addEventListener('click', () => {
-      installModal.style.display = 'none';
-      localStorage.setItem('installDismissed', 'true');
-    });
-
     btnInstall.addEventListener('click', async () => {
       if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      btnInstall.style.display = 'none';
+      deferredPrompt.prompt(); await deferredPrompt.userChoice;
+      btnInstall.style.display = 'none'; deferredPrompt = null;
     });
 
     // iOS tip
@@ -326,7 +253,7 @@
       document.getElementById('iosClose').onclick=()=>document.getElementById('iosTip').remove();
     });
 
-    // ====== Tính toán ======
+    // Tính toán
     function calculate(){
       const liters=parseFloat(document.getElementById('litersOfWater').value);
       const type=document.getElementById('medicineType').value;
@@ -336,11 +263,7 @@
       error.style.display='none'; result.style.display='none';
       if(!liters) return;
       if(!type){ error.style.display='block'; return; }
-      if(isNaN(liters)||liters<=0){
-        error.style.display='block';
-        error.innerHTML='Bạn chưa <strong>Nhập lượng nước</strong> để hiển thị kết quả.';
-        return;
-      }
+      if(isNaN(liters)||liters<=0){ error.style.display='block'; error.innerHTML='Bạn chưa <strong>Nhập lượng nước</strong> để hiển thị kết quả.'; return; }
       const ratios={'1:100':100,'1:200':200,'1:300':300,'1:400':400,'1:500':500,'1:600':600,'1:700':700,'1:800':800,'1:900':900,'1:1000':1000};
       const volume=(1000/ratios[type])*liters;
       const display=form==='powder'?volume.toFixed(0)+' gram':(Number.isInteger(volume)?volume:volume.toFixed(2))+' ml';
@@ -350,7 +273,7 @@
     document.getElementById('litersOfWater').addEventListener('input',calculate);
     document.getElementById('medicineType').addEventListener('change',calculate);
     document.querySelectorAll('input[name="medicineFormType"]').forEach(r=>r.addEventListener('change',calculate));
-    document.getElementById('ratioChips')?.addEventListener('click',e=>{
+    document.getElementById('ratioChips').addEventListener('click',e=>{
       const c=e.target.closest('.chip'); if(!c) return;
       document.getElementById('medicineType').value=c.getAttribute('data-ratio');
       calculate();
