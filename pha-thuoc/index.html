@@ -6,15 +6,15 @@
   <title>Tính lượng thuốc sát trùng</title>
 
   <!-- 🔎 SEO & Sharing -->
-  <meta name="description" content="Công cụ tính lượng thuốc sát trùng theo tỷ lệ pha và dạng thuốc. Có thể cài đặt như một ứng dụng di động, hoạt động offline và sử dụng dễ dàng cho trang trại.">
+  <meta name="description" content="Công cụ tính lượng thuốc sát trùng theo tỷ lệ pha và dạng thuốc. Có thể cài đặt trên Android và iOS, hoạt động offline và sử dụng dễ dàng cho trang trại.">
   <meta name="keywords" content="tính thuốc sát trùng, pha thuốc, thuốc sát trùng trại heo, pha thuốc chăn nuôi, thuốc nước, thuốc bột, ứng dụng offline, ATSH, an toàn sinh học">
   <meta name="author" content="Hoàng Đợi">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://hoangdoinet.github.io/pha-thuoc/"/>
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Tính lượng thuốc sát trùng – Cài đặt như ứng dụng di động">
-  <meta property="og:description" content="Nhập số lít nước và chọn tỷ lệ để tính ngay lượng thuốc sát trùng cần dùng. Hỗ trợ thuốc nước & thuốc bột. Hoạt động offline, cài đặt trên Android/iOS.">
+  <meta property="og:title" content="Tính lượng thuốc sát trùng">
+  <meta property="og:description" content="Nhập số lít nước và chọn tỷ lệ để tính ngay lượng thuốc sát trùng cần dùng. Hỗ trợ thuốc nước & thuốc bột. Hoạt động offline sau khi cài đặt trên Android/iOS.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://hoangdoinet.github.io/pha-thuoc/">
   <meta property="og:image" content="https://hoangdoinet.github.io/pha-thuoc/icons/og-image-1200.png">
@@ -43,11 +43,11 @@
     :root{
       --bg:#0b1220; --card:#0f172a; --text:#e5e7eb; --muted:#94a3b8;
       --accent:#22c55e; --border:#94a3b8; --info:#0ea5e9; --danger:#ef4444;
-      --brand1:#22c55e; --brand2:#16a34a; /* ✅ move vào chung 1 :root (sửa lỗi lặp :root) */
+      --brand1:#22c55e; --brand2:#16a34a;
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
-      background:linear-gradient(180deg,#0b1220,#0e1a33);color:var(--text);min-height:100vh}
+      background:linear-gradient(180deg,#0b1220,#0e1a33);color:var(--text);min-height:90vh}
 
     /* ===================== SPLASH ===================== */
     #splash{position:fixed;inset:0;padding:calc(env(safe-area-inset-top,0) + 16px) 16px calc(env(safe-area-inset-bottom,0) + 16px);
@@ -74,6 +74,25 @@
     header.hero{text-align:center;margin-bottom:16px}
     header.hero h1{font-size:28px;margin:0}
     .badge{display:inline-block;background:rgba(34,197,94,.15);padding:4px 10px;border-radius:20px;font-size:12px;color:#86efac;margin-top:6px}
+
+    /* Nút cài đặt đặt ngay dưới badge, ẩn mặc định */
+    .install-btn{
+      display:none;
+      margin:12px auto 0;
+      background:var(--accent);
+      color:#063016;
+      border:none;
+      border-radius:12px;
+      padding:10px 18px;
+      font-weight:700;
+      font-size:15px;
+      cursor:pointer;
+      box-shadow:0 4px 16px rgba(0,0,0,.25);
+      transition:background .25s ease, transform .15s ease;
+    }
+    .install-btn:hover{ background:#16a34a; transform:translateY(-1px) }
+    .install-btn:active{ transform:translateY(1px) }
+
     .card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.35);padding:20px}
     .group{margin-bottom:16px}
     label{display:block;margin-bottom:6px;font-size:14px;color:var(--muted)}
@@ -82,7 +101,7 @@
     .segmented{display:flex;border:1px solid var(--border);border-radius:999px;overflow:hidden}
     .segmented input{display:none}
     .segmented label{flex:1;text-align:center;padding:10px 14px;cursor:pointer;color:var(--muted);position:relative;user-select:none;transition:all .2s ease}
-    .segmented input:checked + label{background:var(--accent);color:#052e14;font-weight:700; /* ✅ tràn viền dưới */ margin-bottom:-1px; padding-bottom:calc(10px + 1px)}
+    .segmented input:checked + label{background:var(--accent);color:#052e14;font-weight:700; margin-bottom:-1px; padding-bottom:calc(10px + 1px)}
 
     select,input{width:100%;padding:10px;border:1px solid var(--border);border-radius:12px;background:#0b1020;color:var(--text);font-size:16px}
     select:focus,input:focus{outline:none;border-color:var(--accent)}
@@ -94,13 +113,7 @@
       transition:background .2s ease, color .2s ease, border-color .2s ease, transform .06s ease;
     }
     .chip:hover{ border-color:var(--accent); color:#86efac; background:rgba(34,197,94,.12) }
-    /* ✅ Giữ hiệu ứng hover khi đã chọn */
-    .chip.is-active,
-    .chip[aria-pressed="true"]{
-      border-color:var(--accent);
-      color:#86efac;
-      background:rgba(34,197,94,.12);
-    }
+    .chip.is-active, .chip[aria-pressed="true"]{ border-color:var(--accent); color:#86efac; background:rgba(34,197,94,.12) }
 
     .alert{border-radius:14px;padding:12px;margin-top:12px;display:none}
     .alert-info{background:rgba(14,165,233,.12);border:1px solid rgba(14,165,233,.35);color:#bae6fd}
@@ -124,13 +137,13 @@
       <b style="color:#86efac">Mẹo:</b> Trên iPhone/iPad → Safari → <b>Chia sẻ</b> → <b>Thêm vào MH chính</b> để cài như ứng dụng.
     </div>
 
-    <!-- Android cài đặt -->
-    <button class="install-btn" id="btnInstall" style="display:none;position:fixed;right:14px;bottom:14px;background:#22c55e;color:#063016;border:none;border-radius:14px;padding:12px 14px;font-weight:700;box-shadow:0 10px 24px rgba(0,0,0,.25)">📥 Cài đặt ứng dụng</button>
-
     <div class="wrap">
       <header class="hero">
         <h1>Tính lượng thuốc sát trùng</h1>
         <div class="badge">Phiên bản: v1.0.2</div>
+
+        <!-- 📥 Nút cài đặt hiển thị ngay dưới badge khi đủ điều kiện -->
+        <button id="btnInstall" class="install-btn">📥 Cài đặt ứng dụng</button>
       </header>
 
       <main class="card">
@@ -187,7 +200,7 @@
   </div>
 
   <script>
-    // Đăng ký Service Worker (đặt đúng tên file tồn tại thực tế)
+    // Đăng ký Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', async () => {
         try { await navigator.serviceWorker.register('./service-worker.js', { scope: './', updateViaCache: 'none' }); }
@@ -200,17 +213,66 @@
     window.addEventListener('load', () => { setTimeout(hideSplash, 2200); });
     setTimeout(hideSplash, 3000);
 
-    // A2HS Android
-    let deferredPrompt; const btnInstall = document.getElementById('btnInstall');
-    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; btnInstall.style.display = 'inline-block'; });
-    btnInstall.addEventListener('click', async () => { if(!deferredPrompt) return; deferredPrompt.prompt(); await deferredPrompt.userChoice; btnInstall.style.display = 'none'; deferredPrompt = null; });
+    // Helpers
+    function isIos(){return /iphone|ipad|ipod/i.test(navigator.userAgent)}
+    function isStandalone(){
+      return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+    }
 
     // iOS tip
-    function isIos(){return /iphone|ipad|ipod/i.test(navigator.userAgent)}
-    function isStandalone(){return navigator.standalone || window.matchMedia('(display-mode: standalone)').matches}
-    window.addEventListener('load',()=>{ if(isIos()&&!isStandalone()) document.getElementById('iosTip').style.display='block'; document.getElementById('iosClose').onclick=()=>document.getElementById('iosTip').remove(); });
+    window.addEventListener('load',()=>{
+      if(isIos()&&!isStandalone()) document.getElementById('iosTip').style.display='block';
+      document.getElementById('iosClose').onclick=()=>document.getElementById('iosTip').remove();
+    });
 
-    // Tính toán
+    // ✅ A2HS: hiển thị nút cài đặt bên dưới badge nếu đủ điều kiện
+    let deferredPrompt;
+    const btnInstall = document.getElementById('btnInstall');
+
+    // 1) Ẩn nút nếu app đang chạy ở chế độ đã cài (standalone)
+    function updateInstallBtnVisibility() {
+      if (isStandalone()) {
+        btnInstall.style.display = 'none';
+      } else if (deferredPrompt) {
+        // Chỉ hiện nếu có thể prompt cài đặt
+        btnInstall.style.display = 'inline-block';
+      } else {
+        btnInstall.style.display = 'none';
+      }
+    }
+
+    // 2) Nhận sự kiện đủ điều kiện cài
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      updateInstallBtnVisibility();
+    });
+
+    // 3) Bấm nút cài
+    btnInstall.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      updateInstallBtnVisibility();
+    });
+
+    // 4) Khi vừa cài xong -> ẩn nút
+    window.addEventListener('appinstalled', () => {
+      deferredPrompt = null;
+      btnInstall.style.display = 'none';
+    });
+
+    // 5) Theo dõi thay đổi display-mode (trường hợp mở từ icon)
+    const dm = window.matchMedia('(display-mode: standalone)');
+    if (dm && dm.addEventListener) {
+      dm.addEventListener('change', updateInstallBtnVisibility);
+    }
+
+    // 6) Kiểm tra ban đầu khi load
+    window.addEventListener('load', updateInstallBtnVisibility);
+
+    // ======================= Tính toán =======================
     function calculate(){
       const liters=parseFloat(document.getElementById('litersOfWater').value);
       const type=document.getElementById('medicineType').value;
@@ -231,7 +293,7 @@
     document.getElementById('medicineType').addEventListener('change',calculate);
     document.querySelectorAll('input[name="medicineFormType"]').forEach(r=>{ r.addEventListener('change',calculate); });
 
-    // ✅ Giữ hiệu ứng hover khi chip đã chọn + đồng bộ với <select>
+    // Chips đồng bộ với select
     const selectRatio = document.getElementById('medicineType');
     const chipWrap = document.getElementById('ratioChips');
     const chips = [...chipWrap.querySelectorAll('.chip')];
@@ -244,7 +306,6 @@
       });
     }
 
-    // Click chip -> set select + active + tính
     chipWrap.addEventListener('click', e=>{
       const c = e.target.closest('.chip'); if(!c) return;
       const ratio = c.getAttribute('data-ratio');
@@ -253,10 +314,8 @@
       calculate();
     });
 
-    // Thay đổi select -> cập nhật chip đang chọn
     selectRatio.addEventListener('change', ()=> setActiveChip(selectRatio.value));
 
-    // A11y: cho chip bấm bằng Enter/Space
     chips.forEach(ch=>{
       ch.setAttribute('role','button');
       ch.setAttribute('tabindex','0');
@@ -266,7 +325,6 @@
       });
     });
 
-    // Shortcut ratio từ URL (và set trạng thái chip ban đầu)
     const p=new URLSearchParams(location.search);
     const r=p.get('ratio');
     if(r){ selectRatio.value=r; }
