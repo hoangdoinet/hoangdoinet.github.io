@@ -46,13 +46,21 @@
       --brand1:#22c55e; --brand2:#16a34a;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
-      background:linear-gradient(180deg,#0b1220,#0e1a33);color:var(--text);min-height:90vh}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+      background:linear-gradient(180deg,#0b1220,#0e1a33);
+      color:var(--text);
+      min-height:95vh;
+    }
 
     /* ===================== SPLASH ===================== */
-    #splash{position:fixed;inset:0;padding:calc(env(safe-area-inset-top,0) + 16px) 16px calc(env(safe-area-inset-bottom,0) + 16px);
+    #splash{
+      position:fixed;inset:0;
+      padding:calc(env(safe-area-inset-top,0) + 16px) 16px calc(env(safe-area-inset-bottom,0) + 16px);
       background:radial-gradient(120% 90% at 50% -10%, #fff3 0%, #0000 60%),linear-gradient(180deg,var(--brand1),var(--brand2));
-      color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;text-align:center;transition:opacity .7s ease,visibility .7s}
+      color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;text-align:center;transition:opacity .7s ease,visibility .7s
+    }
     #splash.hidden{opacity:0;visibility:hidden}
     .logo-wrap{position:relative;width:140px;height:140px;filter:drop-shadow(0 10px 24px rgba(0,0,0,.28))}
     .logo-img{width:100%;height:100%;border-radius:24%;animation:popIn 900ms cubic-bezier(.2,.7,.2,1) both,glow 1.6s .9s ease-in-out 2 alternate;will-change:transform,filter}
@@ -73,7 +81,12 @@
     .wrap{max-width:860px;margin:32px auto;padding:0 16px}
     header.hero{text-align:center;margin-bottom:16px}
     header.hero h1{font-size:28px;margin:0}
-    .badge{display:inline-block;background:rgba(34,197,94,.15);padding:4px 10px;border-radius:20px;font-size:12px;color:#86efac;margin-top:6px}
+    .badge{
+      display:inline-block;background:rgba(34,197,94,.15);
+      padding:4px 10px;border-radius:20px;font-size:12px;color:#86efac;margin-top:6px;
+      cursor:pointer; user-select:none; outline:none; border:1px dashed rgba(134,239,172,.25);
+    }
+    .badge:focus{box-shadow:0 0 0 3px rgba(34,197,94,.35)}
     .card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.35);padding:20px}
     .group{margin-bottom:16px}
     label{display:block;margin-bottom:6px;font-size:14px;color:var(--muted)}
@@ -82,7 +95,7 @@
     .segmented{display:flex;border:1px solid var(--border);border-radius:999px;overflow:hidden}
     .segmented input{display:none}
     .segmented label{flex:1;text-align:center;padding:10px 14px;cursor:pointer;color:var(--muted);position:relative;user-select:none;transition:all .2s ease}
-    .segmented input:checked + label{background:var(--accent);color:#052e14;font-weight:700; /* ✅ tràn viền dưới */ margin-bottom:-1px; padding-bottom:calc(10px + 1px)}
+    .segmented input:checked + label{background:var(--accent);color:#052e14;font-weight:700;margin-bottom:-1px;padding-bottom:calc(10px + 1px)}
 
     select,input{width:100%;padding:10px;border:1px solid var(--border);border-radius:12px;background:#0b1020;color:var(--text);font-size:16px}
     select:focus,input:focus{outline:none;border-color:var(--accent)}
@@ -94,18 +107,53 @@
       transition:background .2s ease, color .2s ease, border-color .2s ease, transform .06s ease;
     }
     .chip:hover{ border-color:var(--accent); color:#86efac; background:rgba(34,197,94,.12) }
-    /* ✅ Giữ hiệu ứng hover khi đã chọn */
-    .chip.is-active,
-    .chip[aria-pressed="true"]{
-      border-color:var(--accent);
-      color:#86efac;
-      background:rgba(34,197,94,.12);
+    .chip.is-active, .chip[aria-pressed="true"]{
+      border-color:var(--accent); color:#86efac; background:rgba(34,197,94,.12);
     }
 
     .alert{border-radius:14px;padding:12px;margin-top:12px;display:none}
     .alert-info{background:rgba(14,165,233,.12);border:1px solid rgba(14,165,233,.35);color:#bae6fd}
     .alert-danger{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);color:#fecaca}
     footer{text-align:center;opacity:.7;padding:18px 12px;font-size:13px}
+
+    /* ============ Modal (NỀN SÁNG) ============ */
+    .modal-backdrop{
+      position:fixed; inset:0; background:rgba(0,0,0,.45);
+      display:none; align-items:center; justify-content:center; z-index:10000;
+      padding:16px;
+    }
+    .modal-backdrop.show{display:flex;}
+    .modal{
+      width:min(560px, 100%); max-height:90vh; overflow:auto;
+      background:#ffffff; color:#0f172a; border:1px solid #e5e7eb; border-radius:16px;
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
+    }
+    .modal header{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 16px; border-bottom:1px solid #e5e7eb; background:#f8fafc;
+    }
+    .modal header h3{margin:0; font-size:18px; font-weight:800; color:#0f172a}
+    .modal header .close{
+      border:0; background:#f1f5f9; color:#0f172a; border-radius:10px; padding:6px 10px; cursor:pointer; font-weight:700;
+    }
+    .modal .content{padding:14px 16px; font-size:14px; line-height:1.5}
+    .modal .content p{margin:0 0 8px}
+    .modal .kv{display:grid; grid-template-columns:120px 1fr; gap:8px 12px; margin-top:8px}
+    .modal .kv .key{color:#475569}
+    .modal footer{
+      display:flex; justify-content:flex-end; gap:8px; padding:14px 16px; border-top:1px solid #e5e7eb; background:#f8fafc;
+    }
+    .modal .btn{
+      background:#22c55e; color:#063016; border:0; border-radius:10px; padding:10px 12px; font-weight:800; cursor:pointer;
+    }
+    .modal .btn.secondary{ background:#e2e8f0; color:#0f172a; }
+
+    /* ============ Install button (floating) ============ */
+    .install-btn{
+      position:fixed; right:14px; bottom:14px;
+      background:#22c55e; color:#063016; border:none; border-radius:14px;
+      padding:12px 14px; font-weight:700; box-shadow:0 10px 24px rgba(0,0,0,.25); display:none;
+    }
   </style>
 </head>
 <body>
@@ -124,13 +172,14 @@
       <b style="color:#86efac">Mẹo:</b> Trên iPhone/iPad → Safari → <b>Chia sẻ</b> → <b>Thêm vào MH chính</b> để cài như ứng dụng.
     </div>
 
-    <!-- Android cài đặt -->
-    <button class="install-btn" id="btnInstall" style="display:none;position:fixed;right:14px;bottom:14px;background:#22c55e;color:#063016;border:none;border-radius:14px;padding:12px 14px;font-weight:700;box-shadow:0 10px 24px rgba(0,0,0,.25)">📥 Cài đặt ứng dụng</button>
+    <!-- Android cài đặt (giữ NÚT NỔI) -->
+    <button class="install-btn" id="btnInstall">📥 Cài đặt ứng dụng</button>
 
     <div class="wrap">
       <header class="hero">
         <h1>Tính lượng thuốc sát trùng</h1>
-        <div class="badge">Phiên bản: v1.0.2</div>
+        <!-- Chip phiên bản (click để mở modal) -->
+        <div id="appBadge" class="badge" role="button" tabindex="0" aria-label="Xem thông tin ứng dụng">Phiên bản: v1.0.2</div>
       </header>
 
       <main class="card">
@@ -186,8 +235,30 @@
     </div>
   </div>
 
+  <!-- ======= Modal Thông tin Ứng dụng (NỀN SÁNG) ======= -->
+  <div id="aboutModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" aria-describedby="aboutDesc">
+      <header>
+        <h3 id="aboutTitle">Thông tin ứng dụng</h3>
+        <button id="aboutClose" class="close" aria-label="Đóng">✕</button>
+      </header>
+      <div class="content">
+        <p id="aboutDesc">Công cụ tính nhanh lượng thuốc sát trùng theo tỷ lệ pha và dạng thuốc (nước/bột). Hỗ trợ cài đặt để dùng offline trên Android và iOS.</p>
+        <div class="kv">
+          <div class="key">Phiên bản</div><div><b>v1.0.2</b></div>
+          <div class="key">Tác giả</div><div><b>Hoàng Đợi</b></div>
+        </div>
+      </div>
+      <footer>
+        <button class="btn secondary" id="aboutOk">Đóng</button>
+        <!-- Nút cài đặt trong modal (ẩn mặc định, hiện khi đủ điều kiện) -->
+        <button class="btn" id="modalInstall" style="display:none">📥 Cài đặt ứng dụng</button>
+      </footer>
+    </div>
+  </div>
+
   <script>
-    // Đăng ký Service Worker (đặt đúng tên file tồn tại thực tế)
+    // Đăng ký Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', async () => {
         try { await navigator.serviceWorker.register('./service-worker.js', { scope: './', updateViaCache: 'none' }); }
@@ -199,11 +270,6 @@
     const hideSplash = () => { const el = document.getElementById('splash'); if(!el||el.classList.contains('hidden')) return; el.classList.add('hidden'); document.body.classList.add('ready'); };
     window.addEventListener('load', () => { setTimeout(hideSplash, 2200); });
     setTimeout(hideSplash, 3000);
-
-    // A2HS Android
-    let deferredPrompt; const btnInstall = document.getElementById('btnInstall');
-    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; btnInstall.style.display = 'inline-block'; });
-    btnInstall.addEventListener('click', async () => { if(!deferredPrompt) return; deferredPrompt.prompt(); await deferredPrompt.userChoice; btnInstall.style.display = 'none'; deferredPrompt = null; });
 
     // iOS tip
     function isIos(){return /iphone|ipad|ipod/i.test(navigator.userAgent)}
@@ -231,7 +297,7 @@
     document.getElementById('medicineType').addEventListener('change',calculate);
     document.querySelectorAll('input[name="medicineFormType"]').forEach(r=>{ r.addEventListener('change',calculate); });
 
-    // ✅ Giữ hiệu ứng hover khi chip đã chọn + đồng bộ với <select>
+    // Chips chọn nhanh
     const selectRatio = document.getElementById('medicineType');
     const chipWrap = document.getElementById('ratioChips');
     const chips = [...chipWrap.querySelectorAll('.chip')];
@@ -243,8 +309,6 @@
         ch.setAttribute('aria-pressed', active ? 'true' : 'false');
       });
     }
-
-    // Click chip -> set select + active + tính
     chipWrap.addEventListener('click', e=>{
       const c = e.target.closest('.chip'); if(!c) return;
       const ratio = c.getAttribute('data-ratio');
@@ -252,11 +316,7 @@
       setActiveChip(ratio);
       calculate();
     });
-
-    // Thay đổi select -> cập nhật chip đang chọn
     selectRatio.addEventListener('change', ()=> setActiveChip(selectRatio.value));
-
-    // A11y: cho chip bấm bằng Enter/Space
     chips.forEach(ch=>{
       ch.setAttribute('role','button');
       ch.setAttribute('tabindex','0');
@@ -266,12 +326,87 @@
       });
     });
 
-    // Shortcut ratio từ URL (và set trạng thái chip ban đầu)
+    // ========== Modal logic ==========
+    const badge = document.getElementById('appBadge');
+    const modalBackdrop = document.getElementById('aboutModal');
+    const btnClose = document.getElementById('aboutClose');
+    const btnOk = document.getElementById('aboutOk');
+
+    function openModal(){
+      modalBackdrop.classList.add('show');
+      modalBackdrop.setAttribute('aria-hidden','false');
+      setTimeout(()=>btnClose.focus(),0);
+      document.documentElement.style.overflow='hidden';
+    }
+    function closeModal(){
+      modalBackdrop.classList.remove('show');
+      modalBackdrop.setAttribute('aria-hidden','true');
+      document.documentElement.style.overflow='';
+      badge && badge.focus();
+    }
+    if(badge){
+      badge.addEventListener('click', openModal);
+      badge.addEventListener('keydown', e=>{
+        if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openModal(); }
+      });
+    }
+    btnClose.addEventListener('click', closeModal);
+    btnOk.addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', e=>{
+      if(e.target===modalBackdrop) closeModal();
+    });
+    window.addEventListener('keydown', e=>{
+      if(e.key==='Escape' && modalBackdrop.classList.contains('show')) closeModal();
+    });
+
+    // ========== A2HS: đồng bộ nút nổi + nút trong modal ==========
+    let deferredPrompt;
+    const btnInstall = document.getElementById('btnInstall');
+    const modalInstall = document.getElementById('modalInstall');
+
+    function updateInstallVisibility(){
+      const canShow = !!deferredPrompt && !isStandalone();
+      if (btnInstall)   btnInstall.style.display   = canShow ? 'inline-block' : 'none';
+      if (modalInstall) modalInstall.style.display = canShow ? 'inline-block' : 'none';
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      updateInstallVisibility();
+    });
+
+    async function triggerInstall(){
+      if(!deferredPrompt){
+        // iOS: hiện tip nếu chưa standalone
+        if(isIos() && !isStandalone()){
+          const tip = document.getElementById('iosTip');
+          if(tip) tip.style.display='block';
+        }
+        return;
+      }
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      updateInstallVisibility();
+      if(outcome === 'accepted' && modalBackdrop.classList.contains('show')) closeModal();
+    }
+    window.addEventListener('appinstalled', () => {
+      deferredPrompt = null;
+      updateInstallVisibility();
+    });
+    if(btnInstall)   btnInstall.addEventListener('click', triggerInstall);
+    if(modalInstall) modalInstall.addEventListener('click', triggerInstall);
+
+    // Khởi tạo chip từ URL nếu có
     const p=new URLSearchParams(location.search);
     const r=p.get('ratio');
     if(r){ selectRatio.value=r; }
     setActiveChip(selectRatio.value || r || '');
     if(selectRatio.value) calculate();
+
+    // Ẩn nút cài đặt nếu đã chạy ở standalone
+    updateInstallVisibility();
   </script>
 </body>
 </html>
