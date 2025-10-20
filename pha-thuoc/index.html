@@ -34,10 +34,10 @@
 
   <!-- PWA -->
   <meta name="theme-color" content="#22c55e"/>
-  <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="icon" href="/icons/icon-1024.png" sizes="1024x1024">
-  <link rel="apple-touch-icon" href="/icons/icon-1024.png">
-  <link rel="icon" href="/icons/icon-192.png" sizes="192x192">
+  <link rel="manifest" href="/pha-thuoc/manifest.webmanifest">
+  <link rel="icon" href="/pha-thuoc/icons/icon-1024.png" sizes="1024x1024">
+  <link rel="apple-touch-icon" href="/pha-thuoc/icons/icon-1024.png">
+  <link rel="icon" href="/pha-thuoc/icons/icon-192.png" sizes="192x192">
 
   <style>
     :root{
@@ -159,7 +159,7 @@
 <body>
   <!-- 🌾 Splash -->
   <div id="splash" role="status" aria-label="Đang khởi động ứng dụng">
-    <div class="logo-wrap"><img src="/icons/icon-512.png" class="logo-img" alt="Logo Tính lượng thuốc sát trùng" width="140" height="140"></div>
+    <div class="logo-wrap"><img src="/pha-thuoc/icons/icon-512.png" class="logo-img" alt="Logo Tính lượng thuốc sát trùng" width="140" height="140"></div>
     <div class="app-name" aria-hidden="true">PHA THUỐC SÁT TRÙNG</div>
     <div class="meta">Phiên bản: <b>v1.0.3</b></div>
     <div class="meta">Tác giả: <b>Hoàng Đợi</b></div>
@@ -262,7 +262,7 @@
     // Đăng ký Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', async () => {
-        try { await navigator.serviceWorker.register('/service-worker.js', { scope: '/', updateViaCache: 'none' }); }
+        try { await navigator.serviceWorker.register('/pha-thuoc/service-worker.js', { scope: '/pha-thuoc/', updateViaCache: 'none' }); }
         catch (e) { console.warn('SW register failed', e); }
       });
     }
@@ -403,7 +403,7 @@
     async function ensurePersistentStorage() {
       const el = document.getElementById('persistStatus');
       if (!('storage' in navigator) || !navigator.storage || !('persist' in navigator.storage)) {
-        if (el) el.textContent = 'Không hỗ trợ';
+        if (el) el.textContent = 'Không hỗ trợ trên trình duyệt này';
         return;
       }
       try {
@@ -413,7 +413,7 @@
           isPersisted = granted;
         }
         if (el) {
-          el.textContent = isPersisted ? 'Cho phép' : 'Tạm thời';
+          el.textContent = isPersisted ? 'Đã khóa (persistent)' : 'Tạm thời (có thể bị xoá)';
           if ('estimate' in navigator.storage) {
             const { usage = 0, quota = 0 } = await navigator.storage.estimate();
             const kb = n => Math.round(n / 1024);
@@ -421,7 +421,7 @@
           }
         }
       } catch (err) {
-        if (el) el.textContent = 'Không hỗ trợ';
+        if (el) el.textContent = 'Không thể xin quyền lưu trữ';
         console.warn('Persistent storage error:', err);
       }
     }
