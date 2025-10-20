@@ -34,10 +34,10 @@
 
   <!-- PWA -->
   <meta name="theme-color" content="#22c55e"/>
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="icon" href="./icons/icon-1024.png" sizes="1024x1024">
-  <link rel="apple-touch-icon" href="./icons/icon-1024.png">
-  <link rel="icon" href="./icons/icon-192.png" sizes="192x192">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icons/icon-1024.png" sizes="1024x1024">
+  <link rel="apple-touch-icon" href="/icons/icon-1024.png">
+  <link rel="icon" href="/icons/icon-192.png" sizes="192x192">
 
   <style>
     :root{
@@ -138,7 +138,7 @@
     }
     .modal .content{padding:14px 16px; font-size:14px; line-height:1.5}
     .modal .content p{margin:0 0 8px}
-    .modal .kv{display:grid; grid-template-columns:120px 1fr; gap:8px 12px; margin-top:8px}
+    .modal .kv{display:grid; grid-template-columns:140px 1fr; gap:8px 12px; margin-top:8px}
     .modal .kv .key{color:#475569}
     .modal footer{
       display:flex; justify-content:flex-end; gap:8px; padding:14px 16px; border-top:1px solid #e5e7eb; background:#f8fafc;
@@ -159,9 +159,9 @@
 <body>
   <!-- 🌾 Splash -->
   <div id="splash" role="status" aria-label="Đang khởi động ứng dụng">
-    <div class="logo-wrap"><img src="./icons/icon-512.png" class="logo-img" alt="Logo Tính lượng thuốc sát trùng" width="140" height="140"></div>
+    <div class="logo-wrap"><img src="/icons/icon-512.png" class="logo-img" alt="Logo Tính lượng thuốc sát trùng" width="140" height="140"></div>
     <div class="app-name" aria-hidden="true">PHA THUỐC SÁT TRÙNG</div>
-    <div class="meta">Phiên bản: <b>v1.0.2</b></div>
+    <div class="meta">Phiên bản: <b>v1.0.3</b></div>
     <div class="meta">Tác giả: <b>Hoàng Đợi</b></div>
   </div>
 
@@ -179,7 +179,7 @@
       <header class="hero">
         <h1>Tính lượng thuốc sát trùng</h1>
         <!-- Chip phiên bản (click để mở modal) -->
-        <div id="appBadge" class="badge" role="button" tabindex="0" aria-label="Xem thông tin ứng dụng">Phiên bản: v1.0.2</div>
+        <div id="appBadge" class="badge" role="button" tabindex="0" aria-label="Xem thông tin ứng dụng">Phiên bản: v1.0.3</div>
       </header>
 
       <main class="card">
@@ -245,8 +245,9 @@
       <div class="content">
         <p id="aboutDesc">Công cụ tính nhanh lượng thuốc sát trùng theo tỷ lệ pha và dạng thuốc (nước/bột). Hỗ trợ cài đặt để dùng offline trên Android và iOS.</p>
         <div class="kv">
-          <div class="key"><li>Phiên bản:</li></div><div><b>v1.0.2</b></div>
+          <div class="key"><li>Phiên bản:</li></div><div><b>v1.0.3</b></div>
           <div class="key"><li>Tác giả:</li></div><div><b>Hoàng Đợi</b></div>
+          <div class="key"><li>Bộ nhớ offline:</li></div><div><b id="persistStatus">Đang kiểm tra…</b></div>
         </div>
       </div>
       <footer>
@@ -261,7 +262,7 @@
     // Đăng ký Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', async () => {
-        try { await navigator.serviceWorker.register('./service-worker.js', { scope: './', updateViaCache: 'none' }); }
+        try { await navigator.serviceWorker.register('/service-worker.js', { scope: '/', updateViaCache: 'none' }); }
         catch (e) { console.warn('SW register failed', e); }
       });
     }
@@ -398,6 +399,33 @@
     if(btnInstall)   btnInstall.addEventListener('click', triggerInstall);
     if(modalInstall) modalInstall.addEventListener('click', triggerInstall);
 
+    // === Persistent Storage (khóa bộ nhớ offline) ===
+    async function ensurePersistentStorage() {
+      const el = document.getElementById('persistStatus');
+      if (!('storage' in navigator) || !navigator.storage || !('persist' in navigator.storage)) {
+        if (el) el.textContent = 'Không hỗ trợ';
+        return;
+      }
+      try {
+        let isPersisted = await navigator.storage.persisted();
+        if (!isPersisted) {
+          const granted = await navigator.storage.persist();
+          isPersisted = granted;
+        }
+        if (el) {
+          el.textContent = isPersisted ? 'Cho phép' : 'Tạm thời';
+          if ('estimate' in navigator.storage) {
+            const { usage = 0, quota = 0 } = await navigator.storage.estimate();
+            const kb = n => Math.round(n / 1024);
+            el.title = `Đã dùng ~${kb(usage)}KB / Giới hạn ~${kb(quota)}KB`;
+          }
+        }
+      } catch (err) {
+        if (el) el.textContent = 'Không hỗ trợ';
+        console.warn('Persistent storage error:', err);
+      }
+    }
+
     // Khởi tạo chip từ URL nếu có
     const p=new URLSearchParams(location.search);
     const r=p.get('ratio');
@@ -407,6 +435,9 @@
 
     // Ẩn nút cài đặt nếu đã chạy ở standalone
     updateInstallVisibility();
+
+    // Gọi xin lưu trữ bền vững sau khi trang đã sẵn sàng
+    window.addEventListener('load', () => setTimeout(ensurePersistentStorage, 800));
   </script>
 </body>
 </html>
