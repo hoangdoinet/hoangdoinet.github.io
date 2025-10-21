@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Changelog • Tính cân lúa v1.0.0</title>
+
+  <!-- SEO / Social -->
+  <meta name="description" content="Nhật ký thay đổi của ứng dụng TÍNH CÂN LÚA: tính năng mới, tối ưu, sửa lỗi." />
+  <link rel="canonical" href="/can-lua/changelog.html" />
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Tính cân lúa">
+  <meta property="og:title" content="Changelog • Tính cân lúa v1.0.0">
+  <meta property="og:description" content="Nhật ký thay đổi: tính năng mới, tối ưu, sửa lỗi.">
+  <meta property="og:url" content="https://hoangdoinet.github.io/can-lua/changelog.html">
+  <meta property="og:image" content="https://hoangdoinet.github.io/can-lua/icons/icon-512.png">
+  <meta property="og:locale" content="vi_VN">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Changelog • Tính cân lúa v1.0.0">
+  <meta name="twitter:description" content="Nhật ký thay đổi: tính năng mới, tối ưu, sửa lỗi.">
+  <meta name="twitter:image" content="https://hoangdoinet.github.io/can-lua/icons/icon-512.png">
+
+  <!-- PWA -->
+  <link rel="manifest" href="/can-lua/manifest.webmanifest">
+  <meta name="theme-color" content="#22c55e" />
+  <link rel="apple-touch-icon" href="/can-lua/icons/icon-192.png">
+
+  <!-- Styles (đồng bộ thương hiệu với index.html) -->
+  <style>
+    :root{
+      --bg:#f7f9fc; --surface:#ffffff; --surface-2:#f3f4f6; --muted:#6b7280; --text:#111827;
+      --accent:#22c55e; --accent-2:#16a34a; --danger:#dc2626; --border:#e5e7eb;
+      --ring:0 0 0 2px rgba(34,197,94,.25); --shadow:0 10px 28px rgba(2,6,23,.08);
+      --radius:18px;
+      --orange:#f59e0b; --orange-soft:#ffedd5; --orange-softer:#fff7ed;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#f8fafc,#f1f5f9 50%,#f8fafc);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    .app{max-width:920px;margin:0 auto}
+    .appbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+    .appbar-inner{display:flex;align-items:center;gap:8px;padding:12px 14px}
+    .app-title{font-size:18px;font-weight:800}
+    .subtitle{font-size:12px;color:var(--muted)}
+    .back{border:1px solid var(--border);background:#fff;border-radius:12px;padding:8px 10px}
+
+    .row{display:flex;gap:8px;align-items:center}
+    .chip{font-size:12px;padding:6px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);color:#6b7280}
+    button{border:0;border-radius:999px;padding:10px 14px;background:#ecfdf5;color:#111827;cursor:pointer;border:1px solid var(--border)}
+    .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;border:none;font-weight:700}
+    .btn-ghost{background:#fff}
+    .btn-danger{background:linear-gradient(90deg,#ef4444,#b91c1c);color:#fff;border:none}
+
+    .section{margin:12px;background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+    .section-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px dashed #e6e9ee}
+    .section-title{font-size:15px;font-weight:800}
+    .section-body{padding:12px 14px}
+    .list{display:flex;flex-direction:column;gap:12px}
+
+    .group-card{border:1px solid var(--border);border-radius:16px;background:#fff;box-shadow:var(--shadow);overflow:hidden}
+    .group-card .g-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px dashed var(--orange);background:var(--orange-soft)}
+    .group-card .g-title{font-weight:800}
+    .group-card .g-body{padding:12px}
+    .group-card .g-foot{display:flex;gap:8px;justify-content:flex-end;padding:10px 12px;border-top:1px dashed #e6e9ee;background:#fafafa}
+    .muted{color:var(--muted);font-size:12px}
+
+    ul{margin:8px 0 2px 18px}
+    .tag{display:inline-block;font-size:11px;padding:4px 8px;border-radius:999px;margin-right:6px;border:1px solid var(--border);color:#475569;background:#fff}
+    .tag.added{border-color:#bbf7d0;background:#f0fdf4;color:#166534}
+    .tag.changed{border-color:#fde68a;background:#fffbeb;color:#92400e}
+    .tag.fixed{border-color:#fecaca;background:#fef2f2;color:#991b1b}
+
+    /* Banner phiên bản mới nhất (xanh lá) */
+    .banner{
+      margin:12px; border:1px solid #bbf7d0; background:#ecfdf5; color:#065f46;
+      border-radius:16px; box-shadow:var(--shadow); overflow:hidden;
+    }
+    .banner-head{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px dashed #86efac;background:#dcfce7}
+    .banner-body{padding:12px}
+    .banner h3{margin:0;font-size:15px;font-weight:800}
+
+    /* install button (không dùng ở changelog nhưng giữ để đồng bộ) */
+    #btnInstall{display:none;margin-left:6px}
+
+    /* In ấn */
+    @media print{
+      .appbar, .banner .row button { display:none !important; }
+      a[href]:after{ content:"" }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <!-- Appbar -->
+  <div class="appbar">
+    <div class="appbar-inner">
+      <a class="back" href="/can-lua/index.html" title="Về trang chính">←</a>
+      <div style="flex:1">
+        <h1 class="app-title">TÍNH CÂN LÚA</h1>
+        <div class="subtitle">Changelog (Nhật ký thay đổi)</div>
+      </div>
+      <div class="row">
+        <button class="btn-ghost" onclick="window.print()">🖨 In</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Banner Bản mới nhất (tải từ version.json) -->
+  <section id="latest" class="banner" hidden>
+    <div class="banner-head">
+      <h3>Bản mới nhất: <span id="latestVer">—</span></h3>
+      <div class="row">
+        <a id="btnGoHome" class="chip" href="/can-lua/index.html">Mở ứng dụng</a>
+      </div>
+    </div>
+    <div class="banner-body">
+      <div id="latestNotesWrap" style="display:none">
+        <div class="section-title" style="margin-bottom:6px">Nội dung cập nhật</div>
+        <ul id="latestNotes"></ul>
+      </div>
+      <div class="muted" id="latestExtra" style="margin-top:6px"></div>
+    </div>
+  </section>
+
+  <!-- Mục lục -->
+  <div class="section" id="toc">
+    <div class="section-head">
+      <div class="section-title">Mục lục phiên bản</div>
+      <div class="row">
+        <span class="chip">Cập nhật định kỳ</span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div id="tocLinks" class="row" style="flex-wrap:wrap;gap:8px"></div>
+    </div>
+  </div>
+
+  <!-- Danh sách phiên bản (tĩnh + có thể được bổ sung bởi JS nếu chưa có) -->
+  <div id="versions" class="list" style="margin:12px">
+
+    <!-- v1.0.0 -->
+    <article id="v1-0-0" class="group-card version-card" data-ver="v1.0.0">
+      <div class="g-head">
+        <div class="g-title">v1.0.0</div>
+        <div class="muted">22/10/2025</div>
+      </div>
+      <div class="g-body">
+        <div style="margin-bottom:6px">
+          <span class="tag added">Added</span>
+        </div>
+        <h3 class="section-title" style="margin-top:6px">Bản đầu tiên</h3>
+        <ul>
+          <li>Phiên bản đầu tiên hỗ trợ PWA offline.</li>
+          <li>Có thể cài đặt ứng dụng trên Android và iOS.</li>
+          <li>Tự động lưu dữ liệu cân lúa vào bộ nhớ máy.</li>
+          <li>Hỗ trợ kiểm tra phiên bản mới và cập nhật tự động.</li>
+        </ul>
+      </div>
+      <div class="g-foot"></div>
+    </article>
+  </div>
+
+  <!-- Footer -->
+  <div class="app-footer" style="margin:12px;padding:10px 14px;text-align:center;color:var(--muted);font-size:12px;">
+    © 2025 — Hoàng Đợi
+  </div>
+</div>
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "Changelog • Tính cân lúa",
+  "about": {"@type":"SoftwareApplication","name":"Tính cân lúa"},
+  "inLanguage": "vi",
+  "url": "https://hoangdoinet.github.io/can-lua/changelog.html",
+  "dateModified": "2025-10-22"
+}
+</script>
+
+<!-- Polyfill nhỏ cho CSS.escape (an toàn trên trình duyệt cũ) -->
+<script>
+if (!window.CSS || !CSS.escape) {
+  window.CSS = window.CSS || {};
+  CSS.escape = CSS.escape || function (s) {
+    return String(s).replace(/[^a-zA-Z0-9_\-]/g, '\\$&');
+  };
+}
+</script>
+
+<script>
+/* ========= Config nhỏ ========= */
+const INLINE_PAGE_TITLE_VER = 'v1.0.0'; // phiên bản hiện đang ghi ở <title>
+const VERSION_JSON_URL = '/can-lua/version.json';
+
+/* ========= Utils ========= */
+const $ = (sel)=>document.querySelector(sel);
+const escapeHtml = (s) => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+
+/* ========= Sinh Mục lục tự động ========= */
+function buildTOC(){
+  const linksHost = $('#tocLinks'); if (!linksHost) return;
+  linksHost.innerHTML = '';
+  const cards = document.querySelectorAll('.version-card');
+  const makeId = (ver) => 'v' + String(ver).replaceAll('.', '-').replace(/^v/i,'v');
+  [...cards].forEach(card=>{
+    const ver = card.getAttribute('data-ver') || card.querySelector('.g-title')?.textContent?.trim() || '';
+    const id = card.id || makeId(ver);
+    card.id = id;
+    const a = document.createElement('a');
+    a.className = 'chip';
+    a.href = '#'+id;
+    a.textContent = ver || id;
+    linksHost.appendChild(a);
+  });
+}
+
+/* ========= Tải version.json & hiển thị banner ========= */
+async function loadLatest(){
+  try{
+    const res = await fetch(VERSION_JSON_URL + '?ts=' + Date.now(), {cache:'no-store'});
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+
+    const latest = $('#latest'); if (!latest) return;
+    $('#latestVer').textContent = data.version || '—';
+
+    // notes
+    if (Array.isArray(data.notes) && data.notes.length){
+      const ul = $('#latestNotes'); ul.innerHTML = '';
+      data.notes.forEach(s=>{
+        const li = document.createElement('li');
+        li.innerHTML = escapeHtml(String(s));
+        ul.appendChild(li);
+      });
+      $('#latestNotesWrap').style.display = 'block';
+    } else {
+      $('#latestNotesWrap').style.display = 'none';
+    }
+
+    // extra text
+    let extra = 'Trang này được đồng bộ tự động từ <code>version.json</code>.';
+    if (data.changelog_url){
+      extra += ` Xem chi tiết: <a href="${escapeHtml(data.changelog_url)}" target="_blank" rel="noopener">Changelog</a>.`;
+    }
+    $('#latestExtra').innerHTML = extra;
+
+    latest.hidden = false;
+
+    // Nếu bản trong version.json CHƯA có trong danh sách tĩnh → chèn nhanh 1 thẻ rút gọn
+    const exists = !!document.querySelector(`.version-card[data-ver="${CSS.escape(data.version||'')}"]`);
+    if (!exists && data.version){
+      const host = $('#versions');
+      const card = document.createElement('article');
+      card.className = 'group-card version-card';
+      card.setAttribute('data-ver', data.version);
+      card.id = 'v' + String(data.version).replaceAll('.', '-');
+      card.innerHTML = `
+        <div class="g-head">
+          <div class="g-title">${escapeHtml(data.version)}</div>
+          <div class="muted">${new Date(data.release_date || Date.now()).toLocaleDateString('vi-VN')}</div>
+        </div>
+        <div class="g-body">
+          <div style="margin-bottom:6px">
+            <span class="tag added">Added</span>
+            <span class="tag changed">Changed</span>
+            <span class="tag fixed">Fixed</span>
+          </div>
+          ${Array.isArray(data.notes)&&data.notes.length ? `
+          <h3 class="section-title" style="margin-top:6px">Ghi chú nhanh</h3>
+          <ul>${data.notes.map(s=>`<li>${escapeHtml(String(s))}</li>`).join('')}</ul>` : `
+          <div class="muted">Chưa có ghi chú chi tiết.</div>`}
+        </div>
+        <div class="g-foot"></div>
+      `;
+      host.prepend(card);
+      buildTOC();
+    }
+  }catch(e){
+    // offline hoặc lỗi mạng → ẩn banner, vẫn dùng nội dung tĩnh
+    const latest = $('#latest'); if (latest) latest.hidden = true;
+  }
+}
+
+/* ========= Khởi động ========= */
+buildTOC();
+loadLatest();
+</script>
+</body>
+</html>

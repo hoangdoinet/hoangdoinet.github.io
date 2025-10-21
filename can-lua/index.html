@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <!-- Primary -->
+  <title>Tính cân lúa v1.0.0</title>
+  <link rel="canonical" href="https://hoangdoinet.github.io/can-lua/">
+  <meta name="description" content="Cân lúa offline: nhập nhanh bảng 5×5, tự tính khối lượng, trừ bì & thành tiền theo nông dân và ghe/xe. Cài đặt trên Android và iOS, có sao lưu/khôi phục dữ liệu.">
+  <meta name="author" content="Hoàng Đợi">
+  <meta name="creator" content="Hoàng Đợi">
+  <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
+  <meta name="referrer" content="origin-when-cross-origin">
+  <meta name="format-detection" content="telephone=no, address=no, email=no">
+  <meta name="color-scheme" content="light">
+
+  <!-- Icons / Favicons (đường dẫn tuyệt đối) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/can-lua/icons/icon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/can-lua/icons/icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/can-lua/icons/apple-icon-180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/can-lua/icons/apple-icon-152.png">
+
+  <!-- PWA -->
+  <link rel="manifest" href="/can-lua/manifest.webmanifest">
+  <!-- theme-color cho iOS/Safari -->
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#22c55e">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#22c55e">
+  <!-- iOS web app -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Cân lúa">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Tính cân lúa">
+  <meta property="og:title" content="Tính cân lúa • v1.0.0">
+  <meta property="og:description" content="Nhập nhanh bảng tính 5×5, tự động tính khối lượng, trừ bì & thành tiền. Cài đặt trên Android và iOS dùng offline, có sao lưu/khôi phục dữ liệu.">
+  <meta property="og:url" content="https://hoangdoinet.github.io/can-lua/">
+  <meta property="og:image" content="https://hoangdoinet.github.io/can-lua/icons/og-image-1200.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="1200">
+  <meta property="og:image:alt" content="Giao diện ứng dụng Tính cân lúa">
+  <meta property="og:locale" content="vi_VN">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Tính cân lúa • v1.0.0">
+  <meta name="twitter:description" content="Nhập nhanh bảng tính 5×5, tự động tính khối lượng, trừ bì & thành tiền. Cài đặt trên Android và iOS dùng offline, có sao lưu/khôi phục dữ liệu.">
+  <meta name="twitter:image" content="https://hoangdoinet.github.io/can-lua/icons/og-image-1200.png">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Tính cân lúa",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "softwareVersion": "1.0.0",
+    "inLanguage": "vi-VN",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "VND" },
+    "description": "Cân lúa offline: nhập nhanh bảng 5×5, tự tính khối lượng, trừ bì & thành tiền theo nông dân/ghe xe. PWA, có sao lưu/khôi phục.",
+    "url": "https://hoangdoinet.github.io/can-lua/"
+  }
+  </script>
+
+  <style>
+    :root{
+      --bg:#f7f9fc; --surface:#ffffff; --surface-2:#f3f4f6; --muted:#6b7280; --text:#111827;
+      --accent:#22c55e; --accent-2:#16a34a; --accent-soft:#ecfdf5;
+      --danger:#dc2626; --border:#e5e7eb;
+      --ring:0 0 0 2px rgba(34,197,94,.28);
+      --shadow:0 10px 28px rgba(2,6,23,.08);
+      --radius:18px;
+      --orange:#f59e0b; --orange-soft:#ffedd5; --orange-softer:#fff7ed;
+      --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#f8fafc,#f1f5f9 50%,#f8fafc);
+      color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif
+    }
+    .appbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding-top:var(--sat)}
+    .appbar-inner{display:flex;align-items:center;gap:8px;padding:12px 14px}
+    .app-title{font-size:18px;font-weight:800}
+    .subtitle{font-size:12px;color:var(--muted)}
+    .back{border:1px solid var(--border);background:#fff;border-radius:12px;padding:8px 10px}
+    .section{margin:12px;background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+    .section-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px dashed var(--accent);background:var(--accent-soft)}
+    .section-title{font-size:15px;font-weight:800}
+    .section-body{padding:12px 14px}
+    .list{display:flex;flex-direction:column;gap:12px}
+    .row{display:flex;gap:8px;align-items:center}
+    input[type=text], input[type=number], input[type=tel], select{width:100%;padding:12px 14px;border-radius:14px;border:1px solid var(--border);background:#fff;color:#111827}
+    input:focus, select:focus{outline:none;box-shadow:var(--ring)}
+    button{border:0;border-radius:999px;padding:10px 14px;background:var(--accent-soft);color:#111827;cursor:pointer;border:1px solid var(--border)}
+    .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;border:none;font-weight:700}
+    .btn-danger{background:linear-gradient(90deg,#ef4444,#b91c1c);color:#fff;border:none}
+    .btn-ghost{background:#fff}
+    .chip{font-size:12px;padding:6px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);color:#6b7280}
+    .group-card{border:1px solid var(--border);border-radius:16px;background:#fff;box-shadow:var(--shadow);overflow:hidden}
+    .group-card .g-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px dashed var(--accent);background:var(--accent-soft)}
+    .group-card .g-title{font-weight:800}
+    .group-card .g-body{padding:12px}
+    .group-card .fake-input{border:1px solid var(--border);border-radius:12px;background:#fff;padding:4px 0}
+    .kv{display:flex;align-items:center;gap:8px;padding:10px 12px;font-weight:800}
+    .kv + .kv{border-top:1px dashed #e6e9ee}
+    .kv .label{flex:1}
+    .kv .value{min-width:120px;text-align:right}
+    .kv .value.danger{ color: var(--danger); font-weight: 800; }
+    .kv .value.accent{ color: var(--accent); font-weight: 800; }
+    .group-card .g-foot{display:flex;gap:8px;justify-content:flex-end;padding:10px 12px;border-top:1px dashed #e6e9ee;background:#fafafa}
+    .group-card .g-foot button{padding:8px 12px}
+    .muted{color:var(--muted);font-size:12px}
+    .table-card{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:#fff;margin-bottom:12px}
+    .table-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--border);background:var(--accent-soft)}
+    .colheads{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:8px 12px 0 12px}
+    .colheads span{display:block;text-align:center;font-weight:800;color:#22c55e}
+    .cells{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:12px}
+    .cells input{padding:14px 10px;text-align:center;border-radius:12px;border:1px solid var(--border);background:#fff;font-weight:800}
+    .cells input[disabled]{background:#f1f5f9;color:#9ca3af}
+    .cells input.warn{background:#fef3c7!important;color:#b91c1c!important;border-color:#f59e0b}
+    .colTotals{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:0 12px 12px}
+    .colTotals span{display:block;text-align:center;font-weight:800;border:1px dashed var(--accent);background:var(--accent-soft);border-radius:10px;padding:6px 0}
+    .sum{display:flex;align-items:center;justify-content:center;padding:10px 12px;border-top:1px dashed #e6e9ee;color:#16a34a;font-weight:800}
+    .fab{position:fixed;right:16px;bottom:16px;z-index:13;display:flex;flex-direction:column;gap:10px; padding-bottom:calc(16px + var(--sab));}
+    .fab button{width:56px;height:56px;border-radius:999px;display:grid;place-items:center;font-size:20px;box-shadow:var(--shadow)}
+    .sheet-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.25);backdrop-filter:blur(2px);display:none;z-index:20}
+    .sheet{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top-left-radius:20px;border-top-right-radius:20px;box-shadow:var(--shadow);transform:translateY(110%);transition:transform .25s ease;z-index:21;border-top:1px solid var(--border)}
+    .sheet-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .sheet-body{padding:14px 16px}
+    .sheet-body .field{margin-bottom:10px}
+    .sheet-body label{display:block;font-weight:800;font-size:12px;margin-bottom:6px;color:#374151}
+    .sheet-actions{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px dashed #e6e9ee}
+    .sheet.open{transform:translateY(0)}
+    .sheet-backdrop.open{display:block}
+    .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 12px 12px 12px}
+    .stat{background:#fff;border:1px solid var(--accent);border-radius:12px;padding:10px}
+    .stat label{display:block;font-weight:800;font-size:12px;margin-bottom:6px}
+    .stat input{width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;font-weight:800}
+    .stat input[readonly]{background:#f9fafb;color:#111827}
+    .stat input.money{color:var(--danger)!important;font-weight:800; background: #fff8c2}
+    .mode-section{border:1px dashed #e5e7eb;border-radius:12px;padding:10px;margin-top:8px}
+    .mode-title{font-weight:800;margin-bottom:6px}
+    .mode-option{display:flex;align-items:center;gap:8px;margin:4px 0}
+    .dialog-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);display:none;z-index:40}
+    .dialog{position:fixed;left:50%;top:50%;transform:translate(-50%, -50%) scale(.96);opacity:0;transition:.2s ease;z-index:41;width:min(92vw,440px);background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);display:none;}
+    .dialog.open{display:block;transform:translate(-50%, -50%) scale(1);opacity:1}
+    .dialog-head{padding:12px 16px;border-bottom:1px dashed #e6e9ee;background:#fafafa;font-weight:800}
+    .dialog-body{padding:14px 16px;line-height:1.5}
+    .dialog-actions{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px dashed #e6e9ee}
+    .tool-list{display:flex;flex-direction:column;gap:10px}
+    .tool-item{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:14px;cursor:pointer}
+    .tool-item:hover{background:#f9fafb}
+    .tool-ico{font-size:20px;line-height:1.1}
+    .tool-main{flex:1}
+    .tool-title{font-weight:800}
+    .tool-sub{font-size:12px;color:#6b7280}
+    .app-footer{margin:12px;padding:10px 14px;text-align:center;color:#6b7280;font-size:12px;}
+    #btnInstall{display:none;margin-left:6px}
+    :root{ --brand1:#22c55e; --brand2:#16a34a; }
+    #splash{
+      position:fixed; inset:0;
+      padding: calc(var(--sat, 0) + 16px) 16px calc(var(--sab, 0) + 16px);
+      background:
+        radial-gradient(120% 90% at 50% -10%, #fff3 0%, #0000 60%),
+        linear-gradient(180deg,var(--brand1),var(--brand2));
+      color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+      z-index:9999; text-align:center; transition:opacity .7s ease, visibility .7s;
+    }
+    #splash.hidden{ opacity:0; visibility:hidden; }
+    .logo-wrap{ position:relative; width:140px; height:140px; filter:drop-shadow(0 10px 24px rgba(0,0,0,.28)); }
+    .logo-img{
+      width:100%; height:100%; border-radius:24%;
+      animation: popIn 900ms cubic-bezier(.2,.7,.2,1) both, glow 1.6s .9s ease-in-out 2 alternate;
+      will-change: transform, filter;
+    }
+    .logo-wrap::after{
+      content:""; position:absolute; inset:-8%;
+      background: linear-gradient(75deg, transparent 30%, #fff6 48%, #fff9 52%, transparent 70%);
+      transform: translateX(-120%) rotate(8deg);
+      border-radius:28%;
+      animation: sweep 1.1s .35s ease-out forwards;
+      pointer-events:none; mix-blend-mode:overlay;
+    }
+    .app-name{
+      margin-top:14px; font-size:26px; font-weight:800; letter-spacing:.8px;
+      overflow:hidden; white-space:nowrap; border-right:2px solid rgba(255,255,255,.85);
+      width:0; animation: typing 1.4s .45s steps(18,end) forwards, caret .9s step-end infinite;
+      text-shadow: 0 1px 2px #0003;
+    }
+    .meta{ margin-top:8px; font-size:14px; opacity:.95 }
+    .meta b{ font-weight:800 }
+    @keyframes popIn{0%{ transform: scale(.6) rotate(-8deg); opacity:.0 }60%{ transform: scale(1.08) rotate(3deg); opacity:1 }100%{ transform: scale(1) rotate(0) }}
+    @keyframes glow{from{ filter: drop-shadow(0 10px 24px rgba(0,0,0,.28)) brightness(1) saturate(1) }to{ filter: drop-shadow(0 12px 34px rgba(0,0,0,.35)) brightness(1.08) saturate(1.1) }}
+    @keyframes sweep{ to{ transform: translateX(120%) rotate(8deg); opacity:.0 } }
+    @keyframes typing{ from{ width:0 } to{ width:100% } }
+    @keyframes caret{ 50%{ border-color: transparent } }
+    @media (prefers-reduced-motion: reduce){
+      .logo-img, .logo-wrap::after, .app-name{ animation: none !important }
+      #splash{ transition: opacity .2s ease, visibility .2s }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🌾 Splash -->
+  <div id="splash" role="status" aria-label="Đang khởi động ứng dụng">
+    <div class="logo-wrap">
+      <img src="/can-lua/icons/icon-512.png" class="logo-img" alt="Logo Tính Cân Lúa" width="140" height="140">
+    </div>
+    <div class="app-name" aria-hidden="true">TÍNH CÂN LÚA</div>
+    <div class="meta">Phiên bản: <b id="verText">v1.0.0</b></div>
+    <div class="meta">Tác giả: <b id="authorText">Hoàng Đợi</b></div>
+  </div>
+
+<div class="app">
+  <div class="appbar">
+    <div class="appbar-inner">
+      <button class="back" id="btnBack" style="display:none">←</button>
+      <div style="flex:1">
+        <h1 class="app-title" id="appTitle">TÍNH CÂN LÚA</h1>
+        <div class="subtitle" id="appSub">Nhóm (Ghe/Xe)</div>
+      </div>
+      <div class="row">
+        <button id="btnInstall" class="btn-primary" title="Cài đặt ứng dụng">＋ Cài đặt app</button>
+        <button class="btn-ghost" id="btnTools">⋯ Tiện ích</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- View 1 -->
+  <div id="view-groups" class="section">
+    <div class="section-head">
+      <div class="section-title">Danh sách nhóm (ghe/xe)</div>
+      <div class="row"><span class="chip" id="chipGroups">0 nhóm</span></div>
+    </div>
+    <div class="section-body"><div style="height:8px"></div><div id="groupList" class="list"></div></div>
+  </div>
+
+  <!-- View 2 -->
+  <div id="view-farmers" class="section" style="display:none">
+    <div class="section-head">
+      <div class="section-title">Nhóm (ghe/xe): <span id="chipGroupName">—</span></div>
+      <div class="row"><span class="chip" id="chipFarmerCount">Nông dân: 0</span></div>
+    </div>
+    <div class="section-body">
+      <div id="farmersStats" class="stat-grid">
+        <div class=stat style="grid-column:1/ -1"><label><b>Tổng bao (lần cân)</b></label><input id="stat2Bags" type="text" readonly value="0"></div>
+        <div class=stat style="grid-column:1/ -1"><label><b>Tổng khối lượng cân (kg)</b></label><input id="stat2Kg" type="text" readonly value="0"></div>
+        <div class=stat style="grid-column:1/ -1"><label><b>Tổng khấu trừ bì (kg)</b></label><input id="stat2Tare" type="text" readonly value="0"></div>
+        <div class=stat style="grid-column:1/ -1"><label><b>Tổng khối lượng tính tiền (kg)</b></label><input id="stat2Remain" type="text" readonly value="0"></div>
+        <div class=stat style="grid-column:1/ -1"><label><b>Tổng thành tiền (đ)</b></label><input id="stat2Money" class="money" type="text" readonly value="0"></div>
+      </div>
+      <div id="farmerList" class="list"></div>
+    </div>
+  </div>
+
+  <!-- View 3 -->
+  <div id="view-tables" class="section" style="display:none">
+    <div class="section-head"><div class="section-title title" id="contextTitle">BẢNG 5×5</div></div>
+    <div class="section-body"><div id="tables"></div></div>
+  </div>
+
+  <!-- FAB -->
+  <div class="fab">
+    <button id="fabAddFarmer" class="btn-primary" title="Thêm nông dân">👤</button>
+    <button id="fabAddGroup" class="btn-primary" title="Thêm nhóm">➕</button>
+  </div>
+
+  <input id="fileInput" type="file" accept="application/json" style="display:none">
+
+  <!-- Bottom Sheet -->
+  <div class="sheet-backdrop" id="sheetBackdrop"></div>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="sheet-head"><div id="sheetTitle" style="font-weight:800">Thêm</div><button class="btn-ghost" id="btnSheetClose">✕</button></div>
+    <div class="sheet-body" id="sheetBody"></div>
+    <div class="sheet-actions"><button class="btn-ghost" id="btnSheetCancel">Hủy</button><button class="btn-primary" id="sheetConfirm">Lưu</button></div>
+  </div>
+
+  <!-- Center Dialog -->
+  <div class="dialog-backdrop" id="dlgBackdrop"></div>
+  <div class="dialog" id="dialog" role="alertdialog" aria-labelledby="dlgTitle" aria-describedby="dlgBody">
+    <div class="dialog-head" id="dlgTitle">Thông báo</div>
+    <div class="dialog-body" id="dlgBody">Nội dung</div>
+    <div class="dialog-actions">
+      <button class="btn-ghost" id="dlgCancel" style="display:none">Hủy</button>
+      <button class="btn-primary" id="dlgOk">OK</button>
+    </div>
+  </div>
+  <!-- Footer -->
+  <div class="app-footer">© 2025 — Hoàng Đợi</div>
+</div> <!-- kết thúc .app -->
+
+<script>
+/* ===== State & Utils ===== */
+const APP_VERSION='v1.0.0';
+
+/* ==== Splash Control (dùng APP_VERSION) ==== */
+(function(){
+  const qs = sel => document.querySelector(sel);
+  const verEl = qs('#verText'); if (verEl) verEl.textContent = APP_VERSION;
+  const authorEl = qs('#authorText'); if (authorEl) authorEl.textContent = 'Hoàng Đợi';
+
+  const hideSplash = () => {
+    const el = document.getElementById('splash');
+    if (!el || el.classList.contains('hidden')) return;
+    el.classList.add('hidden'); document.body.classList.add('ready');
+  };
+
+  window.addEventListener('load', () => { setTimeout(hideSplash, 1800); });
+  setTimeout(hideSplash, 3500);
+
+  const _origRender = (typeof render==='function') ? render : null;
+  if (_origRender){
+    window.render = function(){
+      _origRender.apply(this, arguments);
+      setTimeout(hideSplash, 3000);
+    };
+  }
+})();
+
+const STORAGE_KEY='riceScaleData';
+let state={groups:{},activeGroup:'',activeFarmer:'',view:'groups'};
+
+const $=id=>document.getElementById(id);
+const newEmptyTable=()=>Array.from({length:25},()=>null);
+const fmt=n=> new Intl.NumberFormat('vi-VN').format(Math.round((+n||0)*100)/100);
+function sumTable(arr){return arr.reduce((s,v)=>s+(typeof v==='number'?v:0),0)}
+function sumCol(tbl,col){let s=0; for(let r=0;r<5;r++){const v=tbl[r*5+col]; if(typeof v==='number') s+=v;} return s;}
+function isTableFull(arr){return arr.every(v=> typeof v==='number' && !isNaN(v))}
+function escapeQuote(s){ return String(s).replaceAll('"','\\"').replaceAll("'","\\'") }
+function escapeHtml(s){ const map={"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}; return String(s).replace(/[&<>"']/g, c=>map[c]); }
+function pad2(x){return String(x).padStart(2,'0')}
+function formatDateTimeDDMM_HHmm(ts){const d=new Date(ts||Date.now());return `${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()} - ${pad2(d.getHours())}:${pad2(d.getMinutes())}`}
+function byteLen(str){return new Blob([str]).size}
+function formatBytes(b){ if (b<1024) return b+' B'; const kb=b/1024; if(kb<1024) return kb.toFixed(1)+' KB'; const mb=kb/1024; return mb.toFixed(2)+' MB'; }
+function getActiveGroup(){return state.groups[state.activeGroup]||null}
+function getActiveFarmer(){const g=getActiveGroup(); if(!g) return null; return g.farmers[state.activeFarmer]||null}
+function labelInputMode(m){switch(m){case 'lt2':return '<100kg: 2 số';case 'lt3':return '<100kg: 3 số (chẵn)';case 'ge3':return '≥100kg: 3 số';case 'ge4':return '≥100kg: 4 số (chẵn)';default:return '—';}}
+function buildKV(label, value, valueClass=''){const line=document.createElement('div');line.className='kv';const l=document.createElement('div');l.className='label';l.textContent=label;const v=document.createElement('div'); v.className='value' + (valueClass?(' '+valueClass):''); v.textContent=value;line.appendChild(l);line.appendChild(v);return line;}
+
+/* ===== Dialog ===== */
+let _dlgOk=null,_dlgCancel=null;
+function openDialog({title='Thông báo',message='',okText='OK',cancelText=null}={}){
+  $('dlgTitle').textContent=title; $('dlgBody').innerHTML=message;
+  const cancelBtn=$('dlgCancel'), okBtn=$('dlgOk');
+  cancelBtn.style.display=cancelText?'inline-block':'none'; if(cancelText) cancelBtn.textContent=cancelText; okBtn.textContent=okText||'OK';
+  $('dlgBackdrop').style.display='block'; $('dialog').classList.add('open');
+  return new Promise(res=>{
+    _dlgOk=()=>{closeDialog();res(true)}; _dlgCancel=()=>{closeDialog();res(false)};
+    okBtn.onclick=_dlgOk; cancelBtn.onclick=_dlgCancel; $('dlgBackdrop').onclick=closeDialog;
+    document.addEventListener('keydown',onEscOnce,{once:true});
+  });
+}
+function onEscOnce(e){ if(e.key==='Escape') closeDialog(); }
+function closeDialog(){ $('dlgBackdrop').style.display='none'; $('dialog').classList.remove('open'); _dlgOk=_dlgCancel=null; }
+const showAlert=(msg,title='Thông báo')=>openDialog({title,message:msg,okText:'Đã hiểu'});
+const showConfirm=(msg,{title='Xác nhận',okText='Đồng ý',cancelText='Hủy'}={})=>openDialog({title,message:msg,okText,cancelText});
+
+/* ===== Bottom Sheet ===== */
+let sheetMode=null, sheetPayload=null;
+function openSheet(mode,payload){
+  sheetMode=mode; sheetPayload=payload||null;
+  const sh=$('sheet'), title=$('sheetTitle'), body=$('sheetBody'), act=$('sheetConfirm');
+  body.innerHTML=''; act.onclick=null; act.className='btn-primary'; act.textContent='Lưu'; act.style.display='inline-block';
+
+  if(mode==='appTools'){
+    title.textContent='Tiện ích'; act.style.display='none';
+    body.innerHTML=`
+      <div class="tool-list">
+        <div class="tool-item" id="toolExport"><div class="tool-ico">⬇️</div><div class="tool-main"><div class="tool-title">Sao lưu dữ liệu</div><div class="tool-sub">Xuất file JSON (rice-scale-data.json)</div></div></div>
+        <div class="tool-item" id="toolImport"><div class="tool-ico">⬆️</div><div class="tool-main"><div class="tool-title">Khôi phục dữ liệu</div><div class="tool-sub">Chọn file JSON đã sao lưu để nhập</div></div></div>
+        <div class="tool-item" id="toolWipe"><div class="tool-ico">🗑</div><div class="tool-main"><div class="tool-title">Xóa bộ nhớ</div><div class="tool-sub">Xóa sạch dữ liệu đang lưu trên máy</div></div></div>
+        <div class="tool-item" id="toolHelp"><div class="tool-ico">🎬</div><div class="tool-main"><div class="tool-title">Hướng dẫn sử dụng</div><div class="tool-sub">Mở video hướng dẫn trên YouTube</div></div></div>
+        <div class="tool-item" id="toolInfo"><div class="tool-ico">ℹ️</div><div class="tool-main"><div class="tool-title">Thông tin ứng dụng</div><div class="tool-sub">Phiên bản, mô tả, dung lượng dữ liệu</div></div></div>
+      </div>`;
+    $('toolExport').addEventListener('click',()=>{ closeSheet(); exportData(); });
+    $('toolImport').addEventListener('click',()=>{ openRestorePicker(); });
+    $('toolWipe').addEventListener('click',async()=>{
+      const ok=await showConfirm('Xóa toàn bộ dữ liệu? Hành động này không thể hoàn tác.',{title:'Xóa dữ liệu',okText:'Xóa',cancelText:'Hủy'});
+      if(!ok) return;
+      try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+      state={groups:{},activeGroup:'',activeFarmer:'',view:'groups'};
+      closeSheet(); save(); await showAlert('Đã xóa toàn bộ dữ liệu.'); location.reload();
+    });
+    $('toolHelp').addEventListener('click',()=>{ window.open('https://www.youtube.com/','_blank'); });
+    $('toolInfo').addEventListener('click',()=> openSheet('appInfo'));
+  }
+
+  if(mode==='appInfo'){
+    title.textContent='Thông tin ứng dụng'; act.style.display='none';
+    const raw = JSON.stringify(state||{}, null, 0); const size = formatBytes(byteLen(raw));
+    body.innerHTML=`
+      <div class="field"><div style="font-size:14px;line-height:1.6;border:1px dashed var(--border);border-radius:12px;padding:10px">TÍNH CÂN LÚA là ứng dụng giúp nhập nhanh khối lượng từng bao lúa theo bảng 5×5, tự động tính toán khối lượng, trừ bì, thành tiền cho từng nông dân và từng ghe/xe (nhóm). <p>Ứng dụng có thể cài đặt trên Android/iOS để dùng offline và hỗ trợ sao lưu/khôi phục dữ liệu.</p></div></div>
+      <div class="field"><label>Phiên bản hiện tại</label><input type="text" readonly value="${APP_VERSION}"></div>
+      <div class="field"><label>Tác giả</label><input type="text" readonly value="Hoàng Đợi"></div>
+      <div class="field"><label>Dung lượng dữ liệu hiện tại</label><input type="text" readonly value="${size}"></div>`;
+  }
+
+  if(mode==='addGroup'){
+    title.textContent='Thêm ghe/xe'; act.textContent='Thêm';
+    body.innerHTML=`
+      <div class="field"><label for="inName">Tên nhóm (ghe/xe)</label>
+        <input id="inName" type="text" placeholder="VD: Ghe Tư Hải / 83A-12345" autofocus></div>
+      <div class="field"><label for="inPhone">SĐT chủ ghe / tài xế (tuỳ chọn)</label>
+        <input id="inPhone" type="tel" inputmode="numeric" placeholder="VD: 0123456789"></div>`;
+    $('sheetConfirm').onclick=()=>{const name=$('inName').value.trim(); if(!name) return; if(state.groups[name]){showAlert('Tên nhóm đã tồn tại.');return;}
+      const phone=$('inPhone').value.trim();
+      state.groups[name]={ownerPhone:phone||'', farmers:{}, createdAt:Date.now()};
+      state.activeGroup=name; state.activeFarmer=''; closeSheet(); navTo('farmers'); };
+  }
+
+  if(mode==='editGroup'){
+    const g=payload; const grp=state.groups[g];
+    title.textContent='Sửa thông tin nhóm'; act.textContent='Cập nhật';
+    body.innerHTML=`
+      <div class="field"><label for="inName">Tên nhóm</label>
+        <input id="inName" type="text" value="${escapeHtml(g)}" autofocus></div>
+      <div class="field"><label for="inPhone">SĐT</label>
+        <input id="inPhone" type="tel" inputmode="numeric" value="${escapeHtml(grp?.ownerPhone||'')}"></div>`;
+    $('sheetConfirm').onclick=()=>{const newName=$('inName').value.trim(); if(!newName) return;
+      if(newName!==g && state.groups[newName]){showAlert('Tên nhóm đã tồn tại.');return;}
+      const phone=$('inPhone').value.trim(); const data=state.groups[g];
+      delete state.groups[g]; state.groups[newName]={...data, ownerPhone:phone};
+      if(state.activeGroup===g) state.activeGroup=newName; closeSheet(); save();};
+  }
+
+  if(mode==='addFarmer'){
+    if(!state.activeGroup){showAlert('Chọn nhóm trước.');return}
+    title.textContent='Thêm nông dân'; act.textContent='Thêm';
+    body.innerHTML=`
+      <div class="field"><label for="inName">Tên nông dân</label>
+        <input id="inName" type="text" placeholder="VD: Chú Năm / Anh Hậu" autofocus></div>
+      <div class="field"><label for="inFPrice">Đơn giá (đ/kg) của nông dân</label>
+        <input id="inFPrice" type="number" inputmode="decimal" placeholder="VD: 7100"></div>
+      <div class="field"><label for="inTare">Quy tắc bì (mỗi X bao = 1 kg)</label>
+        <input id="inTare" type="number" inputmode="numeric" min="0" step="1" placeholder="VD: 10"></div>
+      <div class="mode-section">
+        <div class="mode-title">Quy cách nhập &lt; 100kg</div>
+        <label class="mode-option"><input type="radio" name="inMode" value="lt2"> 2 số — 50 → 50kg</label>
+        <label class="mode-option"><input type="radio" name="inMode" value="lt3" checked> 3 số — 552 → 55,2kg (gram chẵn)</label>
+      </div>
+      <div class="mode-section">
+        <div class="mode-title">Quy cách nhập ≥ 100kg</div>
+        <label class="mode-option"><input type="radio" name="inMode" value="ge3"> 3 số — 100 → 100kg</label>
+        <label class="mode-option"><input type="radio" name="inMode" value="ge4"> 4 số — 100,4kg (gram chẵn)</label>
+      </div>`;
+    $('sheetConfirm').onclick=()=>{
+      const v=$('inName').value.trim(); if(!v) return; const grp=getActiveGroup();
+      if(grp.farmers[v]){showAlert('Tên nông dân đã tồn tại.');return;}
+      const fp=Number($('inFPrice').value)||0;
+      const tr=Math.max(0, Math.floor(Number($('inTare').value)||0));
+      const im=document.querySelector('input[name="inMode"]:checked')?.value || 'lt3';
+      grp.farmers[v]={price:fp, inputMode:im, tareRule:tr, tables:[newEmptyTable()], createdAt:Date.now()};
+      state.activeFarmer=v; closeSheet(); navTo('tables');
+    };
+  }
+
+  if(mode==='renameFarmer'){
+    const f=payload; title.textContent='Đổi tên nông dân'; act.textContent='Lưu';
+    body.innerHTML=`<div class="field"><label for="inName">Tên nông dân</label>
+      <input id="inName" type="text" value="${escapeHtml(f)}" autofocus></div>`;
+    $('sheetConfirm').onclick=()=>{const grp=getActiveGroup(); const v=$('inName').value.trim();
+      if(!v||v===f) return closeSheet(); if(grp.farmers[v]){showAlert('Tên nông dân đã tồn tại.');return;}
+      grp.farmers[v]=grp.farmers[f]; delete grp.farmers[f]; if(state.activeFarmer===f) state.activeFarmer=v; closeSheet(); save();};
+  }
+
+  if(mode==='setFarmerPrice'){
+    const farmer=getActiveFarmer(); if(!farmer){showAlert('Chưa chọn nông dân.'); return;}
+    title.textContent='Đơn giá (đ/kg)'; act.textContent='Lưu';
+    body.innerHTML=`<div class="field"><label for="inFPrice">Đơn giá (đ/kg)</label>
+      <input id="inFPrice" type="number" inputmode="decimal" value="${farmer.price||''}" placeholder="VD: 7100"></div>`;
+    $('sheetConfirm').onclick=()=>{const v=Number($('inFPrice').value)||0; farmer.price=v; closeSheet(); save();};
+  }
+
+  $('sheetBackdrop').classList.add('open'); sh.classList.add('open');
+}
+function closeSheet(){
+  $('sheetBackdrop').classList.remove('open');
+  $('sheet').classList.remove('open');
+  const act=$('sheetConfirm');
+  if (act){ act.style.display='inline-block'; act.className='btn-primary'; act.textContent='Lưu'; act.onclick=null; }
+}
+
+/* ===== File I/O ===== */
+function openRestorePicker(){ const inp=$('fileInput'); inp.value=''; inp.click(); }
+function exportData(){ const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='rice-scale-data.json'; a.click(); URL.revokeObjectURL(a.href); }
+$('fileInput').addEventListener('change',e=>{
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=()=>{ try{ const obj=JSON.parse(reader.result); if(!obj||!obj.groups) throw new Error('Sai định dạng');
+      state=obj; migrateCreatedAt(); save(); showAlert('Khôi phục dữ liệu thành công.','Thành công');
+    }catch(err){ showAlert('Lỗi khôi phục: '+escapeHtml(err.message),'Lỗi'); } };
+  reader.readAsText(file);
+});
+
+/* ===== Delete actions ===== */
+async function onDeleteGroup(name){
+  const ok = await showConfirm(`Xoá nhóm "<b>${escapeHtml(name)}</b>" và toàn bộ dữ liệu liên quan?`, {title:'Xóa nhóm', okText:'Xóa', cancelText:'Hủy'});
+  if(!ok) return;
+  if(!state.groups[name]) return;
+  delete state.groups[name];
+  if(state.activeGroup===name){ state.activeGroup=''; state.activeFarmer=''; navTo('groups'); } else { save(); }
+}
+async function onDeleteFarmer(name){
+  const ok = await showConfirm(`Xoá nông dân "<b>${escapeHtml(name)}</b>" và toàn bộ bảng 5×5?`, {title:'Xóa nông dân', okText:'Xóa', cancelText:'Hủy'});
+  if(!ok) return;
+  const grp=getActiveGroup(); if(!grp || !grp.farmers) return;
+  delete grp.farmers[name];
+  if(state.activeFarmer===name){ state.activeFarmer=''; navTo('farmers'); } else { save(); }
+}
+
+/* ===== Navigation ===== */
+function navTo(v){
+  if (state.view !== v){
+    state.view=v;
+    if (history.state?.view !== v){ history.pushState({view:v}, '', '#'+v); }
+    save();
+  }else{ render(); }
+}
+function navBack(){ if(state.view==='tables'){ navTo('farmers'); } else if(state.view==='farmers'){ navTo('groups'); } else history.back(); }
+window.addEventListener('popstate', (e)=>{ state.view = e.state?.view || 'groups'; render(); });
+
+/* ===== Render ===== */
+function render(){
+  $('btnBack').style.display=(state.view==='groups')?'none':'inline-block';
+  $('appSub').textContent= state.view==='groups'?'Nhóm (Ghe/Xe)': state.view==='farmers'?'Nông dân trong nhóm':'Bảng nhập liệu cân lúa';
+  $('appTitle').textContent='TÍNH CÂN LÚA';
+
+  const fabAddGroup = $('fabAddGroup'), fabAddFarmer = $('fabAddFarmer');
+  fabAddGroup.style.display = (state.view==='groups')?'grid':'none';
+  fabAddFarmer.style.display = (state.view==='farmers')?'grid':'none';
+
+  if(state.view==='groups'){ renderGroupsView(); $('view-groups').style.display='block'; $('view-farmers').style.display='none'; $('view-tables').style.display='none'; }
+  if(state.view==='farmers'){ renderFarmersView(); $('view-groups').style.display='none'; $('view-farmers').style.display='block'; $('view-tables').style.display='none'; }
+  if(state.view==='tables'){ renderTables(); $('view-groups').style.display='none'; $('view-farmers').style.display='none'; $('view-tables').style.display='block'; }
+}
+
+/* View 1: Groups */
+function renderGroupsView(){
+  const host=$('groupList'); host.innerHTML='';
+  const names=Object.keys(state.groups||{});
+  $('chipGroups').textContent=names.length+' nhóm';
+
+  if(!names.length){
+    host.innerHTML = `<div class="group-card"><div class="g-body"><div class="fake-input" style="padding:12px">Chưa có nhóm nào. Nhấn nút <b>➕</b> để thêm nhóm mới.</div></div></div>`;
+    return;
+  }
+  names.sort((a,b)=> (state.groups[b]?.createdAt||0) - (state.groups[a]?.createdAt||0));
+
+  for(const g of names){
+    const grp=state.groups[g]; const stat=calcGroupDisplay(grp);
+    const card=document.createElement('div'); card.className='group-card'; card.dataset.group=g;
+    const titleDate = formatDateTimeDDMM_HHmm(grp.createdAt);
+    card.innerHTML = `<div class="g-head"><div class="g-title">${titleDate}</div><div class="chip">${fmt(stat.totalBags)} bao</div></div>`;
+    const body=document.createElement('div'); body.className='g-body';
+    const info=document.createElement('div'); info.className='fake-input';
+    info.appendChild(buildKV('Tên nhóm (ghe/xe)', g));
+    info.appendChild(buildKV('Số bao (lần cân)', fmt(stat.totalBags)));
+    info.appendChild(buildKV('Khối lượng (chưa trừ bì)', fmt(stat.totalKg) + ' kg'));
+    info.appendChild(buildKV('Khấu trừ bì (kg)', fmt(stat.tareKg) + ' kg'));
+    info.appendChild(buildKV('Khối lượng tính tiền (đã trừ bì)', fmt(stat.remainingKg) + ' kg'));
+    info.appendChild(buildKV('Thành tiền', fmt(stat.totalMoney) + ' đ', 'danger'));
+    info.appendChild(buildKV('SĐT', (grp.ownerPhone||'—')));
+    body.appendChild(info);
+    const foot=document.createElement('div'); foot.className='g-foot';
+    const btnEdit=document.createElement('button'); btnEdit.className='btn-ghost'; btnEdit.textContent='✏ Sửa';
+    const btnDel=document.createElement('button'); btnDel.className='btn-danger'; btnDel.textContent='🗑 Xoá';
+    btnEdit.addEventListener('click',e=>{ e.stopPropagation(); openSheet('editGroup',g); });
+    btnDel.addEventListener('click',e=>{ e.stopPropagation(); onDeleteGroup(g); });
+    foot.appendChild(btnEdit); foot.appendChild(btnDel);
+    card.appendChild(body); card.appendChild(foot);
+    card.addEventListener('click',()=>{ state.activeGroup=g; state.activeFarmer=''; navTo('farmers'); });
+    host.appendChild(card);
+  }
+}
+
+/* View 2: Farmers */
+function renderFarmersView(){
+  const host=$('farmerList'); host.innerHTML='';
+  const grp=getActiveGroup(); if(!grp){ host.innerHTML='<div class=meta>Chưa có nhóm.</div>'; return; }
+  $('chipGroupName').textContent=state.activeGroup||'—';
+  const names=Object.keys(grp.farmers||{}); $('chipFarmerCount').textContent = 'Nông dân: ' + fmt(names.length);
+
+  let totalBags=0,totalKg=0,totalMoney=0,totalRemain=0,totalTareKg=0;
+  names.sort((a,b)=> (grp.farmers[b]?.createdAt||0) - (grp.farmers[a]?.createdAt||0));
+
+  for(const f of names){
+    const farmer=grp.farmers[f];
+    const bags=farmer.tables.reduce((n,t)=> n+t.filter(x=> typeof x==='number').length,0);
+    const kg=farmer.tables.reduce((s,t)=> s+sumTable(t),0);
+    const unit=(farmer.price||0);
+    const tareRule=Math.max(0, farmer.tareRule||0);
+    const tareKg = tareRule>0 ? Math.floor(bags / tareRule) : 0;
+    const remaining = Math.max(0, kg - tareKg);
+    const money=unit*remaining;
+    totalBags+=bags; totalKg+=kg; totalMoney+=money; totalRemain+=remaining; totalTareKg+=tareKg;
+
+    const card=document.createElement('div'); card.className='group-card'; card.dataset.farmer=f;
+    const titleDate = formatDateTimeDDMM_HHmm(farmer.createdAt);
+    card.innerHTML = `<div class="g-head"><div class="g-title">${titleDate}</div><div class="chip">${fmt(bags)} bao</div></div>`;
+    const body=document.createElement('div'); body.className='g-body';
+    const info=document.createElement('div'); info.className='fake-input';
+    info.appendChild(buildKV('Tên nông dân:', f));
+    info.appendChild(buildKV('Tổng số bao (lần cân):', fmt(bags)));
+    info.appendChild(buildKV('Tổng khối lượng cân (chưa trừ bì):', fmt(kg)+' kg'));
+    info.appendChild(buildKV('Tổng trừ bì (kg):', fmt(tareKg)+' kg'));
+    info.appendChild(buildKV('Tổng khối lượng tính tiền (đã trừ bì):', fmt(remaining)+' kg', 'danger'));
+    info.appendChild(buildKV('Đơn giá (đ/kg):', fmt(unit)+' đ'));
+    info.appendChild(buildKV('Thành tiền:', fmt(money)+' đ', 'danger'));
+    info.appendChild(buildKV('Quy cách nhập:', labelInputMode(farmer.inputMode)));
+    body.appendChild(info);
+
+    const foot=document.createElement('div'); foot.className='g-foot';
+    const btnPrice=document.createElement('button'); btnPrice.className='btn-ghost'; btnPrice.textContent='₫ Đơn giá';
+    const btnRename=document.createElement('button'); btnRename.className='btn-ghost'; btnRename.textContent='✏ Đổi tên';
+    const btnDel=document.createElement('button'); btnDel.className='btn-danger'; btnDel.textContent='🗑 Xoá';
+
+    btnPrice.addEventListener('click',e=>{
+      e.stopPropagation();
+      state.activeFarmer = f;
+      openSheet('setFarmerPrice');
+    });
+
+    btnRename.addEventListener('click',e=>{ e.stopPropagation(); openSheet('renameFarmer', f); });
+    btnDel.addEventListener('click',e=>{ e.stopPropagation(); onDeleteFarmer(f); });
+    foot.appendChild(btnPrice); foot.appendChild(btnRename); foot.appendChild(btnDel);
+
+    card.appendChild(body); card.appendChild(foot);
+    card.addEventListener('click',()=>{ state.activeFarmer=f; navTo('tables'); });
+    host.appendChild(card);
+  }
+
+  $('stat2Bags').value=fmt(totalBags);
+  $('stat2Kg').value=fmt(totalKg);
+  $('stat2Money').value=fmt(totalMoney);
+  $('stat2Remain').value=fmt(totalRemain);
+  $('stat2Tare').value=fmt(totalTareKg);
+}
+
+/* View 3: Tables */
+function renderTables(){
+  const host=$('tables'); host.innerHTML='';
+  const title=$('contextTitle');
+  if(!state.activeGroup){ title.textContent='BẢNG 5×5'; host.innerHTML='<div class=meta>Chọn nhóm trước.</div>'; return; }
+  if(!state.activeFarmer){ title.textContent='BẢNG 5×5'; host.innerHTML='<div class=meta>Chọn nông dân.</div>'; return; }
+
+  title.textContent=`Nông dân: ${state.activeFarmer}`;
+  const farmer=getActiveFarmer(); if(!farmer) return;
+  if(!farmer.tables||farmer.tables.length===0) farmer.tables=[newEmptyTable()];
+
+  const totalKg=farmer.tables.reduce((acc,t)=>acc+sumTable(t),0);
+  const totalBags=farmer.tables.reduce((n,t)=> n+t.filter(x=>typeof x==='number').length,0);
+  const tareRule = Math.max(0, farmer.tareRule||0);
+  const tareKg = tareRule>0 ? Math.floor(totalBags / tareRule) : 0;
+  const remainingKg=Math.max(0,totalKg - tareKg);
+  const price=Number(farmer.price||0);
+  const amount=remainingKg*price;
+
+  const stats=document.createElement('div'); stats.className='stat-grid'; stats.innerHTML=`
+    <div class=stat style="grid-column:1/ -1"><label><b>Tên nông dân</b></label><input id=statFarmerName type=text value="${escapeHtml(state.activeFarmer)}"/></div>
+    <div class=stat style="grid-column:1/ -1"><label><b>Tổng số bao (lần cân)</b></label><input id=statBags type=text value="${fmt(totalBags)}" readonly></div>
+    <div class=stat style="grid-column:1/ -1"><label><b>Tổng khối lượng chưa trừ bì (kg)</b></label><input id=statTotalKg type=text value="${fmt(totalKg)}" readonly></div>
+    <div class=stat style="grid-column:1/ -1"><label><b>Quy tắc bì (mỗi X bao = 1 kg)</b></label><input id=statTareRule type=number min=0 step=1 value="${tareRule}"></div>
+    <div class=stat style="grid-column:1/ -1"><label><b>Tổng trừ bì (kg)</b></label><input id=statTareKg type=text value="${fmt(tareKg)}" readonly></div>
+    <div class=stat style="grid-column:1/ -1"><label><b>Tổng khối lượng tính tiền (kg)</b></label><input id=statRemain type=text value="${fmt(remainingKg)}" readonly></div>
+    <div class=stat style="grid-column:1/ -1"><label><b>Đơn giá (đ/kg)</b></label><input id=statPrice type=number inputmode=decimal value="${price||0}"></div>
+    <div class=stat style="grid-column:1/ -1"><label><b>Thành tiền (đ)</b></label><input id=statAmount class="money" type=text value="${fmt(amount)}" readonly></div>`;
+  host.appendChild(stats);
+
+  $('statFarmerName').addEventListener('change',()=>{
+    const newName=$('statFarmerName').value.trim(); const oldName=state.activeFarmer;
+    if(!newName||newName===oldName) return;
+    const grp=getActiveGroup();
+    if(grp.farmers[newName]){ showAlert('Tên nông dân đã tồn tại.'); $('statFarmerName').value=oldName; return; }
+    grp.farmers[newName]=grp.farmers[oldName]; delete grp.farmers[oldName]; state.activeFarmer=newName; save();
+  });
+  $('statTareRule').addEventListener('change',()=>{ const v=Math.max(0, Math.floor(Number($('statTareRule').value)||0)); const f=getActiveFarmer(); if(!f) return; f.tareRule=v; save(); });
+  $('statPrice').addEventListener('change',()=>{ const f=getActiveFarmer(); if(!f) return; f.price=Number($('statPrice').value)||0; save(); });
+
+  farmer.tables.forEach((tbl,ti)=>{
+    const card=document.createElement('div'); card.className='table-card';
+    card.innerHTML=`<div class="table-head"><div class="section-title title">BẢNG ${ti+1}</div></div>
+                    <div class="colheads"><span>C1</span><span>C2</span><span>C3</span><span>C4</span><span>C5</span></div>`;
+    const cells=document.createElement('div'); cells.className='cells';
+    for(let row=0; row<5; row++){
+      for(let col=0; col<5; col++){
+        const ci=row*5+col; const inp=document.createElement('input'); inp.type='text'; inp.inputMode='numeric'; inp.dataset.key=`${ti}-${ci}`;
+        const v=tbl[ci];
+        if (typeof v==='number'&&!isNaN(v)){
+          const hasDecimal = (farmer.inputMode==='lt3' || farmer.inputMode==='ge4');
+          const asText = hasDecimal ? v.toFixed(1) : String(v); inp.value = asText;
+          const isWarn = hasDecimal && String(asText).includes('.') && (Math.round((v*10)%10)%2===1); if(isWarn) inp.classList.add('warn');
+        } else { inp.value=''; }
+        const enabled=isCellEnabled(farmer,ti,ci); if(!enabled) inp.setAttribute('disabled','disabled');
+        inp.addEventListener('input', e=> commitCellInput(farmer,ti,ci,e.target.value,e,inp));
+        inp.addEventListener('keydown', ev=>{ if(ev.key==='Enter'){ commitCellInput(farmer,ti,ci,inp.value,ev,inp); } });
+        cells.appendChild(inp);
+      }
+    }
+    const colTotals=document.createElement('div'); colTotals.className='colTotals';
+    for(let c=0;c<5;c++){ const sp=document.createElement('span'); sp.textContent = fmt(sumCol(tbl,c)); colTotals.appendChild(sp); }
+    const s=document.createElement('div'); s.className='sum'; s.innerHTML = `<div>${fmt(sumTable(tbl))}</div>`;
+    card.appendChild(cells); card.appendChild(colTotals); card.appendChild(s); host.appendChild(card);
+  });
+  const ptr=nextEditablePointer(farmer);
+  setTimeout(()=>{ const el=document.querySelector(`input[data-key="${ptr.ti}-${ptr.ci}"]`); if(el){ el.removeAttribute('disabled'); el.focus(); el.select(); } },30);
+}
+
+/* ===== Bảng 5×5 ===== */
+function ensureNextTable(){ const farmer=getActiveFarmer(); if(!farmer) return; const last=farmer.tables[farmer.tables.length-1]; if(isTableFull(last)) farmer.tables.push(newEmptyTable()); }
+function nextEditablePointer(farmer){
+  for(let ti=0; ti<farmer.tables.length; ti++){ const t=farmer.tables[ti];
+    for(let col=0; col<5; col++){ for(let row=0; row<5; row++){
+      const ci=row*5+col; if(t[ci]===null || typeof t[ci]!=='number') return {ti,ci};
+    }}}
+  ensureNextTable(); return {ti:farmer.tables.length-1, ci:0};
+}
+function isCellEnabled(farmer,ti,ci){ const ptr=nextEditablePointer(farmer); const already=typeof farmer.tables[ti][ci]==='number'; return already || (ti===ptr.ti && ci===ptr.ci); }
+async function commitCellInput(farmer,ti,ci,raw,e,el){
+  const mode = farmer.inputMode || 'lt3';
+  const digits = String(raw||'').replace(/\D/g,'');
+  const ptrNow = nextEditablePointer(farmer);
+  const isCurrentPointer = (ti === ptrNow.ti && ci === ptrNow.ci);
+
+  if (String(raw).trim() === '') { farmer.tables[ti][ci] = null; if(el) el.classList.remove('warn'); save(); return; }
+
+  let v=null, commit=false, isOddGram=false;
+  if(mode==='lt2'){ if(digits.length<2){ if(el) el.value=digits; return; } v = Number(digits.slice(0,2)); commit=true; }
+  else if(mode==='lt3'){ if(digits.length<3){ if(el) el.value=digits; return; } const dec=Number(digits.slice(-1)); if(dec%2!==0) isOddGram=true; v = Number(digits.slice(0,2)) + dec/10; commit=true; }
+  else if(mode==='ge3'){ if(digits.length<3){ if(el) el.value=digits; return; } v = Number(digits.slice(0,3)); commit=true; }
+  else if(mode==='ge4'){ if(digits.length<4){ if(el) el.value=digits; return; } const dec=Number(digits.slice(-1)); if(dec%2!==0) isOddGram=true; v = Number(digits.slice(0,3)) + dec/10; commit=true; }
+  else { const num=Number(String(raw||'').replace(',','.')); if(!isFinite(num)) return; v=num; commit=true; }
+
+  if(el){ if(isOddGram) el.classList.add('warn'); else el.classList.remove('warn'); }
+  if(isOddGram){ await showAlert('⚠️ Số gram phải chẵn (0,2,4,6,8). Vui lòng kiểm tra lại.'); }
+
+  farmer.tables[ti][ci]=v;
+  if(el){ const hasDecimal=(mode==='lt3'||mode==='ge4'); el.value=(typeof v==='number')?(hasDecimal?v.toFixed(1):v):''; }
+
+  if(commit){
+    ensureNextTable(); save();
+    if (isCurrentPointer){ const ptr = nextEditablePointer(getActiveFarmer()); const nx = document.querySelector(`input[data-key="${ptr.ti}-${ptr.ci}"]`); if(nx){ nx.removeAttribute('disabled'); nx.focus(); nx.select(); } }
+    else if (el){ el.removeAttribute('disabled'); el.focus(); el.select(); }
+  }
+}
+
+/* ===== Tính tổng cho nhóm ===== */
+function calcGroupDisplay(grp){
+  let totalKg=0,totalBags=0,totalMoney=0,remainingKgAll=0,tareKgAll=0;
+  for (const f of Object.keys(grp.farmers||{})){
+    const farmer = grp.farmers[f];
+    const kg = farmer.tables.reduce((s,t)=> s+sumTable(t),0);
+    const bags = farmer.tables.reduce((n,t)=> n+t.filter(x=> typeof x==='number').length,0);
+    const unit = (farmer.price||0);
+    const tareRule = Math.max(0, farmer.tareRule||0);
+    const tareKg = tareRule>0 ? Math.floor(bags / tareRule) : 0;
+    const remaining = Math.max(0, kg - tareKg);
+    const money = unit * remaining;
+    totalKg += kg; totalBags += bags; totalMoney += money; remainingKgAll += remaining; tareKgAll += tareKg;
+  }
+  return { totalKg, totalBags, totalMoney, remainingKg: remainingKgAll, tareKg: tareKgAll };
+}
+
+/* ===== Persistence & Boot ===== */
+function migrateCreatedAt(){
+  try{
+    const now = Date.now();
+    let i = 0;
+    for (const gName of Object.keys(state.groups||{})){
+      const grp = state.groups[gName];
+      if (!grp.createdAt) grp.createdAt = now - (i++ * 1000);
+      if (!grp.farmers) grp.farmers = {};
+      let j = 0;
+      for (const fName of Object.keys(grp.farmers)){
+        const farmer = grp.farmers[fName];
+        if (!farmer.createdAt) farmer.createdAt = now - (j++ * 1000);
+      }
+    }
+  }catch(e){}
+}
+function save(){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(state)); }catch(e){} render(); }
+function load(){
+  try{ const raw=localStorage.getItem(STORAGE_KEY); if(raw){ const parsed=JSON.parse(raw); if(parsed && parsed.groups) state=parsed; } }catch(e){}
+  if (!state || typeof state!=='object') state={groups:{},activeGroup:'',activeFarmer:'',view:'groups'};
+  if (!state.groups || typeof state.groups!=='object') state.groups={};
+  migrateCreatedAt();
+  state.view='groups';
+  if (history.state?.view !== 'groups') history.replaceState({view:'groups'}, '', '#groups');
+  render();
+}
+
+/* ===== Global UI bindings ===== */
+$('btnBack').addEventListener('click',navBack);
+$('btnTools').addEventListener('click',()=>openSheet('appTools'));
+$('btnSheetClose').addEventListener('click',closeSheet);
+$('btnSheetCancel').addEventListener('click',closeSheet);
+$('fabAddGroup').addEventListener('click',()=>openSheet('addGroup'));
+$('fabAddFarmer').addEventListener('click',()=>openSheet('addFarmer'));
+
+/* ===== Start ===== */
+load();
+
+/* Save khi rời trang */
+window.addEventListener('pagehide', ()=> save());
+document.addEventListener('visibilitychange', ()=>{ if(document.hidden) save(); });
+
+/* ===== PWA: SW + Kiểm tra cập nhật + Nút Cài đặt + Persistent Storage ===== */
+(function(){
+  // YÊU CẦU PERSISTENT STORAGE
+  (async () => {
+    try {
+      if (navigator.storage && navigator.storage.persist) {
+        const isPersisted = await navigator.storage.persisted();
+        if (!isPersisted) {
+          const granted = await navigator.storage.persist();
+          console.log('[storage] persist granted?', granted);
+        } else {
+          console.log('[storage] already persisted');
+        }
+      }
+    } catch (e) { console.warn('persist error', e); }
+  })();
+
+  function compareVersions(a, b){
+    const pa = String(a).replace(/^v/i,'').split('.').map(n=>Number(n)||0);
+    const pb = String(b).replace(/^v/i,'').split('.').map(n=>Number(n)||0);
+    const len = Math.max(pa.length, pb.length);
+    for (let i=0;i<len;i++){ const x=pa[i]||0, y=pb[i]||0; if(x>y) return 1; if(x<y) return -1; }
+    return 0;
+  }
+
+  async function checkForAppUpdate(){
+    try{
+      if (!navigator.onLine) return;
+      if ('serviceWorker' in navigator){
+        const reg = await navigator.serviceWorker.getRegistration('/can-lua/sw.js');
+        await reg?.update?.();
+      }
+      const res = await fetch('/can-lua/version.json?ts=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) return;
+      const data = await res.json();
+      const serverVer = data.version || '';
+      const localVer  = (typeof APP_VERSION==='string') ? APP_VERSION : '0';
+
+      let notesHTML = '';
+      if (Array.isArray(data.notes) && data.notes.length){
+        const items = data.notes.map(s => `<li>${escapeHtml(String(s))}</li>`).join('');
+        notesHTML = `<div style="margin-top:8px;padding:10px;border:1px dashed #e5e7eb;border-radius:12px;background:#fff7ed">
+          <div style="font-weight:800;margin-bottom:6px">Nội dung cập nhật</div>
+          <ul style="margin:0 0 0 18px;line-height:1.5">${items}</ul>
+        </div>`;
+      }
+      if (data.changelog_url){
+        notesHTML += `<div style="margin-top:8px;font-size:12px">
+          Xem chi tiết: <a href="${escapeHtml(data.changelog_url)}" target="_blank" rel="noopener">Changelog</a>
+        </div>`;
+      }
+
+      if (serverVer && compareVersions(serverVer, localVer) > 0){
+        const ok = await openDialog({
+          title: 'Có phiên bản mới',
+          message: `Đã có bản <b>${escapeHtml(serverVer)}</b> (bạn đang dùng <b>${escapeHtml(APP_VERSION)}</b>).${notesHTML}`,
+          okText: 'Tải ngay', cancelText: 'Để sau'
+        });
+        if (ok){
+          navigator.serviceWorker.controller?.postMessage({ type: 'CHECK_UPDATE_AND_RELOAD' });
+          setTimeout(()=> location.reload(), 1200);
+        }
+      }
+    }catch(e){ /* im lặng */ }
+  }
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/can-lua/sw.js', { scope: '/can-lua/' }).then(reg=>{
+        checkForAppUpdate();
+        setInterval(()=>{ reg.update(); checkForAppUpdate(); }, 60*60*1000);
+      }).catch(console.error);
+    });
+  } else {
+    window.addEventListener('load', checkForAppUpdate);
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) checkForAppUpdate();
+  });
+
+  // Nút Cài đặt (A2HS) + iOS hướng dẫn
+  (function(){
+    let deferredPrompt=null;
+    const btn=$('btnInstall');
+
+    const isStandalone = () =>
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true;
+
+    const isIOS = () =>
+      /iphone|ipad|ipod/i.test(navigator.userAgent) &&
+      /safari/i.test(navigator.userAgent) &&
+      !/crios|fxios|opios|EdgiOS/i.test(navigator.userAgent);
+
+    function showBtn(){ if(btn) btn.style.display='inline-block'; }
+    function hideBtn(){ if(btn) btn.style.display='none'; }
+
+    window.addEventListener('beforeinstallprompt', (e)=>{
+      e.preventDefault();
+      deferredPrompt = e;
+      if (!isStandalone()) showBtn();
+    });
+
+    btn?.addEventListener('click', async ()=>{
+      if (isIOS() && !isStandalone()){
+        alert('Trên iPhone/iPad: bấm Chia sẻ (□↑) → Thêm vào MH chính.');
+        return;
+      }
+      if (!deferredPrompt){
+        alert('Trình duyệt chưa sẵn sàng hiển thị hộp thoại cài đặt.');
+        return;
+      }
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      if (outcome === 'accepted') hideBtn();
+    });
+
+    window.addEventListener('appinstalled', ()=>{ deferredPrompt=null; hideBtn(); });
+    if (isStandalone()) hideBtn();
+  })();
+})();
+</script>
+</body>
+</html>

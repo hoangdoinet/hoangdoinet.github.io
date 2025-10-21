@@ -1,0 +1,12 @@
+{
+  "name": "Tính cân lúa",
+  "version": "v1.0.0",
+  "release_date": "2025-10-22",
+  "notes": [
+    "✨ Phiên bản đầu tiên hỗ trợ PWA offline.",
+    "📱 Có thể cài đặt ứng dụng trên Android và iOS.",
+    "💾 Tự động lưu dữ liệu cân lúa vào bộ nhớ máy.",
+    "🔄 Hỗ trợ kiểm tra phiên bản mới và cập nhật tự động."
+  ],
+  "changelog_url": "https://hoangdoinet.github.io/can-lua/changelog.html"
+}
