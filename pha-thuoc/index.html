@@ -24,7 +24,7 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Tính lượng thuốc sát trùng – Công cụ hữu ích cho trang trại">
-  <meta name="twitter:description" content="Pha thuốc sát trùng chính xác theo tỷ lệ, hoạt động offline, cài đặt như ứng dụng di động.">
+  <meta name="twitter:description" content="Pha thuốc sát trùng chính xác theo tỷ lệ, hoạt động offline, cài đặt ứng dụng di động.">
   <meta name="twitter:image" content="https://hoangdoinet.github.io/pha-thuoc/icons/og-image-1200.png">
 
   <!-- iOS web app -->
@@ -157,11 +157,11 @@
   </style>
 </head>
 <body>
-  <!-- 🌾 Splash -->
+  <!-- Splash -->
   <div id="splash" role="status" aria-label="Đang khởi động ứng dụng">
     <div class="logo-wrap"><img src="/pha-thuoc/icons/icon-512.png" class="logo-img" alt="Logo Tính lượng thuốc sát trùng" width="140" height="140"></div>
     <div class="app-name" aria-hidden="true">PHA THUỐC SÁT TRÙNG</div>
-    <div class="meta">Phiên bản: <b>v1.0.3</b></div>
+    <div class="meta">Phiên bản: <b>v1.0.4</b></div>
     <div class="meta">Tác giả: <b>Hoàng Đợi</b></div>
   </div>
 
@@ -179,7 +179,7 @@
       <header class="hero">
         <h1>Tính lượng thuốc sát trùng</h1>
         <!-- Chip phiên bản (click để mở modal) -->
-        <div id="appBadge" class="badge" role="button" tabindex="0" aria-label="Xem thông tin ứng dụng">Phiên bản: v1.0.3</div>
+        <div id="appBadge" class="badge" role="button" tabindex="0" aria-label="Xem thông tin ứng dụng">Phiên bản: v1.0.4</div>
       </header>
 
       <main class="card">
@@ -245,7 +245,7 @@
       <div class="content">
         <p id="aboutDesc">Công cụ tính nhanh lượng thuốc sát trùng theo tỷ lệ pha và dạng thuốc (nước/bột). Hỗ trợ cài đặt để dùng offline trên Android và iOS.</p>
         <div class="kv">
-          <div class="key"><li>Phiên bản:</li></div><div><b>v1.0.3</b></div>
+          <div class="key"><li>Phiên bản:</li></div><div><b>v1.0.4</b></div>
           <div class="key"><li>Tác giả:</li></div><div><b>Hoàng Đợi</b></div>
           <div class="key"><li>Bộ nhớ offline:</li></div><div><b id="persistStatus">Đang kiểm tra…</b></div>
         </div>
@@ -403,7 +403,7 @@
     async function ensurePersistentStorage() {
       const el = document.getElementById('persistStatus');
       if (!('storage' in navigator) || !navigator.storage || !('persist' in navigator.storage)) {
-        if (el) el.textContent = 'Không hỗ trợ trên trình duyệt này';
+        if (el) el.textContent = 'Không hỗ trợ';
         return;
       }
       try {
@@ -413,7 +413,7 @@
           isPersisted = granted;
         }
         if (el) {
-          el.textContent = isPersisted ? 'Đã khóa (persistent)' : 'Tạm thời (có thể bị xoá)';
+          el.textContent = isPersisted ? 'Dài hạn' : 'Tạm thời';
           if ('estimate' in navigator.storage) {
             const { usage = 0, quota = 0 } = await navigator.storage.estimate();
             const kb = n => Math.round(n / 1024);
@@ -421,7 +421,7 @@
           }
         }
       } catch (err) {
-        if (el) el.textContent = 'Không thể xin quyền lưu trữ';
+        if (el) el.textContent = 'Không hỗ trợ';
         console.warn('Persistent storage error:', err);
       }
     }

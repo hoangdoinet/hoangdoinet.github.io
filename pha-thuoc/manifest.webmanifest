@@ -3,7 +3,7 @@
   "name": "Tính lượng thuốc sát trùng",
   "short_name": "Pha thuốc ST",
   "lang": "vi",
-  "description": "Tính nhanh lượng thuốc sát trùng theo tỷ lệ và dạng thuốc. Có thể cài như ứng dụng Android & iOS, dùng offline.",
+  "description": "Tính nhanh lượng thuốc sát trùng theo tỷ lệ và dạng thuốc. Có thể cài ứng dụng trên Android & iOS, dùng offline.",
   "start_url": "/pha-thuoc/?source=pwa",
   "scope": "/pha-thuoc/",
   "display": "standalone",
