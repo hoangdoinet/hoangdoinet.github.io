@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
   <!-- Primary -->
-  <title>Tính cân lúa v1.0.0</title>
+  <title>Tính cân lúa v1.0.1</title>
   <link rel="canonical" href="https://hoangdoinet.github.io/can-lua/">
   <meta name="description" content="Cân lúa offline: nhập nhanh bảng 5×5, tự tính khối lượng, trừ bì & thành tiền theo nông dân và ghe/xe. Cài đặt trên Android và iOS, có sao lưu/khôi phục dữ liệu.">
   <meta name="author" content="Hoàng Đợi">
@@ -35,7 +35,7 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Tính cân lúa">
-  <meta property="og:title" content="Tính cân lúa • v1.0.0">
+  <meta property="og:title" content="Tính cân lúa • v1.0.1">
   <meta property="og:description" content="Nhập nhanh bảng tính 5×5, tự động tính khối lượng, trừ bì & thành tiền. Cài đặt trên Android và iOS dùng offline, có sao lưu/khôi phục dữ liệu.">
   <meta property="og:url" content="https://hoangdoinet.github.io/can-lua/">
   <meta property="og:image" content="https://hoangdoinet.github.io/can-lua/icons/og-image-1200.png">
@@ -46,7 +46,7 @@
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Tính cân lúa • v1.0.0">
+  <meta name="twitter:title" content="Tính cân lúa • v1.0.1">
   <meta name="twitter:description" content="Nhập nhanh bảng tính 5×5, tự động tính khối lượng, trừ bì & thành tiền. Cài đặt trên Android và iOS dùng offline, có sao lưu/khôi phục dữ liệu.">
   <meta name="twitter:image" content="https://hoangdoinet.github.io/can-lua/icons/og-image-1200.png">
 
@@ -58,7 +58,7 @@
     "name": "Tính cân lúa",
     "applicationCategory": "BusinessApplication",
     "operatingSystem": "Web",
-    "softwareVersion": "1.0.0",
+    "softwareVersion": "1.0.1",
     "inLanguage": "vi-VN",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "VND" },
     "description": "Cân lúa offline: nhập nhanh bảng 5×5, tự tính khối lượng, trừ bì & thành tiền theo nông dân/ghe xe. PWA, có sao lưu/khôi phục.",
@@ -215,7 +215,7 @@
       <img src="/can-lua/icons/icon-512.png" class="logo-img" alt="Logo Tính Cân Lúa" width="140" height="140">
     </div>
     <div class="app-name" aria-hidden="true">TÍNH CÂN LÚA</div>
-    <div class="meta">Phiên bản: <b id="verText">v1.0.0</b></div>
+    <div class="meta">Phiên bản: <b id="verText">v1.0.1</b></div>
     <div class="meta">Tác giả: <b id="authorText">Hoàng Đợi</b></div>
   </div>
 
@@ -299,7 +299,7 @@
 
 <script>
 /* ===== State & Utils ===== */
-const APP_VERSION='v1.0.0';
+const APP_VERSION='v1.0.1';
 
 /* ==== Splash Control (dùng APP_VERSION) ==== */
 (function(){
@@ -839,10 +839,13 @@ document.addEventListener('visibilitychange', ()=>{ if(document.hidden) save(); 
   async function checkForAppUpdate(){
     try{
       if (!navigator.onLine) return;
+
+      // 🔧 Đồng bộ tên file SW: dùng service-worker.js
       if ('serviceWorker' in navigator){
-        const reg = await navigator.serviceWorker.getRegistration('/can-lua/sw.js');
+        const reg = await navigator.serviceWorker.getRegistration('/can-lua/service-worker.js');
         await reg?.update?.();
       }
+
       const res = await fetch('/can-lua/version.json?ts=' + Date.now(), { cache: 'no-store' });
       if (!res.ok) return;
       const data = await res.json();
@@ -870,8 +873,19 @@ document.addEventListener('visibilitychange', ()=>{ if(document.hidden) save(); 
           okText: 'Tải ngay', cancelText: 'Để sau'
         });
         if (ok){
-          navigator.serviceWorker.controller?.postMessage({ type: 'CHECK_UPDATE_AND_RELOAD' });
-          setTimeout(()=> location.reload(), 1200);
+          // ⤵️ Gửi thông điệp đúng với SW hiện tại
+          navigator.serviceWorker.controller?.postMessage('SKIP_WAITING');
+
+          // Tự reload khi controller đổi sang SW mới
+          let reloaded = false;
+          navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (reloaded) return;
+            reloaded = true;
+            location.reload();
+          });
+
+          // Fallback nếu không có controllerchange
+          setTimeout(()=>{ if (!reloaded) location.reload(); }, 2000);
         }
       }
     }catch(e){ /* im lặng */ }
@@ -879,7 +893,8 @@ document.addEventListener('visibilitychange', ()=>{ if(document.hidden) save(); 
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/can-lua/sw.js', { scope: '/can-lua/' }).then(reg=>{
+      // 🔧 Đồng bộ đường dẫn SW & scope
+      navigator.serviceWorker.register('/can-lua/service-worker.js', { scope: '/can-lua/' }).then(reg=>{
         checkForAppUpdate();
         setInterval(()=>{ reg.update(); checkForAppUpdate(); }, 60*60*1000);
       }).catch(console.error);

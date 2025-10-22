@@ -1,12 +1,13 @@
 {
   "name": "Tính cân lúa",
-  "version": "v1.0.0",
+  "version": "v1.0.1",
   "release_date": "2025-10-22",
   "notes": [
-    "✨ Phiên bản đầu tiên hỗ trợ PWA offline.",
-    "📱 Có thể cài đặt ứng dụng trên Android và iOS.",
-    "💾 Tự động lưu dữ liệu cân lúa vào bộ nhớ máy.",
-    "🔄 Hỗ trợ kiểm tra phiên bản mới và cập nhật tự động."
+    "Cập nhật bộ logo và icon mới: bao lúa trắng, bông lúa vàng, nền xanh lá gradient.",
+    "Bật lưu trữ an toàn để dữ liệu không bị hệ thống dọn dẹp.",
+    "Cải thiện hiển thị splash screen và nút Cài đặt (A2HS) cho Android/iOS.",
+    "Tối ưu Service Worker: cập nhật ngầm và reload khi có bản mới.",
+    "Cải thiện hiệu năng và trải nghiệm nhập bảng 5×5, sửa lỗi nhỏ."
   ],
-  "changelog_url": "https://hoangdoinet.github.io/can-lua/changelog.html"
+  "changelog_url": "https://hoangdoinet.github.io/can-lua/changelog.html#v1-0-1"
 }
