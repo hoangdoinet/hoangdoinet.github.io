@@ -1,18 +1,160 @@
-<!doctype html>
-<meta charset="utf-8">
-<title>Offline • Tính cân lúa</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<style>
-  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;margin:0;background:#f8fafc;color:#111}
-  .wrap{max-width:720px;margin:10vh auto;padding:24px;background:#fff;border:1px solid #e5e7eb;border-radius:16px;box-shadow:0 10px 28px rgba(2,6,23,.08)}
-  h1{margin:0 0 8px;font-size:20px}
-  p{line-height:1.6}
-  .muted{color:#6b7280;font-size:13px}
-  a.btn{display:inline-block;padding:10px 14px;border-radius:999px;background:#22c55e;color:#fff;text-decoration:none;font-weight:700}
-</style>
-<div class="wrap">
-  <h1>🔌 Không có mạng</h1>
-  <p>Ứng dụng chưa có dữ liệu app shell trong bộ nhớ hoặc vừa xóa cache. Kết nối Internet và mở lại một lần để dùng offline về sau.</p>
-  <p class="muted">Khi đã từng mở thành công, lần sau mất mạng có thể <b>refresh</b> mà vẫn vào được.</p>
-  <p><a class="btn" href="/can-lua/">Thử tải lại</a></p>
-</div>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Không có kết nối • Tính cân lúa</title>
+
+  <!-- Robots: tránh index trang offline -->
+  <meta name="robots" content="noindex,nofollow" />
+
+  <!-- Favicons (đường dẫn tuyệt đối theo GitHub Pages) -->
+  <link rel="icon" href="/can-lua/icons/favicon.ico">
+  <link rel="icon" type="image/png" sizes="192x192" href="/can-lua/icons/icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/can-lua/icons/apple-icon-180.png">
+  <meta name="theme-color" content="#22c55e">
+
+  <style>
+    :root{
+      --brand:#22c55e;
+      --brand-2:#16a34a;
+      --text:#0f172a;
+      --muted:#64748b;
+      --surface:#ffffff;
+      --bg:#f8fafc;
+      --border:#e5e7eb;
+      --sat: env(safe-area-inset-top);
+      --sab: env(safe-area-inset-bottom);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(120% 90% at 50% -10%, #fff3 0%, #0000 60%),
+        linear-gradient(180deg,var(--brand),var(--brand-2));
+      display:grid; place-items:center;
+      padding: calc(var(--sat,0) + 16px) 16px calc(var(--sab,0) + 16px);
+    }
+    .card{
+      width:min(640px, 94vw);
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow: 0 10px 28px rgba(2,6,23,.12);
+      overflow:hidden;
+    }
+    .head{
+      display:flex; align-items:center; gap:12px;
+      padding:14px 16px; border-bottom:1px dashed #e6e9ee;
+      background:#ecfdf5;
+    }
+    .head img{width:40px;height:40px;border-radius:10px}
+    .title{font-weight:800}
+    .body{padding:16px}
+    .body p{margin:.4rem 0; line-height:1.6}
+    .muted{color:var(--muted); font-size:14px}
+    .tips{
+      margin-top:10px; padding:12px;
+      border:1px dashed #e5e7eb; border-radius:12px; background:#f8fafc
+    }
+    .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+    button,a.btn{
+      border:0; border-radius:999px; padding:10px 14px; cursor:pointer;
+      font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:8px
+    }
+    .btn-primary{background:linear-gradient(90deg,var(--brand),var(--brand-2)); color:#fff}
+    .btn-ghost{background:#fff; border:1px solid var(--border); color:var(--text)}
+    .status{display:inline-flex; align-items:center; gap:8px; font-weight:700}
+    .dot{width:10px; height:10px; border-radius:999px; background:#ef4444}
+    .ok{background:#16a34a}
+    .footer{
+      text-align:center; color:#eaf7ee; font-size:12px; margin-top:14px
+    }
+    @media (prefers-color-scheme: dark){
+      :root{ --surface:#0b1020; --text:#e5e7eb; --muted:#a3a3a3; --border:#1f2937; }
+      .card{ box-shadow: 0 10px 28px rgba(0,0,0,.35); }
+      .body .tips{ background:#0f172a }
+      .head{ background:#052e1d }
+      .footer{ color:#d1fae5 }
+    }
+    /* Tôn trọng người dùng giảm chuyển động */
+    @media (prefers-reduced-motion: reduce){
+      *{ animation:none !important; transition:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <div class="head">
+      <img src="/can-lua/icons/icon-192.png" alt="Biểu tượng Tính Cân Lúa" width="40" height="40">
+      <div>
+        <div class="title">TÍNH CÂN LÚA</div>
+        <div class="muted">Ứng dụng đang ở chế độ offline</div>
+      </div>
+    </div>
+    <div class="body">
+      <!-- Live region thông báo trạng thái mạng -->
+      <div class="status" id="netStatus" role="status" aria-live="polite" aria-atomic="true">
+        <span class="dot" id="dot" aria-hidden="true"></span>
+        <span id="label">Không có kết nối mạng</span>
+      </div>
+
+      <div class="tips" role="note">
+        <p>Không sao! Ứng dụng vẫn có thể dùng được ở chế độ offline nếu bạn đã mở trước đó.</p>
+        <p class="muted">• Khi có mạng trở lại, trang này sẽ tự chuyển về app.<br>
+           • Bạn cũng có thể bấm “Về trang chính” hoặc “Thử lại”.</p>
+      </div>
+
+      <div class="actions">
+        <a href="/can-lua/" class="btn btn-primary" id="backBtn" rel="noopener">
+          ⟲ <span>Về trang chính</span>
+        </a>
+        <button class="btn btn-ghost" id="retryBtn" type="button">↻ Thử lại</button>
+      </div>
+    </div>
+  </main>
+
+  <div class="footer">© 2025 — Hoàng Đợi</div>
+
+  <script>
+    // Cập nhật trạng thái mạng + tự điều hướng khi online
+    const dot = document.getElementById('dot');
+    const label = document.getElementById('label');
+    const retryBtn = document.getElementById('retryBtn');
+
+    let redirected = false; // tránh redirect nhiều lần
+
+    function setOnlineUI(online){
+      if (online){
+        dot.classList.add('ok');
+        label.textContent = 'Đã có kết nối — quay lại ứng dụng…';
+        if (!redirected) {
+          redirected = true;
+          // Điều hướng về index sau một nhịp nhỏ (SW sẽ phục vụ cache)
+          setTimeout(() => { location.replace('/can-lua/'); }, 350);
+        }
+      } else {
+        dot.classList.remove('ok');
+        label.textContent = 'Không có kết nối mạng';
+        redirected = false;
+      }
+    }
+
+    window.addEventListener('online',  () => setOnlineUI(true));
+    window.addEventListener('offline', () => setOnlineUI(false));
+
+    retryBtn.addEventListener('click', () => {
+      // Dùng no-store để thử thật sự qua mạng; nếu lỗi, SW vẫn có cache fallback
+      fetch('/can-lua/version.json', { cache: 'no-store' })
+        .then(() => setOnlineUI(true))
+        .catch(() => setOnlineUI(false));
+    });
+
+    // Khởi tạo trạng thái
+    setOnlineUI(navigator.onLine);
+  </script>
+</body>
+</html>

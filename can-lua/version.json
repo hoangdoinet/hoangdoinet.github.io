@@ -1,13 +1,10 @@
 {
   "name": "Tính cân lúa",
-  "version": "v1.0.1",
-  "release_date": "2025-10-22",
+  "version": "v1.0.2",
+  "release_date": "2025-10-26",
   "notes": [
-    "Cập nhật bộ logo và icon mới: bao lúa trắng, bông lúa vàng, nền xanh lá gradient.",
-    "Bật lưu trữ an toàn để dữ liệu không bị hệ thống dọn dẹp.",
-    "Cải thiện hiển thị splash screen và nút Cài đặt (A2HS) cho Android/iOS.",
-    "Tối ưu Service Worker: cập nhật ngầm và reload khi có bản mới.",
-    "Cải thiện hiệu năng và trải nghiệm nhập bảng 5×5, sửa lỗi nhỏ."
+    "Cải thiện hiệu năng ứng dụng và sửa lỗi nhỏ."
   ],
-  "changelog_url": "https://hoangdoinet.github.io/can-lua/changelog.html#v1-0-1"
+  "changelog_url": "https://hoangdoinet.github.io/can-lua/changelog.html#v1-0-2",
+  "critical": false
 }

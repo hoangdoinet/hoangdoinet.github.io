@@ -1,11 +1,11 @@
 /* service-worker.js — OFFLINE LOCKDOWN cho TÍNH CÂN LÚA */
-const APP_VERSION  = 'can-lua-v1.0.1';       // 🔁 Bump khi phát hành
+const APP_VERSION  = 'can-lua-v1.0.2';
 const CACHE_STATIC = `static-${APP_VERSION}`;
 
-// Tự tính base path theo vị trí SW (ví dụ: /can-lua/)
+// Xác định base path (ví dụ: /can-lua/)
 const BASE = new URL(self.location.href).pathname.replace(/[^/]+$/, '');
 
-// Tài nguyên cốt lõi cần có để offline/refresh hoạt động
+// Danh sách file cốt lõi
 const CORE = [
   '',
   'index.html',
@@ -25,24 +25,17 @@ self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_STATIC);
     await Promise.all(CORE.map(async (url) => {
-      try {
-        await cache.add(new Request(url, { cache: 'reload' }));
-      } catch (_) { /* bỏ qua file thiếu để không fail install */ }
+      try { await cache.add(new Request(url, { cache: 'reload' })); }
+      catch (_) { /* bỏ qua file lỗi */ }
     }));
   })());
-  self.skipWaiting();
+  // ❌ Không skipWaiting — đợi người dùng xác nhận từ index.html
 });
 
-// Cho phép client kích hoạt SW mới
+// ========== MESSAGE ==========
 self.addEventListener('message', (event) => {
-  if (event?.data?.type === 'CHECK_UPDATE_AND_RELOAD') {
-    (async () => {
-      try {
-        await self.skipWaiting();
-        const clis = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-        for (const c of clis) c.navigate(c.url);
-      } catch (e) {}
-    })();
+  if (event.data?.type === 'SKIP_WAITING') {
+    try { self.skipWaiting(); } catch (_) {}
   }
 });
 
@@ -52,7 +45,7 @@ self.addEventListener('activate', (event) => {
     if ('navigationPreload' in self.registration) {
       try { await self.registration.navigationPreload.enable(); } catch(_) {}
     }
-    // dọn cache cũ
+    // Xóa cache cũ
     const keys = await caches.keys();
     await Promise.all(
       keys.filter(k => k.startsWith('static-') && k !== CACHE_STATIC)
@@ -62,7 +55,7 @@ self.addEventListener('activate', (event) => {
   })());
 });
 
-// Helpers
+// Helper
 const isHTML = (req) => (req.headers.get('accept') || '').includes('text/html');
 
 // ========== FETCH ==========
@@ -74,12 +67,10 @@ self.addEventListener('fetch', (event) => {
   const isSameOrigin = url.origin === location.origin;
   const isNavigate = req.mode === 'navigate' || isHTML(req);
 
-  // 1) App shell cho điều hướng/HTML: luôn có index.html từ cache
+  // 1️⃣ HTML (App Shell)
   if (isNavigate && isSameOrigin) {
     event.respondWith((async () => {
       const cache = await caches.open(CACHE_STATIC);
-
-      // Ưu tiên index.html trong cache
       const cached = await cache.match(BASE + 'index.html', { ignoreSearch: true });
       if (cached) {
         // Làm mới ngầm
@@ -87,20 +78,17 @@ self.addEventListener('fetch', (event) => {
           try {
             const preload = await event.preloadResponse;
             const fresh = preload || await fetch(new Request(BASE + 'index.html', { cache: 'reload' }));
-            if (fresh && fresh.ok) await cache.put(BASE + 'index.html', fresh.clone());
+            if (fresh?.ok) await cache.put(BASE + 'index.html', fresh.clone());
           } catch (_) {}
         })();
         return cached;
       }
-
-      // Chưa có cache → thử mạng
       try {
         const preload = await event.preloadResponse;
-        const fresh  = preload || await fetch(new Request(BASE + 'index.html', { cache: 'reload' }));
-        if (fresh && fresh.ok) await cache.put(BASE + 'index.html', fresh.clone());
+        const fresh = preload || await fetch(new Request(BASE + 'index.html', { cache: 'reload' }));
+        if (fresh?.ok) await cache.put(BASE + 'index.html', fresh.clone());
         return fresh;
       } catch {
-        // Hoàn toàn offline & chưa có cache → trả offline.html
         const offline = await cache.match(BASE + 'offline.html');
         return offline || new Response('Offline', { status: 503 });
       }
@@ -108,31 +96,27 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 2) Static same-origin: cache-first + refresh ngầm
+  // 2️⃣ Static same-origin
   if (isSameOrigin) {
     event.respondWith((async () => {
       const cache = await caches.open(CACHE_STATIC);
       const cached = await cache.match(req, { ignoreSearch: true });
       if (cached) {
-        // làm mới im lặng khi có mạng
+        // Làm mới ngầm khi có mạng
         fetch(new Request(req, { cache: 'no-store' }))
-          .then(res => { if (res && res.ok) cache.put(req, res.clone()); })
+          .then(res => { if (res?.ok) cache.put(req, res.clone()); })
           .catch(() => {});
         return cached;
       }
-      // chưa có trong cache → thử mạng & lưu
+      // Nếu chưa có cache → tải và lưu
       try {
         const res = await fetch(new Request(req, { cache: 'no-store' }));
-        if (res && res.ok) cache.put(req, res.clone());
+        if (res?.ok) cache.put(req, res.clone());
         return res;
       } catch {
-        // im lặng khi thiếu
         return new Response('', { status: 204 });
       }
     })());
-    return;
+    return; // ✅ thêm return để dừng đúng luồng
   }
-
-  // 3) Cross-origin: để trình duyệt xử lý (network-first mặc định)
-  // event.respondWith(fetch(req));
 });

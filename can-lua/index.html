@@ -1,68 +1,84 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+  <!-- Charset & viewport -->
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-  <!-- Primary -->
-  <title>Tính cân lúa v1.0.1</title>
-  <link rel="canonical" href="https://hoangdoinet.github.io/can-lua/">
-  <meta name="description" content="Cân lúa offline: nhập nhanh bảng 5×5, tự tính khối lượng, trừ bì & thành tiền theo nông dân và ghe/xe. Cài đặt trên Android và iOS, có sao lưu/khôi phục dữ liệu.">
-  <meta name="author" content="Hoàng Đợi">
-  <meta name="creator" content="Hoàng Đợi">
-  <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
-  <meta name="referrer" content="origin-when-cross-origin">
-  <meta name="format-detection" content="telephone=no, address=no, email=no">
-  <meta name="color-scheme" content="light">
+  <!-- Primary SEO -->
+  <title>Tính cân lúa</title>
+  <link rel="canonical" href="https://hoangdoinet.github.io/can-lua/" />
+  <link rel="alternate" href="https://hoangdoinet.github.io/can-lua/" hreflang="vi-VN" />
+  <link rel="alternate" href="https://hoangdoinet.github.io/can-lua/" hreflang="x-default" />
+  <meta name="description" content="Ứng dụng tính cân lúa: nhập nhanh bảng tính 5×5, tự tính khối lượng, trừ bì & thành tiền theo chủ lúa và ghe, xe. Cài đặt ứng dụng trên Android và iOS, hỗ trợ sao lưu/khôi phục dữ liệu." />
+  <meta name="author" content="Hoàng Đợi" />
+  <meta name="creator" content="Hoàng Đợi" />
+  <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+  <meta name="referrer" content="origin-when-cross-origin" />
+  <meta name="format-detection" content="telephone=no, address=no, email=no" />
+  <meta name="color-scheme" content="light" />
 
-  <!-- Icons / Favicons (đường dẫn tuyệt đối) -->
-  <link rel="icon" type="image/png" sizes="32x32" href="/can-lua/icons/icon-32.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="/can-lua/icons/icon-192.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/can-lua/icons/apple-icon-180.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/can-lua/icons/apple-icon-152.png">
+  <!-- Icons / Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/can-lua/icons/icon-32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/can-lua/icons/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/can-lua/icons/apple-icon-180.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="/can-lua/icons/apple-icon-152.png" />
 
   <!-- PWA -->
-  <link rel="manifest" href="/can-lua/manifest.webmanifest">
-  <!-- theme-color cho iOS/Safari -->
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#22c55e">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#22c55e">
-  <!-- iOS web app -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Cân lúa">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/can-lua/manifest.webmanifest" />
+  <meta name="theme-color" content="#22c55e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tính cân lúa" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
   <!-- Open Graph -->
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Tính cân lúa">
-  <meta property="og:title" content="Tính cân lúa • v1.0.1">
-  <meta property="og:description" content="Nhập nhanh bảng tính 5×5, tự động tính khối lượng, trừ bì & thành tiền. Cài đặt trên Android và iOS dùng offline, có sao lưu/khôi phục dữ liệu.">
-  <meta property="og:url" content="https://hoangdoinet.github.io/can-lua/">
-  <meta property="og:image" content="https://hoangdoinet.github.io/can-lua/icons/og-image-1200.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="1200">
-  <meta property="og:image:alt" content="Giao diện ứng dụng Tính cân lúa">
-  <meta property="og:locale" content="vi_VN">
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Tính cân lúa" />
+  <meta property="og:title" content="Tính cân lúa" />
+  <meta property="og:description" content="Nhập nhanh bảng tính 5×5, tự động tính khối lượng, trừ bì & thành tiền. Cài đặt ứng dụng trên Android và iOS dùng offline, sao lưu/khôi phục dữ liệu." />
+  <meta property="og:url" content="https://hoangdoinet.github.io/can-lua/" />
+  <meta property="og:image" content="https://hoangdoinet.github.io/can-lua/icons/og-image-1200.png" />
+  <meta property="og:image:secure_url" content="https://hoangdoinet.github.io/can-lua/icons/og-image-1200.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="1200" />
+  <meta property="og:image:alt" content="Giao diện ứng dụng Tính cân lúa" />
+  <meta property="og:locale" content="vi_VN" />
 
   <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Tính cân lúa • v1.0.1">
-  <meta name="twitter:description" content="Nhập nhanh bảng tính 5×5, tự động tính khối lượng, trừ bì & thành tiền. Cài đặt trên Android và iOS dùng offline, có sao lưu/khôi phục dữ liệu.">
-  <meta name="twitter:image" content="https://hoangdoinet.github.io/can-lua/icons/og-image-1200.png">
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Tính cân lúa" />
+  <meta name="twitter:description" content="Nhập nhanh bảng tính 5×5, tự động tính khối lượng, trừ bì & thành tiền. Cài đặt trên Android và iOS dùng offline, có sao lưu/khôi phục dữ liệu." />
+  <meta name="twitter:image" content="https://hoangdoinet.github.io/can-lua/icons/og-image-1200.png" />
+  <meta name="twitter:image:alt" content="Giao diện ứng dụng Tính cân lúa" />
 
-  <!-- Structured Data -->
+  <!-- JSON-LD: SoftwareApplication + WebSite -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "Tính cân lúa",
-    "applicationCategory": "BusinessApplication",
-    "operatingSystem": "Web",
-    "softwareVersion": "1.0.1",
-    "inLanguage": "vi-VN",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "VND" },
-    "description": "Cân lúa offline: nhập nhanh bảng 5×5, tự tính khối lượng, trừ bì & thành tiền theo nông dân/ghe xe. PWA, có sao lưu/khôi phục.",
-    "url": "https://hoangdoinet.github.io/can-lua/"
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "Tính cân lúa",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Android,iOS,Web",
+        "description": "Ứng dụng tính cân lúa: nhập nhanh bảng tính 5×5, tự tính khối lượng, trừ bì & thành tiền theo chủ lúa và ghe, xe. Dùng offline, có sao lưu/khôi phục dữ liệu.",
+        "inLanguage": "vi-VN",
+        "url": "https://hoangdoinet.github.io/can-lua/",
+        "image": "https://hoangdoinet.github.io/can-lua/icons/og-image-1200.png",
+        "author": { "@type": "Person", "name": "Hoàng Đợi" },
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "VND", "category": "Free" },
+        "softwareVersion": "1.0.2"
+      },
+      {
+        "@type": "WebSite",
+        "name": "Tính cân lúa",
+        "url": "https://hoangdoinet.github.io/can-lua/",
+        "inLanguage": "vi-VN",
+        "publisher": { "@type": "Person", "name": "Hoàng Đợi" }
+      }
+    ]
   }
   </script>
 
@@ -88,7 +104,8 @@
     .appbar-inner{display:flex;align-items:center;gap:8px;padding:12px 14px}
     .app-title{font-size:18px;font-weight:800}
     .subtitle{font-size:12px;color:var(--muted)}
-    .back{border:1px solid var(--border);background:#fff;border-radius:12px;padding:8px 10px}
+    .back{font-size:15px;font-weight:800;color: var(--accent);border:1px solid var(--border);background:#fff;border-radius:12px;padding:8px 10px}
+    .back:hover {background: var(--accent-soft);color: var(--accent-2);}
     .section{margin:12px;background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
     .section-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px dashed var(--accent);background:var(--accent-soft)}
     .section-title{font-size:15px;font-weight:800}
@@ -113,13 +130,14 @@
     .kv .value{min-width:120px;text-align:right}
     .kv .value.danger{ color: var(--danger); font-weight: 800; }
     .kv .value.accent{ color: var(--accent); font-weight: 800; }
+    .kv .value.orange{ color: var(--orange); font-weight: 800; }
     .group-card .g-foot{display:flex;gap:8px;justify-content:flex-end;padding:10px 12px;border-top:1px dashed #e6e9ee;background:#fafafa}
     .group-card .g-foot button{padding:8px 12px}
     .muted{color:var(--muted);font-size:12px}
     .table-card{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:#fff;margin-bottom:12px}
-    .table-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--border);background:var(--accent-soft)}
+    .table-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px dashed var(--border);background:var(--accent-soft)}
     .colheads{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:8px 12px 0 12px}
-    .colheads span{display:block;text-align:center;font-weight:800;color:#22c55e}
+    .colheads span{display:block;text-align:center;font-weight:800;color:#16a34a}
     .cells{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:12px}
     .cells input{padding:14px 10px;text-align:center;border-radius:12px;border:1px solid var(--border);background:#fff;font-weight:800}
     .cells input[disabled]{background:#f1f5f9;color:#9ca3af}
@@ -143,7 +161,9 @@
     .stat label{display:block;font-weight:800;font-size:12px;margin-bottom:6px}
     .stat input{width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;font-weight:800}
     .stat input[readonly]{background:#f9fafb;color:#111827}
-    .stat input.money{color:var(--danger)!important;font-weight:800; background: #fff8c2}
+    .stat input.view3-danger{color:var(--danger)!important;font-weight:800; background: #fff8c2}
+    .stat input.view3-orange{color:var(--orange)!important;font-weight:800; background: var(--accent-soft)}
+    .stat input.view3-accent{color:var(--accent)!important;font-weight:800; background: var(--accent-soft)}
     .mode-section{border:1px dashed #e5e7eb;border-radius:12px;padding:10px;margin-top:8px}
     .mode-title{font-weight:800;margin-bottom:6px}
     .mode-option{display:flex;align-items:center;gap:8px;margin:4px 0}
@@ -160,51 +180,31 @@
     .tool-main{flex:1}
     .tool-title{font-weight:800}
     .tool-sub{font-size:12px;color:#6b7280}
+    .tip-text{font-size:12px;color:#6b7280;margin-top:4px;font-style:italic;}
     .app-footer{margin:12px;padding:10px 14px;text-align:center;color:#6b7280;font-size:12px;}
-    #btnInstall{display:none;margin-left:6px}
     :root{ --brand1:#22c55e; --brand2:#16a34a; }
-    #splash{
-      position:fixed; inset:0;
-      padding: calc(var(--sat, 0) + 16px) 16px calc(var(--sab, 0) + 16px);
-      background:
-        radial-gradient(120% 90% at 50% -10%, #fff3 0%, #0000 60%),
-        linear-gradient(180deg,var(--brand1),var(--brand2));
-      color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
-      z-index:9999; text-align:center; transition:opacity .7s ease, visibility .7s;
-    }
+    #splash{position:fixed; inset:0; padding: calc(var(--sat, 0) + 16px) 16px calc(var(--sab, 0) + 16px);
+      background: radial-gradient(120% 90% at 50% -10%, #fff3 0%, #0000 60%), linear-gradient(180deg,var(--brand1),var(--brand2));
+      color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; text-align:center; transition:opacity .7s ease, visibility .7s;}
     #splash.hidden{ opacity:0; visibility:hidden; }
     .logo-wrap{ position:relative; width:140px; height:140px; filter:drop-shadow(0 10px 24px rgba(0,0,0,.28)); }
-    .logo-img{
-      width:100%; height:100%; border-radius:24%;
-      animation: popIn 900ms cubic-bezier(.2,.7,.2,1) both, glow 1.6s .9s ease-in-out 2 alternate;
-      will-change: transform, filter;
-    }
-    .logo-wrap::after{
-      content:""; position:absolute; inset:-8%;
+    .logo-img{ width:100%; height:100%; border-radius:24%; animation: popIn 900ms cubic-bezier(.2,.7,.2,1) both, glow 1.6s .9s ease-in-out 2 alternate; will-change: transform, filter; }
+    .logo-wrap::after{ content:""; position:absolute; inset:-8%;
       background: linear-gradient(75deg, transparent 30%, #fff6 48%, #fff9 52%, transparent 70%);
-      transform: translateX(-120%) rotate(8deg);
-      border-radius:28%;
-      animation: sweep 1.1s .35s ease-out forwards;
-      pointer-events:none; mix-blend-mode:overlay;
-    }
-    .app-name{
-      margin-top:14px; font-size:26px; font-weight:800; letter-spacing:.8px;
-      overflow:hidden; white-space:nowrap; border-right:2px solid rgba(255,255,255,.85);
-      width:0; animation: typing 1.4s .45s steps(18,end) forwards, caret .9s step-end infinite;
-      text-shadow: 0 1px 2px #0003;
-    }
-    .meta{ margin-top:8px; font-size:14px; opacity:.95 }
-    .meta b{ font-weight:800 }
+      transform: translateX(-120%) rotate(8deg); border-radius:28%; animation: sweep 1.1s .35s ease-out forwards; pointer-events:none; mix-blend-mode:overlay; }
+    .app-name{ margin-top:14px; font-size:26px; font-weight:800; letter-spacing:.8px; overflow:hidden; white-space:nowrap; border-right:2px solid rgba(255,255,255,.85);
+      width:0; animation: typing 1.4s .45s steps(18,end) forwards, caret .9s step-end infinite; text-shadow: 0 1px 2px #0003; }
+    .meta{ margin-top:8px; font-size:14px; opacity:.95 } .meta b{ font-weight:800 }
     @keyframes popIn{0%{ transform: scale(.6) rotate(-8deg); opacity:.0 }60%{ transform: scale(1.08) rotate(3deg); opacity:1 }100%{ transform: scale(1) rotate(0) }}
     @keyframes glow{from{ filter: drop-shadow(0 10px 24px rgba(0,0,0,.28)) brightness(1) saturate(1) }to{ filter: drop-shadow(0 12px 34px rgba(0,0,0,.35)) brightness(1.08) saturate(1.1) }}
     @keyframes sweep{ to{ transform: translateX(120%) rotate(8deg); opacity:.0 } }
     @keyframes typing{ from{ width:0 } to{ width:100% } }
     @keyframes caret{ 50%{ border-color: transparent } }
-    @media (prefers-reduced-motion: reduce){
-      .logo-img, .logo-wrap::after, .app-name{ animation: none !important }
-      #splash{ transition: opacity .2s ease, visibility .2s }
-    }
+    @media (prefers-reduced-motion: reduce){ .logo-img, .logo-wrap::after, .app-name{ animation: none !important } #splash{ transition: opacity .2s ease, visibility .2s } }
+
+    /* ==== BỔ SUNG: Highlight ô bắt buộc ==== */
+    .input-invalid{ border-color: var(--danger) !important; background:#fee2e2 !important; }
+    .required > label::after{ content:" *"; color: var(--danger); font-weight:800; }
   </style>
 </head>
 <body>
@@ -215,21 +215,20 @@
       <img src="/can-lua/icons/icon-512.png" class="logo-img" alt="Logo Tính Cân Lúa" width="140" height="140">
     </div>
     <div class="app-name" aria-hidden="true">TÍNH CÂN LÚA</div>
-    <div class="meta">Phiên bản: <b id="verText">v1.0.1</b></div>
+    <div class="meta">Phiên bản: <b id="verText">v1.0.2</b></div>
     <div class="meta">Tác giả: <b id="authorText">Hoàng Đợi</b></div>
   </div>
 
 <div class="app">
   <div class="appbar">
     <div class="appbar-inner">
-      <button class="back" id="btnBack" style="display:none">←</button>
+      <button type="button" class="back" id="btnBack" style="display:none">←</button>
       <div style="flex:1">
         <h1 class="app-title" id="appTitle">TÍNH CÂN LÚA</h1>
-        <div class="subtitle" id="appSub">Nhóm (Ghe/Xe)</div>
+        <div class="subtitle" id="appSub">Ứng dụng quản lý cân lúa</div>
       </div>
       <div class="row">
-        <button id="btnInstall" class="btn-primary" title="Cài đặt ứng dụng">＋ Cài đặt app</button>
-        <button class="btn-ghost" id="btnTools">⋯ Tiện ích</button>
+        <button type="button" class="btn-ghost" id="btnTools">🛠️ Tiện ích</button>
       </div>
     </div>
   </div>
@@ -237,8 +236,8 @@
   <!-- View 1 -->
   <div id="view-groups" class="section">
     <div class="section-head">
-      <div class="section-title">Danh sách nhóm (ghe/xe)</div>
-      <div class="row"><span class="chip" id="chipGroups">0 nhóm</span></div>
+      <div class="section-title">Danh sách ghe, xe</div>
+      <div class="row"><span class="chip" id="chipGroups">Ghe, xe: 0</span></div>
     </div>
     <div class="section-body"><div style="height:8px"></div><div id="groupList" class="list"></div></div>
   </div>
@@ -246,16 +245,13 @@
   <!-- View 2 -->
   <div id="view-farmers" class="section" style="display:none">
     <div class="section-head">
-      <div class="section-title">Nhóm (ghe/xe): <span id="chipGroupName">—</span></div>
-      <div class="row"><span class="chip" id="chipFarmerCount">Nông dân: 0</span></div>
+      <div class="section-title">Tên ghe, xe: <span id="chipGroupName">—</span></div>
+      <div class="row"><span class="chip" id="chipFarmerCount">Chủ lúa: 0</span></div>
     </div>
     <div class="section-body">
       <div id="farmersStats" class="stat-grid">
-        <div class=stat style="grid-column:1/ -1"><label><b>Tổng bao (lần cân)</b></label><input id="stat2Bags" type="text" readonly value="0"></div>
-        <div class=stat style="grid-column:1/ -1"><label><b>Tổng khối lượng cân (kg)</b></label><input id="stat2Kg" type="text" readonly value="0"></div>
-        <div class=stat style="grid-column:1/ -1"><label><b>Tổng khấu trừ bì (kg)</b></label><input id="stat2Tare" type="text" readonly value="0"></div>
-        <div class=stat style="grid-column:1/ -1"><label><b>Tổng khối lượng tính tiền (kg)</b></label><input id="stat2Remain" type="text" readonly value="0"></div>
-        <div class=stat style="grid-column:1/ -1"><label><b>Tổng thành tiền (đ)</b></label><input id="stat2Money" class="money" type="text" readonly value="0"></div>
+        <div class="stat"><label><b>Số bao (lần cân):</b></label><input id="stat2Bags" class="view3-orange" type="text" readonly value="0"></div>
+        <div class="stat"><label><b>Tổng cân (kg):</b></label><input id="stat2Kg" class="view3-orange" type="text" readonly value="0"></div>
       </div>
       <div id="farmerList" class="list"></div>
     </div>
@@ -269,8 +265,8 @@
 
   <!-- FAB -->
   <div class="fab">
-    <button id="fabAddFarmer" class="btn-primary" title="Thêm nông dân">👤</button>
-    <button id="fabAddGroup" class="btn-primary" title="Thêm nhóm">➕</button>
+    <button type="button" id="fabAddFarmer" class="btn-primary" title="Thêm chủ lúa">👤</button>
+    <button type="button" id="fabAddGroup" class="btn-primary" title="Thêm ghe, xe">➕</button>
   </div>
 
   <input id="fileInput" type="file" accept="application/json" style="display:none">
@@ -278,28 +274,35 @@
   <!-- Bottom Sheet -->
   <div class="sheet-backdrop" id="sheetBackdrop"></div>
   <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
-    <div class="sheet-head"><div id="sheetTitle" style="font-weight:800">Thêm</div><button class="btn-ghost" id="btnSheetClose">✕</button></div>
+    <div class="sheet-head">
+      <div id="sheetTitle" style="font-weight:800">Thêm</div>
+      <button type="button" class="btn-ghost" id="btnSheetClose">✕</button>
+    </div>
     <div class="sheet-body" id="sheetBody"></div>
-    <div class="sheet-actions"><button class="btn-ghost" id="btnSheetCancel">Hủy</button><button class="btn-primary" id="sheetConfirm">Lưu</button></div>
+    <div class="sheet-actions">
+      <button type="button" class="btn-ghost" id="btnSheetCancel">Hủy</button>
+      <button type="button" class="btn-primary" id="sheetConfirm">Lưu</button>
+    </div>
   </div>
 
   <!-- Center Dialog -->
   <div class="dialog-backdrop" id="dlgBackdrop"></div>
   <div class="dialog" id="dialog" role="alertdialog" aria-labelledby="dlgTitle" aria-describedby="dlgBody">
     <div class="dialog-head" id="dlgTitle">Thông báo</div>
-    <div class="dialog-body" id="dlgBody">Nội dung</div>
+    <div class="dialog-body" id="dlgBody" aria-live="polite">Nội dung</div>
     <div class="dialog-actions">
-      <button class="btn-ghost" id="dlgCancel" style="display:none">Hủy</button>
-      <button class="btn-primary" id="dlgOk">OK</button>
+      <button type="button" class="btn-ghost" id="dlgCancel" style="display:none">Hủy</button>
+      <button type="button" class="btn-primary" id="dlgOk">OK</button>
     </div>
   </div>
+
   <!-- Footer -->
   <div class="app-footer">© 2025 — Hoàng Đợi</div>
 </div> <!-- kết thúc .app -->
 
 <script>
 /* ===== State & Utils ===== */
-const APP_VERSION='v1.0.1';
+const APP_VERSION='v1.0.2';
 
 /* ==== Splash Control (dùng APP_VERSION) ==== */
 (function(){
@@ -331,11 +334,11 @@ let state={groups:{},activeGroup:'',activeFarmer:'',view:'groups'};
 const $=id=>document.getElementById(id);
 const newEmptyTable=()=>Array.from({length:25},()=>null);
 const fmt=n=> new Intl.NumberFormat('vi-VN').format(Math.round((+n||0)*100)/100);
+const vnd=n=> new Intl.NumberFormat('vi-VN',{style:'currency',currency:'VND',maximumFractionDigits:0}).format(Math.round(+n||0));
 function sumTable(arr){return arr.reduce((s,v)=>s+(typeof v==='number'?v:0),0)}
 function sumCol(tbl,col){let s=0; for(let r=0;r<5;r++){const v=tbl[r*5+col]; if(typeof v==='number') s+=v;} return s;}
 function isTableFull(arr){return arr.every(v=> typeof v==='number' && !isNaN(v))}
-function escapeQuote(s){ return String(s).replaceAll('"','\\"').replaceAll("'","\\'") }
-function escapeHtml(s){ const map={"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}; return String(s).replace(/[&<>"']/g, c=>map[c]); }
+function escapeHtml(s){const map={"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"};return String(s).replace(/[&<>"']/g,c=>map[c]);}
 function pad2(x){return String(x).padStart(2,'0')}
 function formatDateTimeDDMM_HHmm(ts){const d=new Date(ts||Date.now());return `${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()} - ${pad2(d.getHours())}:${pad2(d.getMinutes())}`}
 function byteLen(str){return new Blob([str]).size}
@@ -352,16 +355,41 @@ function openDialog({title='Thông báo',message='',okText='OK',cancelText=null}
   const cancelBtn=$('dlgCancel'), okBtn=$('dlgOk');
   cancelBtn.style.display=cancelText?'inline-block':'none'; if(cancelText) cancelBtn.textContent=cancelText; okBtn.textContent=okText||'OK';
   $('dlgBackdrop').style.display='block'; $('dialog').classList.add('open');
+
   return new Promise(res=>{
-    _dlgOk=()=>{closeDialog();res(true)}; _dlgCancel=()=>{closeDialog();res(false)};
-    okBtn.onclick=_dlgOk; cancelBtn.onclick=_dlgCancel; $('dlgBackdrop').onclick=closeDialog;
-    document.addEventListener('keydown',onEscOnce,{once:true});
+    _dlgOk=()=>{ closeDialog(); res(true) };
+    _dlgCancel=()=>{ closeDialog(); res(false) };
+
+    okBtn.onclick=_dlgOk;
+    cancelBtn.onclick=_dlgCancel;
+    $('dlgBackdrop').onclick=_dlgCancel;
+    document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') _dlgCancel(); },{once:true});
   });
 }
-function onEscOnce(e){ if(e.key==='Escape') closeDialog(); }
 function closeDialog(){ $('dlgBackdrop').style.display='none'; $('dialog').classList.remove('open'); _dlgOk=_dlgCancel=null; }
 const showAlert=(msg,title='Thông báo')=>openDialog({title,message:msg,okText:'Đã hiểu'});
 const showConfirm=(msg,{title='Xác nhận',okText='Đồng ý',cancelText='Hủy'}={})=>openDialog({title,message:msg,okText,cancelText});
+
+/* ===== Highlight helpers cho trường bắt buộc ===== */
+function setInvalid(el, msg){
+  if(!el) return false;
+  el.classList.add('input-invalid');
+  el.setAttribute('aria-invalid','true');
+  if(msg) el.setAttribute('title', msg);
+  try{ el.focus(); el.select?.(); }catch(_){}
+  return false;
+}
+function clearInvalid(el){
+  if(!el) return;
+  el.classList.remove('input-invalid');
+  el.removeAttribute('aria-invalid');
+  el.removeAttribute('title');
+}
+function validateNotEmpty(el, msg='Trường này là bắt buộc'){
+  const v = String(el?.value||'').trim();
+  if(!v) return setInvalid(el, msg);
+  clearInvalid(el); return true;
+}
 
 /* ===== Bottom Sheet ===== */
 let sheetMode=null, sheetPayload=null;
@@ -373,23 +401,43 @@ function openSheet(mode,payload){
   if(mode==='appTools'){
     title.textContent='Tiện ích'; act.style.display='none';
     body.innerHTML=`
-      <div class="tool-list">
-        <div class="tool-item" id="toolExport"><div class="tool-ico">⬇️</div><div class="tool-main"><div class="tool-title">Sao lưu dữ liệu</div><div class="tool-sub">Xuất file JSON (rice-scale-data.json)</div></div></div>
-        <div class="tool-item" id="toolImport"><div class="tool-ico">⬆️</div><div class="tool-main"><div class="tool-title">Khôi phục dữ liệu</div><div class="tool-sub">Chọn file JSON đã sao lưu để nhập</div></div></div>
-        <div class="tool-item" id="toolWipe"><div class="tool-ico">🗑</div><div class="tool-main"><div class="tool-title">Xóa bộ nhớ</div><div class="tool-sub">Xóa sạch dữ liệu đang lưu trên máy</div></div></div>
+      <div class="tool-list" id="toolList">
+        <!-- ⚙️ Nút cài đặt sẽ chèn động nếu đủ điều kiện -->
+        <div class="tool-item" id="toolExport"><div class="tool-ico">💾</div><div class="tool-main"><div class="tool-title">Sao lưu dữ liệu</div><div class="tool-sub">Xuất file JSON (rice-scale-data.json)</div></div></div>
+        <div class="tool-item" id="toolImport"><div class="tool-ico">🔄</div><div class="tool-main"><div class="tool-title">Khôi phục dữ liệu</div><div class="tool-sub">Chọn file JSON đã sao lưu để nhập</div></div></div>
+        <div class="tool-item" id="toolWipe"><div class="tool-ico">🗑</div><div class="tool-main"><div class="tool-title">Xóa bộ nhớ</div><div class="tool-sub">Xóa sạch dữ liệu Tính cân lúa đang lưu trên máy</div></div></div>
         <div class="tool-item" id="toolHelp"><div class="tool-ico">🎬</div><div class="tool-main"><div class="tool-title">Hướng dẫn sử dụng</div><div class="tool-sub">Mở video hướng dẫn trên YouTube</div></div></div>
         <div class="tool-item" id="toolInfo"><div class="tool-ico">ℹ️</div><div class="tool-main"><div class="tool-title">Thông tin ứng dụng</div><div class="tool-sub">Phiên bản, mô tả, dung lượng dữ liệu</div></div></div>
       </div>`;
+
+    // ✅ chèn nút Cài đặt nếu đủ điều kiện
+    if (window.__a2hs?.eligible()){
+      const li = document.createElement('div');
+      li.className = 'tool-item';
+      li.id = 'toolInstall';
+      li.innerHTML = `<div class="tool-ico">📥</div>
+        <div class="tool-main">
+          <div class="tool-title">Cài đặt ứng dụng</div>
+          <div class="tool-sub">Cài đặt ứng dụng để dùng nhanh hơn, lưu trữ dữ liệu an toàn và không cần mạng internet.</div>
+        </div>`;
+      const list = document.getElementById('toolList');
+      list.insertBefore(li, list.firstChild);
+      li.addEventListener('click', async ()=>{
+        closeSheet();
+        await window.__a2hs.triggerInstall();
+      });
+    }
+
     $('toolExport').addEventListener('click',()=>{ closeSheet(); exportData(); });
     $('toolImport').addEventListener('click',()=>{ openRestorePicker(); });
     $('toolWipe').addEventListener('click',async()=>{
-      const ok=await showConfirm('Xóa toàn bộ dữ liệu? Hành động này không thể hoàn tác.',{title:'Xóa dữ liệu',okText:'Xóa',cancelText:'Hủy'});
+      const ok=await showConfirm('Xóa toàn bộ dữ liệu Tính cân lúa? Hành động này không thể hoàn tác.',{title:'Xóa dữ liệu',okText:'Xóa',cancelText:'Hủy'});
       if(!ok) return;
       try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
       state={groups:{},activeGroup:'',activeFarmer:'',view:'groups'};
       closeSheet(); save(); await showAlert('Đã xóa toàn bộ dữ liệu.'); location.reload();
     });
-    $('toolHelp').addEventListener('click',()=>{ window.open('https://www.youtube.com/','_blank'); });
+    $('toolHelp').addEventListener('click',()=>{ window.open('https://www.youtube.com/','_blank','noopener,noreferrer'); });
     $('toolInfo').addEventListener('click',()=> openSheet('appInfo'));
   }
 
@@ -397,50 +445,61 @@ function openSheet(mode,payload){
     title.textContent='Thông tin ứng dụng'; act.style.display='none';
     const raw = JSON.stringify(state||{}, null, 0); const size = formatBytes(byteLen(raw));
     body.innerHTML=`
-      <div class="field"><div style="font-size:14px;line-height:1.6;border:1px dashed var(--border);border-radius:12px;padding:10px">TÍNH CÂN LÚA là ứng dụng giúp nhập nhanh khối lượng từng bao lúa theo bảng 5×5, tự động tính toán khối lượng, trừ bì, thành tiền cho từng nông dân và từng ghe/xe (nhóm). <p>Ứng dụng có thể cài đặt trên Android/iOS để dùng offline và hỗ trợ sao lưu/khôi phục dữ liệu.</p></div></div>
+      <div class="field"><div style="font-size:14px;line-height:1.6;border:1px dashed var(--border);border-radius:12px;padding:10px">TÍNH CÂN LÚA là ứng dụng giúp nhập nhanh khối lượng từng bao lúa theo bảng tính 5×5, tự động tính toán khối lượng, trừ bì, thành tiền cho từng chủ lúa và từng ghe, xe. <p>Ứng dụng có thể cài đặt trên Android/iOS để dùng offline và hỗ trợ sao lưu/khôi phục dữ liệu.</p></div></div>
       <div class="field"><label>Phiên bản hiện tại</label><input type="text" readonly value="${APP_VERSION}"></div>
       <div class="field"><label>Tác giả</label><input type="text" readonly value="Hoàng Đợi"></div>
       <div class="field"><label>Dung lượng dữ liệu hiện tại</label><input type="text" readonly value="${size}"></div>`;
   }
 
   if(mode==='addGroup'){
-    title.textContent='Thêm ghe/xe'; act.textContent='Thêm';
+    title.textContent='Thêm ghe, xe'; act.textContent='Thêm';
     body.innerHTML=`
-      <div class="field"><label for="inName">Tên nhóm (ghe/xe)</label>
-        <input id="inName" type="text" placeholder="VD: Ghe Tư Hải / 83A-12345" autofocus></div>
-      <div class="field"><label for="inPhone">SĐT chủ ghe / tài xế (tuỳ chọn)</label>
-        <input id="inPhone" type="tel" inputmode="numeric" placeholder="VD: 0123456789"></div>`;
-    $('sheetConfirm').onclick=()=>{const name=$('inName').value.trim(); if(!name) return; if(state.groups[name]){showAlert('Tên nhóm đã tồn tại.');return;}
+      <div class="field required"><label for="inName">Tên ghe, xe</label>
+        <input id="inName" type="text" placeholder="VD: Ghe Tư Hải / Xe 83A-12345" required autofocus><div class="tip-text">(*) Nhập tên ghe hoặc xe</div></div>
+      <div class="field"><label for="inPhone">Số điện thoại</label>
+        <input id="inPhone" type="tel" inputmode="numeric" placeholder="VD: 0123456789"><div class="tip-text">(*) Số điện thoại của ghe, xe ( không bắt buộc )</div></div>`;
+    const inName = $('inName');
+    inName.addEventListener('input', ()=> clearInvalid(inName));
+    $('sheetConfirm').onclick=()=>{
+      if(!validateNotEmpty(inName,'Vui lòng nhập tên ghe, xe')) return;
+      const name=inName.value.trim();
+      if(state.groups[name]){ setInvalid(inName,'Tên ghe, xe đã tồn tại'); showAlert('Tên ghe, xe đã tồn tại.'); return; }
       const phone=$('inPhone').value.trim();
       state.groups[name]={ownerPhone:phone||'', farmers:{}, createdAt:Date.now()};
-      state.activeGroup=name; state.activeFarmer=''; closeSheet(); navTo('farmers'); };
+      state.activeGroup=name; state.activeFarmer=''; closeSheet(); navTo('farmers');
+    };
   }
 
   if(mode==='editGroup'){
     const g=payload; const grp=state.groups[g];
-    title.textContent='Sửa thông tin nhóm'; act.textContent='Cập nhật';
+    title.textContent='Sửa thông tin ghe, xe'; act.textContent='Cập nhật';
     body.innerHTML=`
-      <div class="field"><label for="inName">Tên nhóm</label>
-        <input id="inName" type="text" value="${escapeHtml(g)}" autofocus></div>
-      <div class="field"><label for="inPhone">SĐT</label>
-        <input id="inPhone" type="tel" inputmode="numeric" value="${escapeHtml(grp?.ownerPhone||'')}"></div>`;
-    $('sheetConfirm').onclick=()=>{const newName=$('inName').value.trim(); if(!newName) return;
-      if(newName!==g && state.groups[newName]){showAlert('Tên nhóm đã tồn tại.');return;}
+      <div class="field required"><label for="inName">Tên ghe, xe</label>
+        <input id="inName" type="text" placeholder="VD: Ghe Tư Hải / Xe 83A-12345" value="${escapeHtml(g)}" required autofocus><div class="tip-text">(*) Nhập tên ghe hoặc xe</div></div>
+      <div class="field"><label for="inPhone">Số điện thoại</label>
+        <input id="inPhone" type="tel" inputmode="numeric" placeholder="VD: 0123456789" value="${escapeHtml(grp?.ownerPhone||'')}"><div class="tip-text">(*) Số điện thoại của ghe, xe ( không bắt buộc )</div></div>`;
+    const inName = $('inName');
+    inName.addEventListener('input', ()=> clearInvalid(inName));
+    $('sheetConfirm').onclick=()=>{
+      const newName=inName.value.trim();
+      if(!validateNotEmpty(inName,'Vui lòng nhập tên ghe, xe')) return;
+      if(newName!==g && state.groups[newName]){ setInvalid(inName,'Tên ghe, xe đã tồn tại'); showAlert('Tên ghe, xe đã tồn tại.'); return; }
       const phone=$('inPhone').value.trim(); const data=state.groups[g];
       delete state.groups[g]; state.groups[newName]={...data, ownerPhone:phone};
-      if(state.activeGroup===g) state.activeGroup=newName; closeSheet(); save();};
+      if(state.activeGroup===g) state.activeGroup=newName; closeSheet(); save();
+    };
   }
 
   if(mode==='addFarmer'){
-    if(!state.activeGroup){showAlert('Chọn nhóm trước.');return}
-    title.textContent='Thêm nông dân'; act.textContent='Thêm';
+    if(!state.activeGroup){showAlert('Chọn ghe, xe trước.');return}
+    title.textContent='Thêm chủ lúa'; act.textContent='Thêm';
     body.innerHTML=`
-      <div class="field"><label for="inName">Tên nông dân</label>
-        <input id="inName" type="text" placeholder="VD: Chú Năm / Anh Hậu" autofocus></div>
-      <div class="field"><label for="inFPrice">Đơn giá (đ/kg) của nông dân</label>
-        <input id="inFPrice" type="number" inputmode="decimal" placeholder="VD: 7100"></div>
-      <div class="field"><label for="inTare">Quy tắc bì (mỗi X bao = 1 kg)</label>
-        <input id="inTare" type="number" inputmode="numeric" min="0" step="1" placeholder="VD: 10"></div>
+      <div class="field required"><label for="inName">Tên chủ lúa</label>
+        <input id="inName" type="text" placeholder="VD: Chú Năm / Anh Hậu" required autofocus><div class="tip-text">(*) Nhập vào tên chủ lúa</div></div>
+      <div class="field"><label for="inFPrice">Đơn giá (đ/kg)</label>
+        <input id="inFPrice" type="number" inputmode="decimal" placeholder="VD: 7100"><div class="tip-text">(*) Nhập đơn giá lúa tính theo kg ( không bắt buộc )</div></div>
+      <div class="field"><label for="inTare">Quy tắc bì</label>
+        <input id="inTare" type="number" inputmode="numeric" min="0" step="1" placeholder="VD: 10"><div class="tip-text">(*) Mỗi X bao = 1kg ( không bắt buộc )</div></div>
       <div class="mode-section">
         <div class="mode-title">Quy cách nhập &lt; 100kg</div>
         <label class="mode-option"><input type="radio" name="inMode" value="lt2"> 2 số — 50 → 50kg</label>
@@ -451,9 +510,12 @@ function openSheet(mode,payload){
         <label class="mode-option"><input type="radio" name="inMode" value="ge3"> 3 số — 100 → 100kg</label>
         <label class="mode-option"><input type="radio" name="inMode" value="ge4"> 4 số — 100,4kg (gram chẵn)</label>
       </div>`;
+    const inName = $('inName');
+    inName.addEventListener('input', ()=> clearInvalid(inName));
     $('sheetConfirm').onclick=()=>{
-      const v=$('inName').value.trim(); if(!v) return; const grp=getActiveGroup();
-      if(grp.farmers[v]){showAlert('Tên nông dân đã tồn tại.');return;}
+      if(!validateNotEmpty(inName,'Vui lòng nhập tên chủ lúa')) return;
+      const v=inName.value.trim(); const grp=getActiveGroup();
+      if(grp.farmers[v]){ setInvalid(inName,'Tên chủ lúa đã tồn tại'); showAlert('Tên chủ lúa đã tồn tại.'); return; }
       const fp=Number($('inFPrice').value)||0;
       const tr=Math.max(0, Math.floor(Number($('inTare').value)||0));
       const im=document.querySelector('input[name="inMode"]:checked')?.value || 'lt3';
@@ -463,16 +525,22 @@ function openSheet(mode,payload){
   }
 
   if(mode==='renameFarmer'){
-    const f=payload; title.textContent='Đổi tên nông dân'; act.textContent='Lưu';
-    body.innerHTML=`<div class="field"><label for="inName">Tên nông dân</label>
-      <input id="inName" type="text" value="${escapeHtml(f)}" autofocus></div>`;
-    $('sheetConfirm').onclick=()=>{const grp=getActiveGroup(); const v=$('inName').value.trim();
-      if(!v||v===f) return closeSheet(); if(grp.farmers[v]){showAlert('Tên nông dân đã tồn tại.');return;}
-      grp.farmers[v]=grp.farmers[f]; delete grp.farmers[f]; if(state.activeFarmer===f) state.activeFarmer=v; closeSheet(); save();};
+    const f=payload; title.textContent='Đổi tên chủ lúa'; act.textContent='Lưu';
+    body.innerHTML=`<div class="field required"><label for="inName">Tên chủ lúa</label>
+      <input id="inName" type="text" value="${escapeHtml(f)}" required autofocus></div>`;
+    const inName = $('inName');
+    inName.addEventListener('input', ()=> clearInvalid(inName));
+    $('sheetConfirm').onclick=()=>{
+      const grp=getActiveGroup(); const v=inName.value.trim();
+      if(!validateNotEmpty(inName,'Vui lòng nhập tên chủ lúa')) return;
+      if(v===f){ closeSheet(); return; }
+      if(grp.farmers[v]){ setInvalid(inName,'Tên chủ lúa đã tồn tại'); showAlert('Tên chủ lúa đã tồn tại.'); return; }
+      grp.farmers[v]=grp.farmers[f]; delete grp.farmers[f]; if(state.activeFarmer===f) state.activeFarmer=v; closeSheet(); save();
+    };
   }
 
   if(mode==='setFarmerPrice'){
-    const farmer=getActiveFarmer(); if(!farmer){showAlert('Chưa chọn nông dân.'); return;}
+    const farmer=getActiveFarmer(); if(!farmer){showAlert('Chưa chọn chủ lúa.'); return;}
     title.textContent='Đơn giá (đ/kg)'; act.textContent='Lưu';
     body.innerHTML=`<div class="field"><label for="inFPrice">Đơn giá (đ/kg)</label>
       <input id="inFPrice" type="number" inputmode="decimal" value="${farmer.price||''}" placeholder="VD: 7100"></div>`;
@@ -491,10 +559,51 @@ function closeSheet(){
 /* ===== File I/O ===== */
 function openRestorePicker(){ const inp=$('fileInput'); inp.value=''; inp.click(); }
 function exportData(){ const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='rice-scale-data.json'; a.click(); URL.revokeObjectURL(a.href); }
+
+/* --- Sanitizer dữ liệu import --- */
+function sanitizeState(obj){
+  const out = {groups:{}, activeGroup:'', activeFarmer:'', view:'groups'};
+  if (!obj || typeof obj!=='object') return out;
+  if (obj.groups && typeof obj.groups==='object'){
+    for (const g of Object.keys(obj.groups)){
+      const grp = obj.groups[g];
+      if (!grp || typeof grp!=='object') continue;
+      const safeGrp = {
+        ownerPhone: String(grp.ownerPhone||''),
+        farmers: {},
+        createdAt: Number(grp.createdAt||Date.now())
+      };
+      if (grp.farmers && typeof grp.farmers==='object'){
+        for (const f of Object.keys(grp.farmers)){
+          const fm = grp.farmers[f];
+          if (!fm || typeof fm!=='object') continue;
+          const tables = Array.isArray(fm.tables) ? fm.tables.map(t=>{
+            if (!Array.isArray(t)) return Array.from({length:25},()=>null);
+            const a = t.slice(0,25).map(x=> (typeof x==='number' && isFinite(x)) ? x : null);
+            while (a.length<25) a.push(null);
+            return a;
+          }) : [Array.from({length:25},()=>null)];
+          safeGrp.farmers[f] = {
+            price: Number(fm.price||0),
+            inputMode: ['lt2','lt3','ge3','ge4'].includes(fm.inputMode) ? fm.inputMode : 'lt3',
+            tareRule: Math.max(0, Math.floor(Number(fm.tareRule||0))),
+            tables,
+            createdAt: Number(fm.createdAt||Date.now())
+          };
+        }
+      }
+      out.groups[g] = safeGrp;
+    }
+  }
+  return out;
+}
+
 $('fileInput').addEventListener('change',e=>{
   const file=e.target.files[0]; if(!file) return;
   const reader=new FileReader();
-  reader.onload=()=>{ try{ const obj=JSON.parse(reader.result); if(!obj||!obj.groups) throw new Error('Sai định dạng');
+  reader.onload=()=>{ try{
+      const obj=sanitizeState(JSON.parse(reader.result));
+      if(!obj || !obj.groups) throw new Error('Sai định dạng');
       state=obj; migrateCreatedAt(); save(); showAlert('Khôi phục dữ liệu thành công.','Thành công');
     }catch(err){ showAlert('Lỗi khôi phục: '+escapeHtml(err.message),'Lỗi'); } };
   reader.readAsText(file);
@@ -502,14 +611,14 @@ $('fileInput').addEventListener('change',e=>{
 
 /* ===== Delete actions ===== */
 async function onDeleteGroup(name){
-  const ok = await showConfirm(`Xoá nhóm "<b>${escapeHtml(name)}</b>" và toàn bộ dữ liệu liên quan?`, {title:'Xóa nhóm', okText:'Xóa', cancelText:'Hủy'});
+  const ok = await showConfirm(`Xoá ghe, xe "<b>${escapeHtml(name)}</b>" và toàn bộ dữ liệu liên quan?`, {title:'Xóa ghe, xe', okText:'Xóa', cancelText:'Hủy'});
   if(!ok) return;
   if(!state.groups[name]) return;
   delete state.groups[name];
   if(state.activeGroup===name){ state.activeGroup=''; state.activeFarmer=''; navTo('groups'); } else { save(); }
 }
 async function onDeleteFarmer(name){
-  const ok = await showConfirm(`Xoá nông dân "<b>${escapeHtml(name)}</b>" và toàn bộ bảng 5×5?`, {title:'Xóa nông dân', okText:'Xóa', cancelText:'Hủy'});
+  const ok = await showConfirm(`Xoá chủ lúa "<b>${escapeHtml(name)}</b>" và dữ liệu liên quan?`, {title:'Xóa chủ lúa', okText:'Xóa', cancelText:'Hủy'});
   if(!ok) return;
   const grp=getActiveGroup(); if(!grp || !grp.farmers) return;
   delete grp.farmers[name];
@@ -524,13 +633,16 @@ function navTo(v){
     save();
   }else{ render(); }
 }
-function navBack(){ if(state.view==='tables'){ navTo('farmers'); } else if(state.view==='farmers'){ navTo('groups'); } else history.back(); }
+function navBack(){
+  if (state.view==='tables') return navTo('farmers');
+  if (state.view==='farmers') return navTo('groups');
+}
 window.addEventListener('popstate', (e)=>{ state.view = e.state?.view || 'groups'; render(); });
 
 /* ===== Render ===== */
 function render(){
   $('btnBack').style.display=(state.view==='groups')?'none':'inline-block';
-  $('appSub').textContent= state.view==='groups'?'Nhóm (Ghe/Xe)': state.view==='farmers'?'Nông dân trong nhóm':'Bảng nhập liệu cân lúa';
+  $('appSub').textContent= state.view==='groups'?'Danh sách ghe, xe': state.view==='farmers'?'Danh sách chủ lúa':'Bảng nhập liệu cân lúa';
   $('appTitle').textContent='TÍNH CÂN LÚA';
 
   const fabAddGroup = $('fabAddGroup'), fabAddFarmer = $('fabAddFarmer');
@@ -542,32 +654,55 @@ function render(){
   if(state.view==='tables'){ renderTables(); $('view-groups').style.display='none'; $('view-farmers').style.display='none'; $('view-tables').style.display='block'; }
 }
 
+/* ===== Tính tổng cho ghe, xe ===== */
+function calcGroupDisplay(grp){
+  let totalKg = 0;
+  let totalBags = 0;
+  for (const f of Object.keys(grp.farmers || {})){
+    const farmer = grp.farmers[f];
+    const kg = farmer.tables.reduce((s,t)=> s + sumTable(t), 0);
+    const bags = farmer.tables.reduce((n,t)=> n + t.filter(x => typeof x==='number').length, 0);
+    totalKg += kg;
+    totalBags += bags;
+  }
+  return { totalKg, totalBags };
+}
+
 /* View 1: Groups */
 function renderGroupsView(){
   const host=$('groupList'); host.innerHTML='';
   const names=Object.keys(state.groups||{});
-  $('chipGroups').textContent=names.length+' nhóm';
+  $('chipGroups').textContent='Ghe, xe: ' + fmt(names.length);
 
   if(!names.length){
-    host.innerHTML = `<div class="group-card"><div class="g-body"><div class="fake-input" style="padding:12px">Chưa có nhóm nào. Nhấn nút <b>➕</b> để thêm nhóm mới.</div></div></div>`;
+    host.innerHTML = `
+      <div class="group-card">
+        <div class="g-body">
+          <div class="fake-input" style="padding:12px">
+            Bấm nút <b>➕ THÊM</b> để thêm tên <b>ghe, xe</b><br><br>
+            <ul style="margin:0 0 0 18px; padding:0; line-height:1.5">
+              <li><strong>Ghe, xe:</strong> chứa một hoặc nhiều chủ lúa.</li>
+              <li><strong>Tên ghe, xe:</strong> có thể là tên chủ ghe, nhà xe, tài xế, biển số xe, ...</li>
+            </ul>
+          </div>
+        </div>
+      </div>`;
     return;
   }
+  // mới nhất lên trước
   names.sort((a,b)=> (state.groups[b]?.createdAt||0) - (state.groups[a]?.createdAt||0));
 
   for(const g of names){
     const grp=state.groups[g]; const stat=calcGroupDisplay(grp);
     const card=document.createElement('div'); card.className='group-card'; card.dataset.group=g;
     const titleDate = formatDateTimeDDMM_HHmm(grp.createdAt);
-    card.innerHTML = `<div class="g-head"><div class="g-title">${titleDate}</div><div class="chip">${fmt(stat.totalBags)} bao</div></div>`;
+    card.innerHTML = `<div class="g-head"><div class="g-title">🗓️ ${titleDate}</div><div class="chip">${fmt(stat.totalBags)} bao</div></div>`;
     const body=document.createElement('div'); body.className='g-body';
     const info=document.createElement('div'); info.className='fake-input';
-    info.appendChild(buildKV('Tên nhóm (ghe/xe)', g));
-    info.appendChild(buildKV('Số bao (lần cân)', fmt(stat.totalBags)));
-    info.appendChild(buildKV('Khối lượng (chưa trừ bì)', fmt(stat.totalKg) + ' kg'));
-    info.appendChild(buildKV('Khấu trừ bì (kg)', fmt(stat.tareKg) + ' kg'));
-    info.appendChild(buildKV('Khối lượng tính tiền (đã trừ bì)', fmt(stat.remainingKg) + ' kg'));
-    info.appendChild(buildKV('Thành tiền', fmt(stat.totalMoney) + ' đ', 'danger'));
-    info.appendChild(buildKV('SĐT', (grp.ownerPhone||'—')));
+    info.appendChild(buildKV('Tên ghe, xe:', g));
+    info.appendChild(buildKV('Số bao (lần cân):', fmt(stat.totalBags) + ' bao', 'accent'));
+    info.appendChild(buildKV('Tổng cân:', fmt(stat.totalKg) + ' kg', 'danger'));
+    info.appendChild(buildKV('SĐT:', (grp.ownerPhone||'—')));
     body.appendChild(info);
     const foot=document.createElement('div'); foot.className='g-foot';
     const btnEdit=document.createElement('button'); btnEdit.className='btn-ghost'; btnEdit.textContent='✏ Sửa';
@@ -584,36 +719,64 @@ function renderGroupsView(){
 /* View 2: Farmers */
 function renderFarmersView(){
   const host=$('farmerList'); host.innerHTML='';
-  const grp=getActiveGroup(); if(!grp){ host.innerHTML='<div class=meta>Chưa có nhóm.</div>'; return; }
+  const grp=getActiveGroup(); if(!grp){ host.innerHTML='<div class=meta>Chưa có ghe, xe.</div>'; return; }
   $('chipGroupName').textContent=state.activeGroup||'—';
-  const names=Object.keys(grp.farmers||{}); $('chipFarmerCount').textContent = 'Nông dân: ' + fmt(names.length);
 
-  let totalBags=0,totalKg=0,totalMoney=0,totalRemain=0,totalTareKg=0;
+  const names=Object.keys(grp.farmers||{});
+  $('chipFarmerCount').textContent = 'Chủ lúa: ' + fmt(names.length);
+
+  if(!names.length){
+    const gname = state.activeGroup || '—';
+    host.innerHTML = `
+      <div class="group-card">
+        <div class="g-body">
+          <div class="fake-input" style="padding:12px">
+            Bấm nút <b>👤 THÊM</b> để thêm <b>chủ lúa & bảng tính</b> vào ghe, xe <b>${escapeHtml(gname)}</b><br><br>
+            <ul style="margin:0 0 0 18px; padding:0; line-height:1.5">
+              <li><strong>Tên chủ lúa:</strong> ví dụ Chú Năm, Anh Hậu…</li>
+              <li><strong>Đơn giá (đ/kg):</strong> có thể để trống, thiết lập sau.</li>
+              <li><strong>Quy tắc bì:</strong> mỗi X bao trừ 1kg (đặt 0 nếu không trừ).</li>
+              <li><strong>Quy cách nhập:</strong> chọn 2 số / 3 số (chẵn) cho &lt;100kg, hoặc 3/4 số cho ≥100kg.</li>
+            </ul>
+          </div>
+        </div>
+      </div>`;
+    // Reset thống kê đầu trang về 0
+    $('stat2Bags').value='0 bao';
+    $('stat2Kg').value='0 kg';
+    return;
+  }
+
+  let totalBags=0, totalKg=0;
   names.sort((a,b)=> (grp.farmers[b]?.createdAt||0) - (grp.farmers[a]?.createdAt||0));
 
   for(const f of names){
     const farmer=grp.farmers[f];
     const bags=farmer.tables.reduce((n,t)=> n+t.filter(x=> typeof x==='number').length,0);
     const kg=farmer.tables.reduce((s,t)=> s+sumTable(t),0);
+
+    totalBags+=bags;
+    totalKg+=kg;
+
     const unit=(farmer.price||0);
     const tareRule=Math.max(0, farmer.tareRule||0);
     const tareKg = tareRule>0 ? Math.floor(bags / tareRule) : 0;
     const remaining = Math.max(0, kg - tareKg);
-    const money=unit*remaining;
-    totalBags+=bags; totalKg+=kg; totalMoney+=money; totalRemain+=remaining; totalTareKg+=tareKg;
+    const money=Math.round(unit*remaining);
 
     const card=document.createElement('div'); card.className='group-card'; card.dataset.farmer=f;
     const titleDate = formatDateTimeDDMM_HHmm(farmer.createdAt);
-    card.innerHTML = `<div class="g-head"><div class="g-title">${titleDate}</div><div class="chip">${fmt(bags)} bao</div></div>`;
+    card.innerHTML = `<div class="g-head"><div class="g-title">🗓️ ${titleDate}</div><div class="chip">${fmt(bags)} bao</div></div>`;
+
     const body=document.createElement('div'); body.className='g-body';
     const info=document.createElement('div'); info.className='fake-input';
-    info.appendChild(buildKV('Tên nông dân:', f));
-    info.appendChild(buildKV('Tổng số bao (lần cân):', fmt(bags)));
-    info.appendChild(buildKV('Tổng khối lượng cân (chưa trừ bì):', fmt(kg)+' kg'));
-    info.appendChild(buildKV('Tổng trừ bì (kg):', fmt(tareKg)+' kg'));
-    info.appendChild(buildKV('Tổng khối lượng tính tiền (đã trừ bì):', fmt(remaining)+' kg', 'danger'));
-    info.appendChild(buildKV('Đơn giá (đ/kg):', fmt(unit)+' đ'));
-    info.appendChild(buildKV('Thành tiền:', fmt(money)+' đ', 'danger'));
+    info.appendChild(buildKV('Tên chủ lúa:', f));
+    info.appendChild(buildKV('Số bao (lần cân):', fmt(bags) + ' bao', 'accent'));
+    info.appendChild(buildKV('Tổng cân:', fmt(kg)+' kg', 'orange'));
+    info.appendChild(buildKV('Trừ bì:', fmt(tareKg)+' kg', 'accent'));
+    info.appendChild(buildKV('Còn lại (đã trừ bì):', fmt(remaining)+' kg', 'orange'));
+    info.appendChild(buildKV('Đơn giá (đ/kg):', fmt(unit)+' đ', 'accent'));
+    info.appendChild(buildKV('Thành tiền:', vnd(money), 'danger'));
     info.appendChild(buildKV('Quy cách nhập:', labelInputMode(farmer.inputMode)));
     body.appendChild(info);
 
@@ -622,36 +785,29 @@ function renderFarmersView(){
     const btnRename=document.createElement('button'); btnRename.className='btn-ghost'; btnRename.textContent='✏ Đổi tên';
     const btnDel=document.createElement('button'); btnDel.className='btn-danger'; btnDel.textContent='🗑 Xoá';
 
-    btnPrice.addEventListener('click',e=>{
-      e.stopPropagation();
-      state.activeFarmer = f;
-      openSheet('setFarmerPrice');
-    });
-
+    btnPrice.addEventListener('click',e=>{ e.stopPropagation(); state.activeFarmer = f; openSheet('setFarmerPrice'); });
     btnRename.addEventListener('click',e=>{ e.stopPropagation(); openSheet('renameFarmer', f); });
     btnDel.addEventListener('click',e=>{ e.stopPropagation(); onDeleteFarmer(f); });
-    foot.appendChild(btnPrice); foot.appendChild(btnRename); foot.appendChild(btnDel);
 
+    foot.appendChild(btnPrice); foot.appendChild(btnRename); foot.appendChild(btnDel);
     card.appendChild(body); card.appendChild(foot);
+
+    // Click mở bảng 5×5 của chủ lúa
     card.addEventListener('click',()=>{ state.activeFarmer=f; navTo('tables'); });
     host.appendChild(card);
   }
 
-  $('stat2Bags').value=fmt(totalBags);
-  $('stat2Kg').value=fmt(totalKg);
-  $('stat2Money').value=fmt(totalMoney);
-  $('stat2Remain').value=fmt(totalRemain);
-  $('stat2Tare').value=fmt(totalTareKg);
+  $('stat2Bags').value = fmt(totalBags) + ' bao';
+  $('stat2Kg').value  = fmt(totalKg) + ' kg';
 }
 
 /* View 3: Tables */
 function renderTables(){
   const host=$('tables'); host.innerHTML='';
   const title=$('contextTitle');
-  if(!state.activeGroup){ title.textContent='BẢNG 5×5'; host.innerHTML='<div class=meta>Chọn nhóm trước.</div>'; return; }
-  if(!state.activeFarmer){ title.textContent='BẢNG 5×5'; host.innerHTML='<div class=meta>Chọn nông dân.</div>'; return; }
+  if(!state.activeGroup){ title.textContent='BẢNG 5×5'; host.innerHTML='<div class=meta>Chọn ghe, xe trước.</div>'; return; }
+  if(!state.activeFarmer){ title.textContent='BẢNG 5×5'; host.innerHTML='<div class=meta>Chọn chủ lúa.</div>'; return; }
 
-  title.textContent=`Nông dân: ${state.activeFarmer}`;
   const farmer=getActiveFarmer(); if(!farmer) return;
   if(!farmer.tables||farmer.tables.length===0) farmer.tables=[newEmptyTable()];
 
@@ -661,27 +817,37 @@ function renderTables(){
   const tareKg = tareRule>0 ? Math.floor(totalBags / tareRule) : 0;
   const remainingKg=Math.max(0,totalKg - tareKg);
   const price=Number(farmer.price||0);
-  const amount=remainingKg*price;
+  const amount=Math.round(remainingKg*price);
+
+  title.textContent=`Tên chủ lúa: ${state.activeFarmer}`;
 
   const stats=document.createElement('div'); stats.className='stat-grid'; stats.innerHTML=`
-    <div class=stat style="grid-column:1/ -1"><label><b>Tên nông dân</b></label><input id=statFarmerName type=text value="${escapeHtml(state.activeFarmer)}"/></div>
-    <div class=stat style="grid-column:1/ -1"><label><b>Tổng số bao (lần cân)</b></label><input id=statBags type=text value="${fmt(totalBags)}" readonly></div>
-    <div class=stat style="grid-column:1/ -1"><label><b>Tổng khối lượng chưa trừ bì (kg)</b></label><input id=statTotalKg type=text value="${fmt(totalKg)}" readonly></div>
-    <div class=stat style="grid-column:1/ -1"><label><b>Quy tắc bì (mỗi X bao = 1 kg)</b></label><input id=statTareRule type=number min=0 step=1 value="${tareRule}"></div>
-    <div class=stat style="grid-column:1/ -1"><label><b>Tổng trừ bì (kg)</b></label><input id=statTareKg type=text value="${fmt(tareKg)}" readonly></div>
-    <div class=stat style="grid-column:1/ -1"><label><b>Tổng khối lượng tính tiền (kg)</b></label><input id=statRemain type=text value="${fmt(remainingKg)}" readonly></div>
-    <div class=stat style="grid-column:1/ -1"><label><b>Đơn giá (đ/kg)</b></label><input id=statPrice type=number inputmode=decimal value="${price||0}"></div>
-    <div class=stat style="grid-column:1/ -1"><label><b>Thành tiền (đ)</b></label><input id=statAmount class="money" type=text value="${fmt(amount)}" readonly></div>`;
+    <div class=stat style="grid-column:1/ -1"><label><b>Tên chủ lúa</b></label><input id=statFarmerName type=text class="view3-orange" value="${escapeHtml(state.activeFarmer)}"/><div class="tip-text">(*) Có thể đổi tên chủ lúa tại đây</div></div>
+    <div class=stat style="grid-column:1/ -1"><label><b>Số bao (lần cân)</b></label><input id=statBags type=text class="view3-accent" value="${fmt(totalBags)} bao" readonly><div class="tip-text">(*) Tổng số bao hoặc số lần cân</div></div>
+    <div class=stat style="grid-column:1/ -1"><label><b>Tổng cân (kg)</b></label><input id=statTotalKg class="view3-danger" type=text value="${fmt(totalKg)} kg" readonly><div class="tip-text">(*) Khối lượng tổng chưa trừ bì</div></div>
+    <div class=stat style="grid-column:1/ -1"><label><b>Quy tắc bì (X bao = 1 kg)</b></label><input id=statTareRule class="view3-orange" type=number min=0 step=1 value="${tareRule}"><div class="tip-text">(*) Mỗi X bao sẽ tự động trừ 1&nbsp;kg khỏi tổng cân</div></div>
+    <div class=stat style="grid-column:1/ -1"><label><b>Trừ bì (kg)</b></label><input id=statTareKg type=text class="view3-accent" value="${fmt(tareKg)} kg" readonly><div class="tip-text">(*) Khối lượng bị trừ theo quy tắc bì</div></div>
+    <div class=stat style="grid-column:1/ -1"><label><b>Còn lại (kg)</b></label><input id=statRemain class="view3-danger" type=text value="${fmt(remainingKg)} kg" readonly><div class="tip-text">(*) Khối lượng thực tính tiền sau khi đã trừ bì</div></div>
+    <div class=stat style="grid-column:1/ -1"><label><b>Đơn giá (đ/kg)</b></label><input id=statPrice class="view3-orange" type=number inputmode=decimal value="${price||0}"><div class="tip-text">(*) Nhập đơn giá lúa tính theo kg</div></div>
+    <div class=stat style="grid-column:1/ -1"><label><b>Thành tiền (đ)</b></label><input id=statAmount class="view3-danger" type=text value="${vnd(amount)}" readonly><div class="tip-text">(*) = Còn lại (kg) × Đơn giá (đ/kg)</div></div>`;
   host.appendChild(stats);
 
+  const statNameEl = $('statFarmerName');
+  statNameEl.addEventListener('input', ()=> clearInvalid(statNameEl));
   $('statFarmerName').addEventListener('change',()=>{
-    const newName=$('statFarmerName').value.trim(); const oldName=state.activeFarmer;
-    if(!newName||newName===oldName) return;
+    const newName=statNameEl.value.trim(); const oldName=state.activeFarmer;
+    if(!newName){ setInvalid(statNameEl,'Vui lòng nhập tên chủ lúa'); statNameEl.value=oldName; return; }
+    if(newName===oldName) return;
     const grp=getActiveGroup();
-    if(grp.farmers[newName]){ showAlert('Tên nông dân đã tồn tại.'); $('statFarmerName').value=oldName; return; }
+    if(grp.farmers[newName]){ setInvalid(statNameEl,'Tên chủ lúa đã tồn tại'); showAlert('Tên chủ lúa đã tồn tại.'); statNameEl.value=oldName; return; }
     grp.farmers[newName]=grp.farmers[oldName]; delete grp.farmers[oldName]; state.activeFarmer=newName; save();
   });
-  $('statTareRule').addEventListener('change',()=>{ const v=Math.max(0, Math.floor(Number($('statTareRule').value)||0)); const f=getActiveFarmer(); if(!f) return; f.tareRule=v; save(); });
+  $('statTareRule').addEventListener('change',()=>{
+    const v=Math.max(0, Math.floor(Number($('statTareRule').value)||0));
+    const f=getActiveFarmer(); if(!f) return; f.tareRule=v; save();
+  });
+  // Tooltip gợi ý bì
+  $('statTareRule').title = tareRule === 0 ? '0 = không trừ bì theo số bao' : 'Mỗi X bao trừ 1 kg';
   $('statPrice').addEventListener('change',()=>{ const f=getActiveFarmer(); if(!f) return; f.price=Number($('statPrice').value)||0; save(); });
 
   farmer.tables.forEach((tbl,ti)=>{
@@ -738,8 +904,14 @@ async function commitCellInput(farmer,ti,ci,raw,e,el){
   else if(mode==='ge4'){ if(digits.length<4){ if(el) el.value=digits; return; } const dec=Number(digits.slice(-1)); if(dec%2!==0) isOddGram=true; v = Number(digits.slice(0,3)) + dec/10; commit=true; }
   else { const num=Number(String(raw||'').replace(',','.')); if(!isFinite(num)) return; v=num; commit=true; }
 
+  // Giới hạn biên mềm để tránh nhập nhầm
+  if (typeof v === 'number'){
+    if (mode==='lt2' || mode==='lt3') v = Math.min(v, 99.9);
+    if (mode==='ge3' || mode==='ge4') v = Math.min(v, 300.0);
+  }
+
   if(el){ if(isOddGram) el.classList.add('warn'); else el.classList.remove('warn'); }
-  if(isOddGram){ await showAlert('⚠️ Số gram phải chẵn (0,2,4,6,8). Vui lòng kiểm tra lại.'); }
+  // Không chặn luồng bằng alert; chỉ highlight warn
 
   farmer.tables[ti][ci]=v;
   if(el){ const hasDecimal=(mode==='lt3'||mode==='ge4'); el.value=(typeof v==='number')?(hasDecimal?v.toFixed(1):v):''; }
@@ -749,23 +921,6 @@ async function commitCellInput(farmer,ti,ci,raw,e,el){
     if (isCurrentPointer){ const ptr = nextEditablePointer(getActiveFarmer()); const nx = document.querySelector(`input[data-key="${ptr.ti}-${ptr.ci}"]`); if(nx){ nx.removeAttribute('disabled'); nx.focus(); nx.select(); } }
     else if (el){ el.removeAttribute('disabled'); el.focus(); el.select(); }
   }
-}
-
-/* ===== Tính tổng cho nhóm ===== */
-function calcGroupDisplay(grp){
-  let totalKg=0,totalBags=0,totalMoney=0,remainingKgAll=0,tareKgAll=0;
-  for (const f of Object.keys(grp.farmers||{})){
-    const farmer = grp.farmers[f];
-    const kg = farmer.tables.reduce((s,t)=> s+sumTable(t),0);
-    const bags = farmer.tables.reduce((n,t)=> n+t.filter(x=> typeof x==='number').length,0);
-    const unit = (farmer.price||0);
-    const tareRule = Math.max(0, farmer.tareRule||0);
-    const tareKg = tareRule>0 ? Math.floor(bags / tareRule) : 0;
-    const remaining = Math.max(0, kg - tareKg);
-    const money = unit * remaining;
-    totalKg += kg; totalBags += bags; totalMoney += money; remainingKgAll += remaining; tareKgAll += tareKg;
-  }
-  return { totalKg, totalBags, totalMoney, remainingKg: remainingKgAll, tareKg: tareKgAll };
 }
 
 /* ===== Persistence & Boot ===== */
@@ -811,7 +966,7 @@ load();
 window.addEventListener('pagehide', ()=> save());
 document.addEventListener('visibilitychange', ()=>{ if(document.hidden) save(); });
 
-/* ===== PWA: SW + Kiểm tra cập nhật + Nút Cài đặt + Persistent Storage ===== */
+/* ===== PWA: SW + Kiểm tra cập nhật + A2HS + Persistent Storage ===== */
 (function(){
   // YÊU CẦU PERSISTENT STORAGE
   (async () => {
@@ -828,89 +983,116 @@ document.addEventListener('visibilitychange', ()=>{ if(document.hidden) save(); 
     } catch (e) { console.warn('persist error', e); }
   })();
 
-  function compareVersions(a, b){
-    const pa = String(a).replace(/^v/i,'').split('.').map(n=>Number(n)||0);
-    const pb = String(b).replace(/^v/i,'').split('.').map(n=>Number(n)||0);
-    const len = Math.max(pa.length, pb.length);
-    for (let i=0;i<len;i++){ const x=pa[i]||0, y=pb[i]||0; if(x>y) return 1; if(x<y) return -1; }
-    return 0;
-  }
+function compareVersions(a, b){
+	  const pa = String(a||'').replace(/^v/i,'').split('.').map(n=>Number(n)||0);
+	  const pb = String(b||'').replace(/^v/i,'').split('.').map(n=>Number(n)||0);
+	  const len = Math.max(pa.length, pb.length);
+	  for (let i=0;i<len;i++){ const x=pa[i]||0, y=pb[i]||0; if(x>y) return 1; if(x<y) return -1; }
+	  return 0;
+	}
+	
+	async function checkForAppUpdate(){
+	  try{
+	    if (!navigator.onLine) return;
+	
+	    // Cập nhật metadata SW (không auto-activate)
+	    let reg = null;
+	    if ('serviceWorker' in navigator){
+	      reg = await navigator.serviceWorker.getRegistration('/can-lua/');
+	      await reg?.update?.();
+	    }
+	
+	    // Lấy version.json
+	    const res = await fetch('/can-lua/version.json?ts=' + Date.now(), { cache: 'no-store' });
+	    if (!res.ok) return;
+	    const data = await res.json();
+	
+	    const serverVer = data.version || '';
+	    const localVer  = (typeof APP_VERSION==='string') ? APP_VERSION : '0';
+	
+	    // Ghi chú cập nhật (tùy chọn)
+	    let notesHTML = '';
+	    if (Array.isArray(data.notes) && data.notes.length){
+	      const items = data.notes.map(s => `<li>${escapeHtml(String(s))}</li>`).join('');
+	      notesHTML = `<div style="margin-top:8px;padding:10px;border:1px dashed #e5e7eb;border-radius:12px;background:#fff7ed">
+	        <div style="font-weight:800;margin-bottom:6px">Nội dung cập nhật</div>
+	        <ul style="margin:0 0 0 18px;line-height:1.5">${items}</ul>
+	      </div>`;
+	    }
+	    if (data.changelog_url){
+	      notesHTML += `<div style="margin-top:8px;font-size:12px">
+	        Xem chi tiết: <a href="${escapeHtml(String(data.changelog_url))}" target="_blank" rel="noopener noreferrer">Changelog</a>
+	      </div>`;
+	    }
+	
+	    // Chỉ hỏi khi serverVer > localVer
+	    if (serverVer && compareVersions(serverVer, localVer) > 0){
+	      const ok = await openDialog({
+	        title: 'Có phiên bản mới',
+	        message: `Đã có bản <b>${escapeHtml(serverVer)}</b> (bạn đang dùng <b>${escapeHtml(APP_VERSION)}</b>).${notesHTML}`,
+	        okText: 'Tải ngay', cancelText: 'Để sau'
+	      });
+	      if (!ok) return; // người dùng để sau
+	
+	      // Người dùng đồng ý → yêu cầu SW mới kích hoạt rồi reload khi controller đổi
+	      if ('serviceWorker' in navigator){
+	        if (!reg) reg = await navigator.serviceWorker.getRegistration('/can-lua/');
+	
+	        let reloaded = false;
+	        navigator.serviceWorker.addEventListener('controllerchange', () => {
+	          if (!reloaded){ reloaded = true; location.reload(); }
+	        }, { once:true });
+	
+	        const requestSkipWaiting = (r) => {
+	          if (r?.waiting){ r.waiting.postMessage({ type: 'SKIP_WAITING' }); return true; }
+	          return false;
+	        };
+	
+	        // 1) Nếu đã có SW ở trạng thái waiting → skip ngay
+	        if (!requestSkipWaiting(reg)){
+	          // 2) Chưa có → nghe updatefound, chờ installed rồi skip
+	          reg?.addEventListener('updatefound', () => {
+	            const sw = reg.installing;
+	            if (!sw) return;
+	            sw.addEventListener('statechange', () => {
+	              if (sw.state === 'installed') requestSkipWaiting(reg);
+	            });
+	          });
+	          // Kích quá trình tải SW mới
+	          await reg?.update?.();
+	        }
+	      } else {
+	        // Không có SW (trình duyệt cũ) → reload đơn giản
+	        location.reload();
+	      }
+	    }
+	  }catch(e){
+	    // im lặng
+	  }
+	}
+	
+	// Đăng ký SW + lịch kiểm tra (không tự cập nhật nếu user chưa đồng ý)
+	if ('serviceWorker' in navigator) {
+	  window.addEventListener('load', () => {
+	    navigator.serviceWorker
+	      .register('/can-lua/service-worker.js', { scope: '/can-lua/' })
+	      .then(reg=>{
+	        checkForAppUpdate();
+	        setInterval(() => { reg.update(); checkForAppUpdate(); }, 60 * 60 * 1000); // mỗi giờ
+	      })
+	      .catch(console.error);
+	  });
+	} else {
+	  window.addEventListener('load', checkForAppUpdate);
+	}
+	
+	document.addEventListener('visibilitychange', () => {
+	  if (!document.hidden) checkForAppUpdate();
+	});
 
-  async function checkForAppUpdate(){
-    try{
-      if (!navigator.onLine) return;
-
-      // 🔧 Đồng bộ tên file SW: dùng service-worker.js
-      if ('serviceWorker' in navigator){
-        const reg = await navigator.serviceWorker.getRegistration('/can-lua/service-worker.js');
-        await reg?.update?.();
-      }
-
-      const res = await fetch('/can-lua/version.json?ts=' + Date.now(), { cache: 'no-store' });
-      if (!res.ok) return;
-      const data = await res.json();
-      const serverVer = data.version || '';
-      const localVer  = (typeof APP_VERSION==='string') ? APP_VERSION : '0';
-
-      let notesHTML = '';
-      if (Array.isArray(data.notes) && data.notes.length){
-        const items = data.notes.map(s => `<li>${escapeHtml(String(s))}</li>`).join('');
-        notesHTML = `<div style="margin-top:8px;padding:10px;border:1px dashed #e5e7eb;border-radius:12px;background:#fff7ed">
-          <div style="font-weight:800;margin-bottom:6px">Nội dung cập nhật</div>
-          <ul style="margin:0 0 0 18px;line-height:1.5">${items}</ul>
-        </div>`;
-      }
-      if (data.changelog_url){
-        notesHTML += `<div style="margin-top:8px;font-size:12px">
-          Xem chi tiết: <a href="${escapeHtml(data.changelog_url)}" target="_blank" rel="noopener">Changelog</a>
-        </div>`;
-      }
-
-      if (serverVer && compareVersions(serverVer, localVer) > 0){
-        const ok = await openDialog({
-          title: 'Có phiên bản mới',
-          message: `Đã có bản <b>${escapeHtml(serverVer)}</b> (bạn đang dùng <b>${escapeHtml(APP_VERSION)}</b>).${notesHTML}`,
-          okText: 'Tải ngay', cancelText: 'Để sau'
-        });
-        if (ok){
-          // ⤵️ Gửi thông điệp đúng với SW hiện tại
-          navigator.serviceWorker.controller?.postMessage('SKIP_WAITING');
-
-          // Tự reload khi controller đổi sang SW mới
-          let reloaded = false;
-          navigator.serviceWorker.addEventListener('controllerchange', () => {
-            if (reloaded) return;
-            reloaded = true;
-            location.reload();
-          });
-
-          // Fallback nếu không có controllerchange
-          setTimeout(()=>{ if (!reloaded) location.reload(); }, 2000);
-        }
-      }
-    }catch(e){ /* im lặng */ }
-  }
-
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      // 🔧 Đồng bộ đường dẫn SW & scope
-      navigator.serviceWorker.register('/can-lua/service-worker.js', { scope: '/can-lua/' }).then(reg=>{
-        checkForAppUpdate();
-        setInterval(()=>{ reg.update(); checkForAppUpdate(); }, 60*60*1000);
-      }).catch(console.error);
-    });
-  } else {
-    window.addEventListener('load', checkForAppUpdate);
-  }
-
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) checkForAppUpdate();
-  });
-
-  // Nút Cài đặt (A2HS) + iOS hướng dẫn
+  /* ===== Add to Home Screen (A2HS) ===== */
   (function(){
     let deferredPrompt=null;
-    const btn=$('btnInstall');
 
     const isStandalone = () =>
       window.matchMedia('(display-mode: standalone)').matches ||
@@ -921,32 +1103,52 @@ document.addEventListener('visibilitychange', ()=>{ if(document.hidden) save(); 
       /safari/i.test(navigator.userAgent) &&
       !/crios|fxios|opios|EdgiOS/i.test(navigator.userAgent);
 
-    function showBtn(){ if(btn) btn.style.display='inline-block'; }
-    function hideBtn(){ if(btn) btn.style.display='none'; }
+    // Điều kiện cài đặt: chưa standalone và (Android có beforeinstallprompt) hoặc (iOS Safari)
+    function eligibleForInstall(){ return !isStandalone() && (Boolean(deferredPrompt) || isIOS()); }
 
-    window.addEventListener('beforeinstallprompt', (e)=>{
-      e.preventDefault();
-      deferredPrompt = e;
-      if (!isStandalone()) showBtn();
-    });
-
-    btn?.addEventListener('click', async ()=>{
+    async function triggerInstall(){
       if (isIOS() && !isStandalone()){
-        alert('Trên iPhone/iPad: bấm Chia sẻ (□↑) → Thêm vào MH chính.');
+        await showAlert('Trên iPhone/iPad: mở menu <b>Chia sẻ (□↑)</b> → <b>Thêm vào MH chính</b> để cài ứng dụng dùng offline.','Hướng dẫn cài đặt iOS');
         return;
       }
       if (!deferredPrompt){
-        alert('Trình duyệt chưa sẵn sàng hiển thị hộp thoại cài đặt.');
+        await showAlert('Trình duyệt chưa sẵn sàng hiển thị hộp thoại cài đặt. Vui lòng thử lại sau.');
         return;
       }
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       deferredPrompt = null;
-      if (outcome === 'accepted') hideBtn();
+      if (outcome === 'accepted'){ /* người dùng đã cài */ }
+    }
+
+    // Expose cho modal Tiện ích sử dụng
+    window.__a2hs = { eligible: eligibleForInstall, triggerInstall };
+
+    // Hiển thị nudge ở trang chính mỗi lần tải lại (nếu đủ điều kiện)
+    async function maybeShowInstallNudge(){
+      if (state.view !== 'groups') return; // chỉ nudge ở trang chính
+      if (!eligibleForInstall()) return;
+      const ok = await openDialog({
+        title: 'Khuyến nghị: Cài đặt ứng dụng',
+        message: 'Bạn nên <b>cài đặt ứng dụng Tính cân lúa</b> để dùng nhanh hơn, lưu trữ dữ liệu an toàn và không cần mạng internet.',
+        okText: 'Cài đặt ngay', cancelText: 'Để sau'
+      });
+      if (ok) await triggerInstall();
+    }
+
+    window.addEventListener('beforeinstallprompt', (e)=>{
+      e.preventDefault();
+      deferredPrompt = e;
+      setTimeout(maybeShowInstallNudge, 300);
     });
 
-    window.addEventListener('appinstalled', ()=>{ deferredPrompt=null; hideBtn(); });
-    if (isStandalone()) hideBtn();
+    window.addEventListener('load', ()=>{
+      if (isIOS() && !isStandalone()){
+        setTimeout(maybeShowInstallNudge, 600);
+      }
+    });
+
+    window.addEventListener('appinstalled', ()=>{ deferredPrompt=null; });
   })();
 })();
 </script>
