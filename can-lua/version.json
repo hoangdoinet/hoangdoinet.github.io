@@ -1,10 +1,11 @@
 {
   "name": "Tính cân lúa",
-  "version": "v1.0.2",
+  "version": "v1.0.3",
   "release_date": "2025-10-26",
   "notes": [
     "Cải thiện hiệu năng ứng dụng và sửa lỗi nhỏ."
   ],
   "changelog_url": "https://hoangdoinet.github.io/can-lua/changelog.html#v1-0-2",
   "critical": false
+
 }
