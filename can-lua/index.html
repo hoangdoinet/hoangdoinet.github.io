@@ -69,7 +69,7 @@
         "image": "https://hoangdoinet.github.io/can-lua/icons/og-image-1200.png",
         "author": { "@type": "Person", "name": "Hoàng Đợi" },
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "VND", "category": "Free" },
-        "softwareVersion": "1.0.2"
+        "softwareVersion": "1.0.3"
       },
       {
         "@type": "WebSite",
@@ -215,14 +215,14 @@
       <img src="/can-lua/icons/icon-512.png" class="logo-img" alt="Logo Tính Cân Lúa" width="140" height="140">
     </div>
     <div class="app-name" aria-hidden="true">TÍNH CÂN LÚA</div>
-    <div class="meta">Phiên bản: <b id="verText">v1.0.2</b></div>
+    <div class="meta">Phiên bản: <b id="verText">v1.0.3</b></div>
     <div class="meta">Tác giả: <b id="authorText">Hoàng Đợi</b></div>
   </div>
 
 <div class="app">
   <div class="appbar">
     <div class="appbar-inner">
-      <button type="button" class="back" id="btnBack" style="display:none">←</button>
+      <button type="button" class="back" id="btnBack" style="display:none" aria-label="Quay lại">←</button>
       <div style="flex:1">
         <h1 class="app-title" id="appTitle">TÍNH CÂN LÚA</h1>
         <div class="subtitle" id="appSub">Ứng dụng quản lý cân lúa</div>
@@ -302,7 +302,7 @@
 
 <script>
 /* ===== State & Utils ===== */
-const APP_VERSION='v1.0.2';
+const APP_VERSION='v1.0.3';
 
 /* ==== Splash Control (dùng APP_VERSION) ==== */
 (function(){
@@ -430,12 +430,31 @@ function openSheet(mode,payload){
 
     $('toolExport').addEventListener('click',()=>{ closeSheet(); exportData(); });
     $('toolImport').addEventListener('click',()=>{ openRestorePicker(); });
-    $('toolWipe').addEventListener('click',async()=>{
-      const ok=await showConfirm('Xóa toàn bộ dữ liệu Tính cân lúa? Hành động này không thể hoàn tác.',{title:'Xóa dữ liệu',okText:'Xóa',cancelText:'Hủy'});
-      if(!ok) return;
-      try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
-      state={groups:{},activeGroup:'',activeFarmer:'',view:'groups'};
-      closeSheet(); save(); await showAlert('Đã xóa toàn bộ dữ liệu.'); location.reload();
+    $('toolWipe').addEventListener('click', async ()=>{
+      const ok = await showConfirm(
+        'Xóa toàn bộ dữ liệu Tính cân lúa? Hành động này không thể hoàn tác.',
+        { title:'Xóa dữ liệu', okText:'Xóa', cancelText:'Hủy' }
+      );
+      if (!ok) return;
+
+      // 1) Xoá storage
+      try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+
+      // 2) Reset state nội bộ
+      state = { groups:{}, activeGroup:'', activeFarmer:'', view:'groups' };
+
+      // 3) Đóng sheet (nếu đang mở)
+      closeSheet();
+
+      // 4) Ép điều hướng về #groups và cập nhật UI (KHÔNG reload)
+      try { history.replaceState({ view:'groups' }, '', '#groups'); } catch(_) {}
+      render();
+
+      // 5) Lưu trạng thái rỗng
+      save();
+
+      // 6) Thông báo
+      await showAlert('Đã xóa toàn bộ dữ liệu.');
     });
     $('toolHelp').addEventListener('click',()=>{ window.open('https://www.youtube.com/','_blank','noopener,noreferrer'); });
     $('toolInfo').addEventListener('click',()=> openSheet('appInfo'));
@@ -508,7 +527,7 @@ function openSheet(mode,payload){
       <div class="mode-section">
         <div class="mode-title">Quy cách nhập ≥ 100kg</div>
         <label class="mode-option"><input type="radio" name="inMode" value="ge3"> 3 số — 100 → 100kg</label>
-        <label class="mode-option"><input type="radio" name="inMode" value="ge4"> 4 số — 100,4kg (gram chẵn)</label>
+        <label class="mode-option"><input type="radio" name="inMode" value="ge4"> 4 số — 100,4kg (chẵn)</label>
       </div>`;
     const inName = $('inName');
     inName.addEventListener('input', ()=> clearInvalid(inName));
@@ -626,18 +645,55 @@ async function onDeleteFarmer(name){
 }
 
 /* ===== Navigation ===== */
+// Chuẩn hoá view theo tình trạng dữ liệu hiện có
+function normalizeViewByState(desired){
+  const hasAnyGroup = Object.keys(state.groups||{}).length > 0;
+  if (!hasAnyGroup) return 'groups';
+  if (desired === 'farmers' && !state.activeGroup) return 'groups';
+  if (desired === 'tables'){
+    if (!state.activeGroup) return 'groups';
+    if (!state.activeFarmer) return 'farmers';
+  }
+  return desired;
+}
+
 function navTo(v){
-  if (state.view !== v){
-    state.view=v;
-    if (history.state?.view !== v){ history.pushState({view:v}, '', '#'+v); }
+  const safeV = normalizeViewByState(v);
+  if (state.view !== safeV){
+    state.view = safeV;
+    if ((history.state?.view || '') !== safeV){
+      history.pushState({view:safeV}, '', '#'+safeV);
+    }
     save();
-  }else{ render(); }
+  } else {
+    render();
+  }
 }
+
+// ✅ Back đồng bộ với hệ thống
 function navBack(){
-  if (state.view==='tables') return navTo('farmers');
-  if (state.view==='farmers') return navTo('groups');
+  if (history.length > 1){
+    history.back();
+    return;
+  }
+  if (state.view !== 'groups'){
+    state.view = 'groups';
+    history.replaceState({view:'groups'}, '', '#groups');
+    save();
+  }
 }
-window.addEventListener('popstate', (e)=>{ state.view = e.state?.view || 'groups'; render(); });
+
+// Đồng bộ khi popstate (chặn view không hợp lệ)
+window.addEventListener('popstate', (e)=>{
+  let view = e.state?.view || (location.hash ? location.hash.slice(1) : 'groups');
+  view = ['groups','farmers','tables'].includes(view) ? view : 'groups';
+  const normalized = normalizeViewByState(view);
+  if (normalized !== view){
+    history.replaceState({view: normalized}, '', '#'+normalized);
+  }
+  state.view = normalized;
+  render();
+});
 
 /* ===== Render ===== */
 function render(){
@@ -846,7 +902,6 @@ function renderTables(){
     const v=Math.max(0, Math.floor(Number($('statTareRule').value)||0));
     const f=getActiveFarmer(); if(!f) return; f.tareRule=v; save();
   });
-  // Tooltip gợi ý bì
   $('statTareRule').title = tareRule === 0 ? '0 = không trừ bì theo số bao' : 'Mỗi X bao trừ 1 kg';
   $('statPrice').addEventListener('change',()=>{ const f=getActiveFarmer(); if(!f) return; f.price=Number($('statPrice').value)||0; save(); });
 
@@ -911,7 +966,6 @@ async function commitCellInput(farmer,ti,ci,raw,e,el){
   }
 
   if(el){ if(isOddGram) el.classList.add('warn'); else el.classList.remove('warn'); }
-  // Không chặn luồng bằng alert; chỉ highlight warn
 
   farmer.tables[ti][ci]=v;
   if(el){ const hasDecimal=(mode==='lt3'||mode==='ge4'); el.value=(typeof v==='number')?(hasDecimal?v.toFixed(1):v):''; }
@@ -940,19 +994,32 @@ function migrateCreatedAt(){
     }
   }catch(e){}
 }
+
+function resolveInitialView(){
+  const hash = (location.hash||'').replace('#','');
+  const allowed = ['groups','farmers','tables'];
+  const init = allowed.includes(hash) ? hash : 'groups';
+  state.view = init;
+  // Đảm bảo có state ban đầu đúng hash
+  history.replaceState({view:init}, '', '#'+init);
+}
+
 function save(){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(state)); }catch(e){} render(); }
 function load(){
-  try{ const raw=localStorage.getItem(STORAGE_KEY); if(raw){ const parsed=JSON.parse(raw); if(parsed && parsed.groups) state=parsed; } }catch(e){}
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(raw){ const parsed=JSON.parse(raw); if(parsed && parsed.groups) state=parsed; }
+  }catch(e){}
   if (!state || typeof state!=='object') state={groups:{},activeGroup:'',activeFarmer:'',view:'groups'};
   if (!state.groups || typeof state.groups!=='object') state.groups={};
   migrateCreatedAt();
-  state.view='groups';
-  if (history.state?.view !== 'groups') history.replaceState({view:'groups'}, '', '#groups');
+  // 🔁 KHỞI TẠO THEO HASH (đã sửa)
+  resolveInitialView();
   render();
 }
 
 /* ===== Global UI bindings ===== */
-$('btnBack').addEventListener('click',navBack);
+$('btnBack').addEventListener('click', navBack);
 $('btnTools').addEventListener('click',()=>openSheet('appTools'));
 $('btnSheetClose').addEventListener('click',closeSheet);
 $('btnSheetCancel').addEventListener('click',closeSheet);
@@ -1107,9 +1174,12 @@ function compareVersions(a, b){
     function eligibleForInstall(){ return !isStandalone() && (Boolean(deferredPrompt) || isIOS()); }
 
     async function triggerInstall(){
-      if (isIOS() && !isStandalone()){
-        await showAlert('Trên iPhone/iPad: mở menu <b>Chia sẻ (□↑)</b> → <b>Thêm vào MH chính</b> để cài ứng dụng dùng offline.','Hướng dẫn cài đặt iOS');
-        return;
+      if (isIOS) {
+        const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        if (!standalone){
+          await showAlert('Trên iPhone/iPad: mở menu <b>Chia sẻ (□↑)</b> → <b>Thêm vào MH chính</b> để cài ứng dụng dùng offline.','Hướng dẫn cài đặt iOS');
+          return;
+        }
       }
       if (!deferredPrompt){
         await showAlert('Trình duyệt chưa sẵn sàng hiển thị hộp thoại cài đặt. Vui lòng thử lại sau.');
@@ -1143,7 +1213,9 @@ function compareVersions(a, b){
     });
 
     window.addEventListener('load', ()=>{
-      if (isIOS() && !isStandalone()){
+      const isIOSUA = /iphone|ipad|ipod/i.test(navigator.userAgent) && /safari/i.test(navigator.userAgent) && !/crios|fxios|opios|EdgiOS/i.test(navigator.userAgent);
+      const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      if (isIOSUA && !standalone){
         setTimeout(maybeShowInstallNudge, 600);
       }
     });

@@ -1,5 +1,5 @@
 /* service-worker.js — OFFLINE LOCKDOWN cho TÍNH CÂN LÚA */
-const APP_VERSION  = 'can-lua-v1.0.2';
+const APP_VERSION  = 'can-lua-v1.0.3';
 const CACHE_STATIC = `static-${APP_VERSION}`;
 
 // Xác định base path (ví dụ: /can-lua/)
