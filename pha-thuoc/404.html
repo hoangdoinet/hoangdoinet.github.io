@@ -4,6 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Tính lượng thuốc sát trùng</title>
+  <meta name="version" content="v1.0.5">
 
   <!-- 🔎 SEO & Sharing -->
   <meta name="description" content="Công cụ tính lượng thuốc sát trùng theo tỷ lệ pha và dạng thuốc. Có thể cài đặt ứng dụng trên Android & iOS, hoạt động offline và sử dụng dễ dàng cho trang trại.">
@@ -35,9 +36,9 @@
   <!-- PWA -->
   <meta name="theme-color" content="#22c55e"/>
   <link rel="manifest" href="/pha-thuoc/manifest.webmanifest">
-  <link rel="icon" href="/pha-thuoc/icons/icon-1024.png" sizes="1024x1024">
-  <link rel="apple-touch-icon" href="/pha-thuoc/icons/icon-1024.png">
   <link rel="icon" href="/pha-thuoc/icons/icon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/pha-thuoc/icons/icon-180.png">
+  <link rel="icon" type="image/png" href="/pha-thuoc/icons/icon-32.png" sizes="32x32">
 
   <style>
     :root{
@@ -154,32 +155,70 @@
       background:#22c55e; color:#063016; border:none; border-radius:14px;
       padding:12px 14px; font-weight:700; box-shadow:0 10px 24px rgba(0,0,0,.25); display:none;
     }
+
+    /* ============ Update Notification ============ */
+    .update-notification {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(90deg, #22c55e, #16a34a);
+      color: white;
+      padding: 12px 16px;
+      text-align: center;
+      z-index: 10000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      font-family: system-ui;
+      animation: slideDown 0.3s ease-out;
+    }
+    
+    @keyframes slideDown {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+    
+    .update-notification button {
+      background: white;
+      color: #22c55e;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin-left: 12px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    .update-notification button.secondary {
+      background: transparent;
+      color: white;
+      border: 1px solid white;
+      margin-left: 8px;
+    }
   </style>
 </head>
 <body>
-  <!-- Splash -->
+  <!-- Splash Screen -->
   <div id="splash" role="status" aria-label="Đang khởi động ứng dụng">
     <div class="logo-wrap"><img src="/pha-thuoc/icons/icon-512.png" class="logo-img" alt="Logo Tính lượng thuốc sát trùng" width="140" height="140"></div>
     <div class="app-name" aria-hidden="true">PHA THUỐC SÁT TRÙNG</div>
-    <div class="meta">Phiên bản: <b>v1.0.4</b></div>
+    <div class="meta">Phiên bản: <b id="splashVersion">v1.0.5</b></div>
     <div class="meta">Tác giả: <b>Hoàng Đợi</b></div>
   </div>
 
   <div id="app">
-    <!-- iOS hướng dẫn -->
+    <!-- iOS Installation Tip -->
     <div class="ios-tip" id="iosTip" style="display:none;background:rgba(15,23,42,.95);padding:12px 14px;border-radius:14px;border:1px solid #1f2937;font-size:14px;backdrop-filter:blur(6px);position:fixed;left:12px;right:12px;bottom:12px;z-index:50">
       <button id="iosClose" style="float:right;background:#22c55e;border:none;color:#063016;border-radius:10px;padding:8px 12px;font-weight:600;cursor:pointer">Đã hiểu</button>
       <b style="color:#86efac">Mẹo:</b> Trên iPhone/iPad → Safari → <b>Chia sẻ</b> → <b>Thêm vào MH chính</b> để cài như ứng dụng.
     </div>
 
-    <!-- Android cài đặt (giữ NÚT NỔI) -->
+    <!-- Install Button -->
     <button class="install-btn" id="btnInstall">📥 Cài đặt ứng dụng</button>
 
     <div class="wrap">
       <header class="hero">
         <h1>Tính lượng thuốc sát trùng</h1>
-        <!-- Chip phiên bản (click để mở modal) -->
-        <div id="appBadge" class="badge" role="button" tabindex="0" aria-label="Xem thông tin ứng dụng">Phiên bản: v1.0.4</div>
+        <div id="appBadge" class="badge" role="button" tabindex="0" aria-label="Xem thông tin ứng dụng">Phiên bản: v1.0.5</div>
       </header>
 
       <main class="card">
@@ -235,7 +274,7 @@
     </div>
   </div>
 
-  <!-- ======= Modal Thông tin Ứng dụng (NỀN SÁNG) ======= -->
+  <!-- About Modal -->
   <div id="aboutModal" class="modal-backdrop" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" aria-describedby="aboutDesc">
       <header>
@@ -245,39 +284,139 @@
       <div class="content">
         <p id="aboutDesc">Công cụ tính nhanh lượng thuốc sát trùng theo tỷ lệ pha và dạng thuốc (nước/bột). Hỗ trợ cài đặt để dùng offline trên Android và iOS.</p>
         <div class="kv">
-          <div class="key"><li>Phiên bản:</li></div><div><b>v1.0.4</b></div>
+          <div class="key"><li>Phiên bản:</li></div><div><b>v1.0.5</b></div>
           <div class="key"><li>Tác giả:</li></div><div><b>Hoàng Đợi</b></div>
           <div class="key"><li>Bộ nhớ offline:</li></div><div><b id="persistStatus">Đang kiểm tra…</b></div>
         </div>
       </div>
       <footer>
         <button class="btn secondary" id="aboutOk">Đóng</button>
-        <!-- Nút cài đặt trong modal (ẩn mặc định, hiện khi đủ điều kiện) -->
         <button class="btn" id="modalInstall" style="display:none">📥 Cài đặt ứng dụng</button>
       </footer>
     </div>
   </div>
 
   <script>
-    // Đăng ký Service Worker
+    // ========== APP UPDATER ==========
+    class AppUpdater {
+      constructor() {
+        this.updateAvailable = false;
+        this.newVersion = null;
+        this.init();
+      }
+      
+      init() {
+        // Listen for update messages from Service Worker
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.addEventListener('message', (event) => {
+            const { type, version, currentVersion } = event.data;
+            
+            if (type === 'UPDATE_AVAILABLE') {
+              this.showUpdateNotification(version, currentVersion);
+            }
+          });
+          
+          // Check for updates on app start
+          this.checkForUpdate();
+          
+          // Check when app comes to foreground
+          document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+              this.checkForUpdate();
+            }
+          });
+        }
+      }
+      
+      async checkForUpdate() {
+        if ('serviceWorker' in navigator) {
+          const registration = await navigator.serviceWorker.ready;
+          registration.active?.postMessage({ type: 'CHECK_UPDATE' });
+        }
+      }
+      
+      showUpdateNotification(newVersion, currentVersion) {
+        if (this.updateAvailable) return;
+        
+        this.updateAvailable = true;
+        this.newVersion = newVersion;
+        
+        const updateDiv = document.createElement('div');
+        updateDiv.className = 'update-notification';
+        updateDiv.innerHTML = `
+          <strong>🎉 Có bản cập nhật mới!</strong> 
+          (${currentVersion} → ${newVersion})
+          <button onclick="appUpdater.applyUpdate()">Cập nhật ngay</button>
+          <button onclick="appUpdater.hideUpdate()" class="secondary">Để sau</button>
+        `;
+        
+        document.body.appendChild(updateDiv);
+      }
+      
+      async applyUpdate() {
+        if ('serviceWorker' in navigator) {
+          const registration = await navigator.serviceWorker.ready;
+          
+          // Request SW update
+          registration.active?.postMessage({ type: 'FORCE_UPDATE' });
+          
+          // Show updating message
+          const updateDiv = document.querySelector('.update-notification');
+          if (updateDiv) {
+            updateDiv.innerHTML = '<strong>🔄 Đang cập nhật...</strong>';
+          }
+          
+          // Reload after 2 seconds
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        }
+      }
+      
+      hideUpdate() {
+        const dialog = document.querySelector('.update-notification');
+        if (dialog) {
+          dialog.remove();
+          this.updateAvailable = false;
+        }
+      }
+    }
+
+    // ========== SERVICE WORKER REGISTRATION ==========
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', async () => {
-        try { await navigator.serviceWorker.register('/pha-thuoc/service-worker.js', { scope: '/pha-thuoc/', updateViaCache: 'none' }); }
-        catch (e) { console.warn('SW register failed', e); }
+        try { 
+          await navigator.serviceWorker.register('/pha-thuoc/service-worker.js', { 
+            scope: '/pha-thuoc/', 
+            updateViaCache: 'none' 
+          }); 
+          console.log('✅ Service Worker registered');
+        }
+        catch (e) { 
+          console.warn('❌ Service Worker registration failed', e); 
+        }
       });
     }
 
-    // Splash control
-    const hideSplash = () => { const el = document.getElementById('splash'); if(!el||el.classList.contains('hidden')) return; el.classList.add('hidden'); document.body.classList.add('ready'); };
+    // ========== SPLASH SCREEN CONTROL ==========
+    const hideSplash = () => { 
+      const el = document.getElementById('splash'); 
+      if(!el || el.classList.contains('hidden')) return; 
+      el.classList.add('hidden'); 
+      document.body.classList.add('ready'); 
+    };
     window.addEventListener('load', () => { setTimeout(hideSplash, 2200); });
     setTimeout(hideSplash, 3000);
 
-    // iOS tip
+    // ========== IOS INSTALL TIP ==========
     function isIos(){return /iphone|ipad|ipod/i.test(navigator.userAgent)}
     function isStandalone(){return navigator.standalone || window.matchMedia('(display-mode: standalone)').matches}
-    window.addEventListener('load',()=>{ if(isIos()&&!isStandalone()) document.getElementById('iosTip').style.display='block'; document.getElementById('iosClose').onclick=()=>document.getElementById('iosTip').remove(); });
+    window.addEventListener('load',()=>{ 
+      if(isIos()&&!isStandalone()) document.getElementById('iosTip').style.display='block'; 
+      document.getElementById('iosClose').onclick=()=>document.getElementById('iosTip').remove(); 
+    });
 
-    // Tính toán
+    // ========== CALCULATION LOGIC ==========
     function calculate(){
       const liters=parseFloat(document.getElementById('litersOfWater').value);
       const type=document.getElementById('medicineType').value;
@@ -298,7 +437,7 @@
     document.getElementById('medicineType').addEventListener('change',calculate);
     document.querySelectorAll('input[name="medicineFormType"]').forEach(r=>{ r.addEventListener('change',calculate); });
 
-    // Chips chọn nhanh
+    // ========== RATIO CHIPS ==========
     const selectRatio = document.getElementById('medicineType');
     const chipWrap = document.getElementById('ratioChips');
     const chips = [...chipWrap.querySelectorAll('.chip')];
@@ -327,7 +466,7 @@
       });
     });
 
-    // ========== Modal logic ==========
+    // ========== MODAL LOGIC ==========
     const badge = document.getElementById('appBadge');
     const modalBackdrop = document.getElementById('aboutModal');
     const btnClose = document.getElementById('aboutClose');
@@ -360,7 +499,7 @@
       if(e.key==='Escape' && modalBackdrop.classList.contains('show')) closeModal();
     });
 
-    // ========== A2HS: đồng bộ nút nổi + nút trong modal ==========
+    // ========== A2HS INSTALL PROMPT ==========
     let deferredPrompt;
     const btnInstall = document.getElementById('btnInstall');
     const modalInstall = document.getElementById('modalInstall');
@@ -379,7 +518,6 @@
 
     async function triggerInstall(){
       if(!deferredPrompt){
-        // iOS: hiện tip nếu chưa standalone
         if(isIos() && !isStandalone()){
           const tip = document.getElementById('iosTip');
           if(tip) tip.style.display='block';
@@ -399,7 +537,7 @@
     if(btnInstall)   btnInstall.addEventListener('click', triggerInstall);
     if(modalInstall) modalInstall.addEventListener('click', triggerInstall);
 
-    // === Persistent Storage (khóa bộ nhớ offline) ===
+    // ========== PERSISTENT STORAGE ==========
     async function ensurePersistentStorage() {
       const el = document.getElementById('persistStatus');
       if (!('storage' in navigator) || !navigator.storage || !('persist' in navigator.storage)) {
@@ -426,18 +564,22 @@
       }
     }
 
-    // Khởi tạo chip từ URL nếu có
+    // ========== URL PARAMETERS ==========
     const p=new URLSearchParams(location.search);
     const r=p.get('ratio');
     if(r){ selectRatio.value=r; }
     setActiveChip(selectRatio.value || r || '');
     if(selectRatio.value) calculate();
 
-    // Ẩn nút cài đặt nếu đã chạy ở standalone
+    // ========== INITIALIZE APP ==========
     updateInstallVisibility();
-
-    // Gọi xin lưu trữ bền vững sau khi trang đã sẵn sàng
-    window.addEventListener('load', () => setTimeout(ensurePersistentStorage, 800));
+    
+    // Initialize updater
+    let appUpdater;
+    window.addEventListener('load', () => {
+      appUpdater = new AppUpdater();
+      setTimeout(ensurePersistentStorage, 800);
+    });
   </script>
 </body>
 </html>

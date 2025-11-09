@@ -1,0 +1,12 @@
+{
+  "version": "v1.0.5",
+  "build_date": "2025-11-10",
+  "changelog": [
+    "✨ Thêm tính năng tự động cập nhật",
+    "🔧 Sửa lỗi offline hoàn toàn",
+    "🎨 Cải thiện giao diện người dùng",
+    "⚡ Tối ưu hiệu năng và cache"
+  ],
+  "update_url": "https://hoangdoinet.github.io/pha-thuoc/",
+  "min_required": "v1.0.0"
+}

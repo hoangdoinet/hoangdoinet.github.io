@@ -1,47 +1,75 @@
 {
   "id": "pha-thuoc-sat-trung",
   "name": "Tính lượng thuốc sát trùng",
-  "short_name": "Pha thuốc ST",
-  "lang": "vi",
-  "description": "Tính nhanh lượng thuốc sát trùng theo tỷ lệ và dạng thuốc. Có thể cài ứng dụng trên Android & iOS, dùng offline.",
-  "start_url": "/pha-thuoc/?source=pwa",
+  "short_name": "Pha thuốc ST", 
+  "description": "Tính nhanh lượng thuốc sát trùng theo tỷ lệ và dạng thuốc. Ứng dụng hoạt động offline, có thể cài đặt trên Android & iOS.",
+  "lang": "vi-VN",
+  
+  "start_url": "/pha-thuoc/?source=pwa&utm_source=pwa",
   "scope": "/pha-thuoc/",
+  
   "display": "standalone",
-  "display_override": ["standalone", "fullscreen"],
+  "display_override": ["standalone", "minimal-ui", "fullscreen"],
   "orientation": "portrait-primary",
-  "background_color": "#0b1220",
+  
   "theme_color": "#22c55e",
+  "background_color": "#0b1220",
+  
+  "categories": ["business", "medical", "health", "productivity", "utilities"],
+  "dir": "ltr",
+
   "icons": [
-    { "src": "/pha-thuoc/icons/icon-96.png",    "sizes": "96x96",    "type": "image/png", "purpose": "any" },
-    { "src": "/pha-thuoc/icons/icon-192.png",   "sizes": "192x192",  "type": "image/png", "purpose": "any" },
-    { "src": "/pha-thuoc/icons/icon-512.png",   "sizes": "512x512",  "type": "image/png", "purpose": "any" },
-    { "src": "/pha-thuoc/icons/icon-1024.png",  "sizes": "1024x1024","type": "image/png", "purpose": "any" },
-    { "src": "/pha-thuoc/icons/maskable-192.png","sizes": "192x192", "type": "image/png", "purpose": "maskable" },
-    { "src": "/pha-thuoc/icons/maskable-512.png","sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "/pha-thuoc/icons/icon-72.png",   "sizes": "72x72",   "type": "image/png", "purpose": "any" },
+    { "src": "/pha-thuoc/icons/icon-96.png",   "sizes": "96x96",   "type": "image/png", "purpose": "any" },
+    { "src": "/pha-thuoc/icons/icon-128.png",  "sizes": "128x128", "type": "image/png", "purpose": "any" },
+    { "src": "/pha-thuoc/icons/icon-144.png",  "sizes": "144x144", "type": "image/png", "purpose": "any" },
+    { "src": "/pha-thuoc/icons/icon-152.png",  "sizes": "152x152", "type": "image/png", "purpose": "any" },
+    { "src": "/pha-thuoc/icons/icon-167.png",  "sizes": "167x167", "type": "image/png", "purpose": "any" },
+    { "src": "/pha-thuoc/icons/icon-180.png",  "sizes": "180x180", "type": "image/png", "purpose": "any" },
+    { "src": "/pha-thuoc/icons/icon-192.png",  "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/pha-thuoc/icons/icon-384.png",  "sizes": "384x384", "type": "image/png", "purpose": "any" },
+    { "src": "/pha-thuoc/icons/icon-512.png",  "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/pha-thuoc/icons/icon-1024.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any" },
+    { "src": "/pha-thuoc/icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/pha-thuoc/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
+
   "shortcuts": [
     {
-      "name": "Pha 1:200",
-      "short_name": "Tỷ lệ 1:200",
-      "url": "/pha-thuoc/?source=shortcut&ratio=1:200",
+      "name": "Pha tỷ lệ 1:200",
+      "short_name": "1:200",
       "description": "Tính nhanh với tỷ lệ pha 1:200",
-      "icons": [{ "src": "/pha-thuoc/icons/icon-96.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }]
+      "url": "/pha-thuoc/?source=shortcut&ratio=1:200&form=liquid",
+      "icons": [
+        { "src": "/pha-thuoc/icons/icon-96.png", "sizes": "96x96", "type": "image/png" }
+      ]
     },
     {
-      "name": "Pha 1:400",
-      "short_name": "Tỷ lệ 1:400",
-      "url": "/pha-thuoc/?source=shortcut&ratio=1:400",
+      "name": "Pha tỷ lệ 1:400", 
+      "short_name": "1:400",
       "description": "Tính nhanh với tỷ lệ pha 1:400",
-      "icons": [{ "src": "/pha-thuoc/icons/icon-96.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }]
+      "url": "/pha-thuoc/?source=shortcut&ratio=1:400&form=liquid",
+      "icons": [
+        { "src": "/pha-thuoc/icons/icon-96.png", "sizes": "96x96", "type": "image/png" }
+      ]
     },
     {
-      "name": "Pha 1:800",
-      "short_name": "Tỷ lệ 1:800",
-      "url": "/pha-thuoc/?source=shortcut&ratio=1:800",
+      "name": "Pha tỷ lệ 1:800",
+      "short_name": "1:800", 
       "description": "Tính nhanh với tỷ lệ pha 1:800",
-      "icons": [{ "src": "/pha-thuoc/icons/icon-96.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }]
+      "url": "/pha-thuoc/?source=shortcut&ratio=1:800&form=liquid",
+      "icons": [
+        { "src": "/pha-thuoc/icons/icon-96.png", "sizes": "96x96", "type": "image/png" }
+      ]
     }
   ],
-  "categories": ["tools", "utilities", "productivity"],
+
+  "related_applications": [
+    {
+      "platform": "web",
+      "url": "https://hoangdoinet.github.io/pha-thuoc/"
+    }
+  ],
+  
   "prefer_related_applications": false
 }
