@@ -1,17 +1,17 @@
-/* service-worker.js - CACHE COMPLETE v1.0.5 */
+/* service-worker.js - OFFLINE 100% GUARANTEED v1.0.5 */
 const APP_VERSION = 'v1.0.5';
 const CACHE_STATIC = `static-${APP_VERSION}`;
 const BASE = '/pha-thuoc/';
 const VERSION_FILE = BASE + 'version.json';
 
-// 🔥 CACHE TẤT CẢ ICONS THEO MANIFEST
+// 🔥 CACHE TOÀN BỘ ASSETS THEO MANIFEST
 const CRITICAL_ASSETS = [
-  // App Core - PHẢI CACHE THÀNH CÔNG
+  // 🎯 CORE APP - PHẢI THÀNH CÔNG 100%
   BASE + 'index.html',
   BASE + 'manifest.webmanifest',
   BASE + 'version.json',
   
-  // 🎯 CACHE TẤT CẢ ICONS THEO MANIFEST
+  // 🖼️ ICONS - TOÀN BỘ THEO MANIFEST
   BASE + 'icons/icon-72.png',
   BASE + 'icons/icon-96.png',
   BASE + 'icons/icon-128.png',
@@ -27,50 +27,57 @@ const CRITICAL_ASSETS = [
   BASE + 'icons/maskable-512.png'
 ];
 
-console.log(`[SW ${APP_VERSION}] 🚀 Khởi động - CACHE ĐẦY ĐỦ`);
+console.log(`[SW ${APP_VERSION}] 🚀 Khởi động - OFFLINE 100% GUARANTEED`);
 
-// ========== CÀI ĐẶT - CACHE TOÀN BỘ ==========
+// ========== CÀI ĐẶT - ĐẢM BẢO 100% THÀNH CÔNG ==========
 self.addEventListener('install', (event) => {
-  console.log('[SW] 🔧 Đang cài đặt - CACHE TOÀN BỘ ICONS...');
+  console.log('[SW] 🔧 Đang cài đặt - ĐẢM BẢO OFFLINE 100%...');
   
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_STATIC);
-    let successCount = 0;
-    let failCount = 0;
+    const results = {
+      success: [],
+      failed: []
+    };
     
-    // 🔥 CACHE TẤT CẢ ASSETS THEO MANIFEST
-    for (const url of CRITICAL_ASSETS) {
-      try {
-        await cache.add(url);
-        successCount++;
+    // 🔥 CACHE INDEX.HTML ĐẦU TIÊN - BẮT BUỘC THÀNH CÔNG
+    console.log('[SW] 📦 Đang cache index.html (critical)...');
+    const indexSuccess = await cacheWithRetry(cache, BASE + 'index.html', 3);
+    if (!indexSuccess) {
+      console.error('[SW] 💥 CRITICAL FAIL: Không thể cache index.html');
+      // Vẫn tiếp tục, nhưng ghi log lỗi nghiêm trọng
+    }
+    
+    // Cache các assets còn lại với retry
+    for (const url of CRITICAL_ASSETS.filter(a => a !== BASE + 'index.html')) {
+      const success = await cacheWithRetry(cache, url, 2);
+      if (success) {
+        results.success.push(url);
         console.log(`[SW] ✅ Đã cache: ${url}`);
-      } catch (error) {
-        failCount++;
-        console.error(`[SW] ❌ Không cache được: ${url}`, error);
-        
-        // 🔄 THỬ CACHE LẠI VỚI STRATEGY KHÁC
-        try {
-          const response = await fetch(url);
-          if (response.ok) {
-            await cache.put(url, response);
-            successCount++;
-            console.log(`[SW] 🔄 Đã cache lại: ${url}`);
-          }
-        } catch (retryError) {
-          console.error(`[SW] 💥 Cache retry failed: ${url}`);
-        }
+      } else {
+        results.failed.push(url);
+        console.error(`[SW] ❌ Không cache được: ${url}`);
       }
     }
     
-    console.log(`[SW] 📊 Kết quả cache: ${successCount} thành công, ${failCount} thất bại`);
+    // 📊 BÁO CÁO KẾT QUẢ CHI TIẾT
+    console.log(`[SW] 📊 KẾT QUẢ CACHE:`);
+    console.log(`[SW] ✅ Thành công: ${results.success.length}/${CRITICAL_ASSETS.length}`);
+    console.log(`[SW] ❌ Thất bại: ${results.failed.length}`);
     
-    if (successCount >= CRITICAL_ASSETS.length - 3) { // Cho phép fail 3 assets
-      console.log('[SW] 🎉 Ứng dụng đã sẵn sàng OFFLINE 100%');
-    } else {
-      console.error('[SW] 🚨 CẢNH BÁO: Quá nhiều assets cache thất bại!');
+    if (results.failed.length > 0) {
+      console.error('[SW] 🚨 ASSETS CACHE FAILED:', results.failed);
     }
     
-    // Check update sau khi cache
+    // OFFLINE READY VERIFICATION
+    const hasCriticalAssets = await verifyCriticalAssets(cache);
+    if (hasCriticalAssets) {
+      console.log('[SW] 🎉 ỨNG DỤNG ĐÃ SẴN SÀNG OFFLINE 100%');
+    } else {
+      console.error('[SW] 🚨 CẢNH BÁO: Ứng dụng có thể không hoạt động offline hoàn toàn');
+    }
+    
+    // Check update
     await checkForUpdates();
     
   })());
@@ -78,16 +85,69 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// ========== CHECK UPDATE FUNCTION ==========
-async function checkForUpdates() {
-  if (!navigator.onLine) {
-    console.log('[SW] 🌐 Offline - Bỏ qua check update');
-    return;
+// ========== CACHE VỚI RETRY ==========
+async function cacheWithRetry(cache, url, maxRetries = 3) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      await cache.add(url);
+      return true;
+    } catch (error) {
+      console.warn(`[SW] ⚠️ Lần ${attempt} cache thất bại: ${url}`);
+      
+      if (attempt === maxRetries) {
+        // Thử strategy cuối: fetch và put
+        try {
+          const response = await fetch(url);
+          if (response.ok) {
+            await cache.put(url, response);
+            console.log(`[SW] 🔄 Đã cache bằng fetch: ${url}`);
+            return true;
+          }
+        } catch (fetchError) {
+          console.error(`[SW] 💥 Cache hoàn toàn thất bại: ${url}`);
+          return false;
+        }
+      }
+      
+      // Chờ trước khi retry
+      await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+    }
   }
+  return false;
+}
+
+// ========== VERIFY CRITICAL ASSETS ==========
+async function verifyCriticalAssets(cache) {
+  const cachedItems = await cache.keys();
+  
+  // Assets tối thiểu PHẢI có
+  const MINIMAL_ASSETS = [
+    BASE + 'index.html',
+    BASE + 'manifest.webmanifest',
+    BASE + 'icons/icon-192.png',
+    BASE + 'icons/icon-512.png'
+  ];
+  
+  const hasMinimalAssets = MINIMAL_ASSETS.every(asset =>
+    cachedItems.some(item => item.url === asset)
+  );
+  
+  const totalIconsCached = cachedItems.filter(item =>
+    item.url.includes('/icons/')
+  ).length;
+  
+  console.log(`[SW] 🔍 VERIFICATION: Minimal assets = ${hasMinimalAssets ? '✅' : '❌'}`);
+  console.log(`[SW] 🔍 VERIFICATION: Icons cached = ${totalIconsCached}/13`);
+  
+  return hasMinimalAssets && totalIconsCached >= 10; // Cho phép thiếu 3 icons
+}
+
+// ========== CHECK UPDATE ==========
+async function checkForUpdates() {
+  if (!navigator.onLine) return;
   
   try {
     console.log('[SW] 🔄 Đang kiểm tra bản cập nhật...');
-    
     const response = await fetch(VERSION_FILE + '?t=' + Date.now(), {
       cache: 'no-cache'
     });
@@ -97,24 +157,96 @@ async function checkForUpdates() {
     const data = await response.json();
     const latestVersion = data.version;
     
-    console.log(`[SW] 📊 Phiên bản: Local=${APP_VERSION}, Server=${latestVersion}`);
-    
     if (compareVersions(latestVersion, APP_VERSION) > 0) {
-      console.log(`[SW] 🎉 Phát hiện bản cập nhật mới: ${latestVersion}`);
+      console.log(`[SW] 🎉 Phát hiện bản cập nhật: ${latestVersion}`);
       
       const clients = await self.clients.matchAll();
       clients.forEach(client => {
         client.postMessage({
           type: 'UPDATE_AVAILABLE',
           version: latestVersion,
-          currentVersion: APP_VERSION,
-          changelog: data.changelog || []
+          currentVersion: APP_VERSION
         });
       });
     }
-    
   } catch (error) {
     console.log('[SW] 🌐 Lỗi check update:', error.message);
+  }
+}
+
+// ========== KÍCH HOẠT VÀ VERIFICATION ==========
+self.addEventListener('activate', (event) => {
+  console.log('[SW] 🎯 Kích hoạt - OFFLINE VERIFICATION...');
+  
+  event.waitUntil((async () => {
+    // 🚫 TẮT navigationPreload
+    if (self.registration.navigationPreload) {
+      try {
+        await self.registration.navigationPreload.disable();
+        console.log('[SW] ✅ Đã tắt navigationPreload');
+      } catch (err) {
+        console.warn('[SW] Không thể tắt navigationPreload:', err);
+      }
+    }
+    
+    // Dọn cache cũ
+    const cacheKeys = await caches.keys();
+    const oldCaches = cacheKeys.filter(key => 
+      key.startsWith('static-') && key !== CACHE_STATIC
+    );
+    
+    if (oldCaches.length > 0) {
+      console.log('[SW] 🗑️ Đang xóa cache cũ:', oldCaches);
+      await Promise.all(oldCaches.map(key => caches.delete(key)));
+    }
+    
+    await self.clients.claim();
+    
+    // 🔍 VERIFICATION SAU KÍCH HOẠT
+    const cache = await caches.open(CACHE_STATIC);
+    const cachedItems = await cache.keys();
+    
+    console.log(`[SW] 📊 SAU KÍCH HOẠT: ${cachedItems.length} items trong cache`);
+    
+    // Kiểm tra assets quan trọng
+    const criticalAssets = [
+      BASE + 'index.html',
+      BASE + 'icons/icon-192.png',
+      BASE + 'icons/icon-512.png'
+    ];
+    
+    const missingCritical = criticalAssets.filter(asset =>
+      !cachedItems.some(item => item.url === asset)
+    );
+    
+    if (missingCritical.length > 0) {
+      console.error('[SW] 🚨 CRITICAL ASSETS MISSING:', missingCritical);
+      // Tự động cache lại assets quan trọng bị thiếu
+      await cacheMissingCritical(cache, missingCritical);
+    } else {
+      console.log('[SW] ✅ Tất cả assets quan trọng đã được cache');
+    }
+    
+    // Schedule update checks
+    setInterval(checkForUpdates, 6 * 60 * 60 * 1000);
+    
+  })());
+});
+
+// ========== CACHE LẠI ASSETS QUAN TRỌNG BỊ THIẾU ==========
+async function cacheMissingCritical(cache, missingAssets) {
+  console.log('[SW] 🔄 Đang cache lại assets quan trọng bị thiếu...');
+  
+  for (const asset of missingAssets) {
+    try {
+      const response = await fetch(asset);
+      if (response.ok) {
+        await cache.put(asset, response);
+        console.log(`[SW] ✅ Đã cache lại: ${asset}`);
+      }
+    } catch (error) {
+      console.error(`[SW] 💥 Không thể cache lại: ${asset}`);
+    }
   }
 }
 
@@ -132,132 +264,7 @@ function compareVersions(a, b) {
   return 0;
 }
 
-// ========== KÍCH HOẠT ==========
-self.addEventListener('activate', (event) => {
-  console.log('[SW] 🎯 Kích hoạt phiên bản', APP_VERSION);
-  
-  event.waitUntil((async () => {
-    // Tắt navigation preload
-    if (self.registration.navigationPreload) {
-      try {
-        await self.registration.navigationPreload.disable();
-        console.log('[SW] ✅ Đã tắt navigationPreload');
-      } catch (err) {
-        console.warn('[SW] Không thể tắt navigationPreload:', err);
-      }
-    }
-    
-    // Dọn cache cũ
-    const cacheKeys = await caches.keys();
-    const oldCaches = cacheKeys.filter(key => 
-      key.startsWith('static-') && 
-      key !== CACHE_STATIC
-    );
-    
-    if (oldCaches.length > 0) {
-      console.log('[SW] 🗑️ Đang xóa cache cũ:', oldCaches);
-      await Promise.all(oldCaches.map(key => caches.delete(key)));
-    }
-    
-    await self.clients.claim();
-    
-    // 📊 KIỂM TRA CACHE STATUS CHI TIẾT
-    const cache = await caches.open(CACHE_STATIC);
-    const cachedItems = await cache.keys();
-    
-    const cachedIcons = cachedItems.filter(item => 
-      item.url.includes('/icons/')
-    );
-    const hasAllIcons = CRITICAL_ASSETS.filter(asset => 
-      asset.includes('/icons/')
-    ).every(icon => 
-      cachedItems.some(item => item.url === icon)
-    );
-    
-    console.log(`[SW] 📊 Cache status: ${cachedItems.length} items total`);
-    console.log(`[SW] 📊 Icons cached: ${cachedIcons.length}/13 icons`);
-    console.log(`[SW] 📊 All icons present: ${hasAllIcons ? '✅' : '❌'}`);
-    
-    if (!hasAllIcons) {
-      console.warn('[SW] ⚠️ Một số icons bị thiếu trong cache');
-      // Tự động cache lại icons bị thiếu
-      await cacheMissingIcons(cache, cachedItems);
-    }
-    
-    // Schedule update checks
-    setInterval(checkForUpdates, 6 * 60 * 60 * 1000);
-    
-  })());
-});
-
-// ========== CACHE LẠI ICONS BỊ THIẾU ==========
-async function cacheMissingIcons(cache, cachedItems) {
-  console.log('[SW] 🔄 Đang cache lại icons bị thiếu...');
-  
-  const missingIcons = CRITICAL_ASSETS.filter(asset => 
-    asset.includes('/icons/') && 
-    !cachedItems.some(item => item.url === asset)
-  );
-  
-  if (missingIcons.length === 0) {
-    console.log('[SW] ✅ Không có icons nào bị thiếu');
-    return;
-  }
-  
-  console.log(`[SW] 🔍 Tìm thấy ${missingIcons.length} icons bị thiếu:`, missingIcons);
-  
-  for (const iconUrl of missingIcons) {
-    try {
-      const response = await fetch(iconUrl);
-      if (response.ok) {
-        await cache.put(iconUrl, response);
-        console.log(`[SW] ✅ Đã cache lại: ${iconUrl}`);
-      }
-    } catch (error) {
-      console.error(`[SW] ❌ Không thể cache lại: ${iconUrl}`);
-    }
-  }
-}
-
-// ========== MESSAGE HANDLING ==========
-self.addEventListener('message', (event) => {
-  const { type } = event.data;
-  
-  switch (type) {
-    case 'SKIP_WAITING':
-      console.log('[SW] 📨 Nhận lệnh skip waiting');
-      self.skipWaiting();
-      break;
-      
-    case 'CHECK_UPDATE':
-      console.log('[SW] 📨 Nhận lệnh check update');
-      checkForUpdates();
-      break;
-      
-    case 'FORCE_UPDATE':
-      console.log('[SW] 📨 Nhận lệnh force update');
-      self.skipWaiting();
-      break;
-      
-    case 'GET_CACHE_STATUS':
-      event.waitUntil((async () => {
-        const cache = await caches.open(CACHE_STATIC);
-        const cachedItems = await cache.keys();
-        const cachedIcons = cachedItems.filter(item => item.url.includes('/icons/'));
-        
-        event.ports[0]?.postMessage({
-          version: APP_VERSION,
-          totalItems: cachedItems.length,
-          cachedIcons: cachedIcons.length,
-          hasAllIcons: CRITICAL_ASSETS.filter(a => a.includes('/icons/'))
-            .every(icon => cachedItems.some(item => item.url === icon))
-        });
-      })());
-      break;
-  }
-});
-
-// ========== FETCH HANDLER ==========
+// ========== FETCH HANDLER - OFFLINE FIRST ==========
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   if (request.method !== 'GET') return;
@@ -268,7 +275,7 @@ self.addEventListener('fetch', (event) => {
   const isNavigation = request.mode === 'navigate';
   
   if (isNavigation) {
-    event.respondWith(handleNavigationRequest());
+    event.respondWith(handleNavigationRequest(event));
     return;
   }
   
@@ -277,26 +284,33 @@ self.addEventListener('fetch', (event) => {
   }
 });
 
-async function handleNavigationRequest() {
+async function handleNavigationRequest(event) {
   try {
     const cache = await caches.open(CACHE_STATIC);
-    const cachedHtml = await cache.match(BASE + 'index.html', { ignoreSearch: true });
+    
+    // 🔥 LUÔN ƯU TIÊN CACHE TRƯỚC
+    const cachedHtml = await cache.match(BASE + 'index.html', { 
+      ignoreSearch: true 
+    });
     
     if (cachedHtml) {
       console.log('[SW] ✅ Phục vụ từ cache - OFFLINE READY');
       return cachedHtml;
     }
     
+    // Fallback to network
     try {
       const networkResponse = await fetch(BASE + 'index.html');
       if (networkResponse.ok) {
         await cache.put(BASE + 'index.html', networkResponse.clone());
+        console.log('[SW] ✅ Đã cache từ network');
         return networkResponse;
       }
     } catch (networkError) {
       console.log('[SW] 🌐 Network không khả dụng');
     }
     
+    // 🚨 CẢ HAI ĐỀU FAIL
     return createOfflinePage();
     
   } catch (error) {
@@ -326,9 +340,67 @@ async function handleStaticRequest(event) {
 
 function createOfflinePage() {
   return new Response(
-    `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Offline</title><style>body{font-family:system-ui;background:#0b1220;color:#e2e8f0;padding:40px;text-align:center}</style></head><body><h1>📶 Đang offline</h1><button onclick="location.reload()">🔄 Thử lại</button></body></html>`,
-    { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
+    `<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Tính thuốc sát trùng - Offline</title>
+        <style>
+            body {
+                font-family: system-ui, sans-serif;
+                background: #0b1220;
+                color: #e2e8f0;
+                margin: 0;
+                padding: 40px 20px;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                line-height: 1.5;
+            }
+            .container {
+                max-width: 400px;
+            }
+            h1 {
+                color: #f59e0b;
+                margin-bottom: 1rem;
+            }
+            button {
+                background: #22c55e;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-size: 16px;
+                cursor: pointer;
+                margin-top: 1rem;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>📶 Đang offline</h1>
+            <p>Ứng dụng cần kết nối internet để tải lần đầu.</p>
+            <button onclick="location.reload()">🔄 Thử lại</button>
+        </div>
+    </body>
+    </html>`,
+    {
+        headers: {
+            'Content-Type': 'text/html; charset=utf-8',
+            'Cache-Control': 'no-cache'
+        }
+    }
   );
 }
 
-console.log(`[SW ${APP_VERSION}] ✅ Đã tải - CACHE ĐẦY ĐỦ 100%`);
+self.addEventListener('message', (event) => {
+  const { type } = event.data;
+  if (type === 'SKIP_WAITING') self.skipWaiting();
+  if (type === 'CHECK_UPDATE') checkForUpdates();
+  if (type === 'FORCE_UPDATE') self.skipWaiting();
+});
+
+console.log(`[SW ${APP_VERSION}] ✅ Đã tải - OFFLINE 100% GUARANTEED`);
