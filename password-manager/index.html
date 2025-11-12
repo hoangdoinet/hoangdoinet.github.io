@@ -343,6 +343,49 @@
     const CHECK_VALUE = "Xác minh";
     const $ = s => document.querySelector(s);
 
+    const PM_INSTALLED_KEY = 'pm_installed_v1';
+    function isStandalone(){ return navigator.standalone || window.matchMedia('(display-mode: standalone)').matches; }
+
+    // ghi nhận nếu đang chạy ở standalone (đã cài)
+    if (isStandalone()) { try { localStorage.setItem(PM_INSTALLED_KEY, '1'); } catch {} }
+
+    async function wipeAllData({ reload = true } = {}) {
+      try {
+        try { localStorage.clear(); } catch {}
+        try {
+          if (indexedDB.databases) {
+            const dbs = await indexedDB.databases();
+            await Promise.all(
+              dbs.filter(Boolean).map(db => {
+                try { return indexedDB.deleteDatabase(db.name); } catch { return Promise.resolve(); }
+              })
+            );
+          }
+        } catch {}
+        try {
+          const keys = await caches.keys();
+          await Promise.all(keys.map(k => caches.delete(k)));
+        } catch {}
+        try {
+          if ('serviceWorker' in navigator) {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(regs.map(r => r.unregister()));
+          }
+        } catch {}
+      } finally {
+        if (reload) location.replace(location.origin + location.pathname + location.search);
+      }
+    }
+
+    async function detectUninstalledAndWipe() {
+      const wasInstalled = localStorage.getItem(PM_INSTALLED_KEY) === '1';
+      const nowStandalone = isStandalone();
+      if (wasInstalled && !nowStandalone) {
+        await wipeAllData({ reload: true });
+      }
+    } 
+    detectUninstalledAndWipe();
+
     // --- App Updater (nhận thông báo từ SW & hiển thị banner) ---
     class AppUpdater{
       constructor(){ this.updateAvailable=false; this.newVersion=null; this.init(); }
@@ -645,12 +688,11 @@
 
     // --- A2HS + iOS tip ---
     function isIos(){return /iphone|ipad|ipod/i.test(navigator.userAgent)}
-    function isStandalone(){return navigator.standalone || window.matchMedia('(display-mode: standalone)').matches}
 
     // ===== Modal cài đặt A2HS =====
     let deferredPrompt = null;
     const INSTALL_KEYS = { dismissedAt:'pm_a2hs_dismissed_at', installed:'pm_a2hs_installed' };
-    const A2HS_COOLDOWN_DAYS = 3;
+    const A2HS_COOLDOWN_DAYS = 3; // Sư Phụ có thể chỉnh
 
     function daysSince(ts){ if(!ts) return Infinity; return (Date.now() - Number(ts)) / (1000*60*60*24); }
 
@@ -718,6 +760,7 @@
 
     window.addEventListener('appinstalled', ()=>{
       localStorage.setItem(INSTALL_KEYS.installed, '1');
+      try { localStorage.setItem(PM_INSTALLED_KEY, '1'); } catch {}
       deferredPrompt = null;
       el.miInstall.style.display = 'none';
       closeInstallModal();
