@@ -1,0 +1,63 @@
+{
+  "name": "Trình quản lý mật khẩu",
+  "short_name": "Mật khẩu",
+  "id": "/password-manager/",
+  "start_url": "/password-manager/?source=pwa",
+  "scope": "/password-manager/",
+  "display": "standalone",
+  "display_override": ["standalone", "window-controls-overlay"],
+  "background_color": "#0b1220",
+  "theme_color": "#22c55e",
+  "description": "Quản lý mật khẩu 100% offline. Dữ liệu được mã hóa AES-256 bằng Mật khẩu chính và lưu cục bộ.",
+  "lang": "vi",
+  "dir": "ltr",
+  "orientation": "portrait",
+  "categories": ["productivity", "utilities", "security"],
+
+  "icons": [
+    { "src": "/password-manager/icons/icon-32.png",   "sizes": "32x32",   "type": "image/png", "purpose": "any" },
+    { "src": "/password-manager/icons/icon-72.png",   "sizes": "72x72",   "type": "image/png", "purpose": "any" },
+    { "src": "/password-manager/icons/icon-96.png",   "sizes": "96x96",   "type": "image/png", "purpose": "any" },
+    { "src": "/password-manager/icons/icon-128.png",  "sizes": "128x128", "type": "image/png", "purpose": "any" },
+    { "src": "/password-manager/icons/icon-144.png",  "sizes": "144x144", "type": "image/png", "purpose": "any" },
+    { "src": "/password-manager/icons/icon-152.png",  "sizes": "152x152", "type": "image/png", "purpose": "any" },
+    { "src": "/password-manager/icons/icon-167.png",  "sizes": "167x167", "type": "image/png", "purpose": "any" },
+    { "src": "/password-manager/icons/icon-180.png",  "sizes": "180x180", "type": "image/png", "purpose": "any" },
+    { "src": "/password-manager/icons/icon-192.png",  "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/password-manager/icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/password-manager/icons/icon-384.png",  "sizes": "384x384", "type": "image/png", "purpose": "any" },
+    { "src": "/password-manager/icons/icon-512.png",  "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/password-manager/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/password-manager/icons/icon-1024.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any" }
+  ],
+
+  "shortcuts": [
+    {
+      "name": "Thêm tài khoản",
+      "short_name": "Thêm",
+      "url": "/password-manager/?action=add",
+      "description": "Mở nhanh form thêm tài khoản mới",
+      "icons": [{ "src": "/password-manager/icons/add.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }]
+    },
+    {
+      "name": "Tìm kiếm",
+      "short_name": "Tìm",
+      "url": "/password-manager/?action=search",
+      "description": "Mở nhanh ô tìm kiếm mật khẩu",
+      "icons": [{ "src": "/password-manager/icons/search.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }]
+    },
+    {
+      "name": "Sao lưu",
+      "short_name": "Sao lưu",
+      "url": "/password-manager/?action=backup",
+      "description": "Mở nhanh chức năng xuất JSON sao lưu",
+      "icons": [{ "src": "/password-manager/icons/backup.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }]
+    }
+  ],
+
+  "launch_handler": { "client_mode": "focus-existing" },
+  "prefer_related_applications": false,
+  "protocol_handlers": [
+    { "protocol": "web+pm", "url": "/password-manager/?url=%s" }
+  ]
+}

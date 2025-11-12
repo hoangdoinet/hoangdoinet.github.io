@@ -1,0 +1,11 @@
+{
+  "app": "Trình quản lý mật khẩu",
+  "id": "password-manager",
+  "version": "v1.0.0",
+  "release_date": "2025-11-12",
+  "notes": [
+    "Khởi tạo phiên bản đầu tiên."
+  ],
+  "author": "Hoàng Đợi",
+  "website": "https://hoangdoinet.github.io/password-manager/"
+}
