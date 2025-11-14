@@ -1,11 +1,37 @@
 {
   "app": "Trình quản lý mật khẩu",
   "id": "password-manager",
-  "version": "v1.0.0",
-  "release_date": "2025-11-12",
-  "notes": [
-    "Khởi tạo phiên bản đầu tiên."
-  ],
+  "website": "https://hoangdoinet.github.io/password-manager/",
+  "version": "v1.0.1",
+  "release_date": "2025-11-14",
   "author": "Hoàng Đợi",
-  "website": "https://hoangdoinet.github.io/password-manager/"
+  "notes": [
+    "Nâng cấp từ v1.0.0 lên v1.0.1 với cơ chế cập nhật thủ công và một số cải tiến giao diện/bảo mật."
+  ],
+  "changelog": [
+    {
+      "version": "v1.0.1",
+      "release_date": "2025-11-14",
+      "changes": [
+        "Tối ưu để ứng dụng có thể sử dụng offline sau lần tải đầu tiên.",
+        "Thay đổi cơ chế cập nhật: không tự động kiểm tra, chỉ kiểm tra khi người dùng bấm nút \"Kiểm tra cập nhật\" trong phần Thông tin ứng dụng.",
+        "Cải thiện giao diện, bổ sung toast/thông báo rõ ràng hơn.",
+        "Thêm tính năng tự động ẩn tài khoản/mật khẩu sau 15 giây kể từ khi hiển thị.",
+        "Hỗ trợ mở nhanh với shortcuts: Thêm tài khoản mới, Tìm kiếm, Sao lưu dữ liệu.",
+        "Tối ưu trải nghiệm cài đặt ứng dụng trên Android và iOS."
+      ]
+    },
+    {
+      "version": "v1.0.0",
+      "release_date": "2025-11-12",
+      "changes": [
+        "Khởi tạo phiên bản đầu tiên của ứng dụng Trình quản lý mật khẩu.",
+        "Lưu trữ dữ liệu cục bộ trên thiết bị, không gửi dữ liệu lên máy chủ.",
+        "Mã hóa dữ liệu tài khoản/mật khẩu bằng AES-256 với Mật khẩu chính do người dùng tự đặt.",
+        "Hỗ trợ thêm, chỉnh sửa, xóa tài khoản và tìm kiếm theo tên hiển thị.",
+        "Hỗ trợ sao lưu và khôi phục dữ liệu bằng file JSON.",
+        "Cấu hình PWA cơ bản: manifest, icon, cài đặt ứng dụng trên Android và iOS."
+      ]
+    }
+  ]
 }

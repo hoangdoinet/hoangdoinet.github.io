@@ -4,155 +4,618 @@
   <meta charset="UTF-8">
   <title>Trình quản lý mật khẩu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <!-- 🔎 SEO cơ bản -->
+  <meta name="description" content="Trình quản lý mật khẩu offline trên thiết bị: mã hóa AES-256 với mật khẩu chính, lưu trữ cục bộ, sao lưu/khôi phục bằng JSON, hỗ trợ cài ứng dụng trên Android & iOS.">
+  <meta name="keywords" content="trình quản lý mật khẩu, password manager, mã hóa AES, mật khẩu chính, lưu trữ offline, PWA, quản lý tài khoản, bảo mật dữ liệu">
+  <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
+  <link rel="canonical" href="https://hoangdoinet.github.io/password-manager/">
+
+  <!-- Thông tin tác giả -->
+  <meta name="author" content="Hoàng Đợi">
+  <meta name="creator" content="Hoàng Đợi">
+
+  <!-- Open Graph (Facebook/Zalo...) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Trình quản lý mật khẩu – Mã hóa và lưu trữ offline 100%">
+  <meta property="og:description" content="Lưu và mã hóa mật khẩu bằng mật khẩu chính, hoạt động offline, không gửi dữ liệu lên máy chủ. Hỗ trợ sao lưu/khôi phục bằng JSON, cài được trên Android & iOS.">
+  <meta property="og:url" content="https://hoangdoinet.github.io/password-manager/">
+  <meta property="og:site_name" content="Trình quản lý mật khẩu • Password Manager">
+  <meta property="og:locale" content="vi_VN">
+  <meta property="og:image" content="https://hoangdoinet.github.io/password-manager/icons/icon-512.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Trình quản lý mật khẩu – Mã hóa và lưu trữ offline 100%">
+  <meta name="twitter:description" content="Lưu và mã hóa mật khẩu bằng mật khẩu chính, hoạt động offline, không gửi dữ liệu lên máy chủ.">
+  <meta name="twitter:image" content="https://hoangdoinet.github.io/password-manager/icons/icon-512.png">
+
+  <!-- App meta -->
   <meta name="theme-color" content="#22c55e">
-  <meta name="version" content="v1.0.0"><!-- dùng để hiển thị/splash -->
+  <meta name="version" content="v1.0.1"><!-- dùng để hiển thị/splash -->
 
   <!-- iOS PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Mật khẩu">
+  <meta name="apple-mobile-web-app-title" content="QL Mật khẩu">
 
   <!-- PWA -->
   <link rel="manifest" href="/password-manager/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/password-manager/icons/icon-180.png">
-  <link rel="icon" type="image/png" href="/password-manager/icons/icon-64.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/password-manager/icons/icon-32.png" sizes="32x32">
   <link rel="preload" href="/password-manager/icons/icon-512.png" as="image">
 
   <style>
     :root{
-      --bg:#f7f9fc; --card:#fff; --text:#0f172a; --muted:#64748b;
-      --accent:#22c55e; --danger:#ef4444; --border:#bbf7d0;
-      --shadow:0 8px 20px rgba(2,6,23,.08); --radius:14px;
+      --bg:#f4f7fb; --card:#ffffff; --text:#0f172a; --muted:#64748b;
+      --accent:#22c55e; --danger:#ef4444; --border:#dbeafe;
+      --shadow:0 10px 28px rgba(15,23,42,.08); --radius:14px;
       --fs1:clamp(15px,2.8vw,17px); --fs2:clamp(16px,3.3vw,18px);
       --focus:#f97316;
     }
     *{box-sizing:border-box}
     body{
-      margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:linear-gradient(180deg,#f8fbf9,#eef5f0);color:var(--text);
-      -webkit-tap-highlight-color:transparent; min-height:100svh;
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:radial-gradient(120% 90% at 50% -20%, #e0f2fe 0%, #eff6ff 35%, #f4f7fb 70%);
+      color:var(--text);
+      -webkit-tap-highlight-color:transparent;
+      min-height:100svh;
     }
-    .wrap{max-width:720px;margin:0 auto;padding:12px 12px calc(28px + env(safe-area-inset-bottom,0))}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:12px}
-    .btn{border:none;border-radius:10px;font-weight:700;font-size:var(--fs2);
-        padding:10px 12px;min-height:44px;cursor:pointer;transition:opacity .2s,box-shadow .15s}
-    .btn:active{opacity:.85}
+    .wrap{
+      max-width:720px;
+      margin:0 auto;
+      padding:16px 12px calc(28px + env(safe-area-inset-bottom,0));
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:14px 12px;
+    }
+    .btn{
+      border:none;
+      border-radius:10px;
+      font-weight:700;
+      font-size:var(--fs2);
+      padding:10px 12px;
+      min-height:44px;
+      cursor:pointer;
+      transition:opacity .2s,box-shadow .15s,transform .1s;
+    }
+    .btn:active{opacity:.9; transform:translateY(1px)}
     .btn.green{background:var(--accent);color:#fff}
     .btn.ghost{background:#fff;border:1px solid var(--border);color:#0f172a}
     .btn.danger{background:var(--danger);color:#fff}
     .btn.text{background:transparent;border:1px solid var(--border)}
-    .btn.sm{font-size:var(--fs1); min-height:38px; padding:8px 12px; border-radius:8px}
-    .btn:focus-visible{outline:none; box-shadow:0 0 0 3px rgba(249,115,22,.18)}
-    .search{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+    .btn.sm{
+      font-size:var(--fs1);
+      min-height:36px;
+      padding:6px 10px;
+      border-radius:8px
+    }
+    .btn:focus-visible{
+      outline:none;
+      box-shadow:0 0 0 3px rgba(249,115,22,.2)
+    }
+
+    .search{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:8px;
+      align-items:center;
+    }
     .search input{
-      padding:12px 12px 12px 44px;min-width:0;border:1px solid var(--border);
-      border-radius:10px;font-size:var(--fs2);
+      padding:10px 12px 10px 42px;
+      min-width:0;
+      border:1px solid var(--border);
+      border-radius:10px;
+      font-size:var(--fs2);
       background:
         url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="%2364748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>')
         no-repeat 12px center / 18px 18px;
-      outline:none;transition:border-color .15s, box-shadow .15s, background-color .15s;
+      outline:none;
+      transition:border-color .15s, box-shadow .15s, background-color .15s;
       background-color:#fff
     }
-    .search input:focus,.search input:focus-visible,.modal-input:focus,.modal-input:focus-visible{
-      border-color:var(--focus); box-shadow:0 0 0 3px rgba(249,115,22,.15)
+    .search input:focus,
+    .search input:focus-visible,
+    .modal-input:focus,
+    .modal-input:focus-visible{
+      border-color:var(--focus);
+      box-shadow:0 0 0 3px rgba(249,115,22,.15)
     }
-    
-    select:focus,input:focus{outline:none;border-color:var(--accent)}
-    .stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    .stat{flex:1;min-width:46%;padding:8px 10px;border:1px dashed var(--border);
-          border-radius:10px;background:#f0fdf4;text-align:center}
-    .stat strong{display:block;font-size:12px;color:#15803d}
-    .stat span{display:block;font-weight:800;font-size:var(--fs2);color:#065f46}
-    .entry{background:#fff;border:1px solid var(--border);border-radius:12px;padding:10px;box-shadow:var(--shadow);margin-top:10px}
-    .entry h4{margin:0 0 6px 0}
-    .row{display:flex;gap:8px;align-items:center;margin:6px 0}
-    .ro{background:transparent;width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:10px}
+    select:focus,input:focus{outline:none;border-color:var(--focus)}
+
+    .stats{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:12px
+    }
+    .stat{
+      flex:1;
+      min-width:46%;
+      padding:8px 10px;
+      border-radius:10px;
+      background:linear-gradient(135deg,#ecfdf3,#dcfce7);
+      border:1px solid #bbf7d0;
+      text-align:center
+    }
+    .stat strong{
+      display:block;
+      font-size:12px;
+      color:#15803d;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+    }
+    .stat span{
+      display:block;
+      font-weight:800;
+      font-size:var(--fs2);
+      color:#166534;
+      margin-top:2px;
+    }
+
+    #passwordList{margin-top:14px}
+    .entry{
+      background:#fff;
+      border-radius:12px;
+      padding:10px 10px 8px;
+      border:1px solid #e5e7eb;
+      box-shadow:0 6px 16px rgba(15,23,42,.05);
+      margin-top:10px
+    }
+
+    /* Empty state khi không có kết quả */
+    .empty-state{
+      margin-top:14px;
+      padding:14px 12px;
+      border-radius:12px;
+      border:1px dashed #cbd5f5;
+      background:#f8fafc;
+      text-align:center;
+      color:var(--muted);
+    }
+    .empty-title{
+      font-weight:700;
+      font-size:var(--fs2);
+      color:#0f172a;
+      margin-bottom:4px;
+    }
+    .empty-sub{
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .entry h4{
+      margin:0 0 6px 0;
+      font-size:var(--fs2);
+      font-weight:700;
+    }
+    .row{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      margin:6px 0
+    }
+    .ro{
+      width:100%;
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#f9fafb;
+      font-size:var(--fs1);
+    }
     .ro:read-only{cursor:pointer}
-    .small{font-size:12px;color:var(--muted)}
+    .small{
+      font-size:12px;
+      color:var(--muted);
+      white-space:pre-wrap;
+    }
+
     /* Modal */
-    .modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:80}
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,.42);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      z-index:80;
+      backdrop-filter:blur(2px);
+    }
     .modal-backdrop.open{display:flex}
-    .modal-card{width:min(600px,100%);max-height:88vh;display:flex;flex-direction:column;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
-    .modal-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px;border-bottom:1px dashed var(--border)}
-    .modal-title{font-weight:800;margin:0}
-    .modal-close{border:none;background:transparent;font-size:22px;line-height:1;cursor:pointer;color:#475569;padding:6px;border-radius:8px}
+    .modal-card{
+      width:min(600px,100%);
+      max-height:88vh;
+      display:flex;
+      flex-direction:column;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:16px;
+      box-shadow:0 18px 40px rgba(15,23,42,.18);
+      overflow:hidden
+    }
+    .modal-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      padding:14px 16px;
+      border-bottom:1px dashed var(--border);
+      background:linear-gradient(135deg,#f8fafc,#eff6ff);
+    }
+    .modal-title{font-weight:800;margin:0;font-size:var(--fs2)}
+    .modal-close{
+      border:none;
+      background:transparent;
+      font-size:22px;
+      line-height:1;
+      cursor:pointer;
+      color:#475569;
+      padding:6px;
+      border-radius:999px;
+    }
+    .modal-close:hover{
+      background:#e5e7eb;
+    }
     .modal-body{padding:12px 16px;overflow:auto}
-    .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
-    .modal-input{width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;font-size:16px;background:#fff}
+    .modal-actions{
+      display:flex;
+      gap:8px;
+      justify-content:flex-end;
+      margin-top:14px
+    }
+    .modal-input{
+      width:100%;
+      padding:10px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      font-size:16px;
+      background:#fff
+    }
     .form-grid{display:grid;gap:10px;grid-template-columns:1fr}
-    @media (min-width:520px){ .form-grid{grid-template-columns:1fr 1fr} }
-    .form-row{display:flex;flex-direction:column;gap:6px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:10px}
-    .form-row label{font-size:12px;font-weight:800;letter-spacing:.2px;color:#0f172a;opacity:.85;text-transform:uppercase}
-    .ring-invalid{animation:blinkRing .9s ease-out 1}
-    @keyframes blinkRing{0%{box-shadow:0 0 0 0 rgba(239,68,68,.25)}50%{box-shadow:0 0 0 4px rgba(239,68,68,.25)}100%{box-shadow:0 0 0 0 rgba(239,68,68,.25)}}
+    @media (min-width:520px){
+      .form-grid{grid-template-columns:1fr 1fr}
+    }
+    .form-row{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      background:#fff;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      padding:10px
+    }
+    .form-row label{
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      color:#0f172a;
+      opacity:.85;
+      text-transform:uppercase
+    }
+    .ring-invalid{
+      animation:blinkRing .9s ease-out 1
+    }
+    @keyframes blinkRing{
+      0%{box-shadow:0 0 0 0 rgba(239,68,68,.25)}
+      50%{box-shadow:0 0 0 5px rgba(239,68,68,.25)}
+      100%{box-shadow:0 0 0 0 rgba(239,68,68,.25)}
+    }
+
     /* FAB */
-    .fab{position:fixed; right:16px; bottom:16px; z-index:60; display:flex; flex-direction:column; align-items:flex-end; gap:10px;}
-    .fab .backdrop{position:fixed; inset:0; background:rgba(15,23,42,.25); backdrop-filter:blur(2px); display:none; z-index:60;}
+    .fab{
+      position:fixed;
+      right:16px;
+      bottom:16px;
+      z-index:60;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:10px;
+    }
+    .fab .backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,.25);
+      backdrop-filter:blur(2px);
+      display:none;
+      z-index:60;
+    }
     .fab.open .backdrop{display:block;}
-    .fab-menu{position:absolute; right:0; bottom:72px; display:none; flex-direction:column; gap:8px; padding:10px; background:#ffffff; border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); min-width:280px; z-index:70;}
+    .fab-menu{
+      position:absolute;
+      right:0;
+      bottom:72px;
+      display:none;
+      flex-direction:column;
+      gap:8px;
+      padding:10px;
+      background:#ffffff;
+      border:1px solid var(--border);
+      border-radius:16px;
+      box-shadow:0 18px 40px rgba(15,23,42,.18);
+      min-width:280px;
+      z-index:70;
+    }
     .fab.open .fab-menu{display:flex;}
-    .fab-item{display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:10px; border:1px solid var(--border); background:#fff; font-weight:700; cursor:pointer; user-select:none;}
-    .fab-item.danger{ border-color:#fee2e2; background:#fff5f5; color:#b91c1c}
-    .fab-main{width:56px; height:56px; border-radius:999px; border:none; cursor:pointer; background:var(--accent); color:#fff; font-size:24px; font-weight:900; box-shadow:0 10px 25px rgba(34,197,94,.35); z-index:71;}
-    footer{text-align:center;color:#888;font-size:14px;margin:24px 0 10px}
+    .fab-item{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid #e5e7eb;
+      background:#fff;
+      font-weight:600;
+      cursor:pointer;
+      user-select:none;
+      font-size:var(--fs1);
+    }
+    .fab-item:hover{
+      background:#f9fafb;
+    }
+    .fab-item.danger{
+      border-color:#fecaca;
+      background:#fef2f2;
+      color:#b91c1c
+    }
+    .fab-main{
+      width:56px;
+      height:56px;
+      border-radius:999px;
+      border:none;
+      cursor:pointer;
+      background:linear-gradient(135deg,#22c55e,#16a34a);
+      color:#fff;
+      font-size:24px;
+      font-weight:900;
+      box-shadow:0 12px 30px rgba(34,197,94,.45);
+      z-index:71;
+    }
+
+    footer{
+      text-align:center;
+      color:#94a3b8;
+      font-size:13px;
+      margin:24px 0 10px
+    }
+
     /* Toast */
-    .toast-wrap{position:fixed;top:calc(16px + env(safe-area-inset-top));left:0; right:0;display:flex; justify-content:center; pointer-events:none; z-index:120;}
-    .toast{min-width:min(640px,calc(100% - 32px)); max-width:720px; background:#0b1220; color:#fff; border-radius:12px; box-shadow:0 10px 25px rgba(2,6,23,.35); padding:10px 12px; margin:0 16px; display:flex; align-items:center; gap:10px; opacity:0; transform:translateY(-12px); transition:opacity .2s, transform .2s;}
-    .toast.show{opacity:1; transform:translateY(0)}
+    .toast-wrap{
+      position:fixed;
+      top:calc(46px + env(safe-area-inset-top));
+      left:0;
+      right:0;
+      display:none;
+      justify-content:center;
+      pointer-events:none;
+      z-index:120;
+    }
+    .toast-wrap.show{
+      display:flex;
+    }
+    .toast{
+      min-width:min(640px,calc(100% - 32px));
+      max-width:720px;
+      background:#0b1220;
+      color:#fff;
+      border-radius:12px;
+      box-shadow:0 10px 25px rgba(2,6,23,.4);
+      padding:10px 12px;
+      margin:0 16px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      opacity:0;
+      transform:translateY(-12px);
+      transition:opacity .2s, transform .2s;
+      pointer-events:auto;
+    }
+    .toast.show{
+      opacity:1;
+      transform:translateY(0)
+    }
     .toast .msg{flex:1}
-    .toast .btn{min-height:36px}
-    .toast.success{background:#065f46}.toast.error{background:#991b1b}.toast.info{background:#0b1220}
+    .toast.success{background:#065f46}
+    .toast.error{background:#991b1b}
+    .toast.info{background:#0b1220}
 
-    /* ===== Update Notification (banner) ===== */
-    .update-notification{position:fixed; left:0; right:0; top:0; background:linear-gradient(90deg,#22c55e,#16a34a); color:#fff; z-index:10000; padding:12px 16px; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,.3); font-weight:600; animation:slideDown .3s ease-out}
-    .update-notification button{background:#fff;color:#22c55e;border:0;border-radius:8px;padding:6px 12px;margin-left:10px;font-weight:800;cursor:pointer}
-    .update-notification .secondary{background:transparent;color:#fff;border:1px solid #fff}
-    @keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
+    /* Splash */
+    #splash{
+      position:fixed;
+      inset:0;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      background:radial-gradient(120% 90% at 50% -10%, #bbf7d0 0%, #22c55e 40%, #166534 90%);
+      color:#fff;
+      z-index:9999;
+      transition:opacity .5s ease, visibility .5s ease;
+    }
+    #splash.hidden{
+      opacity:0;
+      visibility:hidden
+    }
+    #app{visibility:hidden}
+    body.ready #app{visibility:visible}
 
-    /* ===== Splash (nhẹ) ===== */
-    #splash{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,#22c55e,#16a34a);color:#fff;z-index:9999;transition:opacity .5s ease,visibility .5s}
-    #splash.hidden{opacity:0;visibility:hidden}
-    #app{visibility:hidden} body.ready #app{visibility:visible}
+    /* ===================== ABOUT MODAL UI MỚI ===================== */
+    #aboutModal .modal-card{
+      max-width:660px;
+      background:radial-gradient(130% 140% at 0% 0%, #ecfdf5 0%, #ffffff 45%, #f8fafc 100%);
+    }
+    #aboutModal .modal-body{
+      padding:14px 16px 16px;
+    }
+    .about-layout{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    @media (min-width:620px){
+      .about-layout{
+        flex-direction:row;
+        align-items:flex-start;
+      }
+    }
+    .about-main{
+      flex:1.6;
+    }
+    .about-side{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+
+    .about-header{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      margin-bottom:6px;
+    }
+    .about-icon{
+      width:40px;
+      height:40px;
+      border-radius:14px;
+      overflow:hidden;
+      box-shadow:0 6px 16px rgba(22,163,74,.35);
+      flex-shrink:0;
+    }
+    .about-icon img{
+      width:100%;
+      height:100%;
+      display:block;
+      border-radius:inherit;
+    }
+    .about-title-wrap{
+      flex:1;
+      min-width:0;
+    }
+    .about-title{
+      margin:0;
+      font-size:15px;
+      font-weight:800;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      color:#065f46;
+    }
+    .about-sub{
+      margin:2px 0 0;
+      font-size:13px;
+      color:#334155;
+    }
+
+    .about-features{
+      margin:0 0 8px;
+      padding:0;
+      list-style:none;
+      border-radius:12px;
+      border:1px dashed rgba(148,163,184,.5);
+      background:rgba(255,255,255,.76);
+    }
+    .about-features li{
+      padding:7px 10px;
+      font-size:13px;
+      display:flex;
+      gap:6px;
+      align-items:flex-start;
+      border-bottom:1px dashed rgba(226,232,240,.7);
+    }
+    .about-features li:last-child{
+      border-bottom:none;
+    }
+    .about-bullet{
+      width:18px;
+      height:18px;
+      border-radius:99px;
+      background:rgba(16,185,129,.08);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:11px;
+      color:#0f766e;
+      flex-shrink:0;
+      margin-top:1px;
+    }
+
+    .about-meta-card{
+      background:#ffffff;
+      border-radius:12px;
+      border:1px solid #e2e8f0;
+      padding:8px 10px;
+      box-shadow:0 8px 18px rgba(15,23,42,.06);
+      font-size:12px;
+    }
+    .about-meta-row{
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .about-meta-row span{
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+
+    #aboutModal .modal-actions{
+      margin-top:12px;
+      border-top:1px dashed rgba(148,163,184,.6);
+      padding-top:10px;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    #aboutCheckUpdate{
+      font-size:13px;
+    }
+    #aboutClose{
+      min-width:120px;
+    }
   </style>
 </head>
 <body>
   <!-- Splash -->
   <div id="splash" role="status" aria-label="Đang khởi động ứng dụng">
-    <img src="/password-manager/icons/icon-192.png" alt="" width="96" height="96" style="filter:drop-shadow(0 8px 24px rgba(0,0,0,.35)); border-radius:22%">
+    <img src="/password-manager/icons/icon-192.png" alt="" width="96" height="96"
+         style="filter:drop-shadow(0 8px 24px rgba(0,0,0,.35)); border-radius:22%">
     <div style="font-weight:900;font-size:20px;margin-top:8px;letter-spacing:.4px">TRÌNH QUẢN LÝ MẬT KHẨU</div>
-    <div style="opacity:.95;margin-top:6px">Phiên bản: <b id="splashVersion">v1.0.0</b></div>
+    <div style="opacity:.95;margin-top:6px">Phiên bản: <b id="splashVersion">v1.0.1</b></div>
   </div>
 
   <main id="app" class="wrap" aria-live="polite">
-    <!-- Tìm kiếm + stats -->
-    <section class="card">
+    <section class="card" aria-label="Tìm kiếm và thống kê">
       <div class="search">
-        <input id="search" type="search" placeholder="Tìm theo tên hiển thị..." autocomplete="off">
-        <button id="btnReset" class="btn ghost sm">Xóa</button>
+        <input id="search" type="search" placeholder="Tìm theo tên dịch vụ hoặc ứng dụng..." autocomplete="off">
+        <button id="btnReset" class="btn ghost sm">Xóa tìm kiếm</button>
       </div>
       <div class="stats">
-        <div class="stat"><strong>Tổng tài khoản</strong><span id="statCount">0</span></div>
+        <div class="stat">
+          <strong>Tổng số tài khoản</strong>
+          <span id="statCount">0</span>
+        </div>
       </div>
     </section>
 
     <!-- Danh sách -->
-    <section id="passwordList" style="margin-top:12px"></section>
+    <section id="passwordList"></section>
   </main>
 
   <!-- FAB -->
   <div class="fab" id="fab">
     <div class="backdrop" id="fabBackdrop"></div>
-    <div class="fab-menu">
-      <!-- ✅ Nút cài đặt ứng dụng (A2HS) -->
+    <div class="fab-menu" aria-label="Menu chức năng">
       <button id="miInstall" class="fab-item" style="display:none">📲 Cài đặt ứng dụng</button>
-
       <button id="miAdd" class="fab-item">➕ Thêm tài khoản</button>
-      <button id="miExport" class="fab-item">📤 Sao lưu (JSON)</button>
-      <button id="miImport" class="fab-item">📄 Nhập (JSON)</button>
+      <button id="miExport" class="fab-item">📤 Sao lưu dữ liệu (JSON)</button>
+      <button id="miImport" class="fab-item">📄 Nhập dữ liệu (JSON)</button>
       <button id="miChangeKey" class="fab-item">🔑 Đổi mật khẩu chính</button>
-      <button id="miPersist" class="fab-item">📌 Cấp quyền lưu trữ</button>
-      <button id="miAbout" class="fab-item">ℹ️ Thông tin ứng dụng</button>
-      <button id="miReset" class="fab-item danger">🗑️ Xóa toàn bộ</button>
+      <button id="miAbout" class="fab-item">ℹ️ Giới thiệu ứng dụng</button>
+      <button id="miReset" class="fab-item danger">🗑️ Xóa toàn bộ dữ liệu</button>
     </div>
     <button id="fabMain" class="fab-main" aria-label="Mở menu">＋</button>
   </div>
@@ -162,15 +625,15 @@
   <div id="modal" class="modal-backdrop" aria-hidden="true">
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div class="modal-head">
-        <h3 id="modalTitle" class="modal-title">Tiêu đề</h3>
+        <h3 id="modalTitle" class="modal-title">Thông báo</h3>
         <button id="modalX" class="modal-close" aria-label="Đóng">×</button>
       </div>
       <div class="modal-body">
-        <p id="modalMsg" class="small">Nội dung</p>
+        <p id="modalMsg" class="small">Nội dung thông báo</p>
         <input id="modalInput" class="modal-input" style="display:none"/>
         <div class="modal-actions">
           <button id="modalCancel" class="btn text">Hủy</button>
-          <button id="modalOk" class="btn green">OK</button>
+          <button id="modalOk" class="btn green">Xác nhận</button>
         </div>
       </div>
     </div>
@@ -186,21 +649,28 @@
       <div class="modal-body">
         <div class="form-grid">
           <div class="form-row">
-            <label>Tên hiển thị</label>
-            <input id="fDisplay" class="modal-input" placeholder="VD: Facebook, Email cá nhân...">
+            <label>Tên dịch vụ / ứng dụng</label>
+            <input id="fDisplay" class="modal-input" placeholder="Ví dụ: Facebook, Email cá nhân...">
           </div>
           <div class="form-row">
-            <label>Tên đăng nhập</label>
-            <input id="fAccount" class="modal-input" placeholder="username / email">
+            <label>Tài khoản đăng nhập</label>
+            <input id="fAccount" class="modal-input" placeholder="Tên đăng nhập hoặc email">
           </div>
           <div class="form-row">
-            <label>Mật khẩu</label>
+            <label>Mật khẩu tài khoản</label>
             <input id="fPassword" class="modal-input" type="password" placeholder="••••••••">
           </div>
           <div class="form-row">
             <label>Mật khẩu chính</label>
-            <input id="fMaster" class="modal-input" type="password" placeholder="Mật khẩu chính để mã hóa/giải mã" oninput="updateStrength()">
+            <input id="fMaster" class="modal-input" type="password"
+                   placeholder="Dùng để mã hóa và mở kho mật khẩu" oninput="updateStrength()">
             <small id="strengthMsg" class="small" style="display:none"></small>
+          </div>
+          <!-- Xác nhận mật khẩu chính (chỉ hiện lần đầu) -->
+          <div class="form-row" id="masterConfirmRow" style="display:none">
+            <label>Nhập lại mật khẩu chính</label>
+            <input id="fMasterConfirm" class="modal-input" type="password" placeholder="Gõ lại mật khẩu chính để xác nhận">
+            <small id="masterConfirmHint" class="small" style="display:none"></small>
           </div>
         </div>
         <div class="modal-actions">
@@ -211,27 +681,68 @@
     </div>
   </div>
 
-  <!-- Modal thông tin -->
+  <!-- Modal thông tin (giao diện mới, icon = logo thực tế) -->
   <div id="aboutModal" class="modal-backdrop" aria-hidden="true">
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
       <div class="modal-head">
-        <h3 id="aboutTitle" class="modal-title">Thông tin ứng dụng</h3>
+        <h3 id="aboutTitle" class="modal-title">Giới thiệu ứng dụng</h3>
         <button id="aboutX" class="modal-close" aria-label="Đóng">×</button>
       </div>
       <div class="modal-body">
-        <p><strong>Trình quản lý mật khẩu</strong> – Dữ liệu <strong>mã hóa AES-256</strong> bằng mật khẩu chính, lưu cục bộ (LocalStorage), 100% offline.</p>
-        <ul>
-          <li>Thiết lập <em>Mật khẩu chính</em> một lần – dùng để mã hóa/giải mã.</li>
-          <li>Sao lưu/khôi phục qua JSON (có thể mã hóa file riêng nếu muốn).</li>
-          <li><b>Không thể khôi phục dữ liệu nếu quên mật khẩu chính.</b></li>
-        </ul>
-        <p class="small">
-          Phiên bản: <span id="appVersion"></span><br>
-          Lưu trữ dài hạn: <strong id="persistStatus">đang kiểm tra…</strong><br>
-          Dung lượng ước tính: <span id="quotaInfo">—</span>
-        </p>
+        <div class="about-layout">
+          <div class="about-main">
+            <div class="about-header">
+              <div class="about-icon">
+                <img src="/password-manager/icons/icon-192.png" alt="">
+              </div>
+              <div class="about-title-wrap">
+                <p class="about-title">Trình quản lý mật khẩu</p>
+                <p class="about-sub">Lưu và mã hóa mật khẩu an toàn, trực tiếp trên thiết bị của bạn.</p>
+              </div>
+            </div>
+            <p><strong>Trình quản lý mật khẩu</strong> giúp bạn lưu gọn gàng các tài khoản và mật khẩu ngay trên thiết bị – không cần ghi nhớ quá nhiều mật khẩu khác nhau.</p>
+
+            <ul class="about-features">
+              <li>
+                <span class="about-bullet">✓</span>
+                <span>Dữ liệu được <strong>mã hóa AES-256</strong> bằng <em>mật khẩu chính</em> do bạn tự đặt.</span>
+              </li>
+              <li>
+                <span class="about-bullet">✓</span>
+                <span>Ứng dụng không gửi dữ liệu lên máy chủ. Mọi thông tin tài khoản và mật khẩu đều được lưu và xử lý trên chính thiết bị của bạn.</span>
+              </li>
+              <li>
+                <span class="about-bullet">✓</span>
+                <span>Hỗ trợ <strong>sao lưu</strong> và <strong>khôi phục</strong> bằng file JSON để phòng trường hợp đổi máy hoặc cài lại.</span>
+              </li>
+              <li>
+                <span class="about-bullet">!</span>
+                <span><strong>Lưu ý quan trọng:</strong> nếu quên <em>mật khẩu chính</em>, bạn sẽ <strong>không thể giải mã và khôi phục dữ liệu đã lưu</strong>.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="about-side">
+            <div class="about-meta-card">
+              <div class="about-meta-row" style="margin-top:8px">
+                <span>Phiên bản hiện tại</span>
+                <span id="appVersion">—</span>
+              </div>
+              <div class="about-meta-row" style="margin-top:8px">
+                <span>Lưu trữ dài hạn</span>
+                <strong id="persistStatus">Đang kiểm tra…</strong>
+              </div>
+              <div class="about-meta-row" style="margin-top:4px">
+                <span>Dung lượng ước tính</span>
+                <span id="quotaInfo">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="modal-actions">
-          <button id="aboutClose" class="btn text">Đóng</button>
+          <button id="aboutCheckUpdate" class="btn text">Kiểm tra cập nhật</button>
+          <button id="aboutClose" class="btn green">Đóng</button>
         </div>
       </div>
     </div>
@@ -248,16 +759,17 @@
         <div class="form-grid">
           <div class="form-row" style="grid-column:1/-1">
             <label>Mật khẩu hiện tại</label>
-            <input id="ckOld" class="modal-input" type="password" placeholder="Nhập mật khẩu hiện tại">
+            <input id="ckOld" class="modal-input" type="password" placeholder="Nhập mật khẩu chính hiện tại">
           </div>
           <div class="form-row">
             <label>Mật khẩu mới</label>
-            <input id="ckNew" class="modal-input" type="password" placeholder="Tối thiểu 12 ký tự" oninput="updateStrengthCK()">
+            <input id="ckNew" class="modal-input" type="password"
+                   placeholder="Tối thiểu 12 ký tự" oninput="updateStrengthCK()">
             <small id="ckStrength" class="small" style="display:none"></small>
           </div>
           <div class="form-row">
-            <label>Xác nhận mật khẩu mới</label>
-            <input id="ckConfirm" class="modal-input" type="password" placeholder="Nhập lại mật khẩu mới">
+            <label>Nhập lại mật khẩu mới</label>
+            <input id="ckConfirm" class="modal-input" type="password" placeholder="Gõ lại mật khẩu mới">
             <small id="ckHint" class="small" style="display:none"></small>
           </div>
         </div>
@@ -269,7 +781,7 @@
     </div>
   </div>
 
-  <!-- ⭐ Modal mời cài đặt PWA -->
+  <!-- Modal mời cài đặt PWA -->
   <div id="installModal" class="modal-backdrop" aria-hidden="true">
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="installTitle">
       <div class="modal-head">
@@ -281,10 +793,11 @@
           <img src="/password-manager/icons/icon-192.png" alt="" width="48" height="48" style="border-radius:12px">
           <div>
             <div style="font-weight:800">Trình quản lý mật khẩu</div>
-            <div class="small">Cài để mở nhanh, chạy độc lập và hoạt động offline tốt hơn.</div>
+            <div class="small">Cài vào màn hình chính để mở nhanh, chạy độc lập và hoạt động offline ổn định hơn.</div>
           </div>
         </div>
-        <div id="iosTip" class="small" style="display:none; background:#f0fdf4;border:1px dashed var(--border); padding:10px; border-radius:10px; margin-top:8px">
+        <div id="iosTip" class="small"
+             style="display:none; background:#f0fdf4;border:1px dashed var(--border); padding:10px; border-radius:10px; margin-top:8px">
           <b>iOS/iPadOS:</b> Nhấn nút <b>Chia sẻ</b> → chọn <b>Thêm vào Màn hình chính</b>.
         </div>
         <div class="modal-actions" style="margin-top:12px">
@@ -299,7 +812,6 @@
   <div class="toast-wrap" aria-live="polite" aria-atomic="true">
     <div id="toast" class="toast" role="status" aria-hidden="true">
       <span id="toastMsg" class="msg"></span>
-      <button id="toastClose" class="btn ghost sm">Đóng</button>
     </div>
   </div>
 
@@ -337,17 +849,22 @@
   <!-- ========== ỨNG DỤNG ========== -->
   <script>
   (()=>{
-    const APP_VERSION = 'v1.0.0';
+    const APP_VERSION = 'v1.0.1';
     const localKey = "i4pw_data";
     const CHECK_KEY = "_verify";
     const CHECK_VALUE = "Xác minh";
     const $ = s => document.querySelector(s);
 
     const PM_INSTALLED_KEY = 'pm_installed_v1';
-    function isStandalone(){ return navigator.standalone || window.matchMedia('(display-mode: standalone)').matches; }
+    const PERSIST_AUTO_FLAG = 'pm_persist_auto_v1';
 
-    // ghi nhận nếu đang chạy ở standalone (đã cài)
-    if (isStandalone()) { try { localStorage.setItem(PM_INSTALLED_KEY, '1'); } catch {} }
+    function isStandalone(){
+      return navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+    }
+
+    if (isStandalone()) {
+      try { localStorage.setItem(PM_INSTALLED_KEY, '1'); } catch {}
+    }
 
     async function wipeAllData({ reload = true } = {}) {
       try {
@@ -383,60 +900,157 @@
       if (wasInstalled && !nowStandalone) {
         await wipeAllData({ reload: true });
       }
-    } 
+    }
     detectUninstalledAndWipe();
 
-    // --- App Updater (nhận thông báo từ SW & hiển thị banner) ---
+    async function getVersionInfo(targetVersion){
+      try{
+        const res = await fetch('/password-manager/version.json?ts=' + Date.now(), {
+          cache: 'no-cache'
+        });
+        if (!res.ok) return null;
+
+        const json = await res.json();
+
+        let entry = null;
+        if (Array.isArray(json.changelog)) {
+          entry =
+            json.changelog.find(x => String(x.version) === String(targetVersion)) ||
+            json.changelog[0] ||
+            null;
+        }
+
+        const changes =
+          (entry && Array.isArray(entry.changes) && entry.changes.length
+            ? entry.changes
+            : Array.isArray(json.notes)
+              ? json.notes
+              : []);
+
+        const releaseDate =
+          (entry && entry.release_date) ||
+          json.release_date ||
+          '';
+
+        return {
+          app: json.app || 'Trình quản lý mật khẩu',
+          website: json.website || '',
+          version: targetVersion,
+          releaseDate,
+          changes
+        };
+      }catch(e){
+        console.warn('Không đọc được version.json:', e);
+        return null;
+      }
+    }
+
     class AppUpdater{
-      constructor(){ this.updateAvailable=false; this.newVersion=null; this.init(); }
+      constructor(){
+        this.updateAvailable = false;
+        this.newVersion = null;
+        this.pendingCheckTimer = null;
+        this.lastCheck = null;
+        this.init();
+      }
       init(){
         if('serviceWorker' in navigator){
           navigator.serviceWorker.addEventListener('message', e=>{
             const {type, version, currentVersion} = e.data||{};
-            if(type==='UPDATE_AVAILABLE'){ this.show(version, currentVersion); }
+            if(type==='UPDATE_AVAILABLE'){
+              this.show(version, currentVersion);
+            }
           });
-          document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) this.check(); });
-          this.check();
         }
       }
       async check(){
+        if (!('serviceWorker' in navigator)) {
+          await showAlert('⚠️ Thiết bị không hỗ trợ Service Worker nên không thể kiểm tra cập nhật.', {
+            title:'Kiểm tra cập nhật',
+            type:'info'
+          });
+          return;
+        }
+
         try{
+          openToast('Đang kiểm tra cập nhật...', 'info', 2500);
           const reg = await navigator.serviceWorker.ready;
           reg.active?.postMessage({type:'CHECK_UPDATE'});
-        }catch{}
+          this.lastCheck = Date.now();
+          this.updateAvailable = false;
+
+          if (this.pendingCheckTimer) {
+            clearTimeout(this.pendingCheckTimer);
+          }
+          this.pendingCheckTimer = setTimeout(()=>{
+            if (!this.updateAvailable) {
+              showAlert('✅ Bạn đang sử dụng phiên bản mới nhất.', {
+                title:'Kiểm tra cập nhật',
+                type:'info'
+              });
+            }
+          }, 3000);
+        }catch(e){
+          await showAlert('⚠️ Không thể kiểm tra cập nhật. Vui lòng kiểm tra lại kết nối mạng.', {
+            title:'Lỗi kiểm tra cập nhật',
+            type:'error'
+          });
+        }
       }
       async apply(){
         try{
           const reg = await navigator.serviceWorker.ready;
           reg.active?.postMessage({type:'FORCE_UPDATE'});
-          const bar = document.querySelector('.update-notification');
-          if(bar) bar.innerHTML = '<b>🔄 Đang cập nhật...</b>';
           setTimeout(()=>location.reload(), 1800);
-        }catch{}
+        }catch(e){
+          await showAlert('❌ Không thể áp dụng bản cập nhật. Vui lòng thử lại sau.', {
+            title:'Lỗi cập nhật',
+            type:'error'
+          });
+        }
       }
-      hide(){ const el=document.querySelector('.update-notification'); if(el){el.remove(); this.updateAvailable=false;} }
-      show(newV, curV){
-        if(this.updateAvailable) return; this.updateAvailable=true; this.newVersion=newV;
-        const div=document.createElement('div');
-        div.className='update-notification';
-        div.innerHTML = `<strong>🎉 Có bản cập nhật mới!</strong> (${curV} → ${newV})
-          <button id="btnApply">Cập nhật ngay</button>
-          <button id="btnLater" class="secondary">Để sau</button>`;
-        document.body.appendChild(div);
-        $('#btnApply').onclick=()=>this.apply();
-        $('#btnLater').onclick=()=>this.hide();
+      async show(newV, curV){
+        this.updateAvailable = true;
+        if (this.pendingCheckTimer){
+          clearTimeout(this.pendingCheckTimer);
+          this.pendingCheckTimer = null;
+        }
+        this.newVersion = newV;
+
+        const info = await getVersionInfo(newV);
+
+        let message = `Phiên bản mới: ${newV}\nPhiên bản hiện tại: ${curV}`;
+        if (info && info.releaseDate) {
+          message += `\nNgày phát hành: ${info.releaseDate}`;
+        }
+        if (info && Array.isArray(info.changes) && info.changes.length){
+          message += `\n\nCó gì mới:\n` + info.changes.map(c => `• ${c}`).join('\n');
+        }
+        if (info && info.website) {
+          message += `\n\nTrang web: ${info.website}`;
+        }
+
+        const ok = await openModal({
+          title:'🎉 Có bản cập nhật mới',
+          message,
+          okText:'Cập nhật ngay',
+          cancelText:'Để sau',
+          cancelVisible:true
+        });
+        if (ok) {
+          this.apply();
+        }
       }
     }
     let appUpdater;
 
-    // --- DOM refs ---
     const el = {
       search: $('#search'), btnReset: $('#btnReset'),
       list: $('#passwordList'), statCount: $('#statCount'),
       fab: $('#fab'), fabMain: $('#fabMain'), fabBackdrop: $('#fabBackdrop'),
       miAdd: $('#miAdd'), miExport: $('#miExport'), miImport: $('#miImport'),
       miChangeKey: $('#miChangeKey'), miReset: $('#miReset'), miAbout: $('#miAbout'),
-      miPersist: $('#miPersist'), miInstall: $('#miInstall'),
+      miInstall: $('#miInstall'),
       fileImport: $('#fileImport'),
       modal: $('#modal'), modalTitle: $('#modalTitle'), modalMsg: $('#modalMsg'),
       modalInput: $('#modalInput'), modalCancel: $('#modalCancel'),
@@ -446,15 +1060,18 @@
       fPassword: $('#fPassword'), fMaster: $('#fMaster'),
       btnSaveEdit: $('#btnSaveEdit'), btnCancelEdit: $('#btnCancelEdit'), editX: $('#editX'),
       strengthMsg: $('#strengthMsg'),
-      aboutModal: $('#aboutModal'), aboutX: $('#aboutX'), aboutClose: $('#aboutClose'),
+      masterConfirmRow: $('#masterConfirmRow'),
+      fMasterConfirm: $('#fMasterConfirm'),
+      masterConfirmHint: $('#masterConfirmHint'),
+      aboutModal: $('#aboutModal'), aboutX: $('#aboutX'),
+      aboutClose: $('#aboutClose'), aboutCheckUpdate: $('#aboutCheckUpdate'),
       appVersion: $('#appVersion'), persistStatus: $('#persistStatus'), quotaInfo: $('#quotaInfo'),
       ckModal: $('#changeKeyModal'), ckX: $('#ckX'),
       ckOld: $('#ckOld'), ckNew: $('#ckNew'), ckConfirm: $('#ckConfirm'),
       ckStrength: $('#ckStrength'), ckHint: $('#ckHint'),
       ckOk: $('#ckOk'), ckCancel: $('#ckCancel'),
-      toast: $('#toast'), toastMsg: $('#toastMsg'), toastClose: $('#toastClose'),
-
-      // Install modal refs
+      toastWrap: document.querySelector('.toast-wrap'),
+      toast: $('#toast'), toastMsg: $('#toastMsg'),
       installModal: $('#installModal'), installX: $('#installX'),
       installNow: $('#installNow'), installLater: $('#installLater'),
       iosTip: $('#iosTip')
@@ -462,243 +1079,681 @@
     el.appVersion.textContent = APP_VERSION;
     $('#splashVersion').textContent = APP_VERSION;
 
-    // --- Storage & Crypto helpers ---
-    let data=[]; let visible={}; let toastTimer=null;
-    try{ const s = localStorage.getItem(localKey); if(s) data = JSON.parse(s)||[]; }catch{ data=[]; }
+    let data=[]; 
+    let visible={}; 
+    let toastTimer=null;
+    let editingIndex = null;
+    let autoHideTimers = {};
+    const AUTO_HIDE_SECONDS = 15;
+
+    try{
+      const s = localStorage.getItem(localKey);
+      if(s) data = JSON.parse(s)||[];
+    }catch{ data=[]; }
+
     const save = ()=> localStorage.setItem(localKey, JSON.stringify(data));
-    function sync(){ try{ const s = localStorage.getItem(localKey); data = s ? JSON.parse(s) : []; }catch{ data=[]; } }
+    function sync(){
+      try{
+        const s = localStorage.getItem(localKey);
+        data = s ? JSON.parse(s) : [];
+      }catch{ data=[]; }
+    }
 
     const encrypt = (text, key)=> CryptoJS.AES.encrypt(String(text), String(key)).toString();
-    function decryptRaw(cipher, key){ try{ return CryptoJS.AES.decrypt(String(cipher), String(key)).toString(CryptoJS.enc.Utf8); }catch{ return null; } }
-    function decryptSafe(cipher, key){ if(!cipher) return null; const p=decryptRaw(cipher,key); return (typeof p==='string' && p.length) ? p : null; }
-
-    // --- UI helpers ---
-    function focusAndBlink(target){ if(!target) return; try{ target.focus({preventScroll:false}); if(typeof target.select==='function'&&target.type!=='password') target.select(); target.classList.remove('ring-invalid'); void target.offsetWidth; target.classList.add('ring-invalid'); }catch{} }
-    function anyModalOpen(){ return !!document.querySelector('.modal-backdrop.open'); }
-    function openToast(msg, type='info', timeout=2800){
-      el.toast.classList.remove('success','error','info'); el.toast.classList.add(type);
-      el.toastMsg.textContent = msg; el.toast.setAttribute('aria-hidden','false'); el.toast.classList.add('show');
-      clearTimeout(toastTimer); toastTimer=setTimeout(closeToast, timeout);
+    function decryptRaw(cipher, key){
+      try{
+        return CryptoJS.AES.decrypt(String(cipher), String(key)).toString(CryptoJS.enc.Utf8);
+      }catch{ return null; }
     }
-    function closeToast(){ el.toast.classList.remove('show'); el.toast.setAttribute('aria-hidden','true'); clearTimeout(toastTimer); }
-    el.toastClose.onclick = closeToast;
+    function decryptSafe(cipher, key){
+      if(!cipher) return null;
+      const p=decryptRaw(cipher,key);
+      return (typeof p==='string' && p.length) ? p : null;
+    }
+
+    function focusAndBlink(target){
+      if(!target) return;
+      try{
+        target.focus({preventScroll:false});
+        if(typeof target.select==='function'&&target.type!=='password') target.select();
+        target.classList.remove('ring-invalid'); void target.offsetWidth;
+        target.classList.add('ring-invalid');
+      }catch{}
+    }
+    function anyModalOpen(){
+      return !!document.querySelector('.modal-backdrop.open');
+    }
+    function openToast(msg, type='info', timeout=2800){
+      el.toast.classList.remove('success','error','info');
+      el.toast.classList.add(type);
+      el.toastMsg.textContent = msg;
+      el.toast.setAttribute('aria-hidden','false');
+      el.toast.classList.add('show');
+      el.toastWrap.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer=setTimeout(closeToast, timeout);
+    }
+    function closeToast(){
+      el.toast.classList.remove('show');
+      el.toast.setAttribute('aria-hidden','true');
+      el.toastWrap.classList.remove('show');
+      clearTimeout(toastTimer);
+    }
 
     function openModal({title='Thông báo', message='', showInput=false, inputType='text', placeholder='',
-                        okText='OK', cancelText='Hủy', cancelVisible=true}) {
+                        okText='Xác nhận', cancelText='Hủy', cancelVisible=true}) {
       return new Promise(resolve=>{
-        el.modalTitle.textContent=title; el.modalMsg.textContent=message;
+        el.modalTitle.textContent=title;
+        el.modalMsg.textContent=message;
         el.modalInput.style.display = showInput ? 'block' : 'none';
-        el.modalInput.value=''; el.modalInput.type=inputType||'text'; el.modalInput.placeholder=placeholder||'';
-        el.modalOk.textContent = okText||'OK'; el.modalCancel.textContent=cancelText||'Hủy';
+        el.modalInput.value='';
+        el.modalInput.type=inputType||'text';
+        el.modalInput.placeholder=placeholder||'';
+        el.modalOk.textContent = okText||'Xác nhận';
+        el.modalCancel.textContent=cancelText||'Hủy';
         el.modalCancel.style.display = cancelVisible ? 'inline-flex' : 'none';
-        const cleanup=()=>{ el.modal.classList.remove('open'); el.modal.setAttribute('aria-hidden','true'); el.modalOk.onclick=el.modalCancel.onclick=el.modalX.onclick=null; window.onkeydown=null; };
-        el.modalOk.onclick=()=>{ const v=showInput?el.modalInput.value:true; cleanup(); resolve(v); };
+
+        const cleanup=()=>{
+          el.modal.classList.remove('open');
+          el.modal.setAttribute('aria-hidden','true');
+          el.modalOk.onclick=el.modalCancel.onclick=el.modalX.onclick=null;
+          window.onkeydown=null;
+        };
+        el.modalOk.onclick=()=>{
+          const v=showInput?el.modalInput.value:true;
+          cleanup(); resolve(v);
+        };
         el.modalCancel.onclick=()=>{ cleanup(); resolve(false); };
         el.modalX.onclick=()=>{ cleanup(); resolve(false); };
-        window.onkeydown=e=>{ if(e.key==='Enter'){ el.modalOk.click(); } };
-        el.modal.classList.add('open'); el.modal.setAttribute('aria-hidden','false');
+        window.onkeydown=e=>{
+          if(e.key==='Enter'){ el.modalOk.click(); }
+          if(e.key==='Escape'){ el.modalCancel.click(); }
+        };
+        el.modal.classList.add('open');
+        el.modal.setAttribute('aria-hidden','false');
         setTimeout(()=> showInput? el.modalInput.focus(): el.modalOk.focus(), 0);
       });
     }
-    function showAlert(msg, opts={}){ const {title='Thông báo', focus=null, type='info'}=opts||{}; 
+    function showAlert(msg, opts={}){
+      const {title='Thông báo', focus=null, type='info'}=opts||{};
       if(anyModalOpen() && !document.getElementById('modal').classList.contains('open')){
-        openToast(msg, type); focusAndBlink(typeof focus==='string'? $(focus): focus); return Promise.resolve(true);
+        openToast(msg, type);
+        focusAndBlink(typeof focus==='string'? $(focus): focus);
+        return Promise.resolve(true);
       }
-      return openModal({title, message:msg, okText:'Đã hiểu', cancelVisible:false}).then(v=>{ focusAndBlink(typeof focus==='string'? $(focus): focus); return v; });
+      return openModal({title, message:msg, okText:'Đã hiểu', cancelVisible:false})
+        .then(v=>{
+          focusAndBlink(typeof focus==='string'? $(focus): focus);
+          return v;
+        });
     }
-    const showConfirm=(msg, title='Xác nhận')=> openModal({title,message:msg,okText:'Đồng ý',cancelText:'Hủy',cancelVisible:true});
-    const showPrompt =(msg, placeholder='', title='Nhập', inputType='text')=> openModal({title,message:msg,showInput:true,inputType,placeholder,okText:'Xác nhận',cancelText:'Hủy',cancelVisible:true});
+    const showConfirm=(msg, title='Xác nhận')=>
+      openModal({title,message:msg,okText:'Đồng ý',cancelText:'Hủy',cancelVisible:true});
+    const showPrompt =(msg, placeholder='', title='Nhập thông tin', inputType='text')=>
+      openModal({title,message:msg,showInput:true,inputType,placeholder,okText:'Xác nhận',cancelText:'Hủy',cancelVisible:true});
 
-    // --- Persistent Storage UI ---
     async function updatePersistUI(){
       try{
-        if(!navigator.storage){ el.persistStatus.textContent='không hỗ trợ'; return; }
+        if(!navigator.storage){
+          el.persistStatus.textContent='Không hỗ trợ';
+          el.quotaInfo.textContent='—';
+          return;
+        }
         const persisted = await navigator.storage.persisted?.() ?? false;
-        el.persistStatus.textContent = persisted ? '✅ ĐÃ CẤP' : '⚠️ CHƯA CẤP';
+        el.persistStatus.textContent = persisted ? '✅ Đã cấp quyền' : '⚠️ Chưa được cấp';
         const est = await navigator.storage.estimate?.();
-        el.quotaInfo.textContent = (est&&est.usage&&est.quota) ? `${(est.usage/1048576).toFixed(1)} MB / ~${(est.quota/1048576).toFixed(1)} MB` : 'Không khả dụng';
-      }catch{ el.persistStatus.textContent='không xác định'; el.quotaInfo.textContent='—'; }
-    }
-    async function requestPersistentStorage(){
-      if(!navigator.storage||!navigator.storage.persist){ openToast('Thiết bị không hỗ trợ Persistent Storage.','error'); return; }
-      try{
-        const already=await navigator.storage.persisted(); if(already){ openToast('Quyền lưu trữ dài hạn đã được cấp.','info'); return; }
-        const ok=await navigator.storage.persist(); openToast(ok?'✅ Đã cấp quyền lưu trữ dài hạn.':'❌ Trình duyệt từ chối cấp quyền.', ok?'success':'error');
-      }catch{ openToast('⚠️ Không thể xin quyền lưu trữ.','error'); }
-      finally{ updatePersistUI(); }
+        el.quotaInfo.textContent = (est&&est.usage&&est.quota)
+          ? `${(est.usage/1048576).toFixed(1)} MB / ~${(est.quota/1048576).toFixed(1)} MB`
+          : 'Không khả dụng';
+      }catch{
+        el.persistStatus.textContent='Không xác định';
+        el.quotaInfo.textContent='—';
+      }
     }
 
-    // --- Render ---
-    function escapeHtml(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+    async function requestPersistentStorage(auto=false){
+      if(!navigator.storage||!navigator.storage.persist){
+        if(!auto) openToast('❌ Thiết bị không hỗ trợ chế độ lưu trữ dài hạn.', 'error');
+        await updatePersistUI();
+        return;
+      }
+      try{
+        const already=await navigator.storage.persisted();
+        if(already){
+          if(!auto) openToast('Quyền lưu trữ dài hạn đã được cấp.', 'info');
+          return;
+        }
+        const ok=await navigator.storage.persist();
+        if(!auto){
+          openToast(
+            ok ? '✅ Đã cấp quyền lưu trữ dài hạn.' : '❌ Trình duyệt đã từ chối cấp quyền.',
+            ok ? 'success' : 'error'
+          );
+        }
+      }catch{
+        if(!auto) openToast('⚠️ Không thể yêu cầu quyền lưu trữ dài hạn.', 'error');
+      }finally{
+        await updatePersistUI();
+      }
+    }
+
+    async function autoEnsurePersistentStorage(){
+      try{
+        const flag = localStorage.getItem(PERSIST_AUTO_FLAG);
+        if(!flag){
+          await requestPersistentStorage(true);
+          try{ localStorage.setItem(PERSIST_AUTO_FLAG,'1'); }catch{}
+        }else{
+          await updatePersistUI();
+        }
+      }catch{
+        await updatePersistUI();
+      }
+    }
+
+    function escapeHtml(s){
+      return String(s??'')
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#39;');
+    }
+
     function render(){
-      const q=(el.search.value||'').trim().toLowerCase(); el.list.innerHTML=''; let count=0;
+      const q=(el.search.value||'').trim().toLowerCase();
+      el.list.innerHTML=''; 
+      let count=0;
+
       data.forEach((entry, idx)=>{
         if(entry[CHECK_KEY]) return;
         if(q && !String(entry.display||'').toLowerCase().includes(q)) return;
+
         count++;
-        const div=document.createElement('div'); div.className='entry';
+        const div=document.createElement('div');
+        div.className='entry';
         div.innerHTML = `
           <h4>${escapeHtml(entry.display||'')}</h4>
-          <div class="row"><input id="acc-${idx}"  class="ro" type="text" value="[Đang ẩn]" readonly></div>
-          <div class="row"><input id="pass-${idx}" class="ro" type="text" value="•••••••" readonly></div>
+          <div class="row">
+            <input id="acc-${idx}" class="ro" type="text" value="[Đã ẩn]" readonly autocomplete="off">
+          </div>
+          <div class="row">
+            <input id="pass-${idx}" class="ro" type="text" value="•••••••" readonly autocomplete="off">
+          </div>
           <div class="row" style="gap:6px;flex-wrap:wrap">
-            <button class="btn green sm" data-idx="${idx}" onclick="toggleShow(this)">Hiện thông tin</button>
+            <button class="btn green sm" data-idx="${idx}" onclick="toggleShow(this)">Hiện mật khẩu</button>
             <button class="btn text sm" onclick="editEntry(${idx})">Chỉnh sửa</button>
             <button class="btn danger sm" onclick="deleteEntry(${idx})">Xóa</button>
           </div>`;
         el.list.appendChild(div);
       });
-      el.statCount.textContent=count;
-      el.list.style.display = count ? 'block':'none';
+
+      el.statCount.textContent = count;
+
+      if (count === 0) {
+        const hasAnyEntry = data.some(e => !e[CHECK_KEY]);
+        let title, subtitle;
+
+        if (!hasAnyEntry) {
+          title = 'Chưa có tài khoản nào';
+          subtitle = 'Nhấn “＋ Thêm tài khoản” ở góc dưới bên phải để bắt đầu thêm tài khoản mới.';
+        } else if (q) {
+          title = 'Không tìm thấy kết quả';
+          subtitle = `Không có tài khoản nào khớp với “${escapeHtml(q)}”.\nThử từ khóa khác hoặc xóa nội dung ô tìm kiếm.`;
+        } else {
+          title = 'Không có tài khoản được hiển thị';
+          subtitle = 'Kiểm tra lại ô tìm kiếm hoặc thêm tài khoản mới để hiển thị ở đây.';
+        }
+
+        el.list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-title">${title}</div>
+            <div class="empty-sub">${subtitle.replace(/\n/g,'<br>')}</div>
+          </div>`;
+        el.list.style.display = 'block';
+      } else {
+        el.list.style.display = 'block';
+      }
     }
 
-    // --- Actions ---
+    function clearAutoHide(idx){
+      const t = autoHideTimers[idx];
+      if (t && t.interval) {
+        clearInterval(t.interval);
+      }
+      delete autoHideTimers[idx];
+    }
+
+    function hideEntryInstant(idx){
+      const accInput = document.getElementById(`acc-${idx}`);
+      const passInput = document.getElementById(`pass-${idx}`);
+      const btn = document.querySelector(`button.btn.green.sm[data-idx="${idx}"]`);
+
+      visible[idx] = false;
+
+      if (accInput) {
+        accInput.value = '';
+        void accInput.offsetHeight;
+        accInput.value = '[Đã ẩn]';
+        accInput.blur();
+      }
+      if (passInput) {
+        passInput.value = '';
+        void passInput.offsetHeight;
+        passInput.value = '•••••••';
+        passInput.blur();
+      }
+      if (btn) {
+        btn.textContent = 'Hiện mật khẩu';
+        btn.disabled = false;
+      }
+    }
+
+    function startAutoHide(idx){
+      const accInput = document.getElementById(`acc-${idx}`);
+      const passInput = document.getElementById(`pass-${idx}`);
+      const btn = document.querySelector(`button.btn.green.sm[data-idx="${idx}"]`);
+      if (!accInput || !passInput || !btn) return;
+
+      clearAutoHide(idx);
+
+      let remaining = AUTO_HIDE_SECONDS;
+      btn.disabled = false;
+      btn.textContent = `Ẩn sau ${remaining}s`;
+
+      const interval = setInterval(()=>{
+        remaining--;
+        if (remaining > 0) {
+          btn.textContent = `Ẩn sau ${remaining}s`;
+        } else {
+          clearAutoHide(idx);
+          hideEntryInstant(idx);
+        }
+      }, 1000);
+
+      autoHideTimers[idx] = { interval };
+    }
+
     window.toggleShow = async function(btn){
-      const idx=+btn.getAttribute('data-idx');
-      const accInput=$(`#acc-${idx}`); const passInput=$(`#pass-${idx}`);
-      if(visible[idx]){ visible[idx]=false; accInput.value='[Đang ẩn]'; passInput.value='•••••••'; btn.textContent='Hiện thông tin'; return; }
-      const verify=data.find(e=>e[CHECK_KEY]); if(!verify){ await showAlert('Chưa thiết lập mật khẩu chính.',{type:'info'}); return; }
-      const master=await showPrompt('Nhập mật khẩu chính để giải mã:','', 'Xác thực','password'); if(master===false) return;
-      if(!String(master).trim()){ await showAlert('Bạn chưa nhập mật khẩu chính.',{type:'error'}); return; }
-      if(decryptSafe(verify[CHECK_KEY], master)!==CHECK_VALUE){ await showAlert('Sai mật khẩu chính.',{type:'error'}); return; }
-      const entry=data[idx]; if(!entry){ await showAlert('Không tìm thấy tài khoản.',{type:'error'}); return; }
-      const decAcc=decryptSafe(entry.account, master); const decPass=decryptSafe(entry.password, master);
-      if(decAcc==null||decPass==null){ await showAlert('Lỗi giải mã.',{type:'error'}); return; }
-      visible[idx]=true; accInput.value=decAcc; passInput.value=decPass; btn.textContent='Ẩn thông tin'; setTimeout(()=>accInput.select(),0);
-    };
+      const idx = +btn.getAttribute('data-idx');
+      const accInput = document.getElementById(`acc-${idx}`);
+      const passInput = document.getElementById(`pass-${idx}`);
 
-    async function addEntryModal(){
-      el.editTitle.textContent='Thêm tài khoản';
-      el.fDisplay.value=''; el.fAccount.value=''; el.fPassword.value=''; el.fMaster.value='';
-      el.strengthMsg.style.display='none'; openEdit(true);
-    }
-    function openEdit(open=true){ el.editModal.classList.toggle('open',open); el.editModal.setAttribute('aria-hidden', open?'false':'true'); if(open){ setTimeout(()=> el.fDisplay.focus(),0);} }
+      if (visible[idx]) {
+        clearAutoHide(idx);
+        hideEntryInstant(idx);
+        return;
+      }
 
-    el.btnSaveEdit.onclick = async ()=>{
-      const display=el.fDisplay.value.trim(), account=el.fAccount.value.trim(), password=el.fPassword.value.trim(), master=el.fMaster.value;
-      if(!display)  return showAlert('Bạn chưa nhập: Tên hiển thị.',{focus:el.fDisplay,type:'error'});
-      if(!account)  return showAlert('Bạn chưa nhập: Tên đăng nhập.',{focus:el.fAccount,type:'error'});
-      if(!password) return showAlert('Bạn chưa nhập: Mật khẩu của tài khoản.',{focus:el.fPassword,type:'error'});
-      if(!master)   return showAlert('Vui lòng nhập: Mật khẩu chính.',{focus:el.fMaster,type:'error'});
       const verify=data.find(e=>e[CHECK_KEY]);
       if(!verify){
-        const confirmKey=await showPrompt('Xác nhận lại mật khẩu chính:','', 'Xác nhận','password'); if(confirmKey===false) return;
-        if(confirmKey!==master) return showAlert('Mật khẩu xác nhận không khớp.',{focus:el.fMaster,type:'error'});
-        data.unshift({[CHECK_KEY]: encrypt(CHECK_VALUE, master)});
-      }else{
-        const ok = decryptSafe(verify[CHECK_KEY], master)===CHECK_VALUE; if(!ok) return showAlert('Mật khẩu chính không đúng.',{focus:el.fMaster,type:'error'});
+        await showAlert('⚠️ Bạn chưa thiết lập mật khẩu chính.',{type:'info'});
+        return;
       }
-      data.push({display, account:encrypt(account, master), password:encrypt(password, master)}); save(); render(); openEdit(false); showAlert('Đã lưu tài khoản.',{type:'info'});
+      let master = await showPrompt('Vui lòng nhập mật khẩu chính để giải mã thông tin.', '', 'Xác thực', 'password');
+      if(master===false) return;
+      if(!String(master).trim()){
+        await showAlert('⚠️ Vui lòng nhập mật khẩu chính.',{type:'error'});
+        return;
+      }
+      if(decryptSafe(verify[CHECK_KEY], master)!==CHECK_VALUE){
+        await showAlert('❌ Mật khẩu chính không đúng. Vui lòng thử lại.',{type:'error'});
+        master = null;
+        return;
+      }
+      const entry=data[idx];
+      if(!entry){
+        await showAlert('❌ Không tìm thấy tài khoản này.',{type:'error'});
+        master = null;
+        return;
+      }
+      const decAcc=decryptSafe(entry.account, master);
+      const decPass=decryptSafe(entry.password, master);
+      master = null;
+      if(decAcc==null||decPass==null){
+        await showAlert('❌ Không thể giải mã dữ liệu. Vui lòng thử lại.',{type:'error'});
+        return;
+      }
+      visible[idx]=true;
+      if (accInput) accInput.value=decAcc;
+      if (passInput) passInput.value=decPass;
+
+      startAutoHide(idx);
+
+      setTimeout(()=>accInput && accInput.select(),0);
     };
-    el.btnCancelEdit.onclick=()=>openEdit(false); el.editX.onclick=()=>openEdit(false);
+
+    function openEdit(open=true){
+      el.editModal.classList.toggle('open',open);
+      el.editModal.setAttribute('aria-hidden', open?'false':'true');
+      if(open){
+        setTimeout(()=> el.fDisplay.focus(),0);
+      }else{
+        editingIndex = null;
+      }
+    }
+
+    async function addEntryModal(){
+      editingIndex = null;
+      el.editTitle.textContent='Thêm tài khoản';
+      el.fDisplay.value='';
+      el.fAccount.value='';
+      el.fPassword.value='';
+      el.fMaster.value='';
+      el.fMasterConfirm.value='';
+      el.strengthMsg.style.display='none';
+      el.masterConfirmHint.style.display='none';
+
+      const verify = data.find(e => e[CHECK_KEY]);
+      el.masterConfirmRow.style.display = verify ? 'none' : 'flex';
+
+      openEdit(true);
+    }
+
+    el.fMasterConfirm.addEventListener('input', ()=>{
+      const pw = el.fMaster.value || '';
+      const cf = el.fMasterConfirm.value || '';
+      if(!cf){
+        el.masterConfirmHint.style.display='none';
+        return;
+      }
+      el.masterConfirmHint.style.display='inline';
+      const same = pw && pw === cf;
+      el.masterConfirmHint.textContent = same ? '✅ Trùng khớp' : '❌ Chưa trùng khớp';
+      el.masterConfirmHint.style.color = same ? '#16a34a' : '#dc3545';
+    });
+
+    el.btnSaveEdit.onclick = async ()=>{
+      const display=el.fDisplay.value.trim();
+      const account=el.fAccount.value.trim();
+      const password=el.fPassword.value.trim();
+      const master=el.fMaster.value;
+
+      const isEdit = editingIndex !== null;
+
+      if(!display)  return showAlert('⚠️ Vui lòng nhập tên dịch vụ hoặc ứng dụng.',{focus:el.fDisplay,type:'error'});
+      if(!account)  return showAlert('⚠️ Vui lòng nhập tài khoản đăng nhập.',{focus:el.fAccount,type:'error'});
+      if(!password) return showAlert('⚠️ Vui lòng nhập mật khẩu của tài khoản.',{focus:el.fPassword,type:'error'});
+      if(!master)   return showAlert('⚠️ Vui lòng nhập mật khẩu chính.',{focus:el.fMaster,type:'error'});
+
+      let verify=data.find(e=>e[CHECK_KEY]);
+
+      if(!verify){
+        const confirmKey = el.fMasterConfirm.value || '';
+        if(!confirmKey.trim()){
+          return showAlert('⚠️ Vui lòng nhập lại mật khẩu chính để xác nhận.', {focus:el.fMasterConfirm, type:'error'});
+        }
+        if(confirmKey !== master){
+          el.masterConfirmHint.style.display = 'inline';
+          el.masterConfirmHint.textContent = '❌ Mật khẩu xác nhận không khớp';
+          el.masterConfirmHint.style.color = '#dc3545';
+          return showAlert('⚠️ Mật khẩu xác nhận không khớp. Vui lòng kiểm tra lại.', {focus:el.fMasterConfirm,type:'error'});
+        }
+        data.unshift({[CHECK_KEY]: encrypt(CHECK_VALUE, master)});
+        verify = data[0];
+      }else{
+        const ok = decryptSafe(verify[CHECK_KEY], master)===CHECK_VALUE;
+        if(!ok) return showAlert('⚠️ Mật khẩu chính không đúng. Vui lòng thử lại.',{focus:el.fMaster,type:'error'});
+      }
+
+      if(isEdit){
+        const idx = editingIndex;
+        data[idx]={
+          display,
+          account:encrypt(account, master),
+          password:encrypt(password, master)
+        };
+        save(); render(); openEdit(false);
+        showAlert('✅ Đã cập nhật tài khoản.',{type:'info'});
+      }else{
+        data.push({
+          display,
+          account:encrypt(account, master),
+          password:encrypt(password, master)
+        });
+        save(); render(); openEdit(false);
+        showAlert('✅ Đã thêm tài khoản mới.',{type:'info'});
+      }
+    };
+
+    el.btnCancelEdit.onclick=()=>openEdit(false);
+    el.editX.onclick=()=>openEdit(false);
 
     window.editEntry = async function(index){
-      sync(); const verify=data.find(e=>e[CHECK_KEY]); if(!verify) return showAlert('Chưa thiết lập mật khẩu chính.',{type:'info'});
-      const master=await showPrompt('Nhập mật khẩu chính để chỉnh sửa:','', 'Xác thực','password'); if(master===false) return;
-      if(!String(master).trim()) return showAlert('Bạn chưa nhập mật khẩu chính.',{type:'error'});
-      if(decryptSafe(verify[CHECK_KEY], master)!==CHECK_VALUE) return showAlert('Sai mật khẩu chính.',{type:'error'});
-      const current=data[index]; if(!current) return showAlert('Tài khoản không tồn tại.',{type:'error'});
-      const oldAcc=decryptSafe(current.account, master), oldPass=decryptSafe(current.password, master);
-      if(oldAcc==null||oldPass==null) return showAlert('Lỗi giải mã.',{type:'error'});
-      el.editTitle.textContent='Chỉnh sửa tài khoản'; el.fDisplay.value=current.display||''; el.fAccount.value=oldAcc; el.fPassword.value=oldPass; el.fMaster.value=master; updateStrength(); openEdit(true);
+      sync();
+      const verify=data.find(e=>e[CHECK_KEY]);
+      if(!verify) return showAlert('⚠️ Bạn chưa thiết lập mật khẩu chính.',{type:'info'});
 
-      const defaultAddHandler=el.btnSaveEdit.onclick;
-      const onceSave = async ()=>{
-        const newDisplay=el.fDisplay.value.trim(), newAccount=el.fAccount.value.trim(), newPassword=el.fPassword.value.trim(), newMaster=el.fMaster.value;
-        if(!newDisplay)  return showAlert('Tên hiển thị không được để trống.',{focus:el.fDisplay,type:'error'});
-        if(!newAccount)  return showAlert('Tài khoản không được để trống.',{focus:el.fAccount,type:'error'});
-        if(!newPassword) return showAlert('Mật khẩu không được để trống.',{focus:el.fPassword,type:'error'});
-        if(!newMaster)   return showAlert('Chưa nhập mật khẩu chính.',{focus:el.fMaster,type:'error'});
-        const verify2=data.find(e=>e[CHECK_KEY]); if(decryptSafe(verify2[CHECK_KEY], newMaster)!==CHECK_VALUE) return showAlert('Sai mật khẩu chính.',{focus:el.fMaster,type:'error'});
-        data[index]={display:newDisplay, account:encrypt(newAccount, newMaster), password:encrypt(newPassword, newMaster)};
-        save(); render(); openEdit(false); showAlert('Đã cập nhật tài khoản.',{type:'info'}); el.btnSaveEdit.onclick=defaultAddHandler;
-      };
-      el.btnSaveEdit.onclick = onceSave;
+      const master=await showPrompt('Nhập mật khẩu chính để chỉnh sửa tài khoản.', '', 'Xác thực','password');
+      if(master===false) return;
+      if(!String(master).trim()) return showAlert('⚠️ Vui lòng nhập mật khẩu chính.',{type:'error'});
+      if(decryptSafe(verify[CHECK_KEY], master)!==CHECK_VALUE) return showAlert('❌ Mật khẩu chính không đúng. Vui lòng thử lại.',{type:'error'});
+
+      const current=data[index];
+      if(!current) return showAlert('⚠️ Tài khoản không tồn tại.',{type:'error'});
+
+      const oldAcc=decryptSafe(current.account, master);
+      const oldPass=decryptSafe(current.password, master);
+      if(oldAcc==null||oldPass==null) return showAlert('Không thể giải mã dữ liệu của tài khoản này.',{type:'error'});
+
+      editingIndex = index;
+      el.editTitle.textContent='Chỉnh sửa tài khoản';
+      el.fDisplay.value=current.display||'';
+      el.fAccount.value=oldAcc;
+      el.fPassword.value=oldPass;
+      el.fMaster.value=master;
+      el.masterConfirmRow.style.display='none';
+      updateStrength();
+      openEdit(true);
     };
 
     window.deleteEntry = async function(index){
-      sync(); if(!data||data.length===0) return showAlert('Không có dữ liệu để xóa.',{type:'info'});
-      const verify=data.find(e=>e[CHECK_KEY]); if(!verify) return showAlert('Chưa thiết lập mật khẩu chính.',{type:'info'});
-      const master=await showPrompt('Yêu cầu nhập mật khẩu chính để xóa:','', 'Xác thực','password'); if(master===false) return;
-      if(!String(master).trim()) return showAlert('Bạn chưa nhập mật khẩu chính.',{type:'error'});
-      if(decryptSafe(verify[CHECK_KEY], master)!==CHECK_VALUE) return showAlert('Sai mật khẩu chính.',{type:'error'});
-      const acc=decryptSafe(data[index]?.account, master); if(acc==null) return showAlert('Không tìm thấy tài khoản cần xóa.',{type:'error'});
-      const ok=await showConfirm(`Bạn có chắc chắn muốn xóa tài khoản "${acc}" không?`,'Xác nhận xóa'); if(!ok) return;
-      data.splice(index,1); save(); render(); showAlert('Đã xóa tài khoản.',{type:'info'});
+      sync();
+      if(!data||data.length===0) return showAlert('Không có dữ liệu nào để xóa.',{type:'info'});
+      const verify=data.find(e=>e[CHECK_KEY]);
+      if(!verify) return showAlert('⚠️ Bạn chưa thiết lập mật khẩu chính.',{type:'info'});
+
+      const master=await showPrompt('Nhập mật khẩu chính để xác nhận xóa tài khoản.', '', 'Xác thực','password');
+      if(master===false) return;
+      if(!String(master).trim()) return showAlert('⚠️ Vui lòng nhập mật khẩu chính.',{type:'error'});
+      if(decryptSafe(verify[CHECK_KEY], master)!==CHECK_VALUE) return showAlert('❌ Mật khẩu chính không đúng. Vui lòng thử lại.',{type:'error'});
+
+      const acc=decryptSafe(data[index]?.account, master);
+      if(acc==null) return showAlert('⚠️ Không tìm thấy tài khoản cần xóa.',{type:'error'});
+
+      const ok=await showConfirm(`⚠️ Bạn có chắc chắn muốn xóa tài khoản “${acc}” không?`,'Xác nhận xóa');
+      if(!ok) return;
+      data.splice(index,1);
+      save(); render();
+      showAlert('🗑️ Tài khoản đã được xóa.',{type:'info'});
     };
 
-    // --- Đổi mật khẩu chính ---
-    function openChangeKey(open=true){ el.ckModal.classList.toggle('open',open); el.ckModal.setAttribute('aria-hidden', open?'false':'true'); if(open){ el.ckOld.value=''; el.ckNew.value=''; el.ckConfirm.value=''; el.ckStrength.style.display='none'; el.ckHint.style.display='none'; setTimeout(()=> el.ckOld.focus(),0);} }
+    function openChangeKey(open=true){
+      el.ckModal.classList.toggle('open',open);
+      el.ckModal.setAttribute('aria-hidden', open?'false':'true');
+      if(open){
+        el.ckOld.value=''; el.ckNew.value=''; el.ckConfirm.value='';
+        el.ckStrength.style.display='none'; el.ckHint.style.display='none';
+        setTimeout(()=> el.ckOld.focus(),0);
+      }
+    }
     async function doChangeKey(){
-      sync(); if(!data||data.length===0){ await showAlert('Chưa có dữ liệu để đổi mật khẩu chính.',{type:'info'}); return; }
-      const verify=data.find(e=>e[CHECK_KEY]); if(!verify){ await showAlert('Chưa có mật khẩu chính được thiết lập.',{type:'info'}); return; }
-      const oldKey=el.ckOld.value||'', newKey=el.ckNew.value||'', cfKey=el.ckConfirm.value||'';
-      if(!oldKey.trim()) return showAlert('Bạn chưa nhập mật khẩu hiện tại.',{focus:el.ckOld,type:'error'});
-      if(decryptSafe(verify[CHECK_KEY], oldKey)!==CHECK_VALUE) return showAlert('Sai mật khẩu chính hiện tại.',{focus:el.ckOld,type:'error'});
-      if(!newKey.trim()) return showAlert('Mật khẩu chính mới không hợp lệ.',{focus:el.ckNew,type:'error'});
-      if(newKey!==cfKey) return showAlert('Mật khẩu xác nhận không khớp.',{focus:el.ckConfirm,type:'error'});
+      sync();
+      if(!data||data.length===0){
+        await showAlert('⚠️ Chưa có dữ liệu để đổi mật khẩu chính.',{type:'info'}); return;
+      }
+      const verify=data.find(e=>e[CHECK_KEY]);
+      if(!verify){
+        await showAlert('⚠️ Bạn chưa thiết lập mật khẩu chính.',{type:'info'}); return;
+      }
+      const oldKey=el.ckOld.value||'';
+      const newKey=el.ckNew.value||'';
+      const cfKey =el.ckConfirm.value||'';
+
+      if(!oldKey.trim())
+        return showAlert('⚠️ Bạn chưa nhập mật khẩu chính hiện tại.',{focus:el.ckOld,type:'error'});
+      if(decryptSafe(verify[CHECK_KEY], oldKey)!==CHECK_VALUE)
+        return showAlert('⚠️ Mật khẩu chính hiện tại không đúng.',{focus:el.ckOld,type:'error'});
+      if(!newKey.trim())
+        return showAlert('⚠️ Mật khẩu chính mới không hợp lệ.',{focus:el.ckNew,type:'error'});
+      if(newKey!==cfKey)
+        return showAlert('⚠️ Mật khẩu xác nhận không khớp. Vui lòng nhập lại.',{focus:el.ckConfirm,type:'error'});
+
       const newData=[{[CHECK_KEY]: encrypt(CHECK_VALUE, newKey)}];
       for(const entry of data){
         if(entry[CHECK_KEY]) continue;
-        const acc=decryptSafe(entry.account, oldKey), pass=decryptSafe(entry.password, oldKey);
-        if(acc==null||pass==null){ await showAlert('Lỗi giải mã khi chuyển khóa. Dừng để tránh hỏng dữ liệu.',{type:'error'}); return; }
-        newData.push({display:entry.display, account:encrypt(acc,newKey), password:encrypt(pass,newKey)});
+        const acc=decryptSafe(entry.account, oldKey);
+        const pass=decryptSafe(entry.password, oldKey);
+        if(acc==null||pass==null){
+          await showAlert('⚠️ Lỗi giải mã khi chuyển đổi mật khẩu chính. Đã dừng thao tác để tránh hỏng dữ liệu.',{type:'error'});
+          return;
+        }
+        newData.push({
+          display:entry.display,
+          account:encrypt(acc,newKey),
+          password:encrypt(pass,newKey)
+        });
       }
-      data=newData; save(); render(); openChangeKey(false); openToast('✅ Đã đổi mật khẩu chính.','success');
+      data=newData; 
+      save(); 
+      render(); 
+      openChangeKey(false);
+
+      await showAlert(
+        '✅ Đã đổi mật khẩu chính thành công.\n\n⚠️ Lưu ý: nếu quên mật khẩu chính mới, bạn sẽ không thể giải mã và khôi phục dữ liệu đã lưu.',
+        { title: 'Đổi mật khẩu chính thành công', type:'info' }
+      );
     }
+
     window.updateStrength = function(){
-      const pw = el.fMaster.value||''; const msg=el.strengthMsg; if(!pw.trim()){ msg.style.display='none'; return; }
-      const s=checkPasswordStrength(pw); msg.textContent='→ Mức bảo mật: '+s; msg.style.display='inline';
-      msg.style.color = s.includes('Rất mạnh')?'#28a745': s.includes('Mạnh')?'#007bff': s.includes('Trung bình')?'#ffc107':'#dc3545';
+      const pw = el.fMaster.value||'';
+      const msg=el.strengthMsg;
+      if(!pw.trim()){
+        msg.style.display='none'; return;
+      }
+      const s=checkPasswordStrength(pw);
+      msg.textContent='→ Mức độ bảo mật: '+s;
+      msg.style.display='inline';
+      msg.style.color = s.includes('Rất mạnh')?'#16a34a'
+                      : s.includes('Mạnh')?'#0ea5e9'
+                      : s.includes('Trung bình')?'#facc15'
+                      : '#dc2626';
     };
     window.updateStrengthCK = function(){
-      const pw=el.ckNew.value||''; const msg=el.ckStrength; if(!pw.trim()){ msg.style.display='none'; return; }
-      const s=checkPasswordStrength(pw); msg.textContent='→ Mức bảo mật: '+s; msg.style.display='inline';
-      msg.style.color = s.includes('Rất mạnh')?'#28a745': s.includes('Mạnh')?'#007bff': s.includes('Trung bình')?'#ffc107':'#dc3545';
+      const pw=el.ckNew.value||'';
+      const msg=el.ckStrength;
+      if(!pw.trim()){
+        msg.style.display='none'; return;
+      }
+      const s=checkPasswordStrength(pw);
+      msg.textContent='→ Mức độ bảo mật: '+s;
+      msg.style.display='inline';
+      msg.style.color = s.includes('Rất mạnh')?'#16a34a'
+                      : s.includes('Mạnh')?'#0ea5e9'
+                      : s.includes('Trung bình')?'#facc15'
+                      : '#dc2626';
       const same=el.ckConfirm.value && (el.ckConfirm.value===pw);
       el.ckHint.style.display = el.ckConfirm.value? 'inline':'none';
       el.ckHint.textContent = same? '✅ Trùng khớp':'❌ Chưa trùng khớp';
-      el.ckHint.style.color = same? '#16a34a':'#dc3545';
+      el.ckHint.style.color = same? '#16a34a':'#dc2626';
     };
     function checkPasswordStrength(pw){
-      const lengthOK=pw.length>=12, upper=/[A-Z]/.test(pw), lower=/[a-z]/.test(pw), digit=/\d/.test(pw), special=/[\W_]/.test(pw);
-      let score=0; if(lengthOK)score++; if(upper)score++; if(lower)score++; if(digit)score++; if(special)score++;
-      if(score===5) return 'Rất mạnh'; if(score>=4) return 'Mạnh'; if(score>=3) return 'Trung bình'; return 'Yếu';
+      const lengthOK=pw.length>=12,
+            upper=/[A-Z]/.test(pw),
+            lower=/[a-z]/.test(pw),
+            digit=/\d/.test(pw),
+            special=/[\W_]/.test(pw);
+      let score=0;
+      if(lengthOK)score++;
+      if(upper)score++;
+      if(lower)score++;
+      if(digit)score++;
+      if(special)score++;
+      if(score===5) return 'Rất mạnh';
+      if(score>=4) return 'Mạnh';
+      if(score>=3) return 'Trung bình';
+      return 'Yếu';
     }
 
-    // --- FAB & About & bindings ---
-    function toggleFab(open){ const willOpen=(open===undefined)? !el.fab.classList.contains('open'):open; el.fab.classList.toggle('open',willOpen); el.fabMain.textContent=willOpen?'×':'＋'; el.fabMain.setAttribute('aria-label',willOpen?'Đóng menu':'Mở menu'); }
+    function toggleFab(open){
+      const willOpen=(open===undefined)? !el.fab.classList.contains('open'):open;
+      el.fab.classList.toggle('open',willOpen);
+      el.fabMain.textContent=willOpen?'×':'＋';
+      el.fabMain.setAttribute('aria-label',willOpen?'Đóng menu':'Mở menu');
+    }
     el.fabMain.onclick=(e)=>{ e.stopPropagation(); toggleFab(); };
     el.fabBackdrop.onclick=()=>toggleFab(false);
     document.addEventListener('click',()=>toggleFab(false));
-    function openAbout(open=true){ el.aboutModal.classList.toggle('open',open); el.aboutModal.setAttribute('aria-hidden', open?'false':'true'); if(open){ updatePersistUI(); setTimeout(()=> $('#aboutClose').focus(),0);} }
-    $('#aboutX').onclick=()=>openAbout(false); $('#aboutClose').onclick=()=>openAbout(false);
-    el.miAdd.onclick = ()=>{ toggleFab(false); addEntryModal(); };
+
+    function openAbout(open=true){
+      el.aboutModal.classList.toggle('open',open);
+      el.aboutModal.setAttribute('aria-hidden', open?'false':'true');
+      if(open){
+        updatePersistUI();
+        setTimeout(()=> $('#aboutClose').focus(),0);
+      }
+    }
+    $('#aboutX').onclick=()=>openAbout(false);
+    $('#aboutClose').onclick=()=>openAbout(false);
+
+    el.aboutCheckUpdate.onclick = ()=>{
+      if (appUpdater) {
+        appUpdater.check();
+      } else {
+        openToast('⚠️ Không thể kiểm tra cập nhật vào lúc này.', 'error');
+      }
+    };
+
+    el.miAdd.onclick    = ()=>{ toggleFab(false); addEntryModal(); };
     el.miExport.onclick = ()=>{ toggleFab(false); exportData(); };
     el.miImport.onclick = ()=>{ toggleFab(false); el.fileImport.click(); };
-    el.miChangeKey.onclick = ()=>{ toggleFab(false); openChangeKey(true); };
-    el.miPersist.onclick = async ()=>{ toggleFab(false); await requestPersistentStorage(); };
-    el.miReset.onclick = ()=>{ toggleFab(false); resetAll(); };
-    el.miAbout.onclick = ()=>{ toggleFab(false); openAbout(true); };
 
-    $('#ckX').onclick=()=>openChangeKey(false); $('#ckCancel').onclick=()=>openChangeKey(false);
+    el.miChangeKey.onclick = async ()=>{
+      toggleFab(false);
+      sync();
+
+      if(!data || data.length === 0){
+        await showAlert('⚠️ Chưa có dữ liệu để đổi mật khẩu chính.', { type:'info' });
+        return;
+      }
+      const verify = data.find(e => e[CHECK_KEY]);
+      if(!verify){
+        await showAlert('⚠️ Bạn chưa thiết lập mật khẩu chính.', { type:'info' });
+        return;
+      }
+      openChangeKey(true);
+    };
+
+    el.miReset.onclick  = ()=>{ toggleFab(false); resetAll(); };
+    el.miAbout.onclick  = ()=>{ toggleFab(false); openAbout(true); };
+
+    $('#ckX').onclick=()=>openChangeKey(false);
+    $('#ckCancel').onclick=()=>openChangeKey(false);
     $('#ckOk').onclick=()=>doChangeKey();
     el.ckModal.addEventListener('keydown', (e)=>{ if(e.key==='Enter') $('#ckOk').click(); });
+
     el.fileImport.onchange = importData;
 
-    // --- A2HS + iOS tip ---
     function isIos(){return /iphone|ipad|ipod/i.test(navigator.userAgent)}
 
-    // ===== Modal cài đặt A2HS =====
     let deferredPrompt = null;
     const INSTALL_KEYS = { dismissedAt:'pm_a2hs_dismissed_at', installed:'pm_a2hs_installed' };
-    const A2HS_COOLDOWN_DAYS = 3; // Sư Phụ có thể chỉnh
+    const A2HS_COOLDOWN_HOURS = 2;
 
-    function daysSince(ts){ if(!ts) return Infinity; return (Date.now() - Number(ts)) / (1000*60*60*24); }
+    if (!isStandalone() && localStorage.getItem(INSTALL_KEYS.installed) === '1') {
+      try { localStorage.removeItem(INSTALL_KEYS.installed); } catch {}
+    }
+
+    function hoursSince(ts){
+      if(!ts) return Infinity;
+      return (Date.now() - Number(ts)) / (1000*60*60);
+    }
 
     function openInstallModal(){
       el.iosTip.style.display = isIos() && !isStandalone() ? 'block' : 'none';
-      el.installNow.style.display = deferredPrompt ? 'inline-flex' : (isIos() && !isStandalone() ? 'none' : 'inline-flex');
+      el.installNow.style.display = deferredPrompt
+        ? 'inline-flex'
+        : (isIos() && !isStandalone() ? 'inline-flex' : 'none');
       el.installModal.classList.add('open');
       el.installModal.setAttribute('aria-hidden','false');
       setTimeout(()=> el.installNow.focus(), 0);
@@ -710,46 +1765,52 @@
     function snoozeInstall(){
       localStorage.setItem(INSTALL_KEYS.dismissedAt, Date.now().toString());
       closeInstallModal();
-      openToast('Bạn có thể cài đặt bất cứ lúc nào từ menu 📲.', 'info');
+      openToast(
+        'Bạn có thể cài đặt bất cứ lúc nào: mở menu (＋) → chọn “📲 Cài đặt ứng dụng”.',
+        'info',
+        5000
+      );
     }
 
-    // FAB -> mở modal cài đặt
     el.miInstall.addEventListener('click', (e)=>{
       e.stopPropagation(); toggleFab(false);
-      if (isStandalone() || localStorage.getItem(INSTALL_KEYS.installed) === '1'){
-        openToast('Ứng dụng đã được cài đặt.', 'info'); return;
+
+      if (isStandalone()) {
+        openToast('Ứng dụng đang chạy ở chế độ đã cài đặt.', 'info');
+        return;
       }
       openInstallModal();
     });
 
-    // Nút modal
-    document.getElementById('installX').onclick = closeInstallModal;
-    document.getElementById('installLater').onclick = snoozeInstall;
-    document.getElementById('installNow').onclick = async ()=>{
+    el.installX.onclick = closeInstallModal;
+    el.installLater.onclick = snoozeInstall;
+    el.installNow.onclick = async ()=>{
       if (deferredPrompt){
         try{
           deferredPrompt.prompt();
           const { outcome } = await deferredPrompt.userChoice;
           deferredPrompt = null;
           if (outcome !== 'accepted') snoozeInstall();
-        }catch{ el.iosTip.style.display = isIos() ? 'block' : 'none'; }
+        }catch{
+          el.iosTip.style.display = isIos() ? 'block' : 'none';
+        }
       }else{
         el.iosTip.style.display = isIos() ? 'block' : 'none';
       }
     };
 
-    // Sự kiện A2HS
     window.addEventListener('beforeinstallprompt', (e)=>{
       e.preventDefault();
       deferredPrompt = e;
 
-      // Luôn hiển thị nút FAB "Cài đặt" khi đủ điều kiện
-      el.miInstall.style.display = 'flex';
+      if (!isStandalone()) {
+        el.miInstall.style.display = 'flex';
+      }
 
       const lastDismiss = localStorage.getItem(INSTALL_KEYS.dismissedAt);
       const canAutoOpen = !isStandalone()
                        && localStorage.getItem(INSTALL_KEYS.installed) !== '1'
-                       && daysSince(lastDismiss) >= A2HS_COOLDOWN_DAYS;
+                       && hoursSince(lastDismiss) >= A2HS_COOLDOWN_HOURS;
 
       if (canAutoOpen){
         setTimeout(openInstallModal, 800);
@@ -764,83 +1825,157 @@
       deferredPrompt = null;
       el.miInstall.style.display = 'none';
       closeInstallModal();
-      openToast('🎉 Đã cài đặt ứng dụng lên màn hình chính.', 'success');
+      openToast('✅ Đã cài đặt ứng dụng.', 'success');
     });
 
-    // Hiển thị/ẩn nút install theo trạng thái hiện tại
-    if (isStandalone() || localStorage.getItem(INSTALL_KEYS.installed) === '1'){
+    if (isStandalone()) {
       el.miInstall.style.display = 'none';
+    } else if (isIos()) {
+      el.miInstall.style.display = 'flex';
     }
 
-    // --- Search ---
-    function debounce(fn, wait=250){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), wait);} }
-    el.search.oninput = debounce(render, 200); el.btnReset.onclick = ()=>{ el.search.value=''; render(); };
+    function debounce(fn, wait=250){
+      let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), wait);}
+    }
+    el.search.oninput = debounce(render, 200);
+    el.btnReset.onclick = ()=>{ el.search.value=''; render(); };
 
-    // --- Copy select ---
-    document.addEventListener('click', e=>{ const t=e.target; if(t?.classList?.contains('ro')) t.select(); });
+    document.addEventListener('click', e=>{
+      const t=e.target;
+      if(t?.classList?.contains('ro')) t.select();
+    });
 
-    // --- Storage sync đa tab ---
-    window.addEventListener('storage', e=>{ if(e.key===localKey){ sync(); render(); } });
+    window.addEventListener('storage', e=>{
+      if(e.key===localKey){ sync(); render(); }
+    });
 
-    // --- Import/Export/Reset ---
     function exportData(){
-      if(!data || data.length<2){ showAlert('Chưa có dữ liệu để sao lưu.',{type:'info'}); return; }
-      const now=new Date(); const pad=n=>String(n).padStart(2,'0');
+      if(!data || data.length<2){
+        showAlert('⚠️ Chưa có dữ liệu để sao lưu.',{type:'info'}); return;
+      }
+      const now=new Date();
+      const pad=n=>String(n).padStart(2,'0');
       const filename=`du_lieu_mk_${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())}.json`;
       const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-      const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; a.click(); URL.revokeObjectURL(url);
-      openToast('📤 Đã xuất file sao lưu.','success');
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url; a.download=filename; a.click();
+      URL.revokeObjectURL(url);
+      openToast('✅ Đã xuất file sao lưu.','success');
     }
     function importData(e){
       const f=e.target.files?.[0]; if(!f) return;
       const reader=new FileReader();
       reader.onload=async ev=>{
         try{
-          const imported=JSON.parse(String(ev.target.result||'')); if(!Array.isArray(imported)) return showAlert('File không đúng định dạng dữ liệu.',{type:'error'});
-          const verify=imported.find(x=>x[CHECK_KEY]); if(!verify) return showAlert('Thiếu thông tin xác minh trong file.',{type:'error'});
-          const master=await showPrompt('Nhập mật khẩu chính của file:','', 'Khôi phục dữ liệu','password'); if(master===false) return;
-          if(decryptSafe(verify[CHECK_KEY], master)!==CHECK_VALUE) return showAlert('Sai mật khẩu chính.',{type:'error'});
-          const ok=await showConfirm('Dữ liệu hiện tại sẽ bị thay thế. Tiếp tục?','Khôi phục dữ liệu'); if(!ok) return;
-          data=imported; save(); render(); openToast('✅ Đã nhập dữ liệu thành công.','success');
-        }catch{ showAlert('File không hợp lệ hoặc bị lỗi.',{type:'error'}); }
-        finally{ e.target.value=''; }
+          const imported=JSON.parse(String(ev.target.result||''));
+          if(!Array.isArray(imported))
+            return showAlert('❌ File không đúng định dạng dữ liệu.',{type:'error'});
+          const verify=imported.find(x=>x[CHECK_KEY]);
+          if(!verify)
+            return showAlert('⚠️ File thiếu thông tin xác minh mật khẩu chính.',{type:'error'});
+          const master=await showPrompt('Nhập mật khẩu chính của file sao lưu.', '', 'Khôi phục dữ liệu','password');
+          if(master===false) return;
+          if(decryptSafe(verify[CHECK_KEY], master)!==CHECK_VALUE)
+            return showAlert('❌ Mật khẩu chính không đúng. Vui lòng thử lại.',{type:'error'});
+          const ok=await showConfirm('Dữ liệu hiện tại sẽ bị thay thế bởi dữ liệu trong file. Bạn có chắc muốn tiếp tục?','Khôi phục dữ liệu');
+          if(!ok) return;
+          data=imported; save(); render();
+          openToast('✅ Đã nhập dữ liệu thành công.','success');
+        }catch{
+          showAlert('⚠️ File không hợp lệ hoặc đã bị lỗi.',{type:'error'});
+        }finally{
+          e.target.value='';
+        }
       };
       reader.readAsText(f);
     }
     async function resetAll(){
-      sync(); if(!data||data.length===0) return showAlert('Không có dữ liệu để xóa.',{type:'info'});
-      const verify=data.find(e=>e[CHECK_KEY]); if(!verify) return showAlert('Chưa thiết lập mật khẩu chính, không thể xác minh.',{type:'info'});
-      const master=await showPrompt('Nhập mật khẩu chính để xóa toàn bộ:','', 'Xác nhận','password'); if(master===false) return;
-      if(!String(master).trim()) return showAlert('Bạn chưa nhập mật khẩu chính.',{type:'error'});
-      if(decryptSafe(verify[CHECK_KEY], master)!==CHECK_VALUE) return showAlert('Sai mật khẩu chính.',{type:'error'});
-      const ok=await showConfirm('Bạn có chắc chắn muốn xóa toàn bộ dữ liệu không?','Xác nhận'); if(!ok) return;
-      localStorage.removeItem(localKey); data=[]; render(); openToast('🗑️ Đã xóa toàn bộ dữ liệu.','error');
+      sync();
+      if(!data||data.length===0)
+        return showAlert('❌ Không có dữ liệu nào để xóa.',{type:'info'});
+      const verify=data.find(e=>e[CHECK_KEY]);
+      if(!verify)
+        return showAlert('⚠️ Bạn chưa thiết lập mật khẩu chính nên không thể xác minh.',{type:'info'});
+      const master=await showPrompt('Nhập mật khẩu chính để xóa toàn bộ dữ liệu.', '', 'Xác nhận','password');
+      if(master===false) return;
+      if(!String(master).trim())
+        return showAlert('⚠️ Vui lòng nhập mật khẩu chính.',{type:'error'});
+      if(decryptSafe(verify[CHECK_KEY], master)!==CHECK_VALUE)
+        return showAlert('❌ Mật khẩu chính không đúng. Vui lòng thử lại.',{type:'error'});
+      const ok=await showConfirm('Bạn có chắc chắn muốn xóa toàn bộ dữ liệu không?','Xác nhận');
+      if(!ok) return;
+      localStorage.removeItem(localKey);
+      data=[]; render();
+      openToast('🗑️ Đã xóa toàn bộ dữ liệu.','error');
+    }
+
+    function handleShortcuts(){
+      try{
+        const url = new URL(window.location.href);
+        const action = url.searchParams.get('action');
+        if (!action) return;
+
+        url.searchParams.delete('action');
+        history.replaceState({}, "", url.toString());
+
+        setTimeout(()=>{
+          switch(action){
+            case 'new':
+              addEntryModal();
+              break;
+            case 'search':
+              if (el.search){
+                el.search.focus();
+                openToast('🔎 Đang ở chế độ tìm kiếm.', 'info', 3200);
+              }
+              break;
+            case 'backup':
+            case 'export':
+              exportData();
+              break;
+          }
+        }, 200);
+      }catch(err){
+        console.warn('Shortcut handler error', err);
+      }
     }
 
     window.addEventListener('load', ()=>{
-      // splash
-      setTimeout(()=>{ const s=document.getElementById('splash'); if(s&&!s.classList.contains('hidden')){ s.classList.add('hidden'); document.body.classList.add('ready');}}, 1200);
-      // updater
+      setTimeout(()=>{
+        const s=document.getElementById('splash');
+        if(s&&!s.classList.contains('hidden')){
+          s.classList.add('hidden');
+          document.body.classList.add('ready');
+        }
+      }, 1200);
       appUpdater = new AppUpdater();
-      // persistent info
-      setTimeout(updatePersistUI, 600);
+      setTimeout(autoEnsurePersistentStorage, 600);
+      setTimeout(handleShortcuts, 1300);
     });
 
-    // --- Service Worker registration ---
     if('serviceWorker' in navigator){
       window.addEventListener('load', async ()=>{
         try{
-          await navigator.serviceWorker.register('/password-manager/service-worker.js',{scope:'/password-manager/', updateViaCache:'none'});
+          await navigator.serviceWorker.register(
+            '/password-manager/service-worker.js',
+            {scope:'/password-manager/', updateViaCache:'none'}
+          );
           console.log('✅ Service Worker registered');
-        }catch(e){ console.warn('❌ Service Worker registration failed', e); }
+        }catch(e){
+          console.warn('❌ Service Worker registration failed', e);
+        }
       });
     }
 
-    // --- Khởi tạo ---
     render();
 
-    // expose for buttons
-    window.__pm = { exportData, resetAll, requestPersistentStorage };
+    window.__pm = { 
+      exportData, 
+      resetAll, 
+      requestPersistentStorage,
+      openAddEntry: addEntryModal
+    };
   })();
   </script>
 </body>
