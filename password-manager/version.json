@@ -2,13 +2,21 @@
   "app": "Trình quản lý mật khẩu",
   "id": "password-manager",
   "website": "https://hoangdoinet.github.io/password-manager/",
-  "version": "v1.0.1",
-  "release_date": "2025-11-14",
+  "version": "v1.0.2",
+  "release_date": "2025-11-17",
   "author": "Hoàng Đợi",
   "notes": [
-    "Nâng cấp từ v1.0.0 lên v1.0.1 với cơ chế cập nhật thủ công và một số cải tiến giao diện/bảo mật."
+    "Nâng cấp từ v1.0.1 lên v1.0.2 với một số sửa lỗi nhỏ và cải tiến trải nghiệm."
   ],
   "changelog": [
+    {
+      "version": "v1.0.2",
+      "release_date": "2025-11-17",
+      "changes": [
+        "Cải thiện hiệu suất.",
+        "Hoàn thiện cơ chế kiểm tra cập nhật thủ công với thông tin phiên bản hiển thị rõ ràng hơn."
+      ]
+    },
     {
       "version": "v1.0.1",
       "release_date": "2025-11-14",
