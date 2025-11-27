@@ -1,0 +1,37 @@
+{
+  "app": "Theo dõi tiêm vaccine cho heo",
+  "app_en": "Swine Vaccination Tracker",
+  "id": "swine-vaccination-tracker",
+  "website": "https://hoangdoinet.github.io/swine-vaccination-tracker/",
+  "author": "Hoàng Đợi",
+
+  "channel": "stable",
+
+  "version": "v1.0.0",
+  "release_date": "2025-11-27",
+  "summary": "Phiên bản khởi tạo ứng dụng theo dõi tiêm vaccine cho heo.",
+
+  "latest": {
+    "version": "v1.0.0",
+    "release_date": "2025-11-27",
+    "summary": "Phiên bản đầu tiên phát hành chính thức.",
+    "changelog": [
+      "Offline hoàn toàn sau khi cài đặt.",
+      "Không yêu cầu tài khoản, không gửi dữ liệu ra ngoài.",
+      "Quản lý phiếu tiêm, tìm kiếm, in PDF, Excel, backup JSON."
+    ]
+  },
+
+  "versions": [
+    {
+      "version": "v1.0.0",
+      "release_date": "2025-11-27",
+      "summary": "Phiên bản đầu tiên phát hành chính thức.",
+      "changelog": [
+        "Offline hoàn toàn sau khi cài đặt.",
+        "Không yêu cầu tài khoản, không gửi dữ liệu ra ngoài.",
+        "Quản lý phiếu tiêm, tìm kiếm, in PDF, Excel, backup JSON."
+      ]
+    }
+  ]
+}

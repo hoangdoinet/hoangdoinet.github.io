@@ -1,0 +1,2904 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>Swine Vaccination Tracker - Theo dõi tiêm vaccine cho heo</title>
+
+<meta name="description" content="Swine Vaccination Tracker - Ứng dụng theo dõi ngày tiêm vaccine cho heo: Hyogen, Porcicorvirus, Tulinovet,... ghi nhận ngày xuất heo, trại nhận, tổng số con, đực/cái, ghi chú; hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục dữ liệu, hỗ trợ cài đặt ứng dụng trên Android & iOS để sử dụng offline.">
+<meta name="author" content="Hoàng Đợi">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://hoangdoinet.github.io/swine-vaccination-tracker/">
+<meta name="keywords" content="Swine Vaccination Tracker, theo dõi tiêm vaccine cho heo, vaccine heo, lịch tiêm heo, quản lý trại heo, ứng dụng offline, PWA chăn nuôi, Hyogen, Porcicorvirus, Tulinovet">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="vi_VN">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Swine Vaccination Tracker - Theo dõi tiêm vaccine cho heo">
+<meta property="og:description" content="Ứng dụng theo dõi ngày tiêm vaccine cho heo, ghi nhận ngày tiêm/ngày xuất, trại nhận, tổng số con, đực/cái, ghi chú; hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục, hỗ trợ cài đặt ứng dụng trên Android & iOS để sử dụng offline.">
+<meta property="og:url" content="https://hoangdoinet.github.io/swine-vaccination-tracker/">
+<meta property="og:site_name" content="Swine Vaccination Tracker">
+<meta property="og:image" content="https://hoangdoinet.github.io/swine-vaccination-tracker/icons/icon-512.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Swine Vaccination Tracker - Theo dõi tiêm vaccine cho heo">
+<meta name="twitter:description" content="Ứng dụng theo dõi ngày tiêm vaccine cho heo, hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục, hoạt động offline sau lần tải đầu tiên.">
+<meta name="twitter:image" content="https://hoangdoinet.github.io/swine-vaccination-tracker/icons/icon-512.png">
+
+<!-- ===== PWA META - PRODUCTION READY ===== -->
+<meta name="application-name" content="Swine Vaccination Tracker">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#22c55e">
+
+<!-- iOS PWA -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Swine Vaccination Tracker">
+
+<!-- Manifest -->
+<link rel="manifest" href="/swine-vaccination-tracker/manifest.webmanifest">
+
+<!-- Icons -->
+<link rel="apple-touch-icon" href="/swine-vaccination-tracker/icons/icon-180.png">
+<link rel="icon" type="image/png" href="/swine-vaccination-tracker/icons/icon-32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/swine-vaccination-tracker/icons/icon-192.png" sizes="192x192">
+
+<!-- Preload icons for fast splash -->
+<link rel="preload" href="/swine-vaccination-tracker/icons/icon-512.png" as="image">
+<link rel="preload" href="/swine-vaccination-tracker/icons/maskable-512.png" as="image">
+<!-- ===== END PWA META ===== -->
+
+<!-- JSON-LD: SoftwareApplication -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Swine Vaccination Tracker",
+  "alternateName": "Theo dõi tiêm vaccine cho heo",
+  "applicationCategory": "MedicalApplication",
+  "operatingSystem": "Android, iOS, Web",
+  "inLanguage": "vi-VN",
+  "url": "https://hoangdoinet.github.io/swine-vaccination-tracker/",
+  "image": "https://hoangdoinet.github.io/swine-vaccination-tracker/icons/icon-512.png",
+  "description": "Ứng dụng theo dõi ngày tiêm vaccine cho heo: ghi nhận ngày tiêm, ngày xuất, trại nhận, tổng số con, đực/cái, ghi chú; hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục, hoạt động offline sau lần tải đầu tiên.",
+  "creator": {
+    "@type": "Person",
+    "name": "Hoàng Đợi"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Hoàng Đợi"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "VND",
+    "category": "Free"
+  },
+  "softwareVersion": "v1.0.0"
+}
+</script>
+
+<style>
+  :root{
+    --bg:#f7f9fc;
+    --card:#ffffff;
+    --text:#0f172a;
+    --muted:#6b7280;
+    --accent:#22c55e;
+    --accent-2:#16a34a;
+    --danger:#ef4444;
+    --border:#e5e7eb;
+    --shadow:0 10px 25px rgba(15,23,42,.08);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    background:linear-gradient(180deg,#f9fafb,#eef2f7);
+    color:var(--text);
+    font-size:15px;
+    line-height:1.5;
+  }
+  header{
+    position:sticky;top:0;z-index:10;
+    background:radial-gradient(120% 120% at 0% 0%,#bbf7d0 0%,#f9fafb 45%,#eef2ff 100%);
+    border-bottom:1px solid rgba(148,163,184,.3);
+    backdrop-filter:blur(10px);
+  }
+  .wrap{
+    max-width:1080px;
+    margin:0 auto;
+    padding:12px 16px 16px;
+  }
+  h1{
+    margin:0 0 8px;
+    font-size:clamp(22px,5vw,26px);
+    letter-spacing:.02em;
+    text-align:center;
+  }
+  .subtitle{
+    margin:0;
+    font-size:14px;
+    color:var(--muted);
+  }
+
+  /* Search */
+  .top-bar{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top:12px;
+  }
+  .search{
+    position:relative;
+  }
+  .search input{
+    width:100%;
+    padding:10px 34px 10px 32px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    font-size:15px;
+    outline:none;
+    background:#ffffffdd;
+    box-shadow:0 4px 12px rgba(15,23,42,.04);
+  }
+  .search input:focus{
+    border-color:#86efac;
+    box-shadow:0 0 0 2px rgba(34,197,94,.18);
+    background:#fff;
+  }
+  .search-icon{
+    position:absolute;
+    left:10px;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:15px;
+    color:var(--muted);
+  }
+  .search-clear{
+    position:absolute;
+    right:8px;
+    top:50%;
+    transform:translateY(-50%);
+    border:none;
+    background:transparent;
+    cursor:pointer;
+    font-size:18px;
+    line-height:1;
+    color:var(--muted);
+    padding:4px;
+    border-radius:999px;
+  }
+  .search-clear:hover{
+    background:#e5e7eb;
+  }
+
+  /* 🔹 Nút Cài đặt ứng dụng dưới input */
+  .install-wrap{
+    margin-top:4px;
+    display:none;
+    justify-content:center;
+  }
+  .btn-install{
+    border-radius:999px;
+    border:1px dashed #16a34a;
+    background:#ecfdf5;
+    color:#166534;
+    font-size:14px;
+    padding:6px 18px;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    box-shadow:0 4px 10px rgba(16,185,129,.16);
+    font-weight:600;
+  }
+  .btn-install span.icon{
+    font-size:16px;
+  }
+  .btn-install:hover{
+    background:#dcfce7;
+  }
+
+  /* KPI cho modal thống kê */
+  .kpis{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:8px;
+    margin-top:8px;
+  }
+  .pill{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:6px;
+    padding:6px 10px;
+    border-radius:999px;
+    font-size:13px;
+    white-space:nowrap;
+  }
+  .pill .value{
+    font-weight:600;
+    font-size:15px;
+    margin-left:4px;
+  }
+
+  .section-title{
+    margin:0 0 4px;
+    font-size:13px;
+    color:var(--muted);
+    font-weight:600;
+    text-align:center;
+  }
+
+  .kpis-month .pill{
+    background:#eff6ff;
+    border:1px solid #bfdbfe;
+    color:#1d4ed8;
+  }
+  .kpis-all .pill{
+    background:#ecfdf3;
+    border:1px solid #bbf7d0;
+    color:#15803d;
+  }
+
+  /* Cards list */
+  .list-wrap{
+    max-width:1080px;
+    margin:0 auto;
+    padding:8px 16px 80px;
+  }
+  .cards{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top:4px;
+  }
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    border:1px solid var(--border);
+    box-shadow:var(--shadow);
+    padding:12px 12px 10px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .card-header{
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+    align-items:flex-start;
+  }
+  .card-title{
+    font-weight:600;
+    font-size:16px;
+  }
+  .card-subtitle{
+    font-size:13px;
+    color:var(--muted);
+  }
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    padding:2px 8px;
+    border-radius:999px;
+    font-size:12px;
+    background:#dcfce7;
+    color:#166534;
+    border:1px solid #bbf7d0;
+    white-space:nowrap;
+  }
+  .badge.warning{
+    background:#fef3c7;
+    color:#92400e;
+    border-color:#fde68a;
+  }
+
+  .card-overdue{
+    border-color:#fecaca;
+    box-shadow:0 0 0 1px #fecaca, var(--shadow);
+  }
+  .card-overdue .badge{
+    background:#fef3c7;
+    color:#92400e;
+    border-color:#fde68a;
+  }
+
+  .card-separator{
+    height:1px;
+    margin:4px 0;
+    background:linear-gradient(90deg,transparent,rgba(148,163,184,.7),transparent);
+    opacity:.9;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:6px 10px;
+    margin-top:4px;
+  }
+
+  .field{
+    padding:4px 6px;
+    border-radius:8px;
+  }
+  .field-label{
+    font-size:12px;
+    color:var(--muted);
+  }
+  .field-value{
+    font-size:14px;
+    font-weight:500;
+  }
+
+  .field-highlight{
+    border:1px solid transparent;
+  }
+  .field-ngaytiem{
+    border-color:rgba(34,197,94,.35);
+    background:rgba(220,252,231,.7);
+  }
+  .field-ngayxuat{
+    border-color:rgba(59,130,246,.35);
+    background:rgba(239,246,255,.9);
+  }
+  .field-duc{
+    border-color:rgba(249,115,22,.35);
+    background:rgba(255,247,237,.9);
+  }
+  .field-cai{
+    border-color:rgba(168,85,247,.35);
+    background:rgba(250,245,255,.9);
+  }
+
+  .notes{
+    margin-top:4px;
+    padding:6px 8px;
+    border-radius:8px;
+    background:#f9fafb;
+    border:1px dashed #e5e7eb;
+    font-size:13px;
+    color:#4b5563;
+    white-space:pre-wrap;
+  }
+  .card-actions{
+    margin-top:6px;
+    display:flex;
+    justify-content:flex-end;
+    gap:6px;
+  }
+  .btn-small{
+    border-radius:999px;
+    border:1px solid var(--border);
+    background:#f9fafb;
+    font-size:12px;
+    padding:4px 11px;
+    cursor:pointer;
+    color:#374151;
+  }
+  .btn-small.danger{
+    border-color:#fecaca;
+    color:#b91c1c;
+    background:#fef2f2;
+  }
+  .btn-small:hover{
+    filter:brightness(0.97);
+  }
+  .empty{
+    margin-top:18px;
+    font-size:14px;
+    color:var(--muted);
+    text-align:center;
+  }
+
+  /* FAB menu */
+  .fab{
+    position:fixed;
+    right:16px;
+    bottom:16px;
+    z-index:30;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:10px;
+  }
+  .fab-backdrop{
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.25);
+    backdrop-filter:blur(2px);
+    display:none;
+    z-index:20;
+  }
+  .fab.open .fab-backdrop{
+    display:block;
+  }
+  .fab-menu{
+    position:absolute;
+    right:0;
+    bottom:60px;
+    display:none;
+    flex-direction:column;
+    gap:8px;
+    padding:10px;
+    background:#ffffff;
+    border:1px solid var(--border);
+    border-radius:16px;
+    box-shadow:0 18px 40px rgba(15,23,42,.18);
+    min-width:230px;
+    z-index:30;
+  }
+  .fab.open .fab-menu{
+    display:flex;
+  }
+  .fab-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 10px;
+    border-radius:10px;
+    border:1px solid #e5e7eb;
+    background:#fff;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    white-space:nowrap;
+    position:relative;
+  }
+  .fab-item span.icon{
+    font-size:16px;
+  }
+  .fab-item:hover{
+    background:#f9fafb;
+  }
+  .fab-item.danger{
+    border-color:#fecaca;
+    background:#fef2f2;
+    color:#b91c1c;
+  }
+  .fab-badge{
+    position:absolute;
+    top:4px;
+    right:8px;
+    min-width:18px;
+    height:18px;
+    padding:0 5px;
+    border-radius:999px;
+    background:#ef4444;
+    color:#fff;
+    font-size:11px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 0 0 2px #ffffff;
+  }
+  .fab-item.has-reminder span.icon{
+    color:#b91c1c;
+  }
+
+  .fab-main{
+    width:52px;
+    height:52px;
+    border-radius:999px;
+    border:none;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    color:#fff;
+    box-shadow:0 12px 30px rgba(22,163,74,.6);
+    font-size:26px;
+    font-weight:900;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    z-index:31;
+  }
+  .fab-main:active{
+    transform:scale(.96);
+  }
+
+  /* Modals */
+  .modal{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(15,23,42,.35);
+    backdrop-filter:blur(6px);
+    padding:16px;
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity .2s ease,visibility .2s ease;
+    z-index:40;
+  }
+  .modal.show{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+  }
+  .modal-content{
+    width:100%;
+    max-width:480px;
+    background:#fff;
+    border-radius:18px;
+    box-shadow:0 18px 45px rgba(15,23,42,.45);
+    padding:14px 16px 14px;
+    max-height:90vh;
+    overflow:auto;
+  }
+  .modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    margin-bottom:4px;
+  }
+  .modal-title{
+    margin:0;
+    font-size:17px;
+    font-weight:600;
+  }
+  .modal-close{
+    border:none;
+    background:transparent;
+    font-size:20px;
+    cursor:pointer;
+    color:var(--muted);
+  }
+  .modal-body{
+    font-size:15px;
+    margin-top:4px;
+  }
+  .modal-footer{
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    margin-top:8px;
+  }
+  .form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px 10px;
+  }
+  .form-row{
+    margin-bottom:8px;
+  }
+  label{
+    display:block;
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:3px;
+  }
+  input[type="text"],
+  input[type="number"],
+  input[type="date"],
+  input[type="month"],
+  select,
+  textarea{
+    width:100%;
+    padding:7px 9px;
+    border-radius:9px;
+    border:1px solid var(--border);
+    font-size:14px;
+    outline:none;
+    background:#f9fafb;
+  }
+  input:focus,
+  select:focus,
+  textarea:focus{
+    border-color:#86efac;
+    box-shadow:0 0 0 2px rgba(34,197,94,.18);
+    background:#ffffff;
+  }
+  textarea{
+    min-height:50px;
+    resize:vertical;
+  }
+  .btn{
+    border-radius:999px;
+    padding:7px 14px;
+    border:1px solid transparent;
+    font-size:14px;
+    cursor:pointer;
+  }
+  .btn.primary{
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    color:#fff;
+  }
+  .btn.secondary{
+    background:#f9fafb;
+    color:#374151;
+    border-color:var(--border);
+  }
+  .btn.danger{
+    background:#fef2f2;
+    border-color:#fecaca;
+    color:#b91c1c;
+  }
+
+  /* Gợi ý */
+  .suggest-wrap{
+    position:relative;
+  }
+  .suggest{
+    display:none;
+    position:absolute;
+    left:0;
+    right:0;
+    top:calc(100% + 6px);
+    background:rgba(17,24,39,.98);
+    border:1px solid #334155;
+    border-radius:12px;
+    padding:10px;
+    box-shadow:0 12px 30px rgba(0,0,0,.35);
+    z-index:60;
+  }
+  .suggest.show{
+    display:block;
+    animation:pop .08s ease;
+  }
+  @keyframes pop{
+    from{transform:translateY(-4px);opacity:.6}
+    to{transform:translateY(0);opacity:1}
+  }
+  .suggest::before{
+    content:"";
+    position:absolute;
+    top:-6px;
+    left:16px;
+    width:12px;
+    height:12px;
+    background:rgba(17,24,39,.98);
+    border-left:1px solid #334155;
+    border-top:1px solid #334155;
+    transform:rotate(45deg);
+  }
+  .suggest .grid-chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .s-chip{
+    padding:8px 14px;
+    border:1px solid #334155;
+    border-radius:12px;
+    background:rgba(255,255,255,.03);
+    color:#e5e7eb;
+    font-size:15px;
+    cursor:pointer;
+    transition:transform .06s ease,border-color .2s ease,background .2s ease,color .2s ease;
+  }
+  .s-chip:hover{
+    transform:translateY(-1px);
+    border-color:#22c55e;
+    background:rgba(34,197,94,.12);
+    color:#86efac;
+  }
+  .suggest .empty{
+    color:#94a3b8;
+    font-size:14px;
+  }
+
+  /* Toast */
+  .toast{
+    position:fixed;
+    bottom:80px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#14532d;
+    color:#dcfce7;
+    padding:6px 12px;
+    border-radius:999px;
+    font-size:13px;
+    box-shadow:0 10px 25px rgba(15,23,42,.6);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s ease,transform .2s ease;
+    z-index:50;
+  }
+  .toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(-4px);
+    pointer-events:auto;
+  }
+
+  /* Danh sách trong modal nhắc nhở */
+  .reminder-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-top:8px;
+  }
+  .reminder-item{
+    border-radius:10px;
+    border:1px solid #fee2e2;
+    background:#fef2f2;
+    padding:8px 10px;
+    font-size:13px;
+  }
+  .reminder-item-header{
+    display:flex;
+    justify-content:space-between;
+    gap:6px;
+    margin-bottom:4px;
+    font-weight:600;
+    color:#b91c1c;
+  }
+  .reminder-item-body{
+    color:#374151;
+  }
+  .reminder-item-meta{
+    margin-top:4px;
+    font-size:12px;
+    color:#6b7280;
+  }
+
+  /* ===== Highlight phiên bản mới nhất trong modal cập nhật ===== */
+  .update-version-list{
+    margin-top:8px;
+    font-size:14px;
+  }
+  .update-version{
+    border-radius:10px;
+    border:1px solid #e5e7eb;
+    padding:6px 8px;
+    margin-bottom:6px;
+    background:#f9fafb;
+  }
+  .update-version.latest{
+    border-color:#22c55e;
+    background:#ecfdf3;
+    box-shadow:0 0 0 1px #bbf7d0;
+  }
+  .update-version-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:6px;
+    font-weight:600;
+  }
+  .update-version-title span.date{
+    font-size:12px;
+    color:#6b7280;
+  }
+  .update-badge{
+    font-size:11px;
+    padding:2px 8px;
+    border-radius:999px;
+    background:#16a34a;
+    color:#fff;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:640px){
+    .grid{grid-template-columns:1fr 1fr}
+    .form-grid{grid-template-columns:1fr}
+  }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Swine Vaccination Tracker</h1>
+
+    <div class="top-bar">
+      <div class="search">
+        <span class="search-icon">🔍</span>
+        <input id="searchInput" type="search" placeholder="Tìm theo tên trại nhận, ghi chú, vaccine..." autocomplete="off">
+        <button class="search-clear" id="btnClearSearch" title="Xóa tìm kiếm">&times;</button>
+      </div>
+
+      <!-- 🔹 Nút Cài đặt ứng dụng -->
+      <div class="install-wrap" id="installWrap">
+        <button type="button" class="btn-install" id="btnInstallPrompt">
+          <span class="icon">📲</span>
+          <span>Cài đặt ứng dụng</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="list-wrap">
+  <div id="cards" class="cards"></div>
+  <div id="emptyMsg" class="empty" style="display:none;">
+    Chưa có phiếu tiêm nào. Bấm nút “+” ở góc dưới để thêm mới.
+  </div>
+  <div id="searchEmptyMsg" class="empty" style="display:none;">
+    Không tìm thấy phiếu nào khớp từ khóa.
+  </div>
+</main>
+
+<!-- Floating menu -->
+<div class="fab" id="fab">
+  <div class="fab-backdrop" id="fabBackdrop"></div>
+
+  <div class="fab-menu" id="fabMenu">
+    <button class="fab-item" id="btnAdd">
+      <span class="icon">➕</span> Thêm phiếu tiêm
+    </button>
+    <button class="fab-item" id="btnStats">
+      <span class="icon">📊</span> Báo cáo - Thống kê
+    </button>
+    <button class="fab-item" id="btnCheckUpdate" style="display:none;">
+      <span class="icon">🔃</span> Kiểm tra cập nhật
+    </button>
+    <button class="fab-item" id="btnReminder">
+      <span class="icon">🔔</span>
+      <span>Thông báo</span>
+      <span class="fab-badge" id="reminderBadge">0</span>
+    </button>
+    <button class="fab-item" id="btnPrint">
+      <span class="icon">🖨</span> In - Xuất file PDF
+    </button>
+    <button class="fab-item" id="btnExport">
+      <span class="icon">📤</span> Xuất file Excel
+    </button>
+    <button class="fab-item" id="btnBackup">
+      <span class="icon">💾</span> Sao lưu dữ liệu
+    </button>
+    <button class="fab-item" id="btnRestore">
+      <span class="icon">🔄</span> Khôi phục dữ liệu
+    </button>
+    <button class="fab-item danger" id="btnDeleteAll">
+      <span class="icon">🗑️</span> Xóa tất cả
+    </button>
+  </div>
+
+  <button class="fab-main" id="fabMain" aria-label="Mở menu">
+    ＋
+  </button>
+</div>
+
+<input type="file" id="fileRestore" accept=".json" style="display:none">
+
+<!-- Modal: Form nhập liệu -->
+<div class="modal" id="entryModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title" id="entryModalTitle">Thêm phiếu tiêm</h2>
+      <button class="modal-close" data-close-modal="entryModal">&times;</button>
+    </div>
+    <div class="card-separator"></div>
+    <div class="modal-body">
+      <form id="entryForm">
+        <div class="form-grid">
+          <div class="form-row">
+            <label for="ngayTiem">Ngày tiêm vaccine *</label>
+            <input type="date" id="ngayTiem" required>
+          </div>
+          <div class="form-row">
+            <label for="tenVaccine">Tên vaccine *</label>
+            <div class="suggest-wrap">
+              <input type="text" id="tenVaccine" placeholder="VD: Hyogen, Porcicorvirus..." autocomplete="off" required>
+              <div class="suggest" id="tenVaccineSuggest"></div>
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="ngayXuat">Ngày xuất heo</label>
+            <input type="date" id="ngayXuat">
+          </div>
+          <div class="form-row">
+            <label for="traiNhan">Tên trại nhận *</label>
+            <div class="suggest-wrap">
+              <input type="text" id="traiNhan" placeholder="VD: Trại A, Trại B..." autocomplete="off" required>
+              <div class="suggest" id="traiNhanSuggest"></div>
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="tongSo">Tổng số lượng con *</label>
+            <input type="number" id="tongSo" min="0" step="1" required>
+          </div>
+          <div class="form-row">
+            <label for="soDuc">Số con đực *</label>
+            <input type="number" id="soDuc" min="0" step="1" required>
+          </div>
+          <div class="form-row">
+            <label for="soCai">Số con cái *</label>
+            <input type="number" id="soCai" min="0" step="1" required>
+          </div>
+        </div>
+        <div class="form-row" style="margin-top:8px;">
+          <label for="ghiChu">Ghi chú</label>
+          <textarea id="ghiChu" placeholder="Thông tin lứa heo, phòng/chuồng, lưu ý tiêm..."></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="card-separator"></div>
+    <div class="modal-footer">
+      <button class="btn secondary" type="button" data-close-modal="entryModal">Hủy</button>
+      <button class="btn primary" id="btnSaveEntry" type="button">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Xác nhận -->
+<div class="modal" id="confirmModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title" id="confirmTitle">Xác nhận</h2>
+      <button class="modal-close" data-close-modal="confirmModal">&times;</button>
+    </div>
+    <div class="card-separator"></div>
+    <div class="modal-body">
+      <p id="confirmMessage" style="font-size:15px;margin:0;"></p>
+
+      <div id="confirmCodeBlock"
+           style="margin-top:10px;padding-top:8px;border-top:1px dashed #e5e7eb;
+                  display:none;text-align:center;">
+        <p style="font-size:14px;margin:0 0 6px;color:#374151;">
+          Nhập đúng 4 số sau để xác nhận thao tác xóa:
+        </p>
+        <p style="margin:0 0 6px;">
+          <strong id="confirmCodeValue"
+                  style="letter-spacing:0.25em;font-size:18px;display:inline-block;">
+          </strong>
+        </p>
+        <input
+          type="text"
+          id="confirmCodeInput"
+          inputmode="numeric"
+          pattern="[0-9]*"
+          maxlength="4"
+          placeholder="Nhập 4 số ở trên"
+          style="width:280px;text-align:center;letter-spacing:0.25em;
+                 font-weight:600;margin-top:4px;font-size:16px;"
+        >
+        <div id="confirmCodeError"
+             style="display:none;margin-top:4px;font-size:13px;color:#b91c1c;">
+          Mã xác nhận không đúng. Vui lòng thử lại.
+        </div>
+      </div>
+    </div>
+    <div class="card-separator"></div>
+    <div class="modal-footer">
+      <button class="btn secondary" type="button" data-close-modal="confirmModal">Hủy</button>
+      <button class="btn danger" type="button" id="btnConfirmYes">Đồng ý</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Thông báo -->
+<div class="modal" id="alertModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Thông báo</h2>
+      <button class="modal-close" data-close-modal="alertModal">&times;</button>
+    </div>
+    <div class="card-separator"></div>
+    <div class="modal-body">
+      <p id="alertMessage" style="font-size:15px;margin:0;"></p>
+    </div>
+    <div class="card-separator"></div>
+    <div class="modal-footer">
+      <button class="btn primary" type="button" data-close-modal="alertModal">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Mời cài đặt ứng dụng -->
+<div class="modal" id="installModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Cài đặt ứng dụng</h2>
+      <button class="modal-close" data-close-modal="installModal">&times;</button>
+    </div>
+    <div class="card-separator"></div>
+    <div class="modal-body">
+      <p style="margin-top:0;margin-bottom:8px;">
+        Ứng dụng <strong>Swine Vaccination Tracker</strong> (Theo dõi tiêm vaccine cho heo) có thể cài đặt app trên điện thoại.
+      </p>
+      <ul style="margin:0 0 8px 18px;padding:0;font-size:14px;color:#4b5563;">
+        <li>Mở nhanh từ màn hình chính.</li>
+        <li>Hoạt động offline, dữ liệu lưu trên máy.</li>
+        <li>Trải nghiệm toàn màn hình, không thanh địa chỉ.</li>
+      </ul>
+      <p style="margin:0;font-size:13px;color:#6b7280;">
+        Nhấn <strong>“Cài đặt ngay”</strong> để cài đặt ứng dụng vào thiết bị của bạn.
+      </p>
+    </div>
+    <div class="card-separator"></div>
+    <div class="modal-footer">
+      <button class="btn secondary" type="button" data-close-modal="installModal">Để sau</button>
+      <button class="btn primary" type="button" id="btnInstallNow">Cài đặt ngay</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Thống kê tổng quan -->
+<div class="modal" id="statsModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Thống kê tổng quan</h2>
+      <button class="modal-close" data-close-modal="statsModal">&times;</button>
+    </div>
+    <div class="card-separator"></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <label for="statsMonthInput">Tháng thống kê</label>
+        <input type="month" id="statsMonthInput">
+        <p class="subtitle" style="margin:4px 0 0;font-size:13px;">
+          Mặc định là tháng hiện tại. Chọn tháng khác để xem thống kê theo tháng đó.
+        </p>
+      </div>
+
+      <div style="margin-top:12px;">
+        <p class="section-title">
+          THỐNG KÊ THEO THÁNG <span id="kpiMonthLabel"></span>
+        </p>
+        <div class="kpis kpis-month" style="margin-top:4px;">
+          <span class="pill">Lượt tiêm<span class="value" id="kpiMonthCount">0</span></span>
+          <span class="pill">Số lượng heo<span class="value" id="kpiMonthTotalPigs">0</span></span>
+          <span class="pill">Heo đực<span class="value" id="kpiMonthMale">0</span></span>
+          <span class="pill">Heo cái<span class="value" id="kpiMonthFemale">0</span></span>
+        </div>
+      </div>
+
+      <div class="card-separator" style="margin-top:12px;"></div>
+
+      <div style="margin-top:8px;">
+        <p class="section-title">
+          THỐNG KÊ TOÀN BỘ DỮ LIỆU
+        </p>
+        <p class="section-title" id="kpiAllRange" style="font-size:12px;">
+          ( Chưa có dữ liệu )
+        </p>
+        <div class="kpis kpis-all" style="margin-top:4px;">
+          <span class="pill">Lượt tiêm<span class="value" id="kpiAllCount">0</span></span>
+          <span class="pill">Số lượng heo<span class="value" id="kpiAllTotalPigs">0</span></span>
+          <span class="pill">Heo đực<span class="value" id="kpiAllMale">0</span></span>
+          <span class="pill">Heo cái<span class="value" id="kpiAllFemale">0</span></span>
+        </div>
+      </div>
+    </div>
+    <div class="card-separator"></div>
+    <div class="modal-footer">
+      <button class="btn secondary" type="button" data-close-modal="statsModal">
+        Đóng
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: In danh sách -->
+<div class="modal" id="printModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">In danh sách phiếu tiêm</h2>
+      <button class="modal-close" data-close-modal="printModal">&times;</button>
+    </div>
+    <div class="card-separator"></div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:#4b5563;margin-top:0;margin-bottom:8px;">
+        Chọn khoảng ngày muốn in. Mặc định là tháng hiện tại.
+      </p>
+      <div class="form-grid">
+        <div class="form-row">
+          <label for="printFrom">Từ ngày</label>
+          <input type="date" id="printFrom">
+        </div>
+        <div class="form-row">
+          <label for="printTo">Đến ngày</label>
+          <input type="date" id="printTo">
+        </div>
+      </div>
+    </div>
+    <div class="card-separator"></div>
+    <div class="modal-footer">
+      <button class="btn secondary" type="button" data-close-modal="printModal">Hủy</button>
+      <button class="btn primary" type="button" id="btnPrintRange">In theo ngày</button>
+      <button class="btn primary" type="button" id="btnPrintAll">In tất cả</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Thông tin phiên bản / cập nhật -->
+<div class="modal" id="updateModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Thông tin phiên bản</h2>
+      <button class="modal-close" data-close-modal="updateModal">&times;</button>
+    </div>
+    <div class="card-separator"></div>
+    <div class="modal-body">
+      <p style="margin:0 0 6px;font-size:14px;">
+        Phiên bản hiện tại: <strong id="currentVersionText">—</strong><br>
+        Phiên bản mới nhất trên máy chủ: <strong id="latestVersionText">—</strong>
+      </p>
+      <div id="updateDetails" style="font-size:14px;color:#374151;margin-top:6px;"></div>
+    </div>
+    <div class="card-separator"></div>
+    <div class="modal-footer">
+      <button class="btn secondary" type="button" data-close-modal="updateModal">Để sau</button>
+      <button class="btn primary" type="button" id="btnReloadApp">Tải lại ứng dụng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nhắc nhở -->
+<div class="modal" id="reminderModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Thông báo từ hệ thống</h2>
+      <button class="modal-close" data-close-modal="reminderModal">&times;</button>
+    </div>
+    <div class="card-separator"></div>
+    <div class="modal-body">
+      <div id="reminderEmptyMsg" class="empty" style="margin-top:8px;display:none;font-size:13px;">
+        Hiện chưa có thông báo nào từ hệ thống.
+      </div>
+      <div id="reminderList" class="reminder-list"></div>
+    </div>
+    <div class="card-separator"></div>
+    <div class="modal-footer">
+      <button class="btn primary" type="button" data-close-modal="reminderModal">Đã hiểu</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ================== HẰNG SỐ & STATE ================== */
+  const APP_NAME_EN       = 'Swine Vaccination Tracker';
+  const APP_NAME_VI       = 'Theo dõi tiêm vaccine cho heo';
+
+  const STORAGE_KEY       = 'swineVaccinationTracker_records';
+
+  const REMINDER_LAST_KEY  = 'swineVaccinationTracker_reminderLast';
+  const INSTALLED_FLAG_KEY = 'swineVaccinationTracker_installed';
+  const OVERDUE_DAYS       = 15;
+
+  let records         = [];
+  let editingIndex    = null;
+  let confirmCallback = null;
+  let alertFocusEl    = null;
+
+  let confirmNeedCode = false;
+  let confirmCode     = '';
+
+  let deferredInstallPrompt = null;
+
+  const VACCINE_BASE_RAW = ['Hyogen','Porcicorvirus','Tulinovet'];
+  const VACCINE_BASE     = VACCINE_BASE_RAW.map(normalizeName);
+  let vaccineSuggestions = [];
+  let farmSuggestions    = [];
+
+  const unique = arr => [...new Set(arr)].filter(Boolean);
+
+  /* ================== HÀM TIỆN ÍCH CHUNG ================== */
+
+  function formatNumber(val){
+    const n = Number(val || 0);
+    if(!isFinite(n)) return '0';
+    return n.toLocaleString('vi-VN');
+  }
+
+  function stripAccents(str){
+    if(!str) return '';
+    const s = String(str);
+    if(!String.prototype.normalize) return s;
+    return s
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g,'')
+      .replace(/đ/g,'d')
+      .replace(/Đ/g,'D');
+  }
+
+  function normalizeSearch(str){
+    return stripAccents(String(str || '').toLowerCase());
+  }
+
+  function normalizeName(str){
+    const s = String(str || '').trim();
+    if(!s) return '';
+    return s
+      .toLowerCase()
+      .split(/\s+/)
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
+  }
+
+  function pad2(n){ return String(n).padStart(2,'0'); }
+
+  function parseDateYMD(str){
+    if(!str) return null;
+    const parts = str.split('-');
+    if(parts.length !== 3) return null;
+    const y = Number(parts[0]);
+    const m = Number(parts[1]);
+    const d = Number(parts[2]);
+    const dt = new Date(y, m-1, d);
+    return isNaN(dt.getTime()) ? null : dt;
+  }
+
+  function formatDate(dateStr){
+    if(!dateStr) return '';
+    const p = dateStr.split('-');
+    if(p.length!==3) return dateStr;
+    return `${p[2]}/${p[1]}/${p[0]}`;
+  }
+
+  function daysFromTiemToToday(dateStr){
+    const dTiem = parseDateYMD(dateStr);
+    if(!dTiem) return 0;
+    const today = new Date();
+    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const onlyTiem  = new Date(dTiem.getFullYear(), dTiem.getMonth(), dTiem.getDate());
+    const diffMs = todayDate - onlyTiem;
+    return Math.floor(diffMs / (24*60*60*1000));
+  }
+
+  function isPwaInstalled(){
+    try{
+      const standaloneByMedia = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+      const standaloneIOS     = window.navigator.standalone;
+      const fromAndroidApp    = document.referrer && document.referrer.startsWith('android-app://');
+      return !!(standaloneByMedia || standaloneIOS || fromAndroidApp);
+    }catch(_){
+      return false;
+    }
+  }
+
+  function esc(str){
+    return String(str ?? '')
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#39;');
+  }
+
+  /* ================== SUGGEST ================== */
+
+  function normalizeRecords(arr){
+    if(!Array.isArray(arr)) return [];
+    return arr.map(obj=>{
+      const r = obj || {};
+      const safeNum = v => {
+        const n = Number(v || 0);
+        return Number.isFinite(n) && n >= 0 ? n : 0;
+      };
+      return {
+        id        : r.id || (Date.now() + Math.random()),
+        ngayTiem  : typeof r.ngayTiem   === 'string' ? r.ngayTiem   : '',
+        tenVaccine: typeof r.tenVaccine === 'string' ? r.tenVaccine : '',
+        ngayXuat  : typeof r.ngayXuat   === 'string' ? r.ngayXuat   : '',
+        traiNhan  : typeof r.traiNhan   === 'string' ? r.traiNhan   : '',
+        tongSo    : safeNum(r.tongSo),
+        soDuc     : safeNum(r.soDuc),
+        soCai     : safeNum(r.soCai),
+        ghiChu    : typeof r.ghiChu     === 'string' ? r.ghiChu     : ''
+      };
+    });
+  }
+
+  function rebuildSuggestions(){
+    const vacSet  = new Set(VACCINE_BASE);
+    const farmSet = new Set();
+    records.forEach(r=>{
+      if(r.tenVaccine && String(r.tenVaccine).trim()){
+        vacSet.add(normalizeName(r.tenVaccine));
+      }
+      if(r.traiNhan && String(r.traiNhan).trim()){
+        farmSet.add(normalizeName(r.traiNhan));
+      }
+    });
+    vaccineSuggestions = unique(Array.from(vacSet)).sort((a,b)=>a.localeCompare(b,'vi'));
+    farmSuggestions    = unique(Array.from(farmSet)).sort((a,b)=>a.localeCompare(b,'vi'));
+  }
+
+  function buildSuggest(inputEl, panelEl, getItems, {
+    uppercase=false,
+    onPick,
+    placeholderWhenEmpty
+  } = {}){
+    let open = false;
+
+    function hide(){
+      panelEl.classList.remove('show');
+      open = false;
+    }
+
+    function renderList(list){
+      if(!list.length){
+        panelEl.innerHTML =
+          '<div class="empty" style="padding:6px 8px;">'
+          + (placeholderWhenEmpty || 'Không có gợi ý')
+          + '</div>';
+        return;
+      }
+      panelEl.innerHTML =
+        '<div class="grid-chips">' +
+        list.map(v=>(
+          `<button type="button" class="s-chip" data-val="${v}">${v}</button>`
+        )).join('') +
+        '</div>';
+    }
+
+    function computeAndRender(){
+      let q = (inputEl.value || '').trim();
+      if(uppercase){
+        q = q.toUpperCase();
+        inputEl.value = q;
+      }
+      const items = (getItems && getItems()) || [];
+      const qNorm = normalizeSearch(q);
+      const filtered = q
+        ? items.filter(v => normalizeSearch(v).includes(qNorm))
+        : items;
+      renderList(filtered.slice(0,24));
+    }
+
+    function show(){
+      computeAndRender();
+      panelEl.classList.add('show');
+      open = true;
+    }
+
+    inputEl.addEventListener('focus', show);
+    inputEl.addEventListener('click', show);
+    inputEl.addEventListener('input', ()=>{
+      if(open) computeAndRender();
+      else show();
+    });
+    inputEl.addEventListener('keydown', e=>{
+      if(e.key === 'Escape'){
+        hide();
+        inputEl.blur();
+      }
+    });
+
+    panelEl.addEventListener('click', e=>{
+      const chip = e.target.closest('.s-chip');
+      if(!chip) return;
+      const val = chip.getAttribute('data-val') || '';
+      inputEl.value = val;
+      hide();
+      if(onPick) onPick(val);
+      inputEl.blur();
+    });
+
+    document.addEventListener('mousedown', e=>{
+      const inside = (e.target === inputEl) || panelEl.contains(e.target);
+      if(!inside) hide();
+    });
+
+    return {
+      refresh: computeAndRender,
+      hide
+    };
+  }
+
+  /* ================== DOM REFERENCES ================== */
+
+  const cardsEl          = document.getElementById('cards');
+  const emptyMsgEl       = document.getElementById('emptyMsg');
+  const searchEmptyMsgEl = document.getElementById('searchEmptyMsg');
+  const searchInput      = document.getElementById('searchInput');
+  const btnClearSearch   = document.getElementById('btnClearSearch');
+
+  const kpiAllCount      = document.getElementById('kpiAllCount');
+  const kpiAllTotalPigs  = document.getElementById('kpiAllTotalPigs');
+  const kpiAllMale       = document.getElementById('kpiAllMale');
+  const kpiAllFemale     = document.getElementById('kpiAllFemale');
+  const kpiAllRange      = document.getElementById('kpiAllRange');
+
+  const kpiMonthLabel     = document.getElementById('kpiMonthLabel');
+  const kpiMonthCount     = document.getElementById('kpiMonthCount');
+  const kpiMonthTotalPigs = document.getElementById('kpiMonthTotalPigs');
+  const kpiMonthMale      = document.getElementById('kpiMonthMale');
+  const kpiMonthFemale    = document.getElementById('kpiMonthFemale');
+
+  const fab           = document.getElementById('fab');
+  const fabMain       = document.getElementById('fabMain');
+  const fabBackdrop   = document.getElementById('fabBackdrop');
+
+  const entryModal    = document.getElementById('entryModal');
+  const entryModalTitle = document.getElementById('entryModalTitle');
+  const entryForm     = document.getElementById('entryForm');
+  const ngayTiemEl    = document.getElementById('ngayTiem');
+  const tenVaccineEl  = document.getElementById('tenVaccine');
+  const ngayXuatEl    = document.getElementById('ngayXuat');
+  const traiNhanEl    = document.getElementById('traiNhan');
+  const tongSoEl      = document.getElementById('tongSo');
+  const soDucEl       = document.getElementById('soDuc');
+  const soCaiEl       = document.getElementById('soCai');
+  const ghiChuEl      = document.getElementById('ghiChu');
+  const btnSaveEntry  = document.getElementById('btnSaveEntry');
+
+  const confirmModal  = document.getElementById('confirmModal');
+  const confirmTitle  = document.getElementById('confirmTitle');
+  const confirmMessage= document.getElementById('confirmMessage');
+  const btnConfirmYes = document.getElementById('btnConfirmYes');
+  const confirmCodeBlock  = document.getElementById('confirmCodeBlock');
+  const confirmCodeValue  = document.getElementById('confirmCodeValue');
+  const confirmCodeInput  = document.getElementById('confirmCodeInput');
+  const confirmCodeError  = document.getElementById('confirmCodeError');
+
+  const alertModal    = document.getElementById('alertModal');
+  const alertMessage  = document.getElementById('alertMessage');
+
+  const statsMonthInput = document.getElementById('statsMonthInput');
+  const btnStats        = document.getElementById('btnStats');
+
+  const toastEl       = document.getElementById('toast');
+
+  const fileRestore   = document.getElementById('fileRestore');
+
+  const tenVaccineSuggestPanel = document.getElementById('tenVaccineSuggest');
+  const traiNhanSuggestPanel   = document.getElementById('traiNhanSuggest');
+
+  const btnPrint      = document.getElementById('btnPrint');
+  const printFromEl   = document.getElementById('printFrom');
+  const printToEl     = document.getElementById('printTo');
+  const btnPrintRange = document.getElementById('btnPrintRange');
+  const btnPrintAll   = document.getElementById('btnPrintAll');
+
+  const btnReminder        = document.getElementById('btnReminder');
+  const reminderBadge      = document.getElementById('reminderBadge');
+  const reminderListEl     = document.getElementById('reminderList');
+  const reminderEmptyMsgEl = document.getElementById('reminderEmptyMsg');
+
+  const installWrap      = document.getElementById('installWrap');
+  const btnInstallPrompt = document.getElementById('btnInstallPrompt');
+  const btnInstallNow    = document.getElementById('btnInstallNow');
+
+  const btnCheckUpdate   = document.getElementById('btnCheckUpdate');
+
+  const updateModal          = document.getElementById('updateModal');
+  const currentVersionText   = document.getElementById('currentVersionText');
+  const latestVersionText    = document.getElementById('latestVersionText');
+  const updateDetailsEl      = document.getElementById('updateDetails');
+  const btnReloadApp         = document.getElementById('btnReloadApp');
+
+  /* ================== MODAL & TOAST ================== */
+
+  function openModal(id){
+    const el = document.getElementById(id);
+    if(el) el.classList.add('show');
+  }
+
+  function closeModal(id){
+    const el = document.getElementById(id);
+    if(el){
+      el.classList.remove('show');
+      if(id === 'alertModal' && alertFocusEl){
+        const elToFocus = alertFocusEl;
+        alertFocusEl = null;
+        setTimeout(()=>{ elToFocus.focus(); },50);
+      }
+    }
+  }
+
+  document.querySelectorAll('[data-close-modal]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const id = btn.getAttribute('data-close-modal');
+      closeModal(id);
+    });
+  });
+
+  function showToast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    setTimeout(()=>toastEl.classList.remove('show'),2000);
+  }
+
+  function showAlert(msg, focusEl){
+    alertMessage.textContent = msg;
+    alertFocusEl = focusEl || null;
+    openModal('alertModal');
+  }
+
+  function askConfirm(message, title, onYes, options){
+    const opts = options || {};
+    confirmTitle.textContent = title || 'Xác nhận';
+    confirmMessage.textContent = message;
+    confirmCallback = onYes || null;
+
+    confirmNeedCode = !!opts.requireCode;
+
+    if(confirmNeedCode){
+      confirmCode = String(Math.floor(1000 + Math.random()*9000));
+      if(confirmCodeValue) confirmCodeValue.textContent = confirmCode;
+      if(confirmCodeError) confirmCodeError.style.display = 'none';
+      if(confirmCodeBlock) confirmCodeBlock.style.display = 'block';
+    }else{
+      confirmCode = '';
+      if(confirmCodeBlock) confirmCodeBlock.style.display = 'none';
+    }
+
+    openModal('confirmModal');
+
+    if(confirmNeedCode && confirmCodeInput){
+      setTimeout(()=>{ confirmCodeInput.focus(); },80);
+    }
+  }
+
+  btnConfirmYes.addEventListener('click',()=>{
+    if(confirmNeedCode){
+      const val = (confirmCodeInput && confirmCodeInput.value || '').trim();
+      if(val !== confirmCode){
+        if(confirmCodeError) confirmCodeError.style.display = 'block';
+        if(confirmCodeInput) confirmCodeInput.focus();
+        return;
+      }
+    }
+    closeModal('confirmModal');
+    if(typeof confirmCallback === 'function'){
+      confirmCallback();
+    }
+    confirmCallback = null;
+    confirmNeedCode = false;
+    confirmCode = '';
+  });
+
+  if(confirmCodeInput){
+    confirmCodeInput.addEventListener('keydown', e=>{
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        btnConfirmYes.click();
+      }
+    });
+  }
+
+  /* ================== STORAGE ================== */
+
+  function loadFromStorage(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw){ records = []; return; }
+      const parsed = JSON.parse(raw);
+      records = normalizeRecords(parsed);
+    }catch(e){
+      console.error(e);
+      records = [];
+    }
+  }
+
+  function saveToStorage(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+  }
+
+  /* ================== KPI & THỐNG KÊ ================== */
+
+  function calcKpis(source){
+    const out = { count:0,total:0,male:0,female:0 };
+    if(!Array.isArray(source) || !source.length) return out;
+    out.count = source.length;
+    source.forEach(r=>{
+      out.total  += Number(r.tongSo||0);
+      out.male   += Number(r.soDuc||0);
+      out.female += Number(r.soCai||0);
+    });
+    return out;
+  }
+
+  function updateKpis(monthFilter){
+    const all = calcKpis(records);
+    kpiAllCount.textContent      = formatNumber(all.count);
+    kpiAllTotalPigs.textContent  = formatNumber(all.total);
+    kpiAllMale.textContent       = formatNumber(all.male);
+    kpiAllFemale.textContent     = formatNumber(all.female);
+
+    if(records.length){
+      const dateList = records
+        .map(r=>r.ngayTiem)
+        .filter(d=>d && typeof d === 'string');
+      if(dateList.length){
+        let min = dateList[0];
+        for(const d of dateList){
+          if(d && d < min) min = d;
+        }
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm   = String(today.getMonth()+1).padStart(2,'0');
+        const dd   = String(today.getDate()).padStart(2,'0');
+        const todayStr = `${yyyy}-${mm}-${dd}`;
+        kpiAllRange.textContent =
+          `( Từ ngày ${formatDate(min)} đến ${formatDate(todayStr)} )`;
+      }else{
+        kpiAllRange.textContent = '( Chưa có dữ liệu ngày tiêm )';
+      }
+    }else{
+      kpiAllRange.textContent = '( Chưa có dữ liệu )';
+    }
+
+    let monthSource = records;
+    if(monthFilter){
+      monthSource = records.filter(r => (r.ngayTiem || '').startsWith(monthFilter));
+    }
+    const m = calcKpis(monthSource);
+    kpiMonthCount.textContent     = formatNumber(m.count);
+    kpiMonthTotalPigs.textContent = formatNumber(m.total);
+    kpiMonthMale.textContent      = formatNumber(m.male);
+    kpiMonthFemale.textContent    = formatNumber(m.female);
+
+    if(monthFilter){
+      const parts = monthFilter.split('-');
+      if(parts.length===2){
+        const yyyy = parts[0];
+        const mm   = parts[1];
+        kpiMonthLabel.textContent = `${mm}/${yyyy}`;
+      }else{
+        kpiMonthLabel.textContent = '(không hợp lệ)';
+      }
+    }else{
+      kpiMonthLabel.textContent = '(toàn bộ dữ liệu)';
+    }
+  }
+
+  /* ================== TÌM KIẾM ================== */
+
+  function applyFilter(){
+    const qRaw = (searchInput.value||'').trim();
+    const q = normalizeSearch(qRaw);
+    const cards = cardsEl.querySelectorAll('.card');
+    let visibleCount = 0;
+
+    cards.forEach(card=>{
+      const text = card.getAttribute('data-search')||'';
+      const match = (!q || text.includes(q));
+      card.style.display = match ? '' : 'none';
+      if(match) visibleCount++;
+    });
+
+    if(!records.length){
+      if(searchEmptyMsgEl) searchEmptyMsgEl.style.display = 'none';
+      return;
+    }
+
+    if(q && cards.length > 0 && visibleCount === 0){
+      if(searchEmptyMsgEl) searchEmptyMsgEl.style.display = 'block';
+    }else{
+      if(searchEmptyMsgEl) searchEmptyMsgEl.style.display = 'none';
+    }
+  }
+
+  /* ================== NHẮC NHỞ ================== */
+
+  function getOverdueRecords(){
+    return records
+      .filter(r=>{
+        if(!r.ngayTiem || r.ngayXuat) return false;
+        const diff = daysFromTiemToToday(r.ngayTiem);
+        return diff >= OVERDUE_DAYS;
+      })
+      .sort((a,b)=> (a.ngayTiem || '').localeCompare(b.ngayTiem || ''));
+  }
+
+  function updateReminderBadge(){
+    if(!reminderBadge || !btnReminder) return;
+    const list = getOverdueRecords();
+    const count = list.length;
+
+    if(count > 0){
+      reminderBadge.style.display = 'flex';
+      reminderBadge.textContent = count > 99 ? '99+' : String(count);
+      btnReminder.classList.add('has-reminder');
+    }else{
+      reminderBadge.style.display = 'flex';
+      reminderBadge.textContent = '0';
+      btnReminder.classList.remove('has-reminder');
+    }
+  }
+
+  function renderReminderList(){
+    if(!reminderListEl || !reminderEmptyMsgEl) return;
+    const arr = getOverdueRecords();
+
+    if(!arr.length){
+      reminderListEl.innerHTML = '';
+      reminderEmptyMsgEl.style.display = 'block';
+      return;
+    }
+
+    reminderEmptyMsgEl.style.display = 'none';
+
+    const html = arr.map(r=>{
+      const diff = daysFromTiemToToday(r.ngayTiem);
+      const trai = r.traiNhan || '(Không tên trại)';
+      const vac  = r.tenVaccine || '?';
+      const ngay = formatDate(r.ngayTiem);
+      const tong = formatNumber(r.tongSo || 0);
+      return `
+        <div class="reminder-item">
+          <div class="reminder-item-header">
+            <span>${trai}</span>
+            <span>${vac}</span>
+          </div>
+          <div class="reminder-item-body">
+            Đã tiêm ngày <strong>${ngay}</strong>, tổng <strong>${tong} con</strong>.
+          </div>
+          <div class="reminder-item-meta">
+            Cách đây: <strong>${diff} ngày</strong> (chưa cập nhật ngày xuất)
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    reminderListEl.innerHTML = html;
+  }
+
+  function openReminderModal(){
+    renderReminderList();
+    openModal('reminderModal');
+  }
+
+  function maybeAutoReminder(force){
+    updateReminderBadge();
+
+    const overdue = getOverdueRecords();
+    if(!overdue.length) return;
+
+    const now = Date.now();
+    if(!force){
+      const last = Number(localStorage.getItem(REMINDER_LAST_KEY) || 0);
+      if(now - last < 6*60*60*1000) return;
+    }
+    localStorage.setItem(REMINDER_LAST_KEY, String(now));
+    openReminderModal();
+  }
+
+  /* ================== RENDER LIST ================== */
+
+  function renderRecords(){
+    cardsEl.innerHTML = '';
+    if(!records.length){
+      emptyMsgEl.style.display = 'block';
+      if(searchEmptyMsgEl) searchEmptyMsgEl.style.display = 'none';
+      updateKpis(statsMonthInput ? statsMonthInput.value : '');
+      updateReminderBadge();
+      return;
+    }
+    emptyMsgEl.style.display = 'none';
+
+    const sorted = [...records].sort((a,b)=>{
+      const da = new Date(a.ngayTiem||a.id);
+      const db = new Date(b.ngayTiem||b.id);
+      return db - da;
+    });
+
+    sorted.forEach(rec=>{
+      const idx = records.findIndex(r=>r.id===rec.id);
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const rawSearchText = [
+        rec.traiNhan||'',
+        rec.ghiChu||'',
+        rec.tenVaccine||'',
+        rec.ngayTiem||'',
+        rec.ngayXuat||''
+      ].join(' ');
+      const searchText = normalizeSearch(rawSearchText);
+      card.setAttribute('data-search', searchText);
+
+      const diffDays = rec.ngayTiem ? daysFromTiemToToday(rec.ngayTiem) : 0;
+      if(diffDays >= OVERDUE_DAYS && !rec.ngayXuat){
+        card.classList.add('card-overdue');
+      }
+
+      const header = document.createElement('div');
+      header.className = 'card-header';
+
+      const left = document.createElement('div');
+      const title = document.createElement('div');
+      title.className = 'card-title';
+      title.textContent = rec.traiNhan || '(Không tên trại)';
+
+      const subtitle = document.createElement('div');
+      subtitle.className = 'card-subtitle';
+      subtitle.textContent = `Vaccine: ${rec.tenVaccine || '?'}`;
+
+      left.appendChild(title);
+      left.appendChild(subtitle);
+
+      const right = document.createElement('div');
+      const badge = document.createElement('div');
+      badge.className = 'badge';
+      badge.textContent = `Tổng: ${formatNumber(rec.tongSo||0)} con`;
+      right.appendChild(badge);
+
+      header.appendChild(left);
+      header.appendChild(right);
+      card.appendChild(header);
+
+      const sepTop = document.createElement('div');
+      sepTop.className = 'card-separator';
+      card.appendChild(sepTop);
+
+      const grid = document.createElement('div');
+      grid.className = 'grid';
+
+      function addField(label, value, key){
+        const wrap = document.createElement('div');
+        wrap.className = 'field';
+        if(key === 'ngayTiem') wrap.classList.add('field-highlight','field-ngaytiem');
+        if(key === 'ngayXuat') wrap.classList.add('field-highlight','field-ngayxuat');
+        if(key === 'duc')      wrap.classList.add('field-highlight','field-duc');
+        if(key === 'cai')      wrap.classList.add('field-highlight','field-cai');
+
+        const l = document.createElement('div');
+        l.className = 'field-label';
+        l.textContent = label;
+
+        const v = document.createElement('div');
+        v.className = 'field-value';
+        v.textContent = value || '—';
+
+        wrap.appendChild(l);
+        wrap.appendChild(v);
+        grid.appendChild(wrap);
+      }
+
+      addField('Ngày tiêm', formatDate(rec.ngayTiem), 'ngayTiem');
+      addField('Ngày xuất', formatDate(rec.ngayXuat), 'ngayXuat');
+      addField('Đực', `${formatNumber(rec.soDuc||0)} con`, 'duc');
+      addField('Cái', `${formatNumber(rec.soCai||0)} con`, 'cai');
+
+      card.appendChild(grid);
+
+      if(rec.ghiChu){
+        const notes = document.createElement('div');
+        notes.className = 'notes';
+        notes.textContent = rec.ghiChu;
+        card.appendChild(notes);
+      }
+
+      const sepBottom = document.createElement('div');
+      sepBottom.className = 'card-separator';
+      card.appendChild(sepBottom);
+
+      const actions = document.createElement('div');
+      actions.className = 'card-actions';
+
+      const btnEdit = document.createElement('button');
+      btnEdit.className = 'btn-small';
+      btnEdit.textContent = 'Sửa';
+      btnEdit.addEventListener('click',()=>openEdit(idx));
+
+      const btnDelete = document.createElement('button');
+      btnDelete.className = 'btn-small danger';
+      btnDelete.textContent = 'Xóa';
+      btnDelete.addEventListener('click',()=>deleteOne(idx));
+
+      actions.appendChild(btnEdit);
+      actions.appendChild(btnDelete);
+      card.appendChild(actions);
+
+      cardsEl.appendChild(card);
+    });
+
+    updateKpis(statsMonthInput ? statsMonthInput.value : '');
+    applyFilter();
+    updateReminderBadge();
+  }
+
+  /* ================== FORM NHẬP & SỬA ================== */
+
+  function clearForm(){
+    entryForm.reset();
+    editingIndex = null;
+  }
+
+  function openAdd(){
+    clearForm();
+    entryModalTitle.textContent = 'Thêm phiếu tiêm';
+    if(!ngayTiemEl.value){
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth()+1).padStart(2,'0');
+      const dd = String(today.getDate()).padStart(2,'0');
+      ngayTiemEl.value = `${yyyy}-${mm}-${dd}`;
+    }
+    openModal('entryModal');
+  }
+
+  function openEdit(index){
+    const rec = records[index];
+    if(!rec) return;
+    editingIndex = index;
+    entryModalTitle.textContent = 'Sửa phiếu tiêm';
+
+    ngayTiemEl.value   = rec.ngayTiem || '';
+    tenVaccineEl.value = rec.tenVaccine || '';
+    ngayXuatEl.value   = rec.ngayXuat || '';
+    traiNhanEl.value   = rec.traiNhan || '';
+    tongSoEl.value     = rec.tongSo || '';
+    soDucEl.value      = rec.soDuc || '';
+    soCaiEl.value      = rec.soCai || '';
+    ghiChuEl.value     = rec.ghiChu || '';
+
+    openModal('entryModal');
+  }
+
+  function saveRecord(data){
+    if(editingIndex===null){
+      const rec = {
+        id: Date.now() + Math.random(),
+        ...data
+      };
+      records.push(rec);
+      showToast('Đã thêm phiếu tiêm.');
+    }else{
+      records[editingIndex] = {
+        ...records[editingIndex],
+        ...data
+      };
+      showToast('Đã cập nhật phiếu tiêm.');
+    }
+    saveToStorage();
+    rebuildSuggestions();
+    vaccineSuggestionsRef.refresh();
+    farmSuggestionsRef.refresh();
+    closeModal('entryModal');
+    renderRecords();
+    editingIndex = null;
+  }
+
+  function deleteOne(index){
+    const rec = records[index];
+    if(!rec) return;
+    askConfirm(
+      `Xóa phiếu tiêm của trại "${rec.traiNhan||''}" (ngày tiêm ${formatDate(rec.ngayTiem)||'?'} )?`,
+      'Xóa phiếu tiêm',
+      ()=>{
+        records.splice(index,1);
+        saveToStorage();
+        rebuildSuggestions();
+        vaccineSuggestionsRef.refresh();
+        farmSuggestionsRef.refresh();
+        renderRecords();
+        showAlert('Đã xóa phiếu.');
+      },
+      { requireCode:true }
+    );
+  }
+
+  btnSaveEntry.addEventListener('click',()=>{
+    const ngayTiem   = ngayTiemEl.value.trim();
+    const tenVaccine = tenVaccineEl.value.trim();
+    const ngayXuat   = ngayXuatEl.value.trim();
+    const traiNhan   = traiNhanEl.value.trim();
+    const tongSoRaw  = tongSoEl.value.trim();
+    const soDucRaw   = soDucEl.value.trim();
+    const soCaiRaw   = soCaiEl.value.trim();
+    const ghiChu     = ghiChuEl.value.trim();
+
+    if(!ngayTiem){
+      showAlert('Vui lòng chọn ngày tiêm vaccine.', ngayTiemEl);
+      return;
+    }
+
+    if(!tenVaccine){
+      showAlert('Vui lòng nhập tên vaccine.', tenVaccineEl);
+      return;
+    }
+
+    if(!traiNhan){
+      showAlert('Vui lòng nhập tên trại nhận.', traiNhanEl);
+      return;
+    }
+
+    const tongSo = Number(tongSoRaw);
+    if(!tongSoRaw || !Number.isFinite(tongSo) || tongSo <= 0){
+      showAlert('Vui lòng nhập Tổng số lượng con > 0.', tongSoEl);
+      return;
+    }
+
+    const soDuc = Number(soDucRaw);
+    if(!soDucRaw || !Number.isFinite(soDuc)){
+      showAlert('Vui lòng nhập Số con đực.', soDucEl);
+      return;
+    }
+
+    const soCai = Number(soCaiRaw);
+    if(!soCaiRaw || !Number.isFinite(soCai)){
+      showAlert('Vui lòng nhập Số con cái.', soCaiEl);
+      return;
+    }
+
+    if(soDuc < 0 || soCai < 0){
+      showAlert('Số con đực/cái không được nhỏ hơn 0.', soDuc < 0 ? soDucEl : soCaiEl);
+      return;
+    }
+
+    if(soDuc + soCai !== tongSo){
+      showAlert('Số con đực + số con cái phải đúng bằng Tổng số lượng con.', soCaiEl);
+      return;
+    }
+
+    if(ngayXuat){
+      const dTiem = parseDateYMD(ngayTiem);
+      const dXuat = parseDateYMD(ngayXuat);
+      if(dTiem && dXuat && dXuat < dTiem){
+        showAlert('Ngày xuất heo không được trước ngày tiêm vaccine.', ngayXuatEl);
+        return;
+      }
+    }
+
+    saveRecord({ngayTiem,tenVaccine,ngayXuat,traiNhan,tongSo,soDuc,soCai,ghiChu});
+  });
+
+  /* ================== FAB MENU ================== */
+
+  function toggleFab(open){
+    const willOpen = (open === undefined)
+      ? !fab.classList.contains('open')
+      : open;
+    fab.classList.toggle('open', willOpen);
+    fabMain.textContent = willOpen ? '×' : '＋';
+    fabMain.setAttribute('aria-label', willOpen ? 'Đóng menu' : 'Mở menu');
+  }
+
+  function closeFabMenu(){
+    toggleFab(false);
+  }
+
+  fabMain.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    toggleFab();
+  });
+
+  if(fabBackdrop){
+    fabBackdrop.addEventListener('click', closeFabMenu);
+  }
+
+  document.addEventListener('click', (e)=>{
+    if(!fab.contains(e.target)){
+      closeFabMenu();
+    }
+  });
+
+  document.getElementById('btnAdd').addEventListener('click',()=>{
+    closeFabMenu();
+    openAdd();
+  });
+
+  btnStats.addEventListener('click',()=>{
+    closeFabMenu();
+    if(statsMonthInput && !statsMonthInput.value){
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth()+1).padStart(2,'0');
+      statsMonthInput.value = `${yyyy}-${mm}`;
+    }
+    openModal('statsModal');
+    updateKpis(statsMonthInput && statsMonthInput.value ? statsMonthInput.value : '');
+  });
+
+  if(statsMonthInput){
+    statsMonthInput.addEventListener('change', ()=>{
+      updateKpis(statsMonthInput.value || '');
+    });
+  }
+
+  if(btnReminder){
+    btnReminder.addEventListener('click', ()=>{
+      closeFabMenu();
+      localStorage.setItem(REMINDER_LAST_KEY, String(Date.now()));
+      openReminderModal();
+    });
+  }
+
+  /* ================== CHECK UPDATE / PHIÊN BẢN ================== */
+
+  function showUpdateModal(info, latestFromFetch, current){
+    const computedLatest =
+      latestFromFetch ||
+      (info && (
+        (info.latest && info.latest.version) ||
+        info.version ||
+        info.appVersion ||
+        info.APP_VERSION ||
+        info.APP_VERSION_STR
+      )) ||
+      '—';
+
+    const currentVer = current || '—';
+
+    if(currentVersionText) currentVersionText.textContent = currentVer;
+    if(latestVersionText)  latestVersionText.textContent  = computedLatest;
+
+    if(updateDetailsEl){
+      let html = '';
+
+      if(currentVer !== '—' && computedLatest !== '—'){
+        if(currentVer === computedLatest){
+          html += `<p><strong>Bạn đang dùng phiên bản mới nhất (${esc(currentVer)}).</strong></p>`;
+        }else{
+          html += `<p><strong>Đã có bản mới: ${esc(computedLatest)} (bản hiện tại: ${esc(currentVer)})</strong></p>`;
+        }
+      }
+
+      const versions = Array.isArray(info && info.versions) ? info.versions.slice() : [];
+
+      if(versions.length){
+        html += `<div class="update-version-list">`;
+        versions.forEach(v=>{
+          const vCode   = v.version || '';
+          const vDate   = v.release_date || v.releaseDate || '';
+          const summary = v.summary || '';
+          const isLatest = vCode && (vCode === computedLatest);
+
+          html += `
+            <div class="update-version${isLatest ? ' latest' : ''}">
+              <div class="update-version-title">
+                <span>${esc(vCode)}</span>
+                <span class="date">${esc(vDate)}</span>
+                ${isLatest ? '<span class="update-badge">Mới nhất</span>' : ''}
+              </div>
+              ${summary ? `<div style="font-size:13px;margin-top:2px;">${esc(summary)}</div>` : ''}
+              ${
+                Array.isArray(v.changelog) && v.changelog.length
+                  ? '<ul style="margin:4px 0 0 16px;font-size:13px;">'
+                    + v.changelog.map(t=>`<li>${esc(t)}</li>`).join('')
+                    + '</ul>'
+                  : ''
+              }
+            </div>
+          `;
+        });
+        html += `</div>`;
+      }else{
+        const latestObj = info && info.latest;
+        if(latestObj){
+          const v = latestObj;
+          html += `
+            <div class="update-version latest">
+              <div class="update-version-title">
+                <span>${esc(v.version || computedLatest)}</span>
+                <span class="date">${esc(v.release_date || v.releaseDate || '')}</span>
+                <span class="update-badge">Mới nhất</span>
+              </div>
+              ${v.summary ? `<div style="font-size:13px;margin-top:2px;">${esc(v.summary)}</div>` : ''}
+              ${
+                Array.isArray(v.changelog) && v.changelog.length
+                  ? '<ul style="margin:4px 0 0 16px;font-size:13px;">'
+                    + v.changelog.map(t=>`<li>${esc(t)}</li>`).join('')
+                    + '</ul>'
+                  : ''
+              }
+            </div>
+          `;
+        }else{
+          html += '<p>Đã có bản cập nhật mới. Bạn có thể tải lại ứng dụng để áp dụng thay đổi.</p>';
+        }
+      }
+
+      updateDetailsEl.innerHTML = html;
+    }
+
+    openModal('updateModal');
+  }
+
+  if(btnReloadApp){
+    btnReloadApp.addEventListener('click', ()=>{
+      closeModal('updateModal');
+      try{
+        location.reload();
+      }catch(_){}
+    });
+  }
+
+  function checkForUpdate(){
+    const currentVersion = window.__APP_VERSION__ || 'v1.0.0';
+    showToast('Đang kiểm tra cập nhật...');
+    fetch('/swine-vaccination-tracker/version.json?ts=' + Date.now(), {
+      cache: 'no-store'
+    })
+    .then(res=>{
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(info=>{
+      if(!info){
+        showAlert('Không đọc được thông tin phiên bản mới.');
+        return;
+      }
+
+      const latest =
+        (info.latest && info.latest.version) ||
+        info.version ||
+        info.appVersion ||
+        info.APP_VERSION ||
+        info.APP_VERSION_STR;
+
+      if(!latest){
+        showAlert('Không đọc được thông tin phiên bản mới.');
+        return;
+      }
+
+      if(latest === currentVersion){
+        showToast('Bạn đang dùng phiên bản mới nhất (' + currentVersion + ').');
+        showUpdateModal(info, latest, currentVersion);
+      }else{
+        showToast('Đã có bản mới ' + latest + '.');
+        showUpdateModal(info, latest, currentVersion);
+      }
+    })
+    .catch(err=>{
+      console.error('[Update] Lỗi kiểm tra cập nhật:', err);
+      showAlert('Không kiểm tra được cập nhật. Vui lòng kiểm tra kết nối mạng.');
+    });
+  }
+
+  if(btnCheckUpdate){
+    if(isPwaInstalled()){
+      btnCheckUpdate.style.display = 'flex';
+    }
+    btnCheckUpdate.addEventListener('click', ()=>{
+      closeFabMenu();
+      checkForUpdate();
+    });
+  }
+
+  /* ================== EXPORT / BACKUP / RESTORE ================== */
+
+  document.getElementById('btnExport').addEventListener('click',()=>{
+    closeFabMenu();
+    if(!records.length){
+      showAlert('Không có dữ liệu để xuất.');
+      return;
+    }
+
+    const header = [
+      'Ngày tiêm',
+      'Tên vaccine',
+      'Ngày xuất heo',
+      'Tên trại nhận',
+      'Tổng số con',
+      'Số con đực',
+      'Số con cái',
+      'Ghi chú'
+    ];
+
+    const data = [header];
+
+    records.forEach(r=>{
+      data.push([
+        r.ngayTiem || '',
+        r.tenVaccine || '',
+        r.ngayXuat || '',
+        r.traiNhan || '',
+        Number(r.tongSo || 0),
+        Number(r.soDuc  || 0),
+        Number(r.soCai  || 0),
+        (r.ghiChu || '').replace(/\r?\n/g,' ')
+      ]);
+    });
+
+    const totalTong = records.reduce((s,r)=>s+Number(r.tongSo||0),0);
+    const totalDuc  = records.reduce((s,r)=>s+Number(r.soDuc ||0),0);
+    const totalCai  = records.reduce((s,r)=>s+Number(r.soCai ||0),0);
+    data.push([
+      'Tổng','','','',
+      totalTong,
+      totalDuc,
+      totalCai,
+      ''
+    ]);
+
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [
+      { wch: 12 },
+      { wch: 16 },
+      { wch: 14 },
+      { wch: 18 },
+      { wch: 12 },
+      { wch: 10 },
+      { wch: 10 },
+      { wch: 30 }
+    ];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Swine_vaccination_tracker');
+
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth()+1).padStart(2,'0');
+    const dd = String(today.getDate()).padStart(2,'0');
+    const fileName = `swine-vaccination-tracker_${yyyy}-${mm}-${dd}.xlsx`;
+
+    XLSX.writeFile(wb, fileName);
+    showAlert('Đã xuất file Excel (.xlsx).');
+  });
+
+  document.getElementById('btnBackup').addEventListener('click',()=>{
+    closeFabMenu();
+    if(!records.length){
+      showAlert('Không có dữ liệu để sao lưu.');
+      return;
+    }
+    const json = JSON.stringify(records, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = 'swine-vaccination-tracker-backup.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showAlert('Đã tải file sao lưu JSON.');
+  });
+
+  document.getElementById('btnRestore').addEventListener('click',()=>{
+    closeFabMenu();
+    if(!window.FileReader){
+      showAlert('Trình duyệt không hỗ trợ đọc file. Vui lòng dùng trình duyệt mới hơn.');
+      return;
+    }
+    askConfirm(
+      'Khôi phục từ file JSON sẽ THAY THẾ toàn bộ dữ liệu hiện tại. Tiếp tục?',
+      'Khôi phục dữ liệu',
+      ()=>{
+        fileRestore.click();
+      }
+    );
+  });
+
+  fileRestore.addEventListener('change',(e)=>{
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+    reader.onload = ev=>{
+      try{
+        const txt = String(ev.target.result || '');
+        const parsed = JSON.parse(txt);
+
+        if(!Array.isArray(parsed)){
+          showAlert('File JSON không đúng định dạng (không phải mảng dữ liệu).');
+          return;
+        }
+
+        const normalized = normalizeRecords(parsed);
+
+        records = normalized;
+        saveToStorage();
+        rebuildSuggestions();
+        vaccineSuggestionsRef.refresh();
+        farmSuggestionsRef.refresh();
+        renderRecords();
+        showAlert('Đã khôi phục dữ liệu từ file JSON.');
+      }catch(err){
+        console.error(err);
+        showAlert('Không đọc được file JSON hoặc nội dung không hợp lệ.');
+      }finally{
+        fileRestore.value = '';
+      }
+    };
+    reader.onerror = ()=>{
+      showAlert('Không đọc được file JSON.');
+      fileRestore.value = '';
+    };
+    reader.readAsText(file,'utf-8');
+  });
+
+  document.getElementById('btnDeleteAll').addEventListener('click',()=>{
+    closeFabMenu();
+    if(!records.length){
+      showAlert('Không có dữ liệu để xóa.');
+      return;
+    }
+    askConfirm(
+      'Xóa TẤT CẢ phiếu tiêm vaccine? Hành động này không thể hoàn tác.',
+      'Xóa tất cả',
+      ()=>{
+        records = [];
+        saveToStorage();
+        rebuildSuggestions();
+        vaccineSuggestionsRef.refresh();
+        farmSuggestionsRef.refresh();
+        renderRecords();
+        showAlert('Đã xóa toàn bộ dữ liệu.');
+      },
+      { requireCode:true }
+    );
+  });
+
+  /* ================== TÌM KIẾM & GỢI Ý ================== */
+
+  searchInput.addEventListener('input',applyFilter);
+  btnClearSearch.addEventListener('click',()=>{
+    searchInput.value = '';
+    applyFilter();
+  });
+
+  const vaccineSuggestionsRef = buildSuggest(
+    tenVaccineEl,
+    tenVaccineSuggestPanel,
+    ()=>vaccineSuggestions,
+    { placeholderWhenEmpty:'Chưa có vaccine trong lịch sử' }
+  );
+  const farmSuggestionsRef = buildSuggest(
+    traiNhanEl,
+    traiNhanSuggestPanel,
+    ()=>farmSuggestions,
+    { placeholderWhenEmpty:'Chưa có trại trong lịch sử' }
+  );
+
+  /* ================== IN / PDF ================== */
+
+  function formatDateInputFromDate(d){
+    return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+  }
+
+  function fmtNowFull(){
+    const d = new Date();
+    return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())} ${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()}`;
+  }
+
+  function buildPrintHTML(data, rangeLabel){
+    const nowText = fmtNowFull();
+
+    let totalCount = 0;
+    let totalPigs  = 0;
+    let totalMale  = 0;
+    let totalFemale= 0;
+
+    data.forEach(r=>{
+      totalCount++;
+      totalPigs   += Number(r.tongSo || 0);
+      totalMale   += Number(r.soDuc  || 0);
+      totalFemale += Number(r.soCai  || 0);
+    });
+
+    const headerRow = `
+      <tr>
+        <th>STT</th>
+        <th>Ngày tiêm</th>
+        <th>Vaccine</th>
+        <th>Ngày xuất</th>
+        <th>Trại nhận</th>
+        <th>Tổng số</th>
+        <th>Đực</th>
+        <th>Cái</th>
+        <th>Ghi chú</th>
+      </tr>`;
+
+    const bodyRows = data.map((r,idx)=>`
+      <tr>
+        <td class="center">${idx+1}</td>
+        <td>${esc(formatDate(r.ngayTiem))}</td>
+        <td>${esc(r.tenVaccine || '')}</td>
+        <td>${esc(formatDate(r.ngayXuat))}</td>
+        <td>${esc(r.traiNhan || '')}</td>
+        <td class="center">${esc(formatNumber(r.tongSo || 0))}</td>
+        <td class="center">${esc(formatNumber(r.soDuc  || 0))}</td>
+        <td class="center">${esc(formatNumber(r.soCai  || 0))}</td>
+        <td>${esc((r.ghiChu || '').replace(/\r?\n/g,' '))}</td>
+      </tr>
+    `).join('');
+
+    const kpiBlock = `
+      <div class="kpi-print">
+        <div class="item total">
+          <h3>Lượt tiêm</h3>
+          <p>${esc(formatNumber(totalCount))}</p>
+        </div>
+        <div class="item">
+          <h3>Tổng số heo</h3>
+          <p>${esc(formatNumber(totalPigs))}</p>
+        </div>
+        <div class="item">
+          <h3>Heo đực</h3>
+          <p>${esc(formatNumber(totalMale))}</p>
+        </div>
+        <div class="item">
+          <h3>Heo cái</h3>
+          <p>${esc(formatNumber(totalFemale))}</p>
+        </div>
+      </div>`;
+
+    return `<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>In - Swine Vaccination Tracker</title>
+<style>
+  @page { size: A4; margin: 12mm; }
+  *{ box-sizing:border-box; }
+  body{
+    font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    color:#0f172a;
+  }
+  h1.title{
+    text-align:center;
+    font-size:22px;
+    font-weight:800;
+    margin:0 0 6px 0;
+    color:#16a34a;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+  h2.subtitle{
+    text-align:center;
+    font-size:14px;
+    margin:4px 0 4px;
+    color:#374151;
+    font-weight:600;
+  }
+  .kpi-print{
+    margin-top:4px;
+    margin-bottom:8px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+    font-size:13px;
+  }
+  .kpi-print .item{
+    border:1px solid #d1d5db;
+    border-radius:8px;
+    padding:6px 8px;
+    background:#f9fafb;
+  }
+  .kpi-print .item h3{
+    margin:0;
+    font-size:11px;
+    text-align:center;
+    color:#6b7280;
+  }
+  .kpi-print .item p{
+    margin:3px 0 0;
+    font-size:13px;
+    text-align:center;
+    font-weight:700;
+  }
+  .kpi-print .item.total p{color:#15803d;}
+  p.meta{
+    text-align:center;
+    font-size:12px;
+    color:#4b5563;
+    margin:6px 0 0 0;
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:8px;
+    page-break-inside:auto;
+  }
+  th,td{
+    border:1px solid #d1d5db;
+    padding:6px 8px;
+    font-size:13px;
+    vertical-align:top;
+  }
+  th{
+    background:#ecfdf3;
+    font-weight:700;
+    text-align:left;
+  }
+  td.center{text-align:center;}
+  tbody tr:nth-child(odd){ background:#f9fafb; }
+  tr{ page-break-inside:avoid; page-break-after:auto; }
+</style>
+</head>
+<body onload="setTimeout(function(){window.print();},40)">
+  <h1 class="title">${esc(APP_NAME_EN)}</h1>
+  ${kpiBlock}
+  <table>
+    <thead>${headerRow}</thead>
+    <tbody>${bodyRows}</tbody>
+  </table>
+  <p class="meta">
+    ${rangeLabel ? esc(rangeLabel) : ''}
+  </p>
+  <p class="meta">
+    File được xuất lúc ${esc(nowText)} bởi hệ thống ${esc(APP_NAME_EN)} (${esc(APP_NAME_VI)})
+  </p>
+</body>
+</html>`;
+  }
+
+  function openPrintView(printAllMode){
+    if(!records.length){
+      showAlert('Không có dữ liệu để in.');
+      return;
+    }
+
+    let list = [...records];
+    list.sort((a,b)=>{
+      const da = parseDateYMD(a.ngayTiem) || new Date(0);
+      const db = parseDateYMD(b.ngayTiem) || new Date(0);
+      return db - da;
+    });
+
+    if(!list.length){
+      showAlert('Không có bản ghi nào để in.');
+      return;
+    }
+
+    let rangeLabel = '';
+
+    if(!printAllMode){
+      const fromStr = (printFromEl && printFromEl.value || '').trim();
+      const toStr   = (printToEl   && printToEl.value   || '').trim();
+
+      let fromDate = null;
+      let toDate   = null;
+
+      if(fromStr){
+        fromDate = parseDateYMD(fromStr);
+      }
+      if(toStr){
+        const td = parseDateYMD(toStr);
+        if(td){
+          toDate = new Date(td.getFullYear(), td.getMonth(), td.getDate(), 23,59,59,999);
+        }
+      }
+
+      if(fromDate || toDate){
+        list = list.filter(r=>{
+          const d = parseDateYMD(r.ngayTiem);
+          if(!d) return false;
+          if(fromDate && d < fromDate) return false;
+          if(toDate   && d > toDate)   return false;
+          return true;
+        });
+
+        if(!list.length){
+          showAlert('Không có bản ghi nào trong khoảng ngày đã chọn để in.');
+          return;
+        }
+
+        const fmtVN = s => s ? formatDate(s) : '...';
+
+        if(fromStr && toStr){
+          rangeLabel = `Danh sách được trích lọc từ ngày ${fmtVN(fromStr)} đến ngày ${fmtVN(toStr)}`;
+        }else if(fromStr && !toStr){
+          rangeLabel = `Danh sách được trích lọc từ ngày ${fmtVN(fromStr)} trở đi`;
+        }else if(!fromStr && toStr){
+          rangeLabel = `Danh sách được trích lọc đến hết ngày ${fmtVN(toStr)}`;
+        }
+      }else{
+        const earliest = parseDateYMD(list[list.length - 1].ngayTiem) || new Date();
+        const today    = new Date();
+        const fmtVN = d => `${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()}`;
+        rangeLabel = `Danh sách được trích lọc từ ngày ${fmtVN(earliest)} đến ngày ${fmtVN(today)}`;
+      }
+    }else{
+      const earliest = parseDateYMD(list[list.length - 1].ngayTiem) || new Date();
+      const today    = new Date();
+      const fmtVN = d => `${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()}`;
+      rangeLabel = `Danh sách được trích lọc từ ngày ${fmtVN(earliest)} đến ngày ${fmtVN(today)}`;
+    }
+
+    if(!list.length){
+      showAlert('Không có bản ghi nào để in.');
+      return;
+    }
+
+    closeModal('printModal');
+
+    const html = buildPrintHTML(list, rangeLabel);
+
+    let w = null;
+    try{
+      w = window.open('', '_blank');
+    }catch(_){}
+
+    if(w && w.document){
+      w.document.open();
+      w.document.write(html);
+      w.document.close();
+      try{ w.focus(); }catch(_){}
+    }else{
+      const iframe = document.createElement('iframe');
+      iframe.style.position = 'fixed';
+      iframe.style.inset = '0';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.style.opacity = '0';
+      document.body.appendChild(iframe);
+      const doc = iframe.contentWindow.document;
+      doc.open(); doc.write(html); doc.close();
+      iframe.onload = ()=>{
+        try{
+          iframe.contentWindow.focus();
+          iframe.contentWindow.print();
+        }catch(_){}
+        setTimeout(()=>iframe.remove(),500);
+      };
+    }
+  }
+
+  function openPrintModal(){
+    closeFabMenu();
+
+    const today = new Date();
+    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+    const monthEnd   = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+    if(printFromEl && !printFromEl.value){
+      printFromEl.value = formatDateInputFromDate(monthStart);
+    }
+    if(printToEl && !printToEl.value){
+      printToEl.value   = formatDateInputFromDate(monthEnd);
+    }
+
+    openModal('printModal');
+  }
+
+  if(btnPrint){
+    btnPrint.addEventListener('click', openPrintModal);
+  }
+  if(btnPrintRange){
+    btnPrintRange.addEventListener('click', ()=>openPrintView(false));
+  }
+  if(btnPrintAll){
+    btnPrintAll.addEventListener('click', ()=>openPrintView(true));
+  }
+
+  /* ================== PWA INSTALL UI ================== */
+
+  window.addEventListener('beforeinstallprompt', (e)=>{
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    if(installWrap){
+      installWrap.style.display = 'flex';
+    }
+    console.log('[PWA] beforeinstallprompt fired');
+  });
+
+  if(btnInstallPrompt){
+    btnInstallPrompt.addEventListener('click', ()=>{
+      openModal('installModal');
+    });
+  }
+
+  if(btnInstallNow){
+    btnInstallNow.addEventListener('click', async ()=>{
+      if(!deferredInstallPrompt){
+        closeModal('installModal');
+        showAlert('Hiện thiết bị chưa sẵn sàng để cài đặt như ứng dụng.');
+        return;
+      }
+      try{
+        deferredInstallPrompt.prompt();
+        const choice = await deferredInstallPrompt.userChoice;
+        if(choice && choice.outcome === 'accepted'){
+          showToast('Cảm ơn bạn! Ứng dụng sẽ được cài đặt vào thiết bị.');
+        }else{
+          showAlert('Bạn đã hủy cài đặt ứng dụng.');
+        }
+      }catch(err){
+        console.error('[PWA] Lỗi khi prompt cài đặt:', err);
+        showAlert('Không thể mở hộp thoại cài đặt. Bạn có thể thử lại sau.');
+      }finally{
+        deferredInstallPrompt = null;
+        if(installWrap){
+          installWrap.style.display = 'none';
+        }
+        closeModal('installModal');
+      }
+    });
+  }
+
+  window.addEventListener('appinstalled', ()=>{
+    console.log('[PWA] Ứng dụng đã được cài đặt');
+    deferredInstallPrompt = null;
+    if(installWrap){
+      installWrap.style.display = 'none';
+    }
+    try{
+      localStorage.setItem(INSTALLED_FLAG_KEY,'1');
+    }catch(_){}
+    if(btnCheckUpdate){
+      btnCheckUpdate.style.display = 'flex';
+    }
+    showAlert('Ứng dụng đã được cài đặt trên thiết bị.');
+  });
+
+  /* ================== SHORTCUT TỪ ICON PWA ================== */
+  function handleShortcutAction(){
+    try{
+      const url = new URL(window.location.href);
+      const action = url.searchParams.get('action');
+      if(!action) return;
+
+      console.log('[Shortcut] action =', action);
+
+      switch (action) {
+        case 'new':
+          openAdd();
+          break;
+
+        case 'stats':
+          if (statsMonthInput && !statsMonthInput.value) {
+            const today = new Date();
+            const yyyy  = today.getFullYear();
+            const mm    = String(today.getMonth() + 1).padStart(2, '0');
+            statsMonthInput.value = `${yyyy}-${mm}`;
+          }
+          openModal('statsModal');
+          updateKpis(statsMonthInput ? statsMonthInput.value : '');
+          break;
+
+        case 'backup':
+          closeFabMenu();
+          {
+            const backupBtn = document.getElementById('btnBackup');
+            if (backupBtn) backupBtn.click();
+          }
+          break;
+
+        default:
+          break;
+      }
+
+      url.searchParams.delete('action');
+      window.history.replaceState({}, document.title, url.toString());
+    } catch (e) {
+      console.error('[Shortcut] Lỗi xử lý action trong URL:', e);
+    }
+  }
+
+  /* ================== KHỞI TẠO ================== */
+
+  loadFromStorage();
+  rebuildSuggestions();
+  renderRecords();
+  vaccineSuggestionsRef.refresh();
+  farmSuggestionsRef.refresh();
+
+  if(btnCheckUpdate && isPwaInstalled()){
+    btnCheckUpdate.style.display = 'flex';
+  }
+
+  setTimeout(()=>maybeAutoReminder(false), 800);
+  setInterval(()=>maybeAutoReminder(false), 6*60*60*1000);
+
+  handleShortcutAction();
+
+})();
+</script>
+
+<!-- 🔹 PWA bootstrap: SW + persistent storage -->
+<script>
+(function(){
+  'use strict';
+  const APP_VERSION = 'v1.0.0';
+  window.__APP_VERSION__ = APP_VERSION;
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function(){
+      const swUrl = '/swine-vaccination-tracker/service-worker.js';
+      navigator.serviceWorker.register(swUrl, {
+        scope: '/swine-vaccination-tracker/',
+        updateViaCache: 'none'
+      }).then(reg => {
+        console.log('[PWA] SW đã đăng ký cho swine-vaccination-tracker:', reg.scope);
+      }).catch(err => {
+        console.error('[PWA] Lỗi đăng ký Service Worker:', err);
+      });
+    });
+  }
+
+  if (navigator.storage && navigator.storage.persist) {
+    navigator.storage.persist().then(granted => {
+      console.log('[PWA] Persistent storage:', granted ? 'đã cấp' : 'không cấp');
+    }).catch(()=>{});
+  }
+})();
+</script>
+
+</body>
+</html>
