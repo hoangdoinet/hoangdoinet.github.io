@@ -7,24 +7,30 @@
 
   "channel": "stable",
 
-  "version": "v1.0.0",
+  "version": "v1.0.2",
   "release_date": "2025-11-28",
   "summary": "Sửa lỗi nhỏ và tối ưu UI.",
 
   "latest": {
-    "version": "v1.0.1",
+    "version": "v1.0.2",
     "release_date": "2025-11-28",
     "summary": "Sửa lỗi nhỏ và tối ưu UI.",
     "changelog": [
-      "Sửa bug hiển thị thông báo.",
-      "Tối ưu logic in/xuất file pdf.",
-      "Thay đổi logo của ứng dụng.",
-      "Cải thiện giao diện và trải nghiệm người dùng."
+      "Sửa lỗi nhỏ.",
+      "Tối ưu giao diện và trải nghiệm người dùng."
     ]
   },
 
   "versions": [
     {
+      "version": "v1.0.2",
+      "release_date": "2025-11-28",
+      "summary": "Sửa lỗi nhỏ và tối ưu UI.",
+      "changelog": [
+        "Sửa lỗi nhỏ.",
+        "Tối ưu giao diện và trải nghiệm người dùng."
+      ]
+    },
       "version": "v1.0.1",
       "release_date": "2025-11-28",
       "summary": "Sửa lỗi nhỏ và tối ưu UI.",
@@ -32,7 +38,7 @@
         "Sửa bug hiển thị thông báo.",
         "Tối ưu logic in/xuất file pdf.",
         "Thay đổi logo của ứng dụng.",
-        "Cải thiện giao diện và trải nghiệm người dùng."
+        "Tối ưu giao diện và trải nghiệm người dùng."
       ]
     },
     {

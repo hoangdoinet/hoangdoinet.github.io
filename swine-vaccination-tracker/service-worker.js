@@ -1,5 +1,5 @@
-/* service-worker.js - OFFLINE 100% GUARANTEED v1.0.1 (manual update check) */
-const APP_VERSION = 'v1.0.1';
+/* service-worker.js - OFFLINE 100% GUARANTEED v1.0.2 (manual update check) */
+const APP_VERSION = 'v1.0.2';
 const CACHE_STATIC = `static-${APP_VERSION}`;
 const BASE = '/swine-vaccination-tracker/';
 const VERSION_FILE = BASE + 'version.json';
@@ -261,7 +261,7 @@ button{background:#22c55e;color:#fff;border:none;padding:12px 24px;border-radius
 </style></head>
 <body><div class="container">
 <h1>📶 Đang offline</h1>
-<p>Ứng dụng theo dõi tiêm vaccine heo cần kết nối internet để tải lần đầu.<br>Sau khi đã tải và cài Service Worker, bạn có thể dùng offline 100%.</p>
+<p>Ứng dụng theo dõi tiêm vaccine heo cần kết nối internet để tải lần đầu.<br>Sau khi đã tải và cài đặt, bạn có thể dùng offline 100%.</p>
 <button onclick="location.reload()">🔄 Thử lại</button>
 </div></body></html>`,
     {

@@ -1,789 +1,807 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-
-<title>Swine Vaccination Tracker - Theo dõi tiêm vaccine cho heo</title>
-
-<meta name="description" content="Swine Vaccination Tracker - Ứng dụng theo dõi ngày tiêm vaccine cho heo: Hyogen, Porcicorvirus, Tulinovet,... ghi nhận ngày xuất heo, trại nhận, tổng số con, đực/cái, ghi chú; hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục dữ liệu, hỗ trợ cài đặt ứng dụng trên Android & iOS để sử dụng offline.">
-<meta name="author" content="Hoàng Đợi">
-<meta name="robots" content="index,follow">
-<link rel="canonical" href="https://hoangdoinet.github.io/swine-vaccination-tracker/">
-<meta name="keywords" content="Swine Vaccination Tracker, theo dõi tiêm vaccine cho heo, vaccine heo, lịch tiêm heo, quản lý trại heo, ứng dụng offline, PWA chăn nuôi, Hyogen, Porcicorvirus, Tulinovet">
-
-<!-- Open Graph -->
-<meta property="og:locale" content="vi_VN">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Swine Vaccination Tracker - Theo dõi tiêm vaccine cho heo">
-<meta property="og:description" content="Ứng dụng theo dõi ngày tiêm vaccine cho heo, ghi nhận ngày tiêm/ngày xuất, trại nhận, tổng số con, đực/cái, ghi chú; hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục, hỗ trợ cài đặt ứng dụng trên Android & iOS để sử dụng offline.">
-<meta property="og:url" content="https://hoangdoinet.github.io/swine-vaccination-tracker/">
-<meta property="og:site_name" content="Swine Vaccination Tracker">
-<meta property="og:image" content="https://hoangdoinet.github.io/swine-vaccination-tracker/icons/icon-512.png">
-<meta property="og:image:type" content="image/png">
-<meta property="og:image:width" content="512">
-<meta property="og:image:height" content="512">
-
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Swine Vaccination Tracker - Theo dõi tiêm vaccine cho heo">
-<meta name="twitter:description" content="Ứng dụng theo dõi ngày tiêm vaccine cho heo, hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục, hoạt động offline sau lần tải đầu tiên.">
-<meta name="twitter:image" content="https://hoangdoinet.github.io/swine-vaccination-tracker/icons/icon-512.png">
-
-<!-- ===== PWA META - PRODUCTION READY ===== -->
-<meta name="application-name" content="Swine Vaccination Tracker">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#22c55e">
-
-<!-- iOS PWA -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Swine Vaccination Tracker">
-
-<!-- Manifest -->
-<link rel="manifest" href="manifest.webmanifest">
-
-<!-- Icons -->
-<link rel="apple-touch-icon" href="/swine-vaccination-tracker/icons/icon-180.png">
-<link rel="icon" type="image/png" href="/swine-vaccination-tracker/icons/icon-32.png" sizes="32x32">
-<link rel="icon" type="image/png" href="/swine-vaccination-tracker/icons/icon-192.png" sizes="192x192">
-
-<!-- Preload icons for fast splash -->
-<link rel="preload" href="/swine-vaccination-tracker/icons/icon-512.png" as="image">
-<link rel="preload" href="/swine-vaccination-tracker/icons/maskable-512.png" as="image">
-<!-- ===== END PWA META ===== -->
-
-<!-- JSON-LD: SoftwareApplication -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "Swine Vaccination Tracker",
-  "alternateName": "Theo dõi tiêm vaccine cho heo",
-  "applicationCategory": "MedicalApplication",
-  "operatingSystem": "Android, iOS, Web",
-  "inLanguage": "vi-VN",
-  "url": "https://hoangdoinet.github.io/swine-vaccination-tracker/",
-  "image": "https://hoangdoinet.github.io/swine-vaccination-tracker/icons/icon-512.png",
-  "description": "Ứng dụng theo dõi ngày tiêm vaccine cho heo: ghi nhận ngày tiêm, ngày xuất, trại nhận, tổng số con, đực/cái, ghi chú; hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục, hoạt động offline sau lần tải đầu tiên.",
-  "creator": {
-    "@type": "Person",
-    "name": "Hoàng Đợi"
-  },
-  "author": {
-    "@type": "Person",
-    "name": "Hoàng Đợi"
-  },
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "VND",
-    "category": "Free"
-  },
-  "softwareVersion": "v1.0.1"
-}
-</script>
-
-<style>
-  :root{
-    --bg:#f7f9fc;
-    --card:#ffffff;
-    --text:#0f172a;
-    --muted:#6b7280;
-    --accent:#22c55e;
-    --accent-2:#16a34a;
-    --danger:#ef4444;
-    --border:#e5e7eb;
-    --shadow:0 10px 25px rgba(15,23,42,.08);
-    --radius:14px;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-    background:linear-gradient(180deg,#f9fafb,#eef2f7);
-    color:var(--text);
-    font-size:15px;
-    line-height:1.5;
-  }
-  header{
-    position:sticky;top:0;z-index:10;
-    background:radial-gradient(120% 120% at 0% 0%,#bbf7d0 0%,#f9fafb 45%,#eef2ff 100%);
-    border-bottom:1px solid rgba(148,163,184,.3);
-    backdrop-filter:blur(10px);
-  }
-  .wrap{
-    max-width:1080px;
-    margin:0 auto;
-    padding:12px 16px 16px;
-  }
-  h1{
-    margin:0 0 8px;
-    font-size:clamp(22px,5vw,26px);
-    letter-spacing:.02em;
-    text-align:center;
-  }
-  .subtitle{
-    margin:0;
-    font-size:14px;
-    color:var(--muted);
-  }
-
-  /* Search */
-  .top-bar{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    margin-top:12px;
-  }
-  .search{
-    position:relative;
-  }
-  .search input{
-    width:100%;
-    padding:10px 34px 10px 32px;
-    border-radius:999px;
-    border:1px solid var(--border);
-    font-size:15px;
-    outline:none;
-    background:#ffffffdd;
-    box-shadow:0 4px 12px rgba(15,23,42,.04);
-  }
-  .search input:focus{
-    border-color:#86efac;
-    box-shadow:0 0 0 2px rgba(34,197,94,.18);
-    background:#fff;
-  }
-  .search-icon{
-    position:absolute;
-    left:10px;
-    top:50%;
-    transform:translateY(-50%);
-    font-size:15px;
-    color:var(--muted);
-  }
-  .search-clear{
-    position:absolute;
-    right:8px;
-    top:50%;
-    transform:translateY(-50%);
-    border:none;
-    background:transparent;
-    cursor:pointer;
-    font-size:18px;
-    line-height:1;
-    color:var(--muted);
-    padding:4px;
-    border-radius:999px;
-  }
-  .search-clear:hover{
-    background:#e5e7eb;
-  }
-
-  /* 🔹 Nút Cài đặt ứng dụng dưới input */
-  .install-wrap{
-    margin-top:4px;
-    display:none;
-    justify-content:center;
-  }
-  .btn-install{
-    border-radius:999px;
-    border:1px dashed #16a34a;
-    background:#ecfdf5;
-    color:#166534;
-    font-size:14px;
-    padding:6px 18px;
-    cursor:pointer;
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    box-shadow:0 4px 10px rgba(16,185,129,.16);
-    font-weight:600;
-  }
-  .btn-install span.icon{
-    font-size:16px;
-  }
-  .btn-install:hover{
-    background:#dcfce7;
-  }
-
-  /* KPI cho modal thống kê */
-  .kpis{
-    display:grid;
-    grid-template-columns:repeat(2, minmax(0, 1fr));
-    gap:8px;
-    margin-top:8px;
-  }
-  .pill{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:6px;
-    padding:6px 10px;
-    border-radius:999px;
-    font-size:13px;
-    white-space:nowrap;
-  }
-  .pill .value{
-    font-weight:600;
-    font-size:15px;
-    margin-left:4px;
-  }
-
-  .section-title{
-    margin:0 0 4px;
-    font-size:13px;
-    color:var(--muted);
-    font-weight:600;
-    text-align:center;
-  }
-
-  .kpis-month .pill{
-    background:#eff6ff;
-    border:1px solid #bfdbfe;
-    color:#1d4ed8;
-  }
-  .kpis-all .pill{
-    background:#ecfdf3;
-    border:1px solid #bbf7d0;
-    color:#15803d;
-  }
-
-  /* Cards list */
-  .list-wrap{
-    max-width:1080px;
-    margin:0 auto;
-    padding:8px 16px 80px;
-  }
-  .cards{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    margin-top:4px;
-  }
-  .card{
-    background:var(--card);
-    border-radius:var(--radius);
-    border:1px solid var(--border);
-    box-shadow:var(--shadow);
-    padding:12px 12px 10px;
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-  }
-  .card-header{
-    display:flex;
-    justify-content:space-between;
-    gap:8px;
-    align-items:flex-start;
-  }
-  .card-title{
-    font-weight:600;
-    font-size:16px;
-  }
-  .card-subtitle{
-    font-size:13px;
-    color:var(--muted);
-  }
-  .badge{
-    display:inline-flex;
-    align-items:center;
-    padding:2px 8px;
-    border-radius:999px;
-    font-size:12px;
-    background:#dcfce7;
-    color:#166534;
-    border:1px solid #bbf7d0;
-    white-space:nowrap;
-  }
-  .badge.warning{
-    background:#fef3c7;
-    color:#92400e;
-    border-color:#fde68a;
-  }
-
-  .card-overdue{
-    border-color:#fecaca;
-    box-shadow:0 0 0 1px #fecaca, var(--shadow);
-  }
-  .card-overdue .badge{
-    background:#fef3c7;
-    color:#92400e;
-    border-color:#fde68a;
-  }
-
-  .card-separator{
-    height:1px;
-    margin:4px 0;
-    background:linear-gradient(90deg,transparent,rgba(148,163,184,.7),transparent);
-    opacity:.9;
-  }
-
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:6px 10px;
-    margin-top:4px;
-  }
-
-  .field{
-    padding:4px 6px;
-    border-radius:8px;
-  }
-  .field-label{
-    font-size:12px;
-    color:var(--muted);
-  }
-  .field-value{
-    font-size:14px;
-    font-weight:500;
-  }
-
-  .field-highlight{
-    border:1px solid transparent;
-  }
-  .field-ngaytiem{
-    border-color:rgba(34,197,94,.35);
-    background:rgba(220,252,231,.7);
-  }
-  .field-ngayxuat{
-    border-color:rgba(59,130,246,.35);
-    background:rgba(239,246,255,.9);
-  }
-  .field-duc{
-    border-color:rgba(249,115,22,.35);
-    background:rgba(255,247,237,.9);
-  }
-  .field-cai{
-    border-color:rgba(168,85,247,.35);
-    background:rgba(250,245,255,.9);
-  }
-
-  .notes{
-    margin-top:4px;
-    padding:6px 8px;
-    border-radius:8px;
-    background:#f9fafb;
-    border:1px dashed #e5e7eb;
-    font-size:13px;
-    color:#4b5563;
-    white-space:pre-wrap;
-  }
-  .card-actions{
-    margin-top:6px;
-    display:flex;
-    justify-content:flex-end;
-    gap:6px;
-  }
-  .btn-small{
-    border-radius:999px;
-    border:1px solid var(--border);
-    background:#f9fafb;
-    font-size:12px;
-    padding:4px 11px;
-    cursor:pointer;
-    color:#374151;
-  }
-  .btn-small.danger{
-    border-color:#fecaca;
-    color:#b91c1c;
-    background:#fef2f2;
-  }
-  .btn-small:hover{
-    filter:brightness(0.97);
-  }
-  .empty{
-    margin-top:18px;
-    font-size:14px;
-    color:var(--muted);
-    text-align:center;
-  }
-
-  /* FAB menu */
-  .fab{
-    position:fixed;
-    right:16px;
-    bottom:16px;
-    z-index:30;
-    display:flex;
-    flex-direction:column;
-    align-items:flex-end;
-    gap:10px;
-  }
-  .fab-backdrop{
-    position:fixed;
-    inset:0;
-    background:rgba(15,23,42,.25);
-    backdrop-filter:blur(2px);
-    display:none;
-    z-index:20;
-  }
-  .fab.open .fab-backdrop{
-    display:block;
-  }
-  .fab-menu{
-    position:absolute;
-    right:0;
-    bottom:60px;
-    display:none;
-    flex-direction:column;
-    gap:8px;
-    padding:10px;
-    background:#ffffff;
-    border:1px solid var(--border);
-    border-radius:16px;
-    box-shadow:0 18px 40px rgba(15,23,42,.18);
-    min-width:230px;
-    z-index:30;
-  }
-  .fab.open .fab-menu{
-    display:flex;
-  }
-  .fab-item{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    padding:8px 10px;
-    border-radius:10px;
-    border:1px solid #e5e7eb;
-    background:#fff;
-    font-size:14px;
-    font-weight:600;
-    cursor:pointer;
-    white-space:nowrap;
-    position:relative;
-  }
-  .fab-item span.icon{
-    font-size:16px;
-  }
-  .fab-item:hover{
-    background:#f9fafb;
-  }
-  .fab-item.danger{
-    border-color:#fecaca;
-    background:#fef2f2;
-    color:#b91c1c;
-  }
-  .fab-badge{
-    position:absolute;
-    top:4px;
-    right:8px;
-    min-width:18px;
-    height:18px;
-    padding:0 5px;
-    border-radius:999px;
-    background:#ef4444;
-    color:#fff;
-    font-size:11px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    box-shadow:0 0 0 2px #ffffff;
-  }
-  .fab-item.has-reminder span.icon{
-    color:#b91c1c;
-  }
-
-  .fab-main{
-    width:52px;
-    height:52px;
-    border-radius:999px;
-    border:none;
-    background:linear-gradient(135deg,var(--accent),var(--accent-2));
-    color:#fff;
-    box-shadow:0 12px 30px rgba(22,163,74,.6);
-    font-size:26px;
-    font-weight:900;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    z-index:31;
-  }
-  .fab-main:active{
-    transform:scale(.96);
-  }
-
-  /* Modals */
-  .modal{
-    position:fixed;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:rgba(15,23,42,.35);
-    backdrop-filter:blur(6px);
-    padding:16px;
-    opacity:0;
-    visibility:hidden;
-    pointer-events:none;
-    transition:opacity .2s ease,visibility .2s ease;
-    z-index:40;
-  }
-  .modal.show{
-    opacity:1;
-    visibility:visible;
-    pointer-events:auto;
-  }
-  .modal-content{
-    width:100%;
-    max-width:480px;
-    background:#fff;
-    border-radius:18px;
-    box-shadow:0 18px 45px rgba(15,23,42,.45);
-    padding:14px 16px 14px;
-    max-height:90vh;
-    overflow:auto;
-  }
-  .modal-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:8px;
-    margin-bottom:4px;
-  }
-  .modal-title{
-    margin:0;
-    font-size:17px;
-    font-weight:600;
-  }
-  .modal-close{
-    border:none;
-    background:transparent;
-    font-size:20px;
-    cursor:pointer;
-    color:var(--muted);
-  }
-  .modal-body{
-    font-size:15px;
-    margin-top:4px;
-  }
-  .modal-footer{
-    display:flex;
-    justify-content:flex-end;
-    gap:8px;
-    margin-top:8px;
-  }
-  .form-grid{
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:8px 10px;
-  }
-  .form-row{
-    margin-bottom:8px;
-  }
-  label{
-    display:block;
-    font-size:13px;
-    color:var(--muted);
-    margin-bottom:3px;
-  }
-  input[type="text"],
-  input[type="number"],
-  input[type="date"],
-  input[type="month"],
-  select,
-  textarea{
-    width:100%;
-    padding:7px 9px;
-    border-radius:9px;
-    border:1px solid var(--border);
-    font-size:14px;
-    outline:none;
-    background:#f9fafb;
-  }
-  input:focus,
-  select:focus,
-  textarea:focus{
-    border-color:#86efac;
-    box-shadow:0 0 0 2px rgba(34,197,94,.18);
-    background:#ffffff;
-  }
-  textarea{
-    min-height:50px;
-    resize:vertical;
-  }
-  .btn{
-    border-radius:999px;
-    padding:7px 14px;
-    border:1px solid transparent;
-    font-size:14px;
-    cursor:pointer;
-  }
-  .btn.primary{
-    background:linear-gradient(135deg,var(--accent),var(--accent-2));
-    color:#fff;
-  }
-  .btn.secondary{
-    background:#f9fafb;
-    color:#374151;
-    border-color:var(--border);
-  }
-  .btn.danger{
-    background:#fef2f2;
-    border-color:#fecaca;
-    color:#b91c1c;
-  }
-
-  /* Gợi ý */
-  .suggest-wrap{
-    position:relative;
-  }
-  .suggest{
-    display:none;
-    position:absolute;
-    left:0;
-    right:0;
-    top:calc(100% + 6px);
-    background:rgba(17,24,39,.98);
-    border:1px solid #334155;
-    border-radius:12px;
-    padding:10px;
-    box-shadow:0 12px 30px rgba(0,0,0,.35);
-    z-index:60;
-  }
-  .suggest.show{
-    display:block;
-    animation:pop .08s ease;
-  }
-  @keyframes pop{
-    from{transform:translateY(-4px);opacity:.6}
-    to{transform:translateY(0);opacity:1}
-  }
-  .suggest::before{
-    content:"";
-    position:absolute;
-    top:-6px;
-    left:16px;
-    width:12px;
-    height:12px;
-    background:rgba(17,24,39,.98);
-    border-left:1px solid #334155;
-    border-top:1px solid #334155;
-    transform:rotate(45deg);
-  }
-  .suggest .grid-chips{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-  }
-  .s-chip{
-    padding:8px 14px;
-    border:1px solid #334155;
-    border-radius:12px;
-    background:rgba(255,255,255,.03);
-    color:#e5e7eb;
-    font-size:15px;
-    cursor:pointer;
-    transition:transform .06s ease,border-color .2s ease,background .2s ease,color .2s ease;
-  }
-  .s-chip:hover{
-    transform:translateY(-1px);
-    border-color:#22c55e;
-    background:rgba(34,197,94,.12);
-    color:#86efac;
-  }
-  .suggest .empty{
-    color:#94a3b8;
-    font-size:14px;
-  }
-
-  /* Toast */
-  .toast{
-    position:fixed;
-    bottom:80px;
-    left:50%;
-    transform:translateX(-50%);
-    background:#14532d;
-    color:#dcfce7;
-    padding:6px 12px;
-    border-radius:999px;
-    font-size:13px;
-    box-shadow:0 10px 25px rgba(15,23,42,.6);
-    opacity:0;
-    pointer-events:none;
-    transition:opacity .2s ease,transform .2s ease;
-    z-index:50;
-  }
-  .toast.show{
-    opacity:1;
-    transform:translateX(-50%) translateY(-4px);
-    pointer-events:auto;
-  }
-
-  /* Danh sách trong modal nhắc nhở */
-  .reminder-list{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    margin-top:8px;
-  }
-  .reminder-item{
-    border-radius:10px;
-    border:1px solid #fee2e2;
-    background:#fef2f2;
-    padding:8px 10px;
-    font-size:13px;
-  }
-  .reminder-item-header{
-    display:flex;
-    justify-content:space-between;
-    gap:6px;
-    margin-bottom:4px;
-    font-weight:600;
-    color:#b91c1c;
-  }
-  .reminder-item-body{
-    color:#374151;
-  }
-  .reminder-item-meta{
-    margin-top:4px;
-    font-size:12px;
-    color:#6b7280;
-  }
-
-  /* ===== Highlight phiên bản mới nhất trong modal cập nhật ===== */
-  .update-version-list{
-    margin-top:8px;
-    font-size:14px;
-  }
-  .update-version{
-    border-radius:10px;
-    border:1px solid #e5e7eb;
-    padding:6px 8px;
-    margin-bottom:6px;
-    background:#f9fafb;
-  }
-  .update-version.latest{
-    border-color:#22c55e;
-    background:#ecfdf3;
-    box-shadow:0 0 0 1px #bbf7d0;
-  }
-  .update-version-title{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:6px;
-    font-weight:600;
-  }
-  .update-version-title span.date{
-    font-size:12px;
-    color:#6b7280;
-  }
-  .update-badge{
-    font-size:11px;
-    padding:2px 8px;
-    border-radius:999px;
-    background:#16a34a;
-    color:#fff;
-    text-transform:uppercase;
-    letter-spacing:.04em;
-  }
-
-  @media (max-width:640px){
-    .grid{grid-template-columns:1fr 1fr}
-    .form-grid{grid-template-columns:1fr}
-  }
+<!DOCTYPE html>  
+<html lang="vi">  
+<head>  
+<meta charset="utf-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">  
+  
+<title>Swine Vaccination Tracker - Theo dõi tiêm vaccine cho heo</title>  
+  
+<meta name="description" content="Swine Vaccination Tracker - Ứng dụng theo dõi ngày tiêm vaccine cho heo: Hyogen, Porcicorvirus, Tulinovet,... ghi nhận ngày xuất heo, trại nhận, tổng số con, đực/cái, ghi chú; hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục dữ liệu, hỗ trợ cài đặt ứng dụng trên Android & iOS để sử dụng offline.">  
+<meta name="author" content="Hoàng Đợi">  
+<meta name="robots" content="index,follow">  
+<link rel="canonical" href="https://hoangdoinet.github.io/swine-vaccination-tracker/">  
+<meta name="keywords" content="Swine Vaccination Tracker, theo dõi tiêm vaccine cho heo, vaccine heo, lịch tiêm heo, quản lý trại heo, ứng dụng offline, PWA chăn nuôi, Hyogen, Porcicorvirus, Tulinovet">  
+  
+<!-- Open Graph -->  
+<meta property="og:locale" content="vi_VN">  
+<meta property="og:type" content="website">  
+<meta property="og:title" content="Swine Vaccination Tracker - Theo dõi tiêm vaccine cho heo">  
+<meta property="og:description" content="Ứng dụng theo dõi ngày tiêm vaccine cho heo, ghi nhận ngày tiêm/ngày xuất, trại nhận, tổng số con, đực/cái, ghi chú; hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục, hỗ trợ cài đặt ứng dụng trên Android & iOS để sử dụng offline.">  
+<meta property="og:url" content="https://hoangdoinet.github.io/swine-vaccination-tracker/">  
+<meta property="og:site_name" content="Swine Vaccination Tracker">  
+<meta property="og:image" content="https://hoangdoinet.github.io/swine-vaccination-tracker/icons/icon-512.png">  
+<meta property="og:image:type" content="image/png">  
+<meta property="og:image:width" content="512">  
+<meta property="og:image:height" content="512">  
+  
+<!-- Twitter Card -->  
+<meta name="twitter:card" content="summary_large_image">  
+<meta name="twitter:title" content="Swine Vaccination Tracker - Theo dõi tiêm vaccine cho heo">  
+<meta name="twitter:description" content="Ứng dụng theo dõi ngày tiêm vaccine cho heo, hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục, hoạt động offline sau lần tải đầu tiên.">  
+<meta name="twitter:image" content="https://hoangdoinet.github.io/swine-vaccination-tracker/icons/icon-512.png">  
+  
+<!-- ===== PWA META - PRODUCTION READY ===== -->  
+<meta name="application-name" content="Swine Vaccination Tracker">  
+<meta name="mobile-web-app-capable" content="yes">  
+<meta name="theme-color" content="#22c55e">  
+  
+<!-- iOS PWA -->  
+<meta name="apple-mobile-web-app-capable" content="yes">  
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">  
+<meta name="apple-mobile-web-app-title" content="Swine Vaccination Tracker">  
+  
+<!-- Manifest -->  
+<link rel="manifest" href="/swine-vaccination-tracker/manifest.webmanifest">  
+  
+<!-- Icons -->  
+<link rel="apple-touch-icon" href="/swine-vaccination-tracker/icons/icon-180.png">  
+<link rel="icon" type="image/png" href="/swine-vaccination-tracker/icons/icon-32.png" sizes="32x32">  
+<link rel="icon" type="image/png" href="/swine-vaccination-tracker/icons/icon-192.png" sizes="192x192">  
+  
+<!-- Preload icons for fast splash -->  
+<link rel="preload" href="/swine-vaccination-tracker/icons/icon-512.png" as="image">  
+<link rel="preload" href="/swine-vaccination-tracker/icons/maskable-512.png" as="image">  
+<!-- ===== END PWA META ===== -->  
+  
+<!-- JSON-LD: SoftwareApplication -->  
+<script type="application/ld+json">  
+{  
+  "@context": "https://schema.org",  
+  "@type": "SoftwareApplication",  
+  "name": "Swine Vaccination Tracker",  
+  "alternateName": "Theo dõi tiêm vaccine cho heo",  
+  "applicationCategory": "MedicalApplication",  
+  "operatingSystem": "Android, iOS, Web",  
+  "inLanguage": "vi-VN",  
+  "url": "https://hoangdoinet.github.io/swine-vaccination-tracker/",  
+  "image": "https://hoangdoinet.github.io/swine-vaccination-tracker/icons/icon-512.png",  
+  "description": "Ứng dụng theo dõi ngày tiêm vaccine cho heo: ghi nhận ngày tiêm, ngày xuất, trại nhận, tổng số con, đực/cái, ghi chú; hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục, hoạt động offline sau lần tải đầu tiên.",  
+  "creator": {  
+    "@type": "Person",  
+    "name": "Hoàng Đợi"  
+  },  
+  "author": {  
+    "@type": "Person",  
+    "name": "Hoàng Đợi"  
+  },  
+  "offers": {  
+    "@type": "Offer",  
+    "price": "0",  
+    "priceCurrency": "VND",  
+    "category": "Free"  
+  },  
+  "softwareVersion": "v1.0.2"  
+}  
+</script>  
+  
+<style>  
+  :root{  
+    --bg:#f7f9fc;  
+    --card:#ffffff;  
+    --text:#0f172a;  
+    --muted:#6b7280;  
+    --accent:#22c55e;  
+    --accent-2:#16a34a;  
+    --danger:#ef4444;  
+    --border:#e5e7eb;  
+    --shadow:0 10px 25px rgba(15,23,42,.08);  
+    --radius:14px;  
+  }  
+  *{box-sizing:border-box}  
+  body{  
+    margin:0;  
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;  
+    background:linear-gradient(180deg,#f9fafb,#eef2f7);  
+    color:var(--text);  
+    font-size:15px;  
+    line-height:1.5;  
+  }  
+  header{  
+    position:sticky;top:0;z-index:10;  
+    background:radial-gradient(120% 120% at 0% 0%,#bbf7d0 0%,#f9fafb 45%,#eef2ff 100%);  
+    border-bottom:1px solid rgba(148,163,184,.3);  
+    backdrop-filter:blur(10px);  
+  }  
+  .wrap{  
+    max-width:1080px;  
+    margin:0 auto;  
+    padding:12px 16px 16px;  
+  }  
+  h1{  
+    margin:0 0 8px;  
+    font-size:clamp(22px,5vw,26px);  
+    letter-spacing:.02em;  
+    text-align:center;  
+  }  
+  .subtitle{  
+    margin:0;  
+    font-size:14px;  
+    color:var(--muted);  
+  }  
+  
+  /* Search */  
+  .top-bar{  
+    display:flex;  
+    flex-direction:column;  
+    gap:10px;  
+    margin-top:12px;  
+  }  
+  .search{  
+    position:relative;  
+  }  
+  .search input{  
+    width:100%;  
+    padding:10px 34px 10px 32px;  
+    border-radius:999px;  
+    border:1px solid var(--border);  
+    font-size:15px;  
+    outline:none;  
+    background:#ffffffdd;  
+    box-shadow:0 4px 12px rgba(15,23,42,.04);  
+  }  
+  .search input:focus{  
+    border-color:#86efac;  
+    box-shadow:0 0 0 2px rgba(34,197,94,.18);  
+    background:#fff;  
+  }  
+  .search-icon{  
+    position:absolute;  
+    left:10px;  
+    top:50%;  
+    transform:translateY(-50%);  
+    font-size:15px;  
+    color:var(--muted);  
+  }  
+  .search-clear{  
+    position:absolute;  
+    right:8px;  
+    top:50%;  
+    transform:translateY(-50%);  
+    border:none;  
+    background:transparent;  
+    cursor:pointer;  
+    font-size:18px;  
+    line-height:1;  
+    color:var(--muted);  
+    padding:4px;  
+    border-radius:999px;  
+  }  
+  .search-clear:hover{  
+    background:#e5e7eb;  
+  }  
+  
+  /* 🔹 Nút Cài đặt ứng dụng dưới input */  
+  .install-wrap{  
+    margin-top:4px;  
+    display:none;  
+    justify-content:center;  
+  }  
+  .btn-install{  
+    border-radius:999px;  
+    border:1px dashed #16a34a;  
+    background:#ecfdf5;  
+    color:#166534;  
+    font-size:14px;  
+    padding:6px 18px;  
+    cursor:pointer;  
+    display:inline-flex;  
+    align-items:center;  
+    gap:6px;  
+    box-shadow:0 4px 10px rgba(16,185,129,.16);  
+    font-weight:600;  
+  }  
+  .btn-install span.icon{  
+    font-size:16px;  
+  }  
+  .btn-install:hover{  
+    background:#dcfce7;  
+  }  
+  
+  /* KPI cho modal thống kê */  
+  .kpis{  
+    display:grid;  
+    grid-template-columns:repeat(2, minmax(0, 1fr));  
+    gap:8px;  
+    margin-top:8px;  
+  }  
+  .pill{  
+    display:flex;  
+    align-items:center;  
+    justify-content:space-between;  
+    gap:6px;  
+    padding:6px 10px;  
+    border-radius:999px;  
+    font-size:13px;  
+    white-space:nowrap;  
+  }  
+  .pill .value{  
+    font-weight:600;  
+    font-size:15px;  
+    margin-left:4px;  
+  }  
+  
+  .section-title{  
+    margin:0 0 4px;  
+    font-size:13px;  
+    color:var(--muted);  
+    font-weight:600;  
+    text-align:center;  
+  }  
+  
+  .kpis-month .pill{  
+    background:#eff6ff;  
+    border:1px solid #bfdbfe;  
+    color:#1d4ed8;  
+  }  
+  .kpis-all .pill{  
+    background:#ecfdf3;  
+    border:1px solid #bbf7d0;  
+    color:#15803d;  
+  }  
+  
+  /* Cards list */  
+  .list-wrap{  
+    max-width:1080px;  
+    margin:0 auto;  
+    padding:8px 16px 40px;  
+  }  
+  .cards{  
+    display:flex;  
+    flex-direction:column;  
+    gap:10px;  
+    margin-top:4px;  
+  }  
+  .card{  
+    background:var(--card);  
+    border-radius:var(--radius);  
+    border:1px solid var(--border);  
+    box-shadow:var(--shadow);  
+    padding:12px 12px 10px;  
+    display:flex;  
+    flex-direction:column;  
+    gap:6px;  
+  }  
+  .card-header{  
+    display:flex;  
+    justify-content:space-between;  
+    gap:8px;  
+    align-items:flex-start;  
+  }  
+  .card-title{  
+    font-weight:600;  
+    font-size:16px;  
+  }  
+  .card-subtitle{  
+    font-size:13px;  
+    color:var(--muted);  
+  }  
+  .badge{  
+    display:inline-flex;  
+    align-items:center;  
+    padding:2px 8px;  
+    border-radius:999px;  
+    font-size:12px;  
+    background:#dcfce7;  
+    color:#166534;  
+    border:1px solid #bbf7d0;  
+    white-space:nowrap;  
+  }  
+  .badge.warning{  
+    background:#fef3c7;  
+    color:#92400e;  
+    border-color:#fde68a;  
+  }  
+  
+  .card-overdue{  
+    border-color:#fecaca;  
+    box-shadow:0 0 0 1px #fecaca, var(--shadow);  
+  }  
+  .card-overdue .badge{  
+    background:#fef3c7;  
+    color:#92400e;  
+    border-color:#fde68a;  
+  }  
+  
+  .card-separator{  
+    height:1px;  
+    margin:4px 0;  
+    background:linear-gradient(90deg,transparent,rgba(148,163,184,.7),transparent);  
+    opacity:.9;  
+  }  
+  
+  .grid{  
+    display:grid;  
+    grid-template-columns:repeat(2,minmax(0,1fr));  
+    gap:6px 10px;  
+    margin-top:4px;  
+  }  
+  
+  .field{  
+    padding:4px 6px;  
+    border-radius:8px;  
+  }  
+  .field-label{  
+    font-size:12px;  
+    color:var(--muted);  
+  }  
+  .field-value{  
+    font-size:14px;  
+    font-weight:500;  
+  }  
+  
+  .field-highlight{  
+    border:1px solid transparent;  
+  }  
+  .field-ngaytiem{  
+    border-color:rgba(34,197,94,.35);  
+    background:rgba(220,252,231,.7);  
+  }  
+  .field-ngayxuat{  
+    border-color:rgba(59,130,246,.35);  
+    background:rgba(239,246,255,.9);  
+  }  
+  .field-duc{  
+    border-color:rgba(249,115,22,.35);  
+    background:rgba(255,247,237,.9);  
+  }  
+  .field-cai{  
+    border-color:rgba(168,85,247,.35);  
+    background:rgba(250,245,255,.9);  
+  }  
+  
+  .notes{  
+    margin-top:4px;  
+    padding:6px 8px;  
+    border-radius:8px;  
+    background:#f9fafb;  
+    border:1px dashed #e5e7eb;  
+    font-size:13px;  
+    color:#4b5563;  
+    white-space:pre-wrap;  
+  }  
+  .card-actions{  
+    margin-top:6px;  
+    display:flex;  
+    justify-content:flex-end;  
+    gap:6px;  
+  }  
+  .btn-small{  
+    border-radius:999px;  
+    border:1px solid var(--border);  
+    background:#f9fafb;  
+    font-size:12px;  
+    padding:4px 11px;  
+    cursor:pointer;  
+    color:#374151;  
+  }  
+  .btn-small.danger{  
+    border-color:#fecaca;  
+    color:#b91c1c;  
+    background:#fef2f2;  
+  }  
+  .btn-small:hover{  
+    filter:brightness(0.97);  
+  }  
+  .empty{  
+    margin-top:18px;  
+    font-size:14px;  
+    color:var(--muted);  
+    text-align:center;  
+  }  
+	.empty-box{  
+	  display:inline-block;  
+	  padding:10px 16px;  
+	  border-radius:12px;  
+	  border:1px dashed var(--border);  
+	  background:#f9fafb;  
+	  
+	  font-size:15px;  
+	  font-weight:600;  
+	  color:#1f2937;  
+	  letter-spacing:0.2px;  
+	}  
+  /* FAB menu */  
+  .fab{  
+    position:fixed;  
+    right:16px;  
+    bottom:16px;  
+    z-index:30;  
+    display:flex;  
+    flex-direction:column;  
+    align-items:flex-end;  
+    gap:10px;  
+  }  
+  .fab-backdrop{  
+    position:fixed;  
+    inset:0;  
+    background:rgba(15,23,42,.25);  
+    backdrop-filter:blur(2px);  
+    display:none;  
+    z-index:20;  
+  }  
+  .fab.open .fab-backdrop{  
+    display:block;  
+  }  
+  .fab-menu{  
+    position:absolute;  
+    right:0;  
+    bottom:60px;  
+    display:none;  
+    flex-direction:column;  
+    gap:8px;  
+    padding:10px;  
+    background:#ffffff;  
+    border:1px solid var(--border);  
+    border-radius:16px;  
+    box-shadow:0 18px 40px rgba(15,23,42,.18);  
+    min-width:230px;  
+    z-index:30;  
+  }  
+  .fab.open .fab-menu{  
+    display:flex;  
+  }  
+  .fab-item{  
+    display:flex;  
+    align-items:center;  
+    gap:8px;  
+    padding:8px 10px;  
+    border-radius:10px;  
+    border:1px solid #e5e7eb;  
+    background:#fff;  
+    font-size:14px;  
+    font-weight:600;  
+    cursor:pointer;  
+    white-space:nowrap;  
+    position:relative;  
+  }  
+  .fab-item span.icon{  
+    font-size:16px;  
+  }  
+  .fab-item:hover{  
+    background:#f9fafb;  
+  }  
+  .fab-item.danger{  
+    border-color:#fecaca;  
+    background:#fef2f2;  
+    color:#b91c1c;  
+  }  
+  .fab-badge{  
+    position:absolute;  
+    top:4px;  
+    right:8px;  
+    min-width:18px;  
+    height:18px;  
+    padding:0 5px;  
+    border-radius:999px;  
+    background:#ef4444;  
+    color:#fff;  
+    font-size:11px;  
+    display:flex;  
+    align-items:center;  
+    justify-content:center;  
+    box-shadow:0 0 0 2px #ffffff;  
+  }  
+  .fab-item.has-reminder span.icon{  
+    color:#b91c1c;  
+  }  
+  
+  .fab-main{  
+    width:52px;  
+    height:52px;  
+    border-radius:999px;  
+    border:none;  
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));  
+    color:#fff;  
+    box-shadow:0 12px 30px rgba(22,163,74,.6);  
+    font-size:26px;  
+    font-weight:900;  
+    display:flex;  
+    align-items:center;  
+    justify-content:center;  
+    cursor:pointer;  
+    z-index:31;  
+  }  
+  .fab-main:active{  
+    transform:scale(.96);  
+  }  
+  
+  /* Modals */  
+  .modal{  
+    position:fixed;  
+    inset:0;  
+    display:flex;  
+    align-items:center;  
+    justify-content:center;  
+    background:rgba(15,23,42,.35);  
+    backdrop-filter:blur(6px);  
+    padding:16px;  
+    opacity:0;  
+    visibility:hidden;  
+    pointer-events:none;  
+    transition:opacity .2s ease,visibility .2s ease;  
+    z-index:40;  
+  }  
+  .modal.show{  
+    opacity:1;  
+    visibility:visible;  
+    pointer-events:auto;  
+  }  
+  .modal-content{  
+    width:100%;  
+    max-width:480px;  
+    background:#fff;  
+    border-radius:18px;  
+    box-shadow:0 18px 45px rgba(15,23,42,.45);  
+    padding:14px 16px 14px;  
+    max-height:90vh;  
+    overflow:auto;  
+  }  
+  .modal-header{  
+    display:flex;  
+    justify-content:space-between;  
+    align-items:center;  
+    gap:8px;  
+    margin-bottom:4px;  
+  }  
+  .modal-title{  
+    margin:0;  
+    font-size:17px;  
+    font-weight:600;  
+  }  
+  .modal-close{  
+    border:none;  
+    background:transparent;  
+    font-size:20px;  
+    cursor:pointer;  
+    color:var(--muted);  
+  }  
+  .modal-body{  
+    font-size:15px;  
+    margin-top:4px;  
+  }  
+  .modal-footer{  
+    display:flex;  
+    justify-content:flex-end;  
+    gap:8px;  
+    margin-top:8px;  
+  }  
+  .form-grid{  
+    display:grid;  
+    grid-template-columns:repeat(2,minmax(0,1fr));  
+    gap:8px 10px;  
+  }  
+  .form-row{  
+    margin-bottom:8px;  
+  }  
+  label{  
+    display:block;  
+    font-size:13px;  
+    color:var(--muted);  
+    margin-bottom:3px;  
+  }  
+  input[type="text"],  
+  input[type="number"],  
+  input[type="date"],  
+  input[type="month"],  
+  select,  
+  textarea{  
+    width:100%;  
+    padding:7px 9px;  
+    border-radius:9px;  
+    border:1px solid var(--border);  
+    font-size:14px;  
+    outline:none;  
+    background:#f9fafb;  
+  }  
+  input:focus,  
+  select:focus,  
+  textarea:focus{  
+    border-color:#86efac;  
+    box-shadow:0 0 0 2px rgba(34,197,94,.18);  
+    background:#ffffff;  
+  }  
+  textarea{  
+    min-height:50px;  
+    resize:vertical;  
+  }  
+  .btn{  
+    border-radius:999px;  
+    padding:7px 14px;  
+    border:1px solid transparent;  
+    font-size:14px;  
+    cursor:pointer;  
+  }  
+  .btn.primary{  
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));  
+    color:#fff;  
+  }  
+  .btn.secondary{  
+    background:#f9fafb;  
+    color:#374151;  
+    border-color:var(--border);  
+  }  
+  .btn.danger{  
+    background:#fef2f2;  
+    border-color:#fecaca;  
+    color:#b91c1c;  
+  }  
+  
+  /* Gợi ý */  
+  .suggest-wrap{  
+    position:relative;  
+  }  
+  .suggest{  
+    display:none;  
+    position:absolute;  
+    left:0;  
+    right:0;  
+    top:calc(100% + 6px);  
+    background:rgba(17,24,39,.98);  
+    border:1px solid #334155;  
+    border-radius:12px;  
+    padding:10px;  
+    box-shadow:0 12px 30px rgba(0,0,0,.35);  
+    z-index:60;  
+  }  
+  .suggest.show{  
+    display:block;  
+    animation:pop .08s ease;  
+  }  
+  @keyframes pop{  
+    from{transform:translateY(-4px);opacity:.6}  
+    to{transform:translateY(0);opacity:1}  
+  }  
+  .suggest::before{  
+    content:"";  
+    position:absolute;  
+    top:-6px;  
+    left:16px;  
+    width:12px;  
+    height:12px;  
+    background:rgba(17,24,39,.98);  
+    border-left:1px solid #334155;  
+    border-top:1px solid #334155;  
+    transform:rotate(45deg);  
+  }  
+  .suggest .grid-chips{  
+    display:flex;  
+    flex-wrap:wrap;  
+    gap:8px;  
+  }  
+  .s-chip{  
+    padding:8px 14px;  
+    border:1px solid #334155;  
+    border-radius:12px;  
+    background:rgba(255,255,255,.03);  
+    color:#e5e7eb;  
+    font-size:15px;  
+    cursor:pointer;  
+    transition:transform .06s ease,border-color .2s ease,background .2s ease,color .2s ease;  
+  }  
+  .s-chip:hover{  
+    transform:translateY(-1px);  
+    border-color:#22c55e;  
+    background:rgba(34,197,94,.12);  
+    color:#86efac;  
+  }  
+  .suggest .empty{  
+    color:#94a3b8;  
+    font-size:14px;  
+  }  
+  
+  footer{  
+    text-align:center;  
+    color:#94a3b8;  
+    font-size:13px;  
+    margin:8px 0 8px  
+  }  
+  
+  /* Toast */  
+  .toast{  
+    position:fixed;  
+    bottom:80px;  
+    left:50%;  
+    transform:translateX(-50%);  
+    background:#14532d;  
+    color:#dcfce7;  
+    padding:6px 12px;  
+    border-radius:999px;  
+    font-size:13px;  
+    box-shadow:0 10px 25px rgba(15,23,42,.6);  
+    opacity:0;  
+    pointer-events:none;  
+    transition:opacity .2s ease,transform .2s ease;  
+    z-index:50;  
+  }  
+  .toast.show{  
+    opacity:1;  
+    transform:translateX(-50%) translateY(-4px);  
+    pointer-events:auto;  
+  }  
+  
+  /* Danh sách trong modal nhắc nhở */  
+  .reminder-list{  
+    display:flex;  
+    flex-direction:column;  
+    gap:8px;  
+    margin-top:8px;  
+  }  
+  .reminder-item{  
+    border-radius:10px;  
+    border:1px solid #fee2e2;  
+    background:#fef2f2;  
+    padding:8px 10px;  
+    font-size:13px;  
+  }  
+  .reminder-item-header{  
+    display:flex;  
+    justify-content:space-between;  
+    gap:6px;  
+    margin-bottom:4px;  
+    font-weight:600;  
+    color:#b91c1c;  
+  }  
+  .reminder-item-body{  
+    color:#374151;  
+  }  
+  .reminder-item-meta{  
+    margin-top:4px;  
+    font-size:12px;  
+    color:#6b7280;  
+  }  
+  
+  /* ===== Highlight phiên bản mới nhất trong modal cập nhật ===== */  
+  .update-version-list{  
+    margin-top:8px;  
+    font-size:14px;  
+  }  
+  .update-version{  
+    border-radius:10px;  
+    border:1px solid #e5e7eb;  
+    padding:6px 8px;  
+    margin-bottom:6px;  
+    background:#f9fafb;  
+  }  
+  .update-version.latest{  
+    border-color:#22c55e;  
+    background:#ecfdf3;  
+    box-shadow:0 0 0 1px #bbf7d0;  
+  }  
+  .update-version-title{  
+    display:flex;  
+    justify-content:space-between;  
+    align-items:center;  
+    gap:6px;  
+    font-weight:600;  
+  }  
+  .update-version-title span.date{  
+    font-size:12px;  
+    color:#6b7280;  
+  }  
+  .update-badge{  
+    font-size:11px;  
+    padding:2px 8px;  
+    border-radius:999px;  
+    background:#16a34a;  
+    color:#fff;  
+    text-transform:uppercase;  
+    letter-spacing:.04em;  
+  }  
+  
+  @media (max-width:640px){  
+    .grid{grid-template-columns:1fr 1fr}  
+    .form-grid{grid-template-columns:1fr}  
+  }  
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -814,10 +832,14 @@
 <main class="list-wrap">
   <div id="cards" class="cards"></div>
   <div id="emptyMsg" class="empty" style="display:none;">
-    Chưa có phiếu tiêm nào. Bấm nút “+” ở góc dưới để thêm mới.
+  <div class="empty-box">
+    Chưa có phiếu tiêm nào. <br>Bấm nút “+” ở góc dưới để thêm mới.
+  </div>
   </div>
   <div id="searchEmptyMsg" class="empty" style="display:none;">
-    Không tìm thấy phiếu nào khớp từ khóa.
+  <div class="empty-box">
+    Không có kết quả phù hợp với tìm kiếm.
+  </div>
   </div>
 </main>
 
@@ -933,7 +955,7 @@
     </div>
     <div class="card-separator"></div>
     <div class="modal-body">
-      <p id="confirmMessage" style="font-size:15px;margin:0;"></p>
+      <p id="confirmMessage" style="font-size:15px;margin:0; white-space:pre-line;"></p>
 
       <div id="confirmCodeBlock"
            style="margin-top:10px;padding-top:8px;border-top:1px dashed #e5e7eb;
@@ -953,7 +975,7 @@
           pattern="[0-9]*"
           maxlength="4"
           placeholder="Nhập 4 số ở trên"
-          style="width:280px;text-align:center;letter-spacing:0.25em;
+          style="width:280px;text-align:center;letter-spacing:0.2em;
                  font-weight:600;margin-top:4px;font-size:16px;"
         >
         <div id="confirmCodeError"
@@ -1027,7 +1049,7 @@
     <div class="card-separator"></div>
     <div class="modal-body">
       <div class="form-row">
-        <label for="statsMonthInput">Tháng thống kê</label>
+        <label for="statsMonthInput">Chọn tháng</label>
         <input type="month" id="statsMonthInput">
         <p class="subtitle" style="margin:4px 0 0;font-size:13px;">
           Mặc định là tháng hiện tại. Chọn tháng khác để xem thống kê theo tháng đó.
@@ -1113,11 +1135,11 @@
     </div>
     <div class="card-separator"></div>
     <div class="modal-body">
-      <p style="margin:0 0 6px;font-size:14px;">
-        Phiên bản hiện tại: <strong id="currentVersionText">—</strong><br>
-        Phiên bản mới nhất trên máy chủ: <strong id="latestVersionText">—</strong>
-      </p>
-      <div id="updateDetails" style="font-size:14px;color:#374151;margin-top:6px;"></div>
+      <ul style="margin:0;padding-left:18px;font-size:14px;color:#374151;">
+        <li>Phiên bản hiện tại: <strong id="currentVersionText">—</strong></li>
+        <li>Phiên bản mới nhất: <strong id="latestVersionText">—</strong></li>
+      </ul>
+      <div id="updateDetails" style="font-size:14px;color:#374151;margin-top:8px;"></div>
     </div>
     <div class="card-separator"></div>
     <div class="modal-footer">
@@ -1149,6 +1171,7 @@
 </div>
 
 <div class="toast" id="toast"></div>
+<footer>© 2025 - Hoàng Đợi</footer>
 
 <script>
 (function(){
@@ -1319,7 +1342,7 @@
       if(!list.length){
         panelEl.innerHTML =
           '<div class="empty" style="padding:6px 8px;">'
-          + (placeholderWhenEmpty || 'Không có gợi ý')
+          + (placeholderWhenEmpty || 'Chưa có gợi ý phù hợp')
           + '</div>';
         return;
       }
@@ -1496,7 +1519,7 @@
   function showToast(msg){
     toastEl.textContent = msg;
     toastEl.classList.add('show');
-    setTimeout(()=>toastEl.classList.remove('show'),2000);
+    setTimeout(()=>toastEl.classList.remove('show'),3000);
   }
 
   function showAlert(msg, focusEl){
@@ -1518,6 +1541,9 @@
       if(confirmCodeValue) confirmCodeValue.textContent = confirmCode;
       if(confirmCodeError) confirmCodeError.style.display = 'none';
       if(confirmCodeBlock) confirmCodeBlock.style.display = 'block';
+      if (confirmCodeInput) {  
+	      confirmCodeInput.value = '';  
+      }
     }else{
       confirmCode = '';
       if(confirmCodeBlock) confirmCodeBlock.style.display = 'none';
@@ -1569,10 +1595,15 @@
       console.error(e);
       records = [];
     }
-  }
-
-  function saveToStorage(){
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+  }  
+  
+  function saveToStorage(){  
+    try {  
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));  
+    } catch (e) {  
+      console.error(e);  
+      showAlert('Không thể lưu dữ liệu vào bộ nhớ trình duyệt. Vui lòng kiểm tra dung lượng trống hoặc quyền lưu trữ.', null);  
+    }  
   }
 
   /* ================== KPI & THỐNG KÊ ================== */
@@ -1639,7 +1670,7 @@
         kpiMonthLabel.textContent = '(không hợp lệ)';
       }
     }else{
-      kpiMonthLabel.textContent = '(toàn bộ dữ liệu)';
+      kpiMonthLabel.textContent = '/TOÀN BỘ';
     }
   }
 
@@ -1956,7 +1987,7 @@
     const rec = records[index];
     if(!rec) return;
     askConfirm(
-      `Xóa phiếu tiêm của trại "${rec.traiNhan||''}" (ngày tiêm ${formatDate(rec.ngayTiem)||'?'} )?`,
+      `Xóa phiếu tiêm của trại "${rec.traiNhan||''}" (ngày tiêm ${formatDate(rec.ngayTiem)||'?'} )?\nLưu ý: hành động này không thể hoàn tác.`,
       'Xóa phiếu tiêm',
       ()=>{
         records.splice(index,1);
@@ -1965,7 +1996,7 @@
         vaccineSuggestionsRef.refresh();
         farmSuggestionsRef.refresh();
         renderRecords();
-        showAlert('Đã xóa phiếu.');
+        showAlert('Đã xóa phiếu tiêm.');
       },
       { requireCode:true }
     );
@@ -1982,23 +2013,23 @@
     const ghiChu     = ghiChuEl.value.trim();
 
     if(!ngayTiem){
-      showAlert('Vui lòng chọn ngày tiêm vaccine.', ngayTiemEl);
+      showAlert('Chưa chọn ngày tiêm.', ngayTiemEl);
       return;
     }
 
     if(!tenVaccine){
-      showAlert('Vui lòng nhập tên vaccine.', tenVaccineEl);
+      showAlert('Chưa nhập tên vaccine.', tenVaccineEl);
       return;
     }
 
     if(!traiNhan){
-      showAlert('Vui lòng nhập tên trại nhận.', traiNhanEl);
+      showAlert('Chưa nhập tên trại nhận.', traiNhanEl);
       return;
     }
 
     const tongSo = Number(tongSoRaw);
     if(!tongSoRaw || !Number.isFinite(tongSo) || tongSo <= 0){
-      showAlert('Vui lòng nhập Tổng số lượng con > 0.', tongSoEl);
+      showAlert('Tổng số lượng phải lớn hơn 0.', tongSoEl);
       return;
     }
 
@@ -2020,7 +2051,7 @@
     }
 
     if(soDuc + soCai !== tongSo){
-      showAlert('Số con đực + số con cái phải đúng bằng Tổng số lượng con.', soCaiEl);
+      showAlert('Số đực + số cái không khớp với tổng số.', soCaiEl);
       return;
     }
 
@@ -2116,14 +2147,24 @@
     if(currentVersionText) currentVersionText.textContent = currentVer;
     if(latestVersionText)  latestVersionText.textContent  = computedLatest;
 
+    // 🔹 Mặc định ẩn nút "Tải lại ứng dụng"
+    if(btnReloadApp){
+      btnReloadApp.style.display = 'none';
+    }
+
     if(updateDetailsEl){
       let html = '';
 
       if(currentVer !== '—' && computedLatest !== '—'){
         if(currentVer === computedLatest){
-          html += `<p><strong>Bạn đang dùng phiên bản mới nhất (${esc(currentVer)}).</strong></p>`;
+          html += `<p><strong>Bạn đang dùng phiên bản mới nhất.</strong></p>`;
+          // Giữ ẩn nút Tải lại ứng dụng
         }else{
           html += `<p><strong>Đã có bản mới: ${esc(computedLatest)} (bản hiện tại: ${esc(currentVer)})</strong></p>`;
+          // 🔹 Chỉ khi có bản mới, mới hiện nút Tải lại
+          if(btnReloadApp){
+            btnReloadApp.style.display = 'inline-flex';
+          }
         }
       }
 
@@ -2179,6 +2220,10 @@
           `;
         }else{
           html += '<p>Đã có bản cập nhật mới. Bạn có thể tải lại ứng dụng để áp dụng thay đổi.</p>';
+          // Trường hợp này thường nghĩa là có bản mới → cho phép reload
+          if(btnReloadApp){
+            btnReloadApp.style.display = 'inline-flex';
+          }
         }
       }
 
@@ -2198,7 +2243,7 @@
   }
 
   function checkForUpdate(){
-    const currentVersion = window.__APP_VERSION__ || 'v1.0.1';
+    const currentVersion = window.__APP_VERSION__ || 'v1.0.2';
     showToast('Đang kiểm tra cập nhật...');
     fetch('/swine-vaccination-tracker/version.json?ts=' + Date.now(), {
       cache: 'no-store'
@@ -2254,7 +2299,7 @@
   document.getElementById('btnExport').addEventListener('click',()=>{
     closeFabMenu();
     if(!records.length){
-      showAlert('Không có dữ liệu để xuất.');
+      showAlert('Chưa có dữ liệu để xuất.');
       return;
     }
 
@@ -2317,13 +2362,13 @@
     const fileName = `swine-vaccination-tracker_${yyyy}-${mm}-${dd}.xlsx`;
 
     XLSX.writeFile(wb, fileName);
-    showAlert('Đã xuất file Excel (.xlsx).');
+    showAlert('Đã xuất toàn bộ dữ liệu ra file Excel (.xlsx).');
   });
 
   document.getElementById('btnBackup').addEventListener('click',()=>{
     closeFabMenu();
     if(!records.length){
-      showAlert('Không có dữ liệu để sao lưu.');
+      showAlert('Chưa có dữ liệu để sao lưu.');
       return;
     }
     const json = JSON.stringify(records, null, 2);
@@ -2336,7 +2381,7 @@
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    showAlert('Đã tải file sao lưu JSON.');
+    showAlert('Đã tải file sao lưu dữ liệu.');
   });
 
   document.getElementById('btnRestore').addEventListener('click',()=>{
@@ -2346,7 +2391,7 @@
       return;
     }
     askConfirm(
-      'Khôi phục từ file JSON sẽ THAY THẾ toàn bộ dữ liệu hiện tại. Tiếp tục?',
+      'Khôi phục sẽ thay thế toàn bộ dữ liệu hiện tại. Tiếp tục?',
       'Khôi phục dữ liệu',
       ()=>{
         fileRestore.click();
@@ -2377,7 +2422,8 @@
         vaccineSuggestionsRef.refresh();
         farmSuggestionsRef.refresh();
         renderRecords();
-        showAlert('Đã khôi phục dữ liệu từ file JSON.');
+        showAlert('Đã khôi phục dữ liệu.');
+        maybeAutoReminder(true);
       }catch(err){
         console.error(err);
         showAlert('Không đọc được file JSON hoặc nội dung không hợp lệ.');
@@ -2395,12 +2441,12 @@
   document.getElementById('btnDeleteAll').addEventListener('click',()=>{
     closeFabMenu();
     if(!records.length){
-      showAlert('Không có dữ liệu để xóa.');
+      showAlert('Chưa có dữ liệu để xóa.');
       return;
     }
     askConfirm(
-      'Xóa TẤT CẢ phiếu tiêm vaccine? Hành động này không thể hoàn tác.',
-      'Xóa tất cả',
+      'Bạn muốn xóa tất cả dữ liệu?\nLưu ý: Hành động này không thể hoàn tác.',
+      'Xóa tất cả dữ liệu',
       ()=>{
         records = [];
         saveToStorage();
@@ -2602,7 +2648,7 @@
     ${rangeLabel ? esc(rangeLabel) : ''}
   </p>
   <p class="meta">
-    File được xuất lúc ${esc(nowText)} bởi hệ thống ${esc(APP_NAME_EN)} (${esc(APP_NAME_VI)})
+    File được xuất lúc ${esc(nowText)} bởi hệ thống ${esc(APP_NAME_EN)} - ${esc(APP_NAME_VI)}
   </p>
 </body>
 </html>`;
@@ -2611,7 +2657,7 @@
   function openPrintView(printAllMode){
     if(!records.length){
       closeModal('printModal');
-      showAlert('Không có dữ liệu để in.');
+      showAlert('Chưa có dữ liệu để in hoặc xuất file pdf.');
       return;
     }
 
@@ -2624,7 +2670,7 @@
 
     if(!list.length){
       closeModal('printModal');
-      showAlert('Không có bản ghi nào để in.');
+      showAlert('Chưa có bản ghi nào để in hoặc xuất file pdf.');
       return;
     }
 
@@ -2647,6 +2693,12 @@
         }
       }
 
+      if(fromDate && toDate && fromDate > toDate){
+        closeModal('printModal');
+        showAlert('Ngày bắt đầu không được lớn hơn ngày kết thúc.', printFromEl);
+        return;
+      }
+
       if(fromDate || toDate){
         list = list.filter(r=>{
           const d = parseDateYMD(r.ngayTiem);
@@ -2658,35 +2710,35 @@
 
         if(!list.length){
           closeModal('printModal');
-          showAlert('Không có bản ghi nào trong khoảng ngày đã chọn để in.');
+          showAlert('Chưa có bản ghi nào trong khoảng ngày đã chọn để in hoặc xuất file pdf.');
           return;
         }
 
         const fmtVN = s => s ? formatDate(s) : '...';
 
         if(fromStr && toStr){
-          rangeLabel = `Danh sách được trích lọc từ ngày ${fmtVN(fromStr)} đến ngày ${fmtVN(toStr)}`;
+          rangeLabel = `Dữ liệu được trích lọc từ ngày ${fmtVN(fromStr)} đến ngày ${fmtVN(toStr)}`;
         }else if(fromStr && !toStr){
-          rangeLabel = `Danh sách được trích lọc từ ngày ${fmtVN(fromStr)} trở đi`;
+          rangeLabel = `Dữ liệu được trích lọc từ ngày ${fmtVN(fromStr)} trở đi`;
         }else if(!fromStr && toStr){
-          rangeLabel = `Danh sách được trích lọc đến hết ngày ${fmtVN(toStr)}`;
+          rangeLabel = `Dữ liệu được trích lọc đến hết ngày ${fmtVN(toStr)}`;
         }
       }else{
         const earliest = parseDateYMD(list[list.length - 1].ngayTiem) || new Date();
         const today    = new Date();
         const fmtVN = d => `${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()}`;
-        rangeLabel = `Danh sách được trích lọc từ ngày ${fmtVN(earliest)} đến ngày ${fmtVN(today)}`;
+        rangeLabel = `Dữ liệu được trích lọc từ ngày ${fmtVN(earliest)} đến ngày ${fmtVN(today)}`;
       }
     }else{
       const earliest = parseDateYMD(list[list.length - 1].ngayTiem) || new Date();
       const today    = new Date();
       const fmtVN = d => `${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()}`;
-      rangeLabel = `Danh sách được trích lọc từ ngày ${fmtVN(earliest)} đến ngày ${fmtVN(today)}`;
+      rangeLabel = `Dữ liệu được trích lọc từ ngày ${fmtVN(earliest)} đến ngày ${fmtVN(today)}`;
     }
 
     if(!list.length){
       closeModal('printModal');
-      showAlert('Không có bản ghi nào để in.');
+      showAlert('Chưa có bản ghi nào để in hoặc xuất file pdf.');
       return;
     }
 
@@ -2727,7 +2779,7 @@
   function openPrintModal(){
     closeFabMenu();
     if (!records.length) {
-      showAlert('Không có dữ liệu để in.');
+      showAlert('Chưa có dữ liệu để in hoặc xuất file pdf.');
       return;
     }
 
@@ -2883,7 +2935,7 @@
 <script>
 (function(){
   'use strict';
-  const APP_VERSION = 'v1.0.1';
+  const APP_VERSION = 'v1.0.2';
   window.__APP_VERSION__ = APP_VERSION;
 
   if ('serviceWorker' in navigator) {
