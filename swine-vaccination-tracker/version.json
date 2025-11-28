@@ -8,21 +8,33 @@
   "channel": "stable",
 
   "version": "v1.0.0",
-  "release_date": "2025-11-27",
-  "summary": "Phiên bản khởi tạo ứng dụng theo dõi tiêm vaccine cho heo.",
+  "release_date": "2025-11-28",
+  "summary": "Sửa lỗi nhỏ và tối ưu UI.",
 
   "latest": {
-    "version": "v1.0.0",
-    "release_date": "2025-11-27",
-    "summary": "Phiên bản đầu tiên phát hành chính thức.",
+    "version": "v1.0.1",
+    "release_date": "2025-11-28",
+    "summary": "Sửa lỗi nhỏ và tối ưu UI.",
     "changelog": [
-      "Offline hoàn toàn sau khi cài đặt.",
-      "Không yêu cầu tài khoản, không gửi dữ liệu ra ngoài.",
-      "Quản lý phiếu tiêm, tìm kiếm, in PDF, Excel, backup JSON."
+      "Sửa bug hiển thị thông báo.",
+      "Tối ưu logic in/xuất file pdf.",
+      "Thay đổi logo của ứng dụng.",
+      "Cải thiện giao diện và trải nghiệm người dùng."
     ]
   },
 
   "versions": [
+    {
+      "version": "v1.0.1",
+      "release_date": "2025-11-28",
+      "summary": "Sửa lỗi nhỏ và tối ưu UI.",
+      "changelog": [
+        "Sửa bug hiển thị thông báo.",
+        "Tối ưu logic in/xuất file pdf.",
+        "Thay đổi logo của ứng dụng.",
+        "Cải thiện giao diện và trải nghiệm người dùng."
+      ]
+    },
     {
       "version": "v1.0.0",
       "release_date": "2025-11-27",

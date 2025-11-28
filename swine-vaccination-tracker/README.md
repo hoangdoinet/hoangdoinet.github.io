@@ -54,7 +54,7 @@ Link chính thức:
 
 ## 🔄 Phiên bản
 
-**Current version:** `v1.0.0`  
+**Current version:** `v1.0.1`  
 Xem lịch sử cập nhật tại:  
 `/version.json`
 

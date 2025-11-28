@@ -41,7 +41,7 @@
 <meta name="apple-mobile-web-app-title" content="Swine Vaccination Tracker">
 
 <!-- Manifest -->
-<link rel="manifest" href="/swine-vaccination-tracker/manifest.webmanifest">
+<link rel="manifest" href="manifest.webmanifest">
 
 <!-- Icons -->
 <link rel="apple-touch-icon" href="/swine-vaccination-tracker/icons/icon-180.png">
@@ -80,7 +80,7 @@
     "priceCurrency": "VND",
     "category": "Free"
   },
-  "softwareVersion": "v1.0.0"
+  "softwareVersion": "v1.0.1"
 }
 </script>
 
@@ -832,9 +832,6 @@
     <button class="fab-item" id="btnStats">
       <span class="icon">📊</span> Báo cáo - Thống kê
     </button>
-    <button class="fab-item" id="btnCheckUpdate" style="display:none;">
-      <span class="icon">🔃</span> Kiểm tra cập nhật
-    </button>
     <button class="fab-item" id="btnReminder">
       <span class="icon">🔔</span>
       <span>Thông báo</span>
@@ -854,6 +851,9 @@
     </button>
     <button class="fab-item danger" id="btnDeleteAll">
       <span class="icon">🗑️</span> Xóa tất cả
+    </button>
+    <button class="fab-item" id="btnCheckUpdate" style="display:none;">
+      <span class="icon">🔃</span> Kiểm tra cập nhật
     </button>
   </div>
 
@@ -2198,7 +2198,7 @@
   }
 
   function checkForUpdate(){
-    const currentVersion = window.__APP_VERSION__ || 'v1.0.0';
+    const currentVersion = window.__APP_VERSION__ || 'v1.0.1';
     showToast('Đang kiểm tra cập nhật...');
     fetch('/swine-vaccination-tracker/version.json?ts=' + Date.now(), {
       cache: 'no-store'
@@ -2610,6 +2610,7 @@
 
   function openPrintView(printAllMode){
     if(!records.length){
+      closeModal('printModal');
       showAlert('Không có dữ liệu để in.');
       return;
     }
@@ -2622,6 +2623,7 @@
     });
 
     if(!list.length){
+      closeModal('printModal');
       showAlert('Không có bản ghi nào để in.');
       return;
     }
@@ -2655,6 +2657,7 @@
         });
 
         if(!list.length){
+          closeModal('printModal');
           showAlert('Không có bản ghi nào trong khoảng ngày đã chọn để in.');
           return;
         }
@@ -2682,6 +2685,7 @@
     }
 
     if(!list.length){
+      closeModal('printModal');
       showAlert('Không có bản ghi nào để in.');
       return;
     }
@@ -2722,6 +2726,10 @@
 
   function openPrintModal(){
     closeFabMenu();
+    if (!records.length) {
+      showAlert('Không có dữ liệu để in.');
+      return;
+    }
 
     const today = new Date();
     const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -2768,14 +2776,14 @@
     btnInstallNow.addEventListener('click', async ()=>{
       if(!deferredInstallPrompt){
         closeModal('installModal');
-        showAlert('Hiện thiết bị chưa sẵn sàng để cài đặt như ứng dụng.');
+        showAlert('Hiện thiết bị chưa sẵn sàng để cài đặt ứng dụng.');
         return;
       }
       try{
         deferredInstallPrompt.prompt();
         const choice = await deferredInstallPrompt.userChoice;
         if(choice && choice.outcome === 'accepted'){
-          showToast('Cảm ơn bạn! Ứng dụng sẽ được cài đặt vào thiết bị.');
+          showToast('Ứng dụng đang cài đặt vào thiết bị. Vui lòng chờ..');
         }else{
           showAlert('Bạn đã hủy cài đặt ứng dụng.');
         }
@@ -2875,7 +2883,7 @@
 <script>
 (function(){
   'use strict';
-  const APP_VERSION = 'v1.0.0';
+  const APP_VERSION = 'v1.0.1';
   window.__APP_VERSION__ = APP_VERSION;
 
   if ('serviceWorker' in navigator) {
