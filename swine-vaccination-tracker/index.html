@@ -1,810 +1,802 @@
-<!DOCTYPE html>  
-<html lang="vi">  
-<head>  
-<meta charset="utf-8">  
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">  
-  
-<title>Swine Vaccination Tracker - Theo dõi tiêm vaccine cho heo</title>  
-  
-<meta name="description" content="Swine Vaccination Tracker - Ứng dụng theo dõi ngày tiêm vaccine cho heo: Hyogen, Porcicorvirus, Tulinovet,... ghi nhận ngày xuất heo, trại nhận, tổng số con, đực/cái, ghi chú; hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục dữ liệu, hỗ trợ cài đặt ứng dụng trên Android & iOS để sử dụng offline.">  
-<meta name="author" content="Hoàng Đợi">  
-<meta name="robots" content="index,follow">  
-<link rel="canonical" href="https://hoangdoinet.github.io/swine-vaccination-tracker/">  
-<meta name="keywords" content="Swine Vaccination Tracker, theo dõi tiêm vaccine cho heo, vaccine heo, lịch tiêm heo, quản lý trại heo, ứng dụng offline, PWA chăn nuôi, Hyogen, Porcicorvirus, Tulinovet">  
-  
-<!-- Open Graph -->  
-<meta property="og:locale" content="vi_VN">  
-<meta property="og:type" content="website">  
-<meta property="og:title" content="Swine Vaccination Tracker - Theo dõi tiêm vaccine cho heo">  
-<meta property="og:description" content="Ứng dụng theo dõi ngày tiêm vaccine cho heo, ghi nhận ngày tiêm/ngày xuất, trại nhận, tổng số con, đực/cái, ghi chú; hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục, hỗ trợ cài đặt ứng dụng trên Android & iOS để sử dụng offline.">  
-<meta property="og:url" content="https://hoangdoinet.github.io/swine-vaccination-tracker/">  
-<meta property="og:site_name" content="Swine Vaccination Tracker">  
-<meta property="og:image" content="https://hoangdoinet.github.io/swine-vaccination-tracker/icons/icon-512.png">  
-<meta property="og:image:type" content="image/png">  
-<meta property="og:image:width" content="512">  
-<meta property="og:image:height" content="512">  
-  
-<!-- Twitter Card -->  
-<meta name="twitter:card" content="summary_large_image">  
-<meta name="twitter:title" content="Swine Vaccination Tracker - Theo dõi tiêm vaccine cho heo">  
-<meta name="twitter:description" content="Ứng dụng theo dõi ngày tiêm vaccine cho heo, hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục, hoạt động offline sau lần tải đầu tiên.">  
-<meta name="twitter:image" content="https://hoangdoinet.github.io/swine-vaccination-tracker/icons/icon-512.png">  
-  
-<!-- ===== PWA META - PRODUCTION READY ===== -->  
-<meta name="application-name" content="Swine Vaccination Tracker">  
-<meta name="mobile-web-app-capable" content="yes">  
-<meta name="theme-color" content="#22c55e">  
-  
-<!-- iOS PWA -->  
-<meta name="apple-mobile-web-app-capable" content="yes">  
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">  
-<meta name="apple-mobile-web-app-title" content="Swine Vaccination Tracker">  
-  
-<!-- Manifest -->  
-<link rel="manifest" href="/swine-vaccination-tracker/manifest.webmanifest">  
-  
-<!-- Icons -->  
-<link rel="apple-touch-icon" href="/swine-vaccination-tracker/icons/icon-180.png">  
-<link rel="icon" type="image/png" href="/swine-vaccination-tracker/icons/icon-32.png" sizes="32x32">  
-<link rel="icon" type="image/png" href="/swine-vaccination-tracker/icons/icon-192.png" sizes="192x192">  
-  
-<!-- Preload icons for fast splash -->  
-<link rel="preload" href="/swine-vaccination-tracker/icons/icon-512.png" as="image">  
-<link rel="preload" href="/swine-vaccination-tracker/icons/maskable-512.png" as="image">  
-<!-- ===== END PWA META ===== -->  
-  
-<!-- JSON-LD: SoftwareApplication -->  
-<script type="application/ld+json">  
-{  
-  "@context": "https://schema.org",  
-  "@type": "SoftwareApplication",  
-  "name": "Swine Vaccination Tracker",  
-  "alternateName": "Theo dõi tiêm vaccine cho heo",  
-  "applicationCategory": "MedicalApplication",  
-  "operatingSystem": "Android, iOS, Web",  
-  "inLanguage": "vi-VN",  
-  "url": "https://hoangdoinet.github.io/swine-vaccination-tracker/",  
-  "image": "https://hoangdoinet.github.io/swine-vaccination-tracker/icons/icon-512.png",  
-  "description": "Ứng dụng theo dõi ngày tiêm vaccine cho heo: ghi nhận ngày tiêm, ngày xuất, trại nhận, tổng số con, đực/cái, ghi chú; hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục, hoạt động offline sau lần tải đầu tiên.",  
-  "creator": {  
-    "@type": "Person",  
-    "name": "Hoàng Đợi"  
-  },  
-  "author": {  
-    "@type": "Person",  
-    "name": "Hoàng Đợi"  
-  },  
-  "offers": {  
-    "@type": "Offer",  
-    "price": "0",  
-    "priceCurrency": "VND",  
-    "category": "Free"  
-  },  
-  "softwareVersion": "v1.0.2"  
-}  
-</script>  
-  
-<style>  
-  :root{  
-    --bg:#f7f9fc;  
-    --card:#ffffff;  
-    --text:#0f172a;  
-    --muted:#6b7280;  
-    --accent:#22c55e;  
-    --accent-2:#16a34a;  
-    --danger:#ef4444;  
-    --border:#e5e7eb;  
-    --shadow:0 10px 25px rgba(15,23,42,.08);  
-    --radius:14px;  
-  }  
-  *{box-sizing:border-box}  
-  body{  
-    margin:0;  
-    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;  
-    background:linear-gradient(180deg,#f9fafb,#eef2f7);  
-    color:var(--text);  
-    font-size:15px;  
-    line-height:1.5;  
-  }  
-  header{  
-    position:sticky;top:0;z-index:10;  
-    background:radial-gradient(120% 120% at 0% 0%,#bbf7d0 0%,#f9fafb 45%,#eef2ff 100%);  
-    border-bottom:1px solid rgba(148,163,184,.3);  
-    backdrop-filter:blur(10px);  
-  }  
-  .wrap{  
-    max-width:1080px;  
-    margin:0 auto;  
-    padding:12px 16px 16px;  
-  }  
-  h1{  
-    margin:0 0 8px;  
-    font-size:clamp(22px,5vw,26px);  
-    letter-spacing:.02em;  
-    text-align:center;  
-  }  
-  .subtitle{  
-    margin:0;  
-    font-size:14px;  
-    color:var(--muted);  
-  }  
-  
-  /* Search */  
-  .top-bar{  
-    display:flex;  
-    flex-direction:column;  
-    gap:10px;  
-    margin-top:12px;  
-  }  
-  .search{  
-    position:relative;  
-  }  
-  .search input{  
-    width:100%;  
-    padding:10px 34px 10px 32px;  
-    border-radius:999px;  
-    border:1px solid var(--border);  
-    font-size:15px;  
-    outline:none;  
-    background:#ffffffdd;  
-    box-shadow:0 4px 12px rgba(15,23,42,.04);  
-  }  
-  .search input:focus{  
-    border-color:#86efac;  
-    box-shadow:0 0 0 2px rgba(34,197,94,.18);  
-    background:#fff;  
-  }  
-  .search-icon{  
-    position:absolute;  
-    left:10px;  
-    top:50%;  
-    transform:translateY(-50%);  
-    font-size:15px;  
-    color:var(--muted);  
-  }  
-  .search-clear{  
-    position:absolute;  
-    right:8px;  
-    top:50%;  
-    transform:translateY(-50%);  
-    border:none;  
-    background:transparent;  
-    cursor:pointer;  
-    font-size:18px;  
-    line-height:1;  
-    color:var(--muted);  
-    padding:4px;  
-    border-radius:999px;  
-  }  
-  .search-clear:hover{  
-    background:#e5e7eb;  
-  }  
-  
-  /* 🔹 Nút Cài đặt ứng dụng dưới input */  
-  .install-wrap{  
-    margin-top:4px;  
-    display:none;  
-    justify-content:center;  
-  }  
-  .btn-install{  
-    border-radius:999px;  
-    border:1px dashed #16a34a;  
-    background:#ecfdf5;  
-    color:#166534;  
-    font-size:14px;  
-    padding:6px 18px;  
-    cursor:pointer;  
-    display:inline-flex;  
-    align-items:center;  
-    gap:6px;  
-    box-shadow:0 4px 10px rgba(16,185,129,.16);  
-    font-weight:600;  
-  }  
-  .btn-install span.icon{  
-    font-size:16px;  
-  }  
-  .btn-install:hover{  
-    background:#dcfce7;  
-  }  
-  
-  /* KPI cho modal thống kê */  
-  .kpis{  
-    display:grid;  
-    grid-template-columns:repeat(2, minmax(0, 1fr));  
-    gap:8px;  
-    margin-top:8px;  
-  }  
-  .pill{  
-    display:flex;  
-    align-items:center;  
-    justify-content:space-between;  
-    gap:6px;  
-    padding:6px 10px;  
-    border-radius:999px;  
-    font-size:13px;  
-    white-space:nowrap;  
-  }  
-  .pill .value{  
-    font-weight:600;  
-    font-size:15px;  
-    margin-left:4px;  
-  }  
-  
-  .section-title{  
-    margin:0 0 4px;  
-    font-size:13px;  
-    color:var(--muted);  
-    font-weight:600;  
-    text-align:center;  
-  }  
-  
-  .kpis-month .pill{  
-    background:#eff6ff;  
-    border:1px solid #bfdbfe;  
-    color:#1d4ed8;  
-  }  
-  .kpis-all .pill{  
-    background:#ecfdf3;  
-    border:1px solid #bbf7d0;  
-    color:#15803d;  
-  }  
-  
-  /* Cards list */  
-  .list-wrap{  
-    max-width:1080px;  
-    margin:0 auto;  
-    padding:8px 16px 40px;  
-  }  
-  .cards{  
-    display:flex;  
-    flex-direction:column;  
-    gap:10px;  
-    margin-top:4px;  
-  }  
-  .card{  
-    background:var(--card);  
-    border-radius:var(--radius);  
-    border:1px solid var(--border);  
-    box-shadow:var(--shadow);  
-    padding:12px 12px 10px;  
-    display:flex;  
-    flex-direction:column;  
-    gap:6px;  
-  }  
-  .card-header{  
-    display:flex;  
-    justify-content:space-between;  
-    gap:8px;  
-    align-items:flex-start;  
-  }  
-  .card-title{  
-    font-weight:600;  
-    font-size:16px;  
-  }  
-  .card-subtitle{  
-    font-size:13px;  
-    color:var(--muted);  
-  }  
-  .badge{  
-    display:inline-flex;  
-    align-items:center;  
-    padding:2px 8px;  
-    border-radius:999px;  
-    font-size:12px;  
-    background:#dcfce7;  
-    color:#166534;  
-    border:1px solid #bbf7d0;  
-    white-space:nowrap;  
-  }  
-  .badge.warning{  
-    background:#fef3c7;  
-    color:#92400e;  
-    border-color:#fde68a;  
-  }  
-  
-  .card-overdue{  
-    border-color:#fecaca;  
-    box-shadow:0 0 0 1px #fecaca, var(--shadow);  
-  }  
-  .card-overdue .badge{  
-    background:#fef3c7;  
-    color:#92400e;  
-    border-color:#fde68a;  
-  }  
-  
-  .card-separator{  
-    height:1px;  
-    margin:4px 0;  
-    background:linear-gradient(90deg,transparent,rgba(148,163,184,.7),transparent);  
-    opacity:.9;  
-  }  
-  
-  .grid{  
-    display:grid;  
-    grid-template-columns:repeat(2,minmax(0,1fr));  
-    gap:6px 10px;  
-    margin-top:4px;  
-  }  
-  
-  .field{  
-    padding:4px 6px;  
-    border-radius:8px;  
-  }  
-  .field-label{  
-    font-size:12px;  
-    color:var(--muted);  
-  }  
-  .field-value{  
-    font-size:14px;  
-    font-weight:500;  
-  }  
-  
-  .field-highlight{  
-    border:1px solid transparent;  
-  }  
-  .field-ngaytiem{  
-    border-color:rgba(34,197,94,.35);  
-    background:rgba(220,252,231,.7);  
-  }  
-  .field-ngayxuat{  
-    border-color:rgba(59,130,246,.35);  
-    background:rgba(239,246,255,.9);  
-  }  
-  .field-duc{  
-    border-color:rgba(249,115,22,.35);  
-    background:rgba(255,247,237,.9);  
-  }  
-  .field-cai{  
-    border-color:rgba(168,85,247,.35);  
-    background:rgba(250,245,255,.9);  
-  }  
-  
-  .notes{  
-    margin-top:4px;  
-    padding:6px 8px;  
-    border-radius:8px;  
-    background:#f9fafb;  
-    border:1px dashed #e5e7eb;  
-    font-size:13px;  
-    color:#4b5563;  
-    white-space:pre-wrap;  
-  }  
-  .card-actions{  
-    margin-top:6px;  
-    display:flex;  
-    justify-content:flex-end;  
-    gap:6px;  
-  }  
-  .btn-small{  
-    border-radius:999px;  
-    border:1px solid var(--border);  
-    background:#f9fafb;  
-    font-size:12px;  
-    padding:4px 11px;  
-    cursor:pointer;  
-    color:#374151;  
-  }  
-  .btn-small.danger{  
-    border-color:#fecaca;  
-    color:#b91c1c;  
-    background:#fef2f2;  
-  }  
-  .btn-small:hover{  
-    filter:brightness(0.97);  
-  }  
-  .empty{  
-    margin-top:18px;  
-    font-size:14px;  
-    color:var(--muted);  
-    text-align:center;  
-  }  
-	.empty-box{  
-	  display:inline-block;  
-	  padding:10px 16px;  
-	  border-radius:12px;  
-	  border:1px dashed var(--border);  
-	  background:#f9fafb;  
-	  
-	  font-size:15px;  
-	  font-weight:600;  
-	  color:#1f2937;  
-	  letter-spacing:0.2px;  
-	}  
-  /* FAB menu */  
-  .fab{  
-    position:fixed;  
-    right:16px;  
-    bottom:16px;  
-    z-index:30;  
-    display:flex;  
-    flex-direction:column;  
-    align-items:flex-end;  
-    gap:10px;  
-  }  
-  .fab-backdrop{  
-    position:fixed;  
-    inset:0;  
-    background:rgba(15,23,42,.25);  
-    backdrop-filter:blur(2px);  
-    display:none;  
-    z-index:20;  
-  }  
-  .fab.open .fab-backdrop{  
-    display:block;  
-  }  
-  .fab-menu{  
-    position:absolute;  
-    right:0;  
-    bottom:60px;  
-    display:none;  
-    flex-direction:column;  
-    gap:8px;  
-    padding:10px;  
-    background:#ffffff;  
-    border:1px solid var(--border);  
-    border-radius:16px;  
-    box-shadow:0 18px 40px rgba(15,23,42,.18);  
-    min-width:230px;  
-    z-index:30;  
-  }  
-  .fab.open .fab-menu{  
-    display:flex;  
-  }  
-  .fab-item{  
-    display:flex;  
-    align-items:center;  
-    gap:8px;  
-    padding:8px 10px;  
-    border-radius:10px;  
-    border:1px solid #e5e7eb;  
-    background:#fff;  
-    font-size:14px;  
-    font-weight:600;  
-    cursor:pointer;  
-    white-space:nowrap;  
-    position:relative;  
-  }  
-  .fab-item span.icon{  
-    font-size:16px;  
-  }  
-  .fab-item:hover{  
-    background:#f9fafb;  
-  }  
-  .fab-item.danger{  
-    border-color:#fecaca;  
-    background:#fef2f2;  
-    color:#b91c1c;  
-  }  
-  .fab-badge{  
-    position:absolute;  
-    top:4px;  
-    right:8px;  
-    min-width:18px;  
-    height:18px;  
-    padding:0 5px;  
-    border-radius:999px;  
-    background:#ef4444;  
-    color:#fff;  
-    font-size:11px;  
-    display:flex;  
-    align-items:center;  
-    justify-content:center;  
-    box-shadow:0 0 0 2px #ffffff;  
-  }  
-  .fab-item.has-reminder span.icon{  
-    color:#b91c1c;  
-  }  
-  
-  .fab-main{  
-    width:52px;  
-    height:52px;  
-    border-radius:999px;  
-    border:none;  
-    background:linear-gradient(135deg,var(--accent),var(--accent-2));  
-    color:#fff;  
-    box-shadow:0 12px 30px rgba(22,163,74,.6);  
-    font-size:26px;  
-    font-weight:900;  
-    display:flex;  
-    align-items:center;  
-    justify-content:center;  
-    cursor:pointer;  
-    z-index:31;  
-  }  
-  .fab-main:active{  
-    transform:scale(.96);  
-  }  
-  
-  /* Modals */  
-  .modal{  
-    position:fixed;  
-    inset:0;  
-    display:flex;  
-    align-items:center;  
-    justify-content:center;  
-    background:rgba(15,23,42,.35);  
-    backdrop-filter:blur(6px);  
-    padding:16px;  
-    opacity:0;  
-    visibility:hidden;  
-    pointer-events:none;  
-    transition:opacity .2s ease,visibility .2s ease;  
-    z-index:40;  
-  }  
-  .modal.show{  
-    opacity:1;  
-    visibility:visible;  
-    pointer-events:auto;  
-  }  
-  .modal-content{  
-    width:100%;  
-    max-width:480px;  
-    background:#fff;  
-    border-radius:18px;  
-    box-shadow:0 18px 45px rgba(15,23,42,.45);  
-    padding:14px 16px 14px;  
-    max-height:90vh;  
-    overflow:auto;  
-  }  
-  .modal-header{  
-    display:flex;  
-    justify-content:space-between;  
-    align-items:center;  
-    gap:8px;  
-    margin-bottom:4px;  
-  }  
-  .modal-title{  
-    margin:0;  
-    font-size:17px;  
-    font-weight:600;  
-  }  
-  .modal-close{  
-    border:none;  
-    background:transparent;  
-    font-size:20px;  
-    cursor:pointer;  
-    color:var(--muted);  
-  }  
-  .modal-body{  
-    font-size:15px;  
-    margin-top:4px;  
-  }  
-  .modal-footer{  
-    display:flex;  
-    justify-content:flex-end;  
-    gap:8px;  
-    margin-top:8px;  
-  }  
-  .form-grid{  
-    display:grid;  
-    grid-template-columns:repeat(2,minmax(0,1fr));  
-    gap:8px 10px;  
-  }  
-  .form-row{  
-    margin-bottom:8px;  
-  }  
-  label{  
-    display:block;  
-    font-size:13px;  
-    color:var(--muted);  
-    margin-bottom:3px;  
-  }  
-  input[type="text"],  
-  input[type="number"],  
-  input[type="date"],  
-  input[type="month"],  
-  select,  
-  textarea{  
-    width:100%;  
-    padding:7px 9px;  
-    border-radius:9px;  
-    border:1px solid var(--border);  
-    font-size:14px;  
-    outline:none;  
-    background:#f9fafb;  
-  }  
-  input:focus,  
-  select:focus,  
-  textarea:focus{  
-    border-color:#86efac;  
-    box-shadow:0 0 0 2px rgba(34,197,94,.18);  
-    background:#ffffff;  
-  }  
-  textarea{  
-    min-height:50px;  
-    resize:vertical;  
-  }  
-  .btn{  
-    border-radius:999px;  
-    padding:7px 14px;  
-    border:1px solid transparent;  
-    font-size:14px;  
-    cursor:pointer;  
-  }  
-  .btn.primary{  
-    background:linear-gradient(135deg,var(--accent),var(--accent-2));  
-    color:#fff;  
-  }  
-  .btn.secondary{  
-    background:#f9fafb;  
-    color:#374151;  
-    border-color:var(--border);  
-  }  
-  .btn.danger{  
-    background:#fef2f2;  
-    border-color:#fecaca;  
-    color:#b91c1c;  
-  }  
-  
-  /* Gợi ý */  
-  .suggest-wrap{  
-    position:relative;  
-  }  
-  .suggest{  
-    display:none;  
-    position:absolute;  
-    left:0;  
-    right:0;  
-    top:calc(100% + 6px);  
-    background:rgba(17,24,39,.98);  
-    border:1px solid #334155;  
-    border-radius:12px;  
-    padding:10px;  
-    box-shadow:0 12px 30px rgba(0,0,0,.35);  
-    z-index:60;  
-  }  
-  .suggest.show{  
-    display:block;  
-    animation:pop .08s ease;  
-  }  
-  @keyframes pop{  
-    from{transform:translateY(-4px);opacity:.6}  
-    to{transform:translateY(0);opacity:1}  
-  }  
-  .suggest::before{  
-    content:"";  
-    position:absolute;  
-    top:-6px;  
-    left:16px;  
-    width:12px;  
-    height:12px;  
-    background:rgba(17,24,39,.98);  
-    border-left:1px solid #334155;  
-    border-top:1px solid #334155;  
-    transform:rotate(45deg);  
-  }  
-  .suggest .grid-chips{  
-    display:flex;  
-    flex-wrap:wrap;  
-    gap:8px;  
-  }  
-  .s-chip{  
-    padding:8px 14px;  
-    border:1px solid #334155;  
-    border-radius:12px;  
-    background:rgba(255,255,255,.03);  
-    color:#e5e7eb;  
-    font-size:15px;  
-    cursor:pointer;  
-    transition:transform .06s ease,border-color .2s ease,background .2s ease,color .2s ease;  
-  }  
-  .s-chip:hover{  
-    transform:translateY(-1px);  
-    border-color:#22c55e;  
-    background:rgba(34,197,94,.12);  
-    color:#86efac;  
-  }  
-  .suggest .empty{  
-    color:#94a3b8;  
-    font-size:14px;  
-  }  
-  
-  footer{  
-    text-align:center;  
-    color:#94a3b8;  
-    font-size:13px;  
-    margin:8px 0 8px  
-  }  
-  
-  /* Toast */  
-  .toast{  
-    position:fixed;  
-    bottom:80px;  
-    left:50%;  
-    transform:translateX(-50%);  
-    background:#14532d;  
-    color:#dcfce7;  
-    padding:6px 12px;  
-    border-radius:999px;  
-    font-size:13px;  
-    box-shadow:0 10px 25px rgba(15,23,42,.6);  
-    opacity:0;  
-    pointer-events:none;  
-    transition:opacity .2s ease,transform .2s ease;  
-    z-index:50;  
-  }  
-  .toast.show{  
-    opacity:1;  
-    transform:translateX(-50%) translateY(-4px);  
-    pointer-events:auto;  
-  }  
-  
-  /* Danh sách trong modal nhắc nhở */  
-  .reminder-list{  
-    display:flex;  
-    flex-direction:column;  
-    gap:8px;  
-    margin-top:8px;  
-  }  
-  .reminder-item{  
-    border-radius:10px;  
-    border:1px solid #fee2e2;  
-    background:#fef2f2;  
-    padding:8px 10px;  
-    font-size:13px;  
-  }  
-  .reminder-item-header{  
-    display:flex;  
-    justify-content:space-between;  
-    gap:6px;  
-    margin-bottom:4px;  
-    font-weight:600;  
-    color:#b91c1c;  
-  }  
-  .reminder-item-body{  
-    color:#374151;  
-  }  
-  .reminder-item-meta{  
-    margin-top:4px;  
-    font-size:12px;  
-    color:#6b7280;  
-  }  
-  
-  /* ===== Highlight phiên bản mới nhất trong modal cập nhật ===== */  
-  .update-version-list{  
-    margin-top:8px;  
-    font-size:14px;  
-  }  
-  .update-version{  
-    border-radius:10px;  
-    border:1px solid #e5e7eb;  
-    padding:6px 8px;  
-    margin-bottom:6px;  
-    background:#f9fafb;  
-  }  
-  .update-version.latest{  
-    border-color:#22c55e;  
-    background:#ecfdf3;  
-    box-shadow:0 0 0 1px #bbf7d0;  
-  }  
-  .update-version-title{  
-    display:flex;  
-    justify-content:space-between;  
-    align-items:center;  
-    gap:6px;  
-    font-weight:600;  
-  }  
-  .update-version-title span.date{  
-    font-size:12px;  
-    color:#6b7280;  
-  }  
-  .update-badge{  
-    font-size:11px;  
-    padding:2px 8px;  
-    border-radius:999px;  
-    background:#16a34a;  
-    color:#fff;  
-    text-transform:uppercase;  
-    letter-spacing:.04em;  
-  }  
-  
-  @media (max-width:640px){  
-    .grid{grid-template-columns:1fr 1fr}  
-    .form-grid{grid-template-columns:1fr}  
-  }  
-</style>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Swine Vaccination Tracker - Theo dõi tiêm vaccine cho heo</title>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <meta name="description" content="Swine Vaccination Tracker - Ứng dụng theo dõi ngày tiêm vaccine cho heo: Hyogen, Porcine Circovirus, Tulinovet,... ghi nhận ngày xuất heo, trại nhận, tổng số con, đực/cái, ghi chú; hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục dữ liệu, hỗ trợ cài đặt ứng dụng trên Android & iOS để sử dụng offline.">
+  <meta name="author" content="Hoàng Đợi">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://hoangdoinet.github.io/swine-vaccination-tracker/">
+  <meta name="keywords" content="Swine Vaccination Tracker, theo dõi tiêm vaccine cho heo, vaccine heo, lịch tiêm heo, quản lý trại heo, ứng dụng offline, PWA chăn nuôi, Hyogen, Porcine Circovirus, Tulinovet">
+
+  <!-- Open Graph -->
+  <meta property="og:locale" content="vi_VN">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Swine Vaccination Tracker - Theo dõi tiêm vaccine cho heo">
+  <meta property="og:description" content="Ứng dụng theo dõi ngày tiêm vaccine cho heo, ghi nhận ngày tiêm/ngày xuất, trại nhận, tổng số con, đực/cái, ghi chú; hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục, hỗ trợ cài đặt ứng dụng trên Android & iOS để sử dụng offline.">
+  <meta property="og:url" content="https://hoangdoinet.github.io/swine-vaccination-tracker/">
+  <meta property="og:site_name" content="Swine Vaccination Tracker">
+  <meta property="og:image" content="https://hoangdoinet.github.io/swine-vaccination-tracker/icons/icon-512.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Swine Vaccination Tracker - Theo dõi tiêm vaccine cho heo">
+  <meta name="twitter:description" content="Ứng dụng theo dõi ngày tiêm vaccine cho heo, hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục, hoạt động offline sau lần tải đầu tiên.">
+  <meta name="twitter:image" content="https://hoangdoinet.github.io/swine-vaccination-tracker/icons/icon-512.png">
+
+  <!-- ===== PWA META - PRODUCTION READY ===== -->
+  <meta name="application-name" content="Swine Vaccination Tracker">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#22c55e">
+
+  <!-- iOS PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Swine Vaccination Tracker">
+
+  <!-- Manifest -->
+  <link rel="manifest" href="/swine-vaccination-tracker/manifest.webmanifest">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon" href="/swine-vaccination-tracker/icons/icon-180.png">
+  <link rel="icon" type="image/png" href="/swine-vaccination-tracker/icons/icon-32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/swine-vaccination-tracker/icons/icon-192.png" sizes="192x192">
+
+  <!-- Preload icons for fast splash -->
+  <link rel="preload" href="/swine-vaccination-tracker/icons/icon-512.png" as="image">
+  <link rel="preload" href="/swine-vaccination-tracker/icons/maskable-512.png" as="image">
+  <!-- ===== END PWA META ===== -->
+
+  <!-- JSON-LD: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Swine Vaccination Tracker",
+    "alternateName": "Theo dõi tiêm vaccine cho heo",
+    "applicationCategory": "MedicalApplication",
+    "operatingSystem": "Android, iOS, Web",
+    "inLanguage": "vi-VN",
+    "url": "https://hoangdoinet.github.io/swine-vaccination-tracker/",
+    "image": "https://hoangdoinet.github.io/swine-vaccination-tracker/icons/icon-512.png",
+    "description": "Ứng dụng theo dõi ngày tiêm vaccine cho heo: ghi nhận ngày tiêm, ngày xuất, trại nhận, tổng số con, đực/cái, ghi chú; hỗ trợ tìm kiếm, in PDF, xuất Excel, sao lưu & khôi phục, hoạt động offline sau lần tải đầu tiên.",
+    "creator": {
+      "@type": "Person",
+      "name": "Hoàng Đợi"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Hoàng Đợi"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "VND",
+      "category": "Free"
+    },
+    "softwareVersion": "v1.0.3"
+  }
+  </script>
+
+  <style>
+    :root{
+      --bg:#f7f9fc;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#6b7280;
+      --accent:#22c55e;
+      --accent-2:#16a34a;
+      --danger:#ef4444;
+      --border:#e5e7eb;
+      --shadow:0 10px 25px rgba(15,23,42,.08);
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(180deg,#f9fafb,#eef2f7);
+      color:var(--text);
+      font-size:15px;
+      line-height:1.5;
+    }
+    header{
+      position:sticky;top:0;z-index:10;
+      background:radial-gradient(120% 120% at 0% 0%,#bbf7d0 0%,#f9fafb 45%,#eef2ff 100%);
+      border-bottom:1px solid rgba(148,163,184,.3);
+      backdrop-filter:blur(10px);
+    }
+    .wrap{
+      max-width:1080px;
+      margin:0 auto;
+      padding:12px 16px 16px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(22px,5vw,26px);
+      letter-spacing:.02em;
+      text-align:center;
+    }
+    .subtitle{
+      margin:0;
+      font-size:14px;
+      color:var(--muted);
+    }
+
+    .top-bar{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:12px;
+    }
+    .search{
+      position:relative;
+    }
+    .search input{
+      width:100%;
+      padding:10px 34px 10px 32px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      font-size:15px;
+      outline:none;
+      background:#ffffffdd;
+      box-shadow:0 4px 12px rgba(15,23,42,.04);
+    }
+    .search input:focus{
+      border-color:#86efac;
+      box-shadow:0 0 0 2px rgba(34,197,94,.18);
+      background:#fff;
+    }
+    .search-icon{
+      position:absolute;
+      left:10px;
+      top:50%;
+      transform:translateY(-50%);
+      font-size:15px;
+      color:var(--muted);
+    }
+    .search-clear{
+      position:absolute;
+      right:8px;
+      top:50%;
+      transform:translateY(-50%);
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      font-size:18px;
+      line-height:1;
+      color:var(--muted);
+      padding:4px;
+      border-radius:999px;
+    }
+    .search-clear:hover{
+      background:#e5e7eb;
+    }
+
+    .install-wrap{
+      margin-top:4px;
+      display:none;
+      justify-content:center;
+    }
+    .btn-install{
+      border-radius:999px;
+      border:1px dashed #16a34a;
+      background:#ecfdf5;
+      color:#166534;
+      font-size:14px;
+      padding:6px 18px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      box-shadow:0 4px 10px rgba(16,185,129,.16);
+      font-weight:600;
+    }
+    .btn-install span.icon{
+      font-size:16px;
+    }
+    .btn-install:hover{
+      background:#dcfce7;
+    }
+
+    .kpis{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:8px;
+      margin-top:8px;
+    }
+    .pill{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:13px;
+      white-space:nowrap;
+    }
+    .pill .value{
+      font-weight:600;
+      font-size:15px;
+      margin-left:4px;
+    }
+
+    .section-title{
+      margin:0 0 4px;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:600;
+      text-align:center;
+    }
+
+    .kpis-month .pill{
+      background:#eff6ff;
+      border:1px solid #bfdbfe;
+      color:#1d4ed8;
+    }
+    .kpis-all .pill{
+      background:#ecfdf3;
+      border:1px solid #bbf7d0;
+      color:#15803d;
+    }
+
+    .list-wrap{
+      max-width:1080px;
+      margin:0 auto;
+      padding:8px 16px 40px;
+    }
+    .cards{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:4px;
+    }
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      padding:12px 12px 10px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .card-header{
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      align-items:flex-start;
+    }
+    .card-title{
+      font-weight:600;
+      font-size:16px;
+    }
+    .card-subtitle{
+      font-size:13px;
+      color:var(--muted);
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      padding:2px 8px;
+      border-radius:999px;
+      font-size:12px;
+      background:#dcfce7;
+      color:#166534;
+      border:1px solid #bbf7d0;
+      white-space:nowrap;
+    }
+    .badge.warning{
+      background:#fef3c7;
+      color:#92400e;
+      border-color:#fde68a;
+    }
+
+    .card-overdue{
+      border-color:#fecaca;
+      box-shadow:0 0 0 1px #fecaca, var(--shadow);
+    }
+    .card-overdue .badge{
+      background:#fef3c7;
+      color:#92400e;
+      border-color:#fde68a;
+    }
+
+    .card-separator{
+      height:1px;
+      margin:4px 0;
+      background:linear-gradient(90deg,transparent,rgba(148,163,184,.7),transparent);
+      opacity:.9;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:6px 10px;
+      margin-top:4px;
+    }
+
+    .field{
+      padding:4px 6px;
+      border-radius:8px;
+    }
+    .field-label{
+      font-size:12px;
+      color:var(--muted);
+    }
+    .field-value{
+      font-size:14px;
+      font-weight:500;
+    }
+
+    .field-highlight{
+      border:1px solid transparent;
+    }
+    .field-ngaytiem{
+      border-color:rgba(34,197,94,.35);
+      background:rgba(220,252,231,.7);
+    }
+    .field-ngayxuat{
+      border-color:rgba(59,130,246,.35);
+      background:rgba(239,246,255,.9);
+    }
+    .field-duc{
+      border-color:rgba(249,115,22,.35);
+      background:rgba(255,247,237,.9);
+    }
+    .field-cai{
+      border-color:rgba(168,85,247,.35);
+      background:rgba(250,245,255,.9);
+    }
+
+    .notes{
+      margin-top:4px;
+      padding:6px 8px;
+      border-radius:8px;
+      background:#f9fafb;
+      border:1px dashed #e5e7eb;
+      font-size:13px;
+      color:#4b5563;
+      white-space:pre-wrap;
+    }
+    .card-actions{
+      margin-top:6px;
+      display:flex;
+      justify-content:flex-end;
+      gap:6px;
+    }
+    .btn-small{
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#f9fafb;
+      font-size:12px;
+      padding:4px 11px;
+      cursor:pointer;
+      color:#374151;
+    }
+    .btn-small.danger{
+      border-color:#fecaca;
+      color:#b91c1c;
+      background:#fef2f2;
+    }
+    .btn-small:hover{
+      filter:brightness(0.97);
+    }
+    .empty{
+      margin-top:18px;
+      font-size:14px;
+      color:var(--muted);
+      text-align:center;
+    }
+    .empty-box{
+      display:inline-block;
+      padding:10px 16px;
+      border-radius:12px;
+      border:1px dashed var(--border);
+      background:#f9fafb;
+      font-size:15px;
+      font-weight:600;
+      color:#1f2937;
+      letter-spacing:0.2px;
+    }
+
+    .fab{
+      position:fixed;
+      right:16px;
+      bottom:16px;
+      z-index:30;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:10px;
+    }
+    .fab-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,.25);
+      backdrop-filter:blur(2px);
+      display:none;
+      z-index:20;
+    }
+    .fab.open .fab-backdrop{
+      display:block;
+    }
+    .fab-menu{
+      position:absolute;
+      right:0;
+      bottom:60px;
+      display:none;
+      flex-direction:column;
+      gap:8px;
+      padding:10px;
+      background:#ffffff;
+      border:1px solid var(--border);
+      border-radius:16px;
+      box-shadow:0 18px 40px rgba(15,23,42,.18);
+      min-width:230px;
+      z-index:30;
+    }
+    .fab.open .fab-menu{
+      display:flex;
+    }
+    .fab-item{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid #e5e7eb;
+      background:#fff;
+      font-size:14px;
+      font-weight:600;
+      cursor:pointer;
+      white-space:nowrap;
+      position:relative;
+    }
+    .fab-item span.icon{
+      font-size:16px;
+    }
+    .fab-item:hover{
+      background:#f9fafb;
+    }
+    .fab-item.danger{
+      border-color:#fecaca;
+      background:#fef2f2;
+      color:#b91c1c;
+    }
+    .fab-badge{
+      position:absolute;
+      top:4px;
+      right:8px;
+      min-width:18px;
+      height:18px;
+      padding:0 5px;
+      border-radius:999px;
+      background:#ef4444;
+      color:#fff;
+      font-size:11px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 0 0 2px #ffffff;
+    }
+    .fab-item.has-reminder span.icon{
+      color:#b91c1c;
+    }
+
+    .fab-main{
+      width:52px;
+      height:52px;
+      border-radius:999px;
+      border:none;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      color:#fff;
+      box-shadow:0 12px 30px rgba(22,163,74,.6);
+      font-size:26px;
+      font-weight:900;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      z-index:31;
+    }
+    .fab-main:active{
+      transform:scale(.96);
+    }
+
+    .modal{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(15,23,42,.35);
+      backdrop-filter:blur(6px);
+      padding:16px;
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+      transition:opacity .2s ease,visibility .2s ease;
+      z-index:40;
+    }
+    .modal.show{
+      opacity:1;
+      visibility:visible;
+      pointer-events:auto;
+    }
+    .modal-content{
+      width:100%;
+      max-width:480px;
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 18px 45px rgba(15,23,42,.45);
+      padding:14px 16px 14px;
+      max-height:90vh;
+      overflow:auto;
+    }
+    .modal-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+      margin-bottom:4px;
+    }
+    .modal-title{
+      margin:0;
+      font-size:17px;
+      font-weight:600;
+    }
+    .modal-close{
+      border:none;
+      background:transparent;
+      font-size:20px;
+      cursor:pointer;
+      color:var(--muted);
+    }
+    .modal-body{
+      font-size:15px;
+      margin-top:4px;
+    }
+    .modal-footer{
+      display:flex;
+      justify-content:flex-end;
+      gap:8px;
+      margin-top:8px;
+    }
+    .form-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:8px 10px;
+    }
+    .form-row{
+      margin-bottom:8px;
+    }
+    label{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:3px;
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="month"],
+    select,
+    textarea{
+      width:100%;
+      padding:7px 9px;
+      border-radius:9px;
+      border:1px solid var(--border);
+      font-size:14px;
+      outline:none;
+      background:#f9fafb;
+    }
+    input:focus,
+    select:focus,
+    textarea:focus{
+      border-color:#86efac;
+      box-shadow:0 0 0 2px rgba(34,197,94,.18);
+      background:#ffffff;
+    }
+    textarea{
+      min-height:50px;
+      resize:vertical;
+    }
+    .btn{
+      border-radius:999px;
+      padding:7px 14px;
+      border:1px solid transparent;
+      font-size:14px;
+      cursor:pointer;
+    }
+    .btn.primary{
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      color:#fff;
+    }
+    .btn.secondary{
+      background:#f9fafb;
+      color:#374151;
+      border-color:var(--border);
+    }
+    .btn.danger{
+      background:#fef2f2;
+      border-color:#fecaca;
+      color:#b91c1c;
+    }
+
+    .suggest-wrap{
+      position:relative;
+    }
+    .suggest{
+      display:none;
+      position:absolute;
+      left:0;
+      right:0;
+      top:calc(100% + 6px);
+      background:rgba(17,24,39,.98);
+      border:1px solid #334155;
+      border-radius:12px;
+      padding:10px;
+      box-shadow:0 12px 30px rgba(0,0,0,.35);
+      z-index:60;
+    }
+    .suggest.show{
+      display:block;
+      animation:pop .08s ease;
+    }
+    @keyframes pop{
+      from{transform:translateY(-4px);opacity:.6}
+      to{transform:translateY(0);opacity:1}
+    }
+    .suggest::before{
+      content:"";
+      position:absolute;
+      top:-6px;
+      left:16px;
+      width:12px;
+      height:12px;
+      background:rgba(17,24,39,.98);
+      border-left:1px solid #334155;
+      border-top:1px solid #334155;
+      transform:rotate(45deg);
+    }
+    .suggest .grid-chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .s-chip{
+      padding:8px 14px;
+      border:1px solid #334155;
+      border-radius:12px;
+      background:rgba(255,255,255,.03);
+      color:#e5e7eb;
+      font-size:15px;
+      cursor:pointer;
+      transition:transform .06s ease,border-color .2s ease,background .2s ease,color .2s ease;
+    }
+    .s-chip:hover{
+      transform:translateY(-1px);
+      border-color:#22c55e;
+      background:rgba(34,197,94,.12);
+      color:#86efac;
+    }
+    .suggest .empty{
+      color:#94a3b8;
+      font-size:14px;
+    }
+
+    footer{
+      text-align:center;
+      color:#94a3b8;
+      font-size:13px;
+      margin:8px 0 8px
+    }
+
+    /* Toast */
+    .toast{
+      position:fixed;
+      bottom:80px;
+      left:50%;
+      transform:translateX(-50%);
+      background:#14532d;
+      color:#dcfce7;
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:13px;
+      box-shadow:0 10px 25px rgba(15,23,42,.6);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .2s ease,transform .2s ease;
+      z-index:50;
+    }
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(-4px);
+      pointer-events:auto;
+    }
+
+    /* Danh sách trong modal nhắc nhở */
+    .reminder-list{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-top:8px;
+    }
+    .reminder-item{
+      border-radius:10px;
+      border:1px solid #fee2e2;
+      background:#fef2f2;
+      padding:8px 10px;
+      font-size:13px;
+    }
+    .reminder-item-header{
+      display:flex;
+      justify-content:space-between;
+      gap:6px;
+      margin-bottom:4px;
+      font-weight:600;
+      color:#b91c1c;
+    }
+    .reminder-item-body{
+      color:#374151;
+    }
+    .reminder-item-meta{
+      margin-top:4px;
+      font-size:12px;
+      color:#6b7280;
+    }
+
+    /* ===== Highlight phiên bản mới nhất trong modal cập nhật ===== */
+    .update-version-list{
+      margin-top:8px;
+      font-size:14px;
+    }
+    .update-version{
+      border-radius:10px;
+      border:1px solid #e5e7eb;
+      padding:6px 8px;
+      margin-bottom:6px;
+      background:#f9fafb;
+    }
+    .update-version.latest{
+      border-color:#22c55e;
+      background:#ecfdf3;
+      box-shadow:0 0 0 1px #bbf7d0;
+    }
+    .update-version-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:6px;
+      font-weight:600;
+    }
+    .update-version-title span.date{
+      font-size:12px;
+      color:#6b7280;
+    }
+    .update-badge{
+      font-size:11px;
+      padding:2px 8px;
+      border-radius:999px;
+      background:#16a34a;
+      color:#fff;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+    }
+
+    @media (max-width:640px){
+      .grid{grid-template-columns:1fr 1fr}
+      .form-grid{grid-template-columns:1fr}
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 <header>
@@ -831,15 +823,17 @@
 
 <main class="list-wrap">
   <div id="cards" class="cards"></div>
+
   <div id="emptyMsg" class="empty" style="display:none;">
-  <div class="empty-box">
-    Chưa có phiếu tiêm nào. <br>Bấm nút “+” ở góc dưới để thêm mới.
+    <div class="empty-box">
+      Chưa có phiếu tiêm nào. <br>Bấm nút “+” ở góc dưới để thêm mới.
+    </div>
   </div>
-  </div>
+
   <div id="searchEmptyMsg" class="empty" style="display:none;">
-  <div class="empty-box">
-    Không có kết quả phù hợp với tìm kiếm.
-  </div>
+    <div class="empty-box">
+      Không có kết quả phù hợp với tìm kiếm.
+    </div>
   </div>
 </main>
 
@@ -904,7 +898,7 @@
           <div class="form-row">
             <label for="tenVaccine">Tên vaccine *</label>
             <div class="suggest-wrap">
-              <input type="text" id="tenVaccine" placeholder="VD: Hyogen, Porcicorvirus..." autocomplete="off" required>
+              <input type="text" id="tenVaccine" placeholder="VD: Hyogen, Porcine Circovirus..." autocomplete="off" required>
               <div class="suggest" id="tenVaccineSuggest"></div>
             </div>
           </div>
@@ -1033,7 +1027,7 @@
     </div>
     <div class="card-separator"></div>
     <div class="modal-footer">
-      <button class="btn secondary" type="button" data-close-modal="installModal">Để sau</button>
+      <button class="btn secondary" type="button" data-close-modal="installModal">Đóng</button>
       <button class="btn primary" type="button" id="btnInstallNow">Cài đặt ngay</button>
     </div>
   </div>
@@ -1171,6 +1165,7 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
 <footer>© 2025 - Hoàng Đợi</footer>
 
 <script>
@@ -1186,6 +1181,9 @@
   const REMINDER_LAST_KEY  = 'swineVaccinationTracker_reminderLast';
   const INSTALLED_FLAG_KEY = 'swineVaccinationTracker_installed';
   const OVERDUE_DAYS       = 15;
+  const AUTO_BACKUP_INTERVAL_HOURS = 48;
+  const AUTO_BACKUP_INTERVAL_MS    = AUTO_BACKUP_INTERVAL_HOURS * 60 * 60 * 1000;
+  const AUTO_BACKUP_LAST_KEY       = 'vaccine_lastBackupAt';
 
   let records         = [];
   let editingIndex    = null;
@@ -1197,7 +1195,7 @@
 
   let deferredInstallPrompt = null;
 
-  const VACCINE_BASE_RAW = ['Hyogen','Porcicorvirus','Tulinovet'];
+  const VACCINE_BASE_RAW = ['Hyogen','Porcine Circovirus','Tulinovet'];
   const VACCINE_BASE     = VACCINE_BASE_RAW.map(normalizeName);
   let vaccineSuggestions = [];
   let farmSuggestions    = [];
@@ -1287,7 +1285,7 @@
       .replace(/'/g,'&#39;');
   }
 
-  /* ================== SUGGEST ================== */
+  /* ================== SUGGEST & NORMALIZE RECORD ================== */
 
   function normalizeRecords(arr){
     if(!Array.isArray(arr)) return [];
@@ -1311,12 +1309,39 @@
     });
   }
 
+  function fixLegacyVaccineNames(){
+    let fixedSomething = false;
+    records = records.map(r=>{
+      if(!r.tenVaccine) return r;
+
+      const parts = String(r.tenVaccine)
+        .split(',')
+        .map(v => v.trim());
+
+      const newParts = parts.map(v=>{
+        const replaced = v.replace(/porcicorvirus/gi, 'Porcine Circovirus');
+        if(replaced !== v) fixedSomething = true;
+        return normalizeName(replaced);
+      });
+
+      return {
+        ...r,
+        tenVaccine: newParts.join(', ')
+      };
+    });
+    return fixedSomething;
+  }
+
   function rebuildSuggestions(){
     const vacSet  = new Set(VACCINE_BASE);
     const farmSet = new Set();
     records.forEach(r=>{
       if(r.tenVaccine && String(r.tenVaccine).trim()){
-        vacSet.add(normalizeName(r.tenVaccine));
+        String(r.tenVaccine)
+          .split(',')
+          .map(part => normalizeName(part))
+          .filter(Boolean)
+          .forEach(name => vacSet.add(name));
       }
       if(r.traiNhan && String(r.traiNhan).trim()){
         farmSet.add(normalizeName(r.traiNhan));
@@ -1329,7 +1354,8 @@
   function buildSuggest(inputEl, panelEl, getItems, {
     uppercase=false,
     onPick,
-    placeholderWhenEmpty
+    placeholderWhenEmpty,
+    useLastSegment=false
   } = {}){
     let open = false;
 
@@ -1354,17 +1380,43 @@
         '</div>';
     }
 
-    function computeAndRender(){
-      let q = (inputEl.value || '').trim();
-      if(uppercase){
-        q = q.toUpperCase();
-        inputEl.value = q;
+    function getQueryParts(){
+      let full = String(inputEl.value || '');
+      if(!useLastSegment){
+        return { full, prefix:'', q:full };
       }
+
+      const lastComma = full.lastIndexOf(',');
+      if(lastComma === -1){
+        return { full, prefix:'', q:full };
+      }
+
+      let prefixRaw = full.slice(0, lastComma);
+      let lastRaw   = full.slice(lastComma + 1);
+
+      prefixRaw = prefixRaw.replace(/\s+$/,''); // trim right
+      lastRaw   = lastRaw.replace(/^\s+/,'');   // trim left
+
+      const prefix = prefixRaw ? (prefixRaw + ', ') : '';
+      return { full, prefix, q:lastRaw };
+    }
+
+    function computeAndRender(){
+      let { full, prefix, q } = getQueryParts();
+
+      if(uppercase){
+        full = full.toUpperCase();
+        inputEl.value = full;
+        ({ prefix, q } = getQueryParts());
+      }
+
+      q = (q || '').trim();
       const items = (getItems && getItems()) || [];
       const qNorm = normalizeSearch(q);
       const filtered = q
         ? items.filter(v => normalizeSearch(v).includes(qNorm))
         : items;
+
       renderList(filtered.slice(0,24));
     }
 
@@ -1391,7 +1443,14 @@
       const chip = e.target.closest('.s-chip');
       if(!chip) return;
       const val = chip.getAttribute('data-val') || '';
-      inputEl.value = val;
+
+      if(useLastSegment){
+        const { prefix } = getQueryParts();
+        inputEl.value = prefix ? `${prefix}${val}` : val;
+      }else{
+        inputEl.value = val;
+      }
+
       hide();
       if(onPick) onPick(val);
       inputEl.blur();
@@ -1541,8 +1600,8 @@
       if(confirmCodeValue) confirmCodeValue.textContent = confirmCode;
       if(confirmCodeError) confirmCodeError.style.display = 'none';
       if(confirmCodeBlock) confirmCodeBlock.style.display = 'block';
-      if (confirmCodeInput) {  
-	      confirmCodeInput.value = '';  
+      if (confirmCodeInput) {
+        confirmCodeInput.value = '';
       }
     }else{
       confirmCode = '';
@@ -1591,19 +1650,23 @@
       if(!raw){ records = []; return; }
       const parsed = JSON.parse(raw);
       records = normalizeRecords(parsed);
+
+      if (fixLegacyVaccineNames()) {
+        saveToStorage();
+      }
     }catch(e){
       console.error(e);
       records = [];
     }
-  }  
-  
-  function saveToStorage(){  
-    try {  
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));  
-    } catch (e) {  
-      console.error(e);  
-      showAlert('Không thể lưu dữ liệu vào bộ nhớ trình duyệt. Vui lòng kiểm tra dung lượng trống hoặc quyền lưu trữ.', null);  
-    }  
+  }
+
+  function saveToStorage(){
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    } catch (e) {
+      console.error(e);
+      showAlert('Không thể lưu dữ liệu vào bộ nhớ trình duyệt. Vui lòng kiểm tra dung lượng trống hoặc quyền lưu trữ.', null);
+    }
   }
 
   /* ================== KPI & THỐNG KÊ ================== */
@@ -1670,7 +1733,7 @@
         kpiMonthLabel.textContent = '(không hợp lệ)';
       }
     }else{
-      kpiMonthLabel.textContent = '/TOÀN BỘ';
+      kpiMonthLabel.textContent = '/TOÀN BỘ DỮ LIỆU';
     }
   }
 
@@ -1960,17 +2023,31 @@
   }
 
   function saveRecord(data){
+    let tenVaccineClean = '';
+    if(data.tenVaccine){
+      tenVaccineClean = data.tenVaccine
+        .split(',')
+        .map(part => normalizeName(part))
+        .filter(Boolean)
+        .join(', ');
+    }
+
+    const finalData = {
+      ...data,
+      tenVaccine: tenVaccineClean
+    };
+
     if(editingIndex===null){
       const rec = {
         id: Date.now() + Math.random(),
-        ...data
+        ...finalData
       };
       records.push(rec);
       showToast('Đã thêm phiếu tiêm.');
     }else{
       records[editingIndex] = {
         ...records[editingIndex],
-        ...data
+        ...finalData
       };
       showToast('Đã cập nhật phiếu tiêm.');
     }
@@ -2082,6 +2159,21 @@
     toggleFab(false);
   }
 
+  function openStatsModal() {
+    closeFabMenu();
+    if (statsMonthInput) {
+      const today = new Date();
+      const yyyy  = today.getFullYear();
+      const mm    = String(today.getMonth() + 1).padStart(2, '0');
+      const currentMonth = `${yyyy}-${mm}`;
+      statsMonthInput.value = currentMonth;
+      updateKpis(currentMonth);
+    } else {
+      updateKpis('');
+    }
+    openModal('statsModal');
+  }
+
   fabMain.addEventListener('click', (e)=>{
     e.stopPropagation();
     toggleFab();
@@ -2102,21 +2194,19 @@
     openAdd();
   });
 
-  btnStats.addEventListener('click',()=>{
-    closeFabMenu();
-    if(statsMonthInput && !statsMonthInput.value){
-      const today = new Date();
-      const yyyy = today.getFullYear();
-      const mm = String(today.getMonth()+1).padStart(2,'0');
-      statsMonthInput.value = `${yyyy}-${mm}`;
-    }
-    openModal('statsModal');
-    updateKpis(statsMonthInput && statsMonthInput.value ? statsMonthInput.value : '');
-  });
+  btnStats.addEventListener('click', openStatsModal);
 
-  if(statsMonthInput){
-    statsMonthInput.addEventListener('change', ()=>{
-      updateKpis(statsMonthInput.value || '');
+  if (statsMonthInput) {
+    statsMonthInput.addEventListener('change', () => {
+      let val = (statsMonthInput.value || '').trim();
+      if (!val) {
+          const today = new Date();
+          const yyyy  = today.getFullYear();
+          const mm    = String(today.getMonth() + 1).padStart(2, '0');
+          val = `${yyyy}-${mm}`;
+          statsMonthInput.value = val;
+      }
+      updateKpis(val);
     });
   }
 
@@ -2147,7 +2237,6 @@
     if(currentVersionText) currentVersionText.textContent = currentVer;
     if(latestVersionText)  latestVersionText.textContent  = computedLatest;
 
-    // 🔹 Mặc định ẩn nút "Tải lại ứng dụng"
     if(btnReloadApp){
       btnReloadApp.style.display = 'none';
     }
@@ -2158,10 +2247,8 @@
       if(currentVer !== '—' && computedLatest !== '—'){
         if(currentVer === computedLatest){
           html += `<p><strong>Bạn đang dùng phiên bản mới nhất.</strong></p>`;
-          // Giữ ẩn nút Tải lại ứng dụng
         }else{
           html += `<p><strong>Đã có bản mới: ${esc(computedLatest)} (bản hiện tại: ${esc(currentVer)})</strong></p>`;
-          // 🔹 Chỉ khi có bản mới, mới hiện nút Tải lại
           if(btnReloadApp){
             btnReloadApp.style.display = 'inline-flex';
           }
@@ -2220,7 +2307,6 @@
           `;
         }else{
           html += '<p>Đã có bản cập nhật mới. Bạn có thể tải lại ứng dụng để áp dụng thay đổi.</p>';
-          // Trường hợp này thường nghĩa là có bản mới → cho phép reload
           if(btnReloadApp){
             btnReloadApp.style.display = 'inline-flex';
           }
@@ -2243,7 +2329,7 @@
   }
 
   function checkForUpdate(){
-    const currentVersion = window.__APP_VERSION__ || 'v1.0.2';
+    const currentVersion = window.__APP_VERSION__ || 'v1.0.3';
     showToast('Đang kiểm tra cập nhật...');
     fetch('/swine-vaccination-tracker/version.json?ts=' + Date.now(), {
       cache: 'no-store'
@@ -2295,6 +2381,93 @@
   }
 
   /* ================== EXPORT / BACKUP / RESTORE ================== */
+
+  function buildBackupJson(){
+    return JSON.stringify(records, null, 2);
+  }
+
+  function buildBackupFileName(isAuto){
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm   = pad2(now.getMonth()+1);
+    const dd   = pad2(now.getDate());
+    const hh   = pad2(now.getHours());
+    const mi   = pad2(now.getMinutes());
+    const ss   = pad2(now.getSeconds());
+    const stamp = `${yyyy}-${mm}-${dd}_${hh}-${mi}-${ss}`;
+    if(isAuto){
+      return `swine-vaccination-tracker-auto-backup_${stamp}.json`;
+    }
+    return `swine-vaccination-tracker-backup_${stamp}.json`;
+  }
+
+  function downloadBackupFile(isAuto){
+    if(!records.length) return false;
+    try{
+      const json = buildBackupJson();
+      const blob = new Blob([json], { type: 'application/json' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url;
+      a.download = buildBackupFileName(isAuto);
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      return true;
+    }catch(e){
+      console.error('[Backup] Lỗi tạo/tải file backup:', e);
+      return false;
+    }
+  }
+
+  function getLastAutoBackupTime(){
+    try{
+      const raw = localStorage.getItem(AUTO_BACKUP_LAST_KEY);
+      if(!raw) return 0;
+      const n = Number(raw);
+      return Number.isFinite(n) && n > 0 ? n : 0;
+    }catch(_){
+      return 0;
+    }
+  }
+
+  function setLastAutoBackupTime(ts){
+    try{
+      localStorage.setItem(AUTO_BACKUP_LAST_KEY, String(ts || Date.now()));
+    }catch(_){}
+  }
+
+  function checkAutoBackup(){
+    const now = Date.now();
+    let last  = getLastAutoBackupTime();
+
+    if(!last){
+      if(records.length){
+        // Có dữ liệu: auto backup ngay lần đầu
+        const ok = downloadBackupFile(true);
+        setLastAutoBackupTime(now);
+        if(ok){
+          showToast('Đã tự động sao lưu dữ liệu định kỳ.');
+        }
+      }else{
+        setLastAutoBackupTime(now);
+      }
+      return;
+    }
+
+    if(now - last >= AUTO_BACKUP_INTERVAL_MS){
+      if(records.length){
+        const ok = downloadBackupFile(true);
+        setLastAutoBackupTime(Date.now());
+        if(ok){
+          showToast('Đã tự động sao lưu dữ liệu định kỳ.');
+        }
+      }else{
+        setLastAutoBackupTime(Date.now());
+      }
+    }
+  }
 
   document.getElementById('btnExport').addEventListener('click',()=>{
     closeFabMenu();
@@ -2364,24 +2537,19 @@
     XLSX.writeFile(wb, fileName);
     showAlert('Đã xuất toàn bộ dữ liệu ra file Excel (.xlsx).');
   });
-
+  
   document.getElementById('btnBackup').addEventListener('click',()=>{
     closeFabMenu();
     if(!records.length){
       showAlert('Chưa có dữ liệu để sao lưu.');
       return;
     }
-    const json = JSON.stringify(records, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url;
-    a.download = 'swine-vaccination-tracker-backup.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    showAlert('Đã tải file sao lưu dữ liệu.');
+    const ok = downloadBackupFile(false);
+    if(ok){
+      showAlert('Đã tải file sao lưu dữ liệu.');
+    }else{
+      showAlert('Không thể tạo file sao lưu.');
+    }
   });
 
   document.getElementById('btnRestore').addEventListener('click',()=>{
@@ -2410,13 +2578,15 @@
         const parsed = JSON.parse(txt);
 
         if(!Array.isArray(parsed)){
-          showAlert('File JSON không đúng định dạng (không phải mảng dữ liệu).');
+          showAlert('File sao lưu không đúng định dạng dữ liệu.');
           return;
         }
 
         const normalized = normalizeRecords(parsed);
 
         records = normalized;
+        fixLegacyVaccineNames();
+
         saveToStorage();
         rebuildSuggestions();
         vaccineSuggestionsRef.refresh();
@@ -2426,13 +2596,13 @@
         maybeAutoReminder(true);
       }catch(err){
         console.error(err);
-        showAlert('Không đọc được file JSON hoặc nội dung không hợp lệ.');
+        showAlert('Không đọc được file sao lưu hoặc dữ liệu không hợp lệ.');
       }finally{
         fileRestore.value = '';
       }
     };
     reader.onerror = ()=>{
-      showAlert('Không đọc được file JSON.');
+      showAlert('Không đọc được file sao lưu.');
       fileRestore.value = '';
     };
     reader.readAsText(file,'utf-8');
@@ -2472,7 +2642,10 @@
     tenVaccineEl,
     tenVaccineSuggestPanel,
     ()=>vaccineSuggestions,
-    { placeholderWhenEmpty:'Chưa có vaccine trong lịch sử' }
+    {
+      placeholderWhenEmpty:'Chưa có vaccine trong lịch sử',
+      useLastSegment:true   // 🔹 Gợi ý theo đoạn sau dấu phẩy
+    }
   );
   const farmSuggestionsRef = buildSuggest(
     traiNhanEl,
@@ -2882,14 +3055,7 @@
           break;
 
         case 'stats':
-          if (statsMonthInput && !statsMonthInput.value) {
-            const today = new Date();
-            const yyyy  = today.getFullYear();
-            const mm    = String(today.getMonth() + 1).padStart(2, '0');
-            statsMonthInput.value = `${yyyy}-${mm}`;
-          }
-          openModal('statsModal');
-          updateKpis(statsMonthInput ? statsMonthInput.value : '');
+          openStatsModal();
           break;
 
         case 'backup':
@@ -2926,6 +3092,10 @@
   setTimeout(()=>maybeAutoReminder(false), 800);
   setInterval(()=>maybeAutoReminder(false), 6*60*60*1000);
 
+  // 🔹 Auto backup: kiểm tra ngay khi mở app và lặp lại mỗi 1 giờ
+  checkAutoBackup();
+  setInterval(checkAutoBackup, 60*60*1000);
+
   handleShortcutAction();
 
 })();
@@ -2935,7 +3105,7 @@
 <script>
 (function(){
   'use strict';
-  const APP_VERSION = 'v1.0.2';
+  const APP_VERSION = 'v1.0.3';
   window.__APP_VERSION__ = APP_VERSION;
 
   if ('serviceWorker' in navigator) {
@@ -2959,6 +3129,5 @@
   }
 })();
 </script>
-
 </body>
 </html>

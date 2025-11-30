@@ -46,15 +46,15 @@ Link chính thức:
 ## 🔒 Quyền riêng tư
 
 - Không gửi dữ liệu ra bên ngoài.
-- Không dùng server để lưu trữ dữ liệu.
 - Không cần tài khoản.
+- Không dùng server để lưu trữ dữ liệu người dùng.
 - Tất cả dữ liệu lưu **trên thiết bị của bạn**.
 
 ---
 
 ## 🔄 Phiên bản
 
-**Current version:** `v1.0.2`  
+**Current version:** `v1.0.3`  
 Xem lịch sử cập nhật tại:  
 `/version.json`
 

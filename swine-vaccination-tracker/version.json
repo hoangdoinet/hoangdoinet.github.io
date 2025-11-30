@@ -7,21 +7,34 @@
 
   "channel": "stable",
 
-  "version": "v1.0.2",
-  "release_date": "2025-11-28",
-  "summary": "Sửa lỗi nhỏ và tối ưu UI.",
+  "version": "v1.0.3",
+  "release_date": "2025-12-01",
+  "summary": "Sửa lỗi sai tên vaccine, cho phép nhập nhiều loại vaccine và tối ưu UI.",
 
   "latest": {
-    "version": "v1.0.2",
-    "release_date": "2025-11-28",
-    "summary": "Sửa lỗi nhỏ và tối ưu UI.",
+    "version": "v1.0.3",
+    "release_date": "2025-12-01",
+    "summary": "Sửa lỗi sai tên vaccine, cho phép nhập nhiều loại vaccine trên cùng phiếu và tối ưu UI.",
     "changelog": [
-      "Sửa lỗi nhỏ.",
-      "Tối ưu giao diện và trải nghiệm người dùng."
+      "Sửa lỗi sai tên vaccine và tự động chuẩn hóa dữ liệu củ đã nhập sai.",
+      "Hỗ trợ nhập nhiều loại vaccine trên cùng phiếu.",
+      "Tự động sao lưu dữ liệu định kỳ mỗi 48h.",
+      "Cải thiện giao diện và tối ưu trải nghiệm người dùng."
     ]
   },
 
   "versions": [
+    {
+      "version": "v1.0.3",
+      "release_date": "2025-12-01",
+      "summary": "Sửa lỗi sai tên vaccine, cho phép nhập nhiều loại vaccine và tối ưu UI.",
+      "changelog": [
+        "Sửa lỗi sai tên vaccine và tự động chuẩn hóa dữ liệu củ đã nhập sai.",
+        "Hỗ trợ nhập nhiều loại vaccine trên cùng phiếu.",
+        "Tự động sao lưu dữ liệu định kỳ mỗi 48h.",
+        "Cải thiện giao diện và tối ưu trải nghiệm người dùng."
+      ]
+    },
     {
       "version": "v1.0.2",
       "release_date": "2025-11-28",

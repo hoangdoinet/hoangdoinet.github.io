@@ -1,5 +1,5 @@
-/* service-worker.js - OFFLINE 100% GUARANTEED v1.0.2 (manual update check) */
-const APP_VERSION = 'v1.0.2';
+/* service-worker.js - OFFLINE 100% GUARANTEED v1.0.3 (manual update check) */
+const APP_VERSION = 'v1.0.3';
 const CACHE_STATIC = `static-${APP_VERSION}`;
 const BASE = '/swine-vaccination-tracker/';
 const VERSION_FILE = BASE + 'version.json';
@@ -34,11 +34,9 @@ self.addEventListener('install', (event) => {
     const cache = await caches.open(CACHE_STATIC);
     const results = { success: [], failed: [] };
 
-    // Cache index trước (quan trọng nhất)
     const indexSuccess = await cacheWithRetry(cache, BASE + 'index.html', 3);
     if (!indexSuccess) console.error('[SW] 💥 CRITICAL FAIL: Không thể cache index.html');
 
-    // Cache các asset còn lại
     for (const url of CRITICAL_ASSETS.filter(a => a !== BASE + 'index.html')) {
       const ok = await cacheWithRetry(cache, url, 2);
       (ok ? results.success : results.failed).push(url);
@@ -200,7 +198,6 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(req.url);
 
-  // Chỉ xử lý trong scope /swine-vaccination-tracker/
   if (!url.pathname.startsWith('/swine-vaccination-tracker/')) return;
 
   const isNavigation = req.mode === 'navigate';
@@ -243,7 +240,6 @@ async function handleStaticRequest(request) {
     if (net.ok) await cache.put(request, net.clone());
     return net;
   } catch {
-    // Không có cache, không có mạng → trả về 204 (im lặng)
     return new Response('', { status: 204 });
   }
 }
@@ -261,7 +257,7 @@ button{background:#22c55e;color:#fff;border:none;padding:12px 24px;border-radius
 </style></head>
 <body><div class="container">
 <h1>📶 Đang offline</h1>
-<p>Ứng dụng theo dõi tiêm vaccine heo cần kết nối internet để tải lần đầu.<br>Sau khi đã tải và cài đặt, bạn có thể dùng offline 100%.</p>
+<p>Swine Vaccination Tracker - Ứng dụng theo dõi tiêm vaccine cho heo cần kết nối internet để cài đặt dữ liệu.<br>Sau khi đã tải và cài đặt, bạn có thể dùng offline.</p>
 <button onclick="location.reload()">🔄 Thử lại</button>
 </div></body></html>`,
     {
@@ -280,7 +276,6 @@ self.addEventListener('message', (event) => {
     self.skipWaiting();
   }
   if (type === 'CHECK_UPDATE') {
-    // Chỉ khi trang yêu cầu mới kiểm tra cập nhật
     checkForUpdates();
   }
   if (type === 'FORCE_UPDATE') {
