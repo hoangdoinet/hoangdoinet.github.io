@@ -79,7 +79,7 @@
       "priceCurrency": "VND",
       "category": "Free"
     },
-    "softwareVersion": "v1.0.3"
+    "softwareVersion": "v1.0.4"
   }
   </script>
 
@@ -95,6 +95,21 @@
       --border:#e5e7eb;
       --shadow:0 10px 25px rgba(15,23,42,.08);
       --radius:14px;
+
+      /* Toast premium vars */
+      --toast-success-bg: linear-gradient(135deg,#22c55e,#16a34a);
+      --toast-success-border: rgba(34,197,94,.6);
+      --toast-success-accent: #bbf7d0;
+
+      --toast-error-bg: linear-gradient(135deg,#f87171,#dc2626);
+      --toast-error-border: rgba(248,113,113,.8);
+      --toast-error-accent: #fee2e2;
+
+      --toast-info-bg: linear-gradient(135deg,#60a5fa,#3b82f6);
+      --toast-info-border: rgba(147,197,253,.8);
+      --toast-info-accent: #dbeafe;
+
+      --toast-bottom-gap: 90px;
     }
     *{box-sizing:border-box}
     body{
@@ -698,30 +713,131 @@
       margin:8px 0 8px
     }
 
-    /* Toast */
-    .toast{
+    /* ==== TOAST PREMIUM ==== */
+    .toast-container{
       position:fixed;
-      bottom:80px;
       left:50%;
+      bottom:var(--toast-bottom-gap);
       transform:translateX(-50%);
-      background:#14532d;
-      color:#dcfce7;
-      padding:6px 12px;
-      border-radius:999px;
-      font-size:13px;
-      box-shadow:0 10px 25px rgba(15,23,42,.6);
-      opacity:0;
+      z-index:9999;
       pointer-events:none;
-      transition:opacity .2s ease,transform .2s ease;
-      z-index:50;
     }
+
+    .toast{
+      position:relative;
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+
+      min-width: min(360px, calc(100vw - 32px));
+      max-width:min(700px, calc(100vw - 32px));
+
+      padding:12px 16px;
+      border-radius:18px;
+      border:1px solid transparent;
+      background:var(--toast-success-bg);
+      box-shadow:0 18px 45px rgba(15,23,42,.35);
+      color:#ffffff;
+      backdrop-filter:blur(12px);
+
+      opacity:0;
+      transform:translateY(16px) scale(.96);
+      transition:opacity .22s ease-out, transform .22s ease-out;
+
+      pointer-events:none;
+    }
+
+    .toast::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:10px;
+      bottom:10px;
+      width:4px;
+      border-radius:999px;
+      background:var(--toast-success-accent);
+    }
+
+    .toast__icon{
+      flex:0 0 auto;
+      width:34px;
+      height:34px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:18px;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.2);
+    }
+
+    .toast__content{flex:1 1 auto;}
+
+    .toast__title{
+      font-size:13px;
+      font-weight:700;
+      margin-bottom:2px;
+      text-transform:uppercase;
+      opacity:.95;
+    }
+
+    .toast__message{
+      font-size:14px;
+      line-height:1.45;
+      opacity:.92;
+    }
+
+    .toast__close{
+      border:none;
+      background:transparent;
+      color:#f1f5f9;
+      font-size:20px;
+      cursor:pointer;
+      padding-left:4px;
+    }
+
+    .toast__progress{
+      position:absolute;
+      left:14px;
+      right:14px;
+      bottom:8px;
+      height:3px;
+      border-radius:999px;
+      background:rgba(255,255,255,.25);
+      overflow:hidden;
+    }
+
+    .toast__progress-bar{
+      width:100%;
+      height:100%;
+      transform-origin:left center;
+      background:rgba(255,255,255,.9);
+    }
+
     .toast.show{
       opacity:1;
-      transform:translateX(-50%) translateY(-4px);
+      transform:translateY(0) scale(1);
       pointer-events:auto;
     }
 
-    /* Danh sách trong modal nhắc nhở */
+    .toast--success{
+      background:var(--toast-success-bg);
+      border-color:var(--toast-success-border);
+    }
+    .toast--success::before{ background:var(--toast-success-accent); }
+
+    .toast--error{
+      background:var(--toast-error-bg);
+      border-color:var(--toast-error-border);
+    }
+    .toast--error::before{ background:var(--toast-error-accent); }
+
+    .toast--info{
+      background:var(--toast-info-bg);
+      border-color:var(--toast-info-border);
+    }
+    .toast--info::before{ background:var(--toast-info-accent); }
+
     .reminder-list{
       display:flex;
       flex-direction:column;
@@ -752,7 +868,6 @@
       color:#6b7280;
     }
 
-    /* ===== Highlight phiên bản mới nhất trong modal cập nhật ===== */
     .update-version-list{
       margin-top:8px;
       font-size:14px;
@@ -790,15 +905,118 @@
       letter-spacing:.04em;
     }
 
+    .app-loader{
+      position:fixed;
+      inset:0;
+      background:radial-gradient(120% 120% at 0% 0%, #bbf7d0 0%, #f9fafb 45%, #eef2ff 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+      color:#0f172a;
+      transition:opacity .4s ease;
+    }
+
+    .app-loader.hidden{
+      opacity:0;
+      pointer-events:none;
+    }
+
+    .app-loader__card{
+      background:#ffffffee;
+      padding:20px 22px 18px;
+      border-radius:18px;
+      border:1px solid #e5e7eb;
+      box-shadow:0 16px 40px rgba(15,23,42,.12);
+      width:min(340px, 90vw);
+      text-align:center;
+    }
+
+    .app-loader__icon{
+      width:60px;
+      height:60px;
+      border-radius:999px;
+      background:linear-gradient(135deg,#22c55e,#16a34a);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin:0 auto 12px;
+      overflow:hidden;
+      box-shadow:0 4px 12px rgba(22,163,74,.35);
+    }
+    .app-loader__icon img{
+      width:44px;
+      height:44px;
+      display:block;
+    }
+
+    .app-loader__title{
+      font-size:15px;
+      font-weight:700;
+      margin-bottom:4px;
+      color:#0f172a;
+    }
+
+    .app-loader__subtitle{
+      font-size:13px;
+      color:#475569;
+      margin-bottom:12px;
+    }
+
+    .app-loader__progress{
+      width:100%;
+      height:8px;
+      background:#e2e8f0;
+      border-radius:999px;
+      overflow:hidden;
+      margin-bottom:8px;
+    }
+
+    .app-loader__progress-bar{
+      width:0%;
+      height:100%;
+      background:linear-gradient(90deg,#86efac,#4ade80,#22c55e);
+      border-radius:999px;
+      transition:width .15s linear;
+    }
+
+    .app-loader__percent{
+      font-size:13px;
+      color:#16a34a;
+      font-weight:600;
+    }
+
     @media (max-width:640px){
       .grid{grid-template-columns:1fr 1fr}
       .form-grid{grid-template-columns:1fr}
+      :root{
+        --toast-bottom-gap: 80px;
+      }
     }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
+
+<!-- 🔹 LOADING OVERLAY -->
+<div id="appLoader" class="app-loader">
+  <div class="app-loader__card">
+    <div class="app-loader__icon">
+      <img src="/swine-vaccination-tracker/icons/icon-192.png"
+           alt="Swine Vaccination Tracker">
+    </div>
+    <div class="app-loader__title">Swine Vaccination Tracker</div>
+    <div class="app-loader__subtitle">Đang khởi động ứng dụng, vui lòng chờ...</div>
+
+    <div class="app-loader__progress">
+      <div class="app-loader__progress-bar" id="loaderBar"></div>
+    </div>
+
+    <div class="app-loader__percent" id="loaderPercent">0%</div>
+  </div>
+</div>
+
 <header>
   <div class="wrap">
     <h1>Swine Vaccination Tracker</h1>
@@ -955,7 +1173,7 @@
            style="margin-top:10px;padding-top:8px;border-top:1px dashed #e5e7eb;
                   display:none;text-align:center;">
         <p style="font-size:14px;margin:0 0 6px;color:#374151;">
-          Nhập đúng 4 số sau để xác nhận thao tác xóa:
+          Nhập vào mã xác nhận xóa:
         </p>
         <p style="margin:0 0 6px;">
           <strong id="confirmCodeValue"
@@ -968,7 +1186,7 @@
           inputmode="numeric"
           pattern="[0-9]*"
           maxlength="4"
-          placeholder="Nhập 4 số ở trên"
+          placeholder="Nhập mã số ở trên"
           style="width:280px;text-align:center;letter-spacing:0.2em;
                  font-weight:600;margin-top:4px;font-size:16px;"
         >
@@ -1004,7 +1222,7 @@
   </div>
 </div>
 
-<!-- Modal: Mời cài đặt ứng dụng -->
+<!-- Modal: cài đặt ứng dụng -->
 <div class="modal" id="installModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -1017,9 +1235,8 @@
         Ứng dụng <strong>Swine Vaccination Tracker</strong> (Theo dõi tiêm vaccine cho heo) có thể cài đặt app trên điện thoại.
       </p>
       <ul style="margin:0 0 8px 18px;padding:0;font-size:14px;color:#4b5563;">
-        <li>Mở nhanh từ màn hình chính.</li>
-        <li>Hoạt động offline, dữ liệu lưu trên máy.</li>
-        <li>Trải nghiệm toàn màn hình, không thanh địa chỉ.</li>
+        <li>Mở nhanh ứng dụng không cần truy cập web.</li>
+        <li>Hoạt động khi không có internet, dữ liệu lưu trên máy.</li>
       </ul>
       <p style="margin:0;font-size:13px;color:#6b7280;">
         Nhấn <strong>“Cài đặt ngay”</strong> để cài đặt ứng dụng vào thiết bị của bạn.
@@ -1164,9 +1381,90 @@
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<!-- Toast premium -->
+<div class="toast-container">
+  <div id="toast"
+       class="toast toast--success"
+       role="status"
+       aria-live="polite"
+       aria-atomic="true">
+    <div class="toast__icon" id="toastIcon">✓</div>
+    <div class="toast__content">
+      <div class="toast__title" id="toastTitle">Thành công</div>
+      <div class="toast__message" id="toastMessage">Nội dung thông báo.</div>
+    </div>
+    <button class="toast__close"
+            type="button"
+            aria-label="Đóng thông báo">
+      &times;
+    </button>
+    <div class="toast__progress">
+      <div class="toast__progress-bar" id="toastProgress"></div>
+    </div>
+  </div>
+</div>
 
 <footer>© 2025 - Hoàng Đợi</footer>
+
+<!-- 🔹 SCRIPT LOADING OVERLAY -->
+<script>
+(function(){
+  'use strict';
+  const loader    = document.getElementById('appLoader');
+  const bar       = document.getElementById('loaderBar');
+  const percentEl = document.getElementById('loaderPercent');
+
+  if (!loader || !bar || !percentEl) return;
+
+  let progress = 0;
+  let done     = false;
+
+  function finish(){
+    if (done) return;
+    done = true;
+    progress = 100;
+    bar.style.width = '100%';
+    percentEl.textContent = '100%';
+
+    setTimeout(()=>{
+      loader.classList.add('hidden');
+      setTimeout(()=>loader.remove(), 500);
+    }, 300);
+  }
+
+  function step(){
+    if (done) return;
+
+    const delta = Math.random() * 12;
+    progress += delta;
+    if (progress >= 96) {
+      progress = 96;
+    }
+
+    bar.style.width = progress + '%';
+    percentEl.textContent = Math.floor(progress) + '%';
+
+    if (!done){
+      setTimeout(step, 150);
+    }
+  }
+
+  function start(){
+    if (done) return;
+    step();
+  }
+
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+
+  window.addEventListener('load', ()=>{
+    finish();
+  });
+})();
+</script>
 
 <script>
 (function(){
@@ -1194,6 +1492,9 @@
   let confirmCode     = '';
 
   let deferredInstallPrompt = null;
+
+  let hideTimer = null;
+  let currentOnClose = null;
 
   const VACCINE_BASE_RAW = ['Hyogen','Porcine Circovirus','Tulinovet'];
   const VACCINE_BASE     = VACCINE_BASE_RAW.map(normalizeName);
@@ -1394,8 +1695,8 @@
       let prefixRaw = full.slice(0, lastComma);
       let lastRaw   = full.slice(lastComma + 1);
 
-      prefixRaw = prefixRaw.replace(/\s+$/,''); // trim right
-      lastRaw   = lastRaw.replace(/^\s+/,'');   // trim left
+      prefixRaw = prefixRaw.replace(/\s+$/,'');
+      lastRaw   = lastRaw.replace(/^\s+/,'');  
 
       const prefix = prefixRaw ? (prefixRaw + ', ') : '';
       return { full, prefix, q:lastRaw };
@@ -1519,7 +1820,11 @@
   const statsMonthInput = document.getElementById('statsMonthInput');
   const btnStats        = document.getElementById('btnStats');
 
-  const toastEl       = document.getElementById('toast');
+  const toastEl      = document.getElementById('toast');
+  const toastIconEl  = document.getElementById('toastIcon');
+  const toastTitleEl = document.getElementById('toastTitle');
+  const toastMsgEl   = document.getElementById('toastMessage');
+  const toastProgEl  = document.getElementById('toastProgress');
 
   const fileRestore   = document.getElementById('fileRestore');
 
@@ -1575,14 +1880,100 @@
     });
   });
 
-  function showToast(msg){
-    toastEl.textContent = msg;
+  function showToast(message, type = 'success', options){
+    if (!toastEl || !toastMsgEl || !toastIconEl || !toastTitleEl || !toastProgEl) return;
+
+    let opts = {};
+
+    if (typeof options === 'number') {
+      opts.duration = options;
+    } else if (options && typeof options === 'object') {
+      opts = options;
+    }
+
+    const {
+      title,
+      duration = 3000,
+      onClose
+    } = opts;
+
+    currentOnClose = (typeof onClose === 'function') ? onClose : null;
+
+    toastMsgEl.textContent = message;
+
+    toastEl.classList.remove('toast--success','toast--error','toast--info');
+
+    let icon = '✓';
+    let defaultTitle = 'Thành công';
+
+    if(type === 'error'){
+      icon = '❌';
+      defaultTitle = 'Lỗi';
+      toastEl.classList.add('toast--error');
+    }else if(type === 'info'){
+      icon = 'ⓘ';
+      defaultTitle = 'Thông tin';
+      toastEl.classList.add('toast--info');
+    }else{
+      toastEl.classList.add('toast--success');
+    }
+
+    toastIconEl.textContent  = icon;
+    toastTitleEl.textContent = title || defaultTitle;
+
     toastEl.classList.add('show');
-    setTimeout(()=>toastEl.classList.remove('show'),3000);
+
+    toastProgEl.style.transition = 'none';
+    toastProgEl.style.transform  = 'scaleX(1)';
+    void toastProgEl.offsetWidth;
+    toastProgEl.style.transition = `transform ${duration}ms linear`;
+    toastProgEl.style.transform  = 'scaleX(0)';
+
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(hideToast, duration);
   }
 
-  function showAlert(msg, focusEl){
-    alertMessage.textContent = msg;
+  function hideToast() {
+    if (!toastEl) return;
+
+    toastEl.classList.remove('show');
+    clearTimeout(hideTimer);
+    hideTimer = null;
+
+    if (toastProgEl) {
+      toastProgEl.style.transition = 'none';
+      toastProgEl.style.transform = 'scaleX(0)';
+    }
+
+    if (currentOnClose) {
+      try {
+        currentOnClose();
+      } catch (e) {}
+      currentOnClose = null;
+    }
+  }
+
+  const toastCloseBtn = document.querySelector('.toast__close');
+  if(toastCloseBtn){
+    toastCloseBtn.addEventListener('click', hideToast);
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape'){
+      hideToast();
+    }
+  });
+
+  function showAlert(msg, focusEl) {
+    const safe = String(msg || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/\n/g, '<br>');
+
+    alertMessage.innerHTML = safe;
     alertFocusEl = focusEl || null;
     openModal('alertModal');
   }
@@ -1669,6 +2060,52 @@
     }
   }
 
+  /* ================== VALIDATE RECORD (DÙNG CHUNG) ================== */
+
+  function validateRecord(r) {
+    if (!r.ngayTiem) {
+      return 'Thiếu ngày tiêm vaccine';
+    }
+
+    if (!r.tenVaccine) {
+      return 'Thiếu tên vaccine';
+    }
+
+    if (!r.traiNhan) {
+      return 'Thiếu tên trại nhận';
+    }
+
+    const tongSo = Number(r.tongSo);
+    const soDuc  = Number(r.soDuc);
+    const soCai  = Number(r.soCai);
+
+    if (!Number.isFinite(tongSo) || tongSo <= 0) {
+      return 'Tổng số lượng phải là số > 0';
+    }
+
+    if (!Number.isFinite(soDuc) || soDuc < 0) {
+      return 'Số con đực không hợp lệ';
+    }
+
+    if (!Number.isFinite(soCai) || soCai < 0) {
+      return 'Số con cái không hợp lệ';
+    }
+
+    if (soDuc + soCai !== tongSo) {
+      return 'Số con đực + số con cái không bằng tổng số';
+    }
+
+    if (r.ngayXuat) {
+      const dTiem = parseDateYMD(r.ngayTiem);
+      const dXuat = parseDateYMD(r.ngayXuat);
+      if (dTiem && dXuat && dXuat < dTiem) {
+        return 'Ngày xuất heo đang nhỏ hơn ngày tiêm vaccine';
+      }
+    }
+
+    return null;
+  }
+
   /* ================== KPI & THỐNG KÊ ================== */
 
   function calcKpis(source){
@@ -1733,7 +2170,7 @@
         kpiMonthLabel.textContent = '(không hợp lệ)';
       }
     }else{
-      kpiMonthLabel.textContent = '/TOÀN BỘ DỮ LIỆU';
+      kpiMonthLabel.textContent = '(Tháng hiện tại)';
     }
   }
 
@@ -2004,9 +2441,10 @@
     openModal('entryModal');
   }
 
-  function openEdit(index){
+  function openEdit(index) {
     const rec = records[index];
-    if(!rec) return;
+    if (!rec) return;
+
     editingIndex = index;
     entryModalTitle.textContent = 'Sửa phiếu tiêm';
 
@@ -2014,10 +2452,12 @@
     tenVaccineEl.value = rec.tenVaccine || '';
     ngayXuatEl.value   = rec.ngayXuat || '';
     traiNhanEl.value   = rec.traiNhan || '';
-    tongSoEl.value     = rec.tongSo || '';
-    soDucEl.value      = rec.soDuc || '';
-    soCaiEl.value      = rec.soCai || '';
-    ghiChuEl.value     = rec.ghiChu || '';
+
+    tongSoEl.value = rec.tongSo != null ? String(rec.tongSo) : '';
+    soDucEl.value  = rec.soDuc  != null ? String(rec.soDuc)  : '';
+    soCaiEl.value  = rec.soCai  != null ? String(rec.soCai)  : '';
+
+    ghiChuEl.value = rec.ghiChu || '';
 
     openModal('entryModal');
   }
@@ -2064,7 +2504,7 @@
     const rec = records[index];
     if(!rec) return;
     askConfirm(
-      `Xóa phiếu tiêm của trại "${rec.traiNhan||''}" (ngày tiêm ${formatDate(rec.ngayTiem)||'?'} )?\nLưu ý: hành động này không thể hoàn tác.`,
+      `Xóa phiếu tiêm của trại "${rec.traiNhan||''}" (ngày tiêm ${formatDate(rec.ngayTiem)||'?'} )?\n\nLưu ý: hành động này không thể hoàn tác.`,
       'Xóa phiếu tiêm',
       ()=>{
         records.splice(index,1);
@@ -2329,8 +2769,8 @@
   }
 
   function checkForUpdate(){
-    const currentVersion = window.__APP_VERSION__ || 'v1.0.3';
-    showToast('Đang kiểm tra cập nhật...');
+    const currentVersion = window.__APP_VERSION__ || 'v1.0.4';
+    showToast('Đang kiểm tra cập nhật...', 'info');
     fetch('/swine-vaccination-tracker/version.json?ts=' + Date.now(), {
       cache: 'no-store'
     })
@@ -2357,10 +2797,10 @@
       }
 
       if(latest === currentVersion){
-        showToast('Bạn đang dùng phiên bản mới nhất (' + currentVersion + ').');
+        showToast('Bạn đang dùng phiên bản mới nhất (' + currentVersion + ').', 'success');
         showUpdateModal(info, latest, currentVersion);
       }else{
-        showToast('Đã có bản mới ' + latest + '.');
+        showToast('Đã có bản mới ' + latest + '.', 'info');
         showUpdateModal(info, latest, currentVersion);
       }
     })
@@ -2444,11 +2884,10 @@
 
     if(!last){
       if(records.length){
-        // Có dữ liệu: auto backup ngay lần đầu
         const ok = downloadBackupFile(true);
         setLastAutoBackupTime(now);
         if(ok){
-          showToast('Đã tự động sao lưu dữ liệu định kỳ.');
+          showToast('Đã tự động sao lưu dữ liệu định kỳ.', 'info');
         }
       }else{
         setLastAutoBackupTime(now);
@@ -2461,7 +2900,7 @@
         const ok = downloadBackupFile(true);
         setLastAutoBackupTime(Date.now());
         if(ok){
-          showToast('Đã tự động sao lưu dữ liệu định kỳ.');
+          showToast('Đã tự động sao lưu dữ liệu định kỳ.', 'info');
         }
       }else{
         setLastAutoBackupTime(Date.now());
@@ -2473,6 +2912,10 @@
     closeFabMenu();
     if(!records.length){
       showAlert('Chưa có dữ liệu để xuất.');
+      return;
+    }
+    if (typeof XLSX === 'undefined') {
+      showAlert('Chức năng xuất Excel cần thư viện XLSX. Vui lòng mở ứng dụng khi có mạng ít nhất 1 lần để tải thư viện.');
       return;
     }
 
@@ -2578,11 +3021,29 @@
         const parsed = JSON.parse(txt);
 
         if(!Array.isArray(parsed)){
-          showAlert('File sao lưu không đúng định dạng dữ liệu.');
+          showAlert('File sao lưu không đúng định dạng dữ liệu (không phải dạng mảng).');
           return;
         }
 
         const normalized = normalizeRecords(parsed);
+
+        for (let i = 0; i < normalized.length; i++) {
+          const r   = normalized[i];
+          const err = validateRecord(r);
+          if (err) {
+            showAlert(
+              'File sao lưu không hợp lệ, khôi phục đã bị hủy.\n\n' +
+              'Lỗi tại bản ghi thứ ' + (i + 1) + ':\n- ' + err +
+              '\n\nDữ liệu hiện tại vẫn được giữ nguyên.'
+            );
+            return;
+          }
+        }
+
+        if (!normalized.length) {
+          showAlert('File sao lưu không chứa bản ghi nào.');
+          return;
+        }
 
         records = normalized;
         fixLegacyVaccineNames();
@@ -2592,7 +3053,7 @@
         vaccineSuggestionsRef.refresh();
         farmSuggestionsRef.refresh();
         renderRecords();
-        showAlert('Đã khôi phục dữ liệu.');
+        showAlert('Đã khôi phục dữ liệu thành công.');
         maybeAutoReminder(true);
       }catch(err){
         console.error(err);
@@ -2615,7 +3076,7 @@
       return;
     }
     askConfirm(
-      'Bạn muốn xóa tất cả dữ liệu?\nLưu ý: Hành động này không thể hoàn tác.',
+      'Bạn muốn xóa tất cả dữ liệu?\n\nLưu ý: Hành động này không thể hoàn tác.',
       'Xóa tất cả dữ liệu',
       ()=>{
         records = [];
@@ -2644,7 +3105,7 @@
     ()=>vaccineSuggestions,
     {
       placeholderWhenEmpty:'Chưa có vaccine trong lịch sử',
-      useLastSegment:true   // 🔹 Gợi ý theo đoạn sau dấu phẩy
+      useLastSegment:true
     }
   );
   const farmSuggestionsRef = buildSuggest(
@@ -3008,7 +3469,7 @@
         deferredInstallPrompt.prompt();
         const choice = await deferredInstallPrompt.userChoice;
         if(choice && choice.outcome === 'accepted'){
-          showToast('Ứng dụng đang cài đặt vào thiết bị. Vui lòng chờ..');
+          showToast('Đang cài đặt ứng dụng vào thiết bị. Vui lòng chờ ...', 'info', { title:'Đang cài đặt', duration:10000 });
         }else{
           showAlert('Bạn đã hủy cài đặt ứng dụng.');
         }
@@ -3037,7 +3498,7 @@
     if(btnCheckUpdate){
       btnCheckUpdate.style.display = 'flex';
     }
-    showAlert('Ứng dụng đã được cài đặt trên thiết bị.');
+    showToast('Ứng dụng đã được cài đặt trên thiết bị.', 'success', { duration: 5000 });
   });
 
   /* ================== SHORTCUT TỪ ICON PWA ================== */
@@ -3092,7 +3553,6 @@
   setTimeout(()=>maybeAutoReminder(false), 800);
   setInterval(()=>maybeAutoReminder(false), 6*60*60*1000);
 
-  // 🔹 Auto backup: kiểm tra ngay khi mở app và lặp lại mỗi 1 giờ
   checkAutoBackup();
   setInterval(checkAutoBackup, 60*60*1000);
 
@@ -3105,7 +3565,7 @@
 <script>
 (function(){
   'use strict';
-  const APP_VERSION = 'v1.0.3';
+  const APP_VERSION = 'v1.0.4';
   window.__APP_VERSION__ = APP_VERSION;
 
   if ('serviceWorker' in navigator) {

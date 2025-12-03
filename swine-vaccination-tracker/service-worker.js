@@ -1,5 +1,5 @@
-/* service-worker.js - OFFLINE 100% GUARANTEED v1.0.3 (manual update check) */
-const APP_VERSION = 'v1.0.3';
+/* service-worker.js - OFFLINE 100% GUARANTEED v1.0.4 (manual update check) */
+const APP_VERSION = 'v1.0.4';
 const CACHE_STATIC = `static-${APP_VERSION}`;
 const BASE = '/swine-vaccination-tracker/';
 const VERSION_FILE = BASE + 'version.json';
