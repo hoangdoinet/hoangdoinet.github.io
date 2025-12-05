@@ -2,13 +2,39 @@
   "app": "Trình quản lý mật khẩu",
   "id": "password-manager",
   "website": "https://hoangdoinet.github.io/password-manager/",
-  "version": "v1.0.2",
-  "release_date": "2025-11-17",
+  "version": "v1.0.3",
+  "release_date": "2025-12-06",
   "author": "Hoàng Đợi",
+
   "notes": [
-    "Nâng cấp từ v1.0.1 lên v1.0.2 với một số sửa lỗi nhỏ và cải tiến trải nghiệm."
+    "Nâng cấp lên v1.0.3 với cải thiện hiệu suất, tối ưu Service Worker và cơ chế kiểm tra cập nhật thủ công, đồng bộ hóa toàn bộ luồng kiểm tra – phát hiện – cập nhật phiên bản, cùng một số sửa lỗi nhỏ."
   ],
+
+  "latest": {
+    "version": "v1.0.3",
+    "release_date": "2025-12-06",
+    "summary": "Cải thiện hiệu năng, tối ưu Service Worker, đồng bộ cơ chế cập nhật thủ công.",
+    "changelog": [
+      "Cải thiện tốc độ tải và khởi chạy ứng dụng.",
+      "Tối ưu Service Worker đảm bảo update thủ công hoạt động ổn định.",
+      "Đồng bộ luồng kiểm tra → phát hiện → cập nhật giữa index.html & service-worker.js.",
+      "Cải thiện giao diện phần Thông tin ứng dụng.",
+      "Sửa lỗi nhỏ liên quan đến toast."
+    ]
+  },
+
   "changelog": [
+    {
+      "version": "v1.0.3",
+      "release_date": "2025-12-06",
+      "changes": [
+        "Cải thiện hiệu suất tải ứng dụng và tốc độ khởi chạy.",
+        "Tối ưu Service Worker để đảm bảo cơ chế cập nhật thủ công hoạt động ổn định.",
+        "Đồng bộ hóa toàn bộ luồng kiểm tra – phát hiện – cập nhật phiên bản giữa index.html và service-worker.js.",
+        "Cải thiện giao diện phần Thông tin ứng dụng và hiển thị lịch sử thay đổi.",
+        "Sửa lỗi nhỏ liên quan đến toast thông báo."
+      ]
+    },
     {
       "version": "v1.0.2",
       "release_date": "2025-11-17",

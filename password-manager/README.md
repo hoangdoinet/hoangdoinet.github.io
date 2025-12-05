@@ -1,7 +1,7 @@
 # 🔐 Trình quản lý mật khẩu (Password Manager)
 
-Ứng dụng web (PWA) giúp **quản lý và mã hóa mật khẩu an toàn**, có thể cài đặt trên Android/iOS để hoạt động **100% offline**.  
-Dữ liệu được mã hóa AES-256 bằng **Mật khẩu chính** và lưu cục bộ trên thiết bị.
+Ứng dụng giúp **quản lý và mã hóa mật khẩu an toàn**, có thể cài đặt trên Android/iOS để sử dụng khi offline.  
+Dữ liệu được mã hóa AES-256 bằng **Mật khẩu chính** và lưu trữ trên thiết bị.
 
 ---
 
@@ -11,7 +11,7 @@ Dữ liệu được mã hóa AES-256 bằng **Mật khẩu chính** và lưu c�
 - Sao lưu & khôi phục bằng file JSON  
 - Thêm / sửa / xóa / tìm kiếm tài khoản nhanh  
 - Đánh giá độ mạnh mật khẩu  
-- Kiểm tra & cập nhật phiên bản tự động
+- Kiểm tra & cập nhật phiên bản mới.
 
 ---
 
@@ -26,11 +26,11 @@ Dữ liệu được mã hóa AES-256 bằng **Mật khẩu chính** và lưu c�
 ---
 
 ## 📄 Thông tin phát hành
-- Phiên bản: **v1.0.2**  
-- Ngày phát hành: **2025-11-17**  
+- Phiên bản: **v1.0.3**  
+- Ngày phát hành: **2025-12-06**  
 - Tác giả: **Hoàng Đợi**  
 - Website: https://hoangdoinet.github.io/password-manager/
 
 ---
 
-Ứng dụng hoạt động độc lập, **không gửi hoặc thu thập dữ liệu người dùng**.
+Ứng dụng hoạt động độc lập trên thiết bị sau khi cài đặt, **không lưu trữ hoặc thu thập dữ liệu người dùng**.

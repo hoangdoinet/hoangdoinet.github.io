@@ -1,5 +1,5 @@
-/* service-worker.js - OFFLINE 100% GUARANTEED v1.0.2 (manual update check) */
-const APP_VERSION = 'v1.0.2';
+/* service-worker.js - OFFLINE 100% GUARANTEED v1.0.3 (manual update check) */
+const APP_VERSION = 'v1.0.3';
 const CACHE_STATIC = `static-${APP_VERSION}`;
 const BASE = '/password-manager/';
 const VERSION_FILE = BASE + 'version.json';
@@ -101,20 +101,35 @@ async function verifyCriticalAssets(cache) {
 
 // ========== CHECK UPDATE (CHỈ GỌI KHI TRANG GỬI MESSAGE) ==========
 async function checkForUpdates() {
-  if (!globalThis.navigator || !navigator.onLine) {
-    console.log('[SW] 🌐 Offline, bỏ qua kiểm tra cập nhật.');
-    return;
-  }
   try {
     const res = await fetch(VERSION_FILE + '?t=' + Date.now(), { cache: 'no-cache' });
     if (!res.ok) {
       console.log('[SW] 🌐 Không đọc được version.json (HTTP ' + res.status + ')');
       return;
     }
+
     const json = await res.json();
-    const latestVersion = json.version || json.version_latest || null;
+
+    // Ưu tiên đọc phiên bản mới nhất:
+    // 1) json.latest.version hoặc json.latest (string)
+    // 2) json.changelog[0].version
+    // 3) json.version
+    let latestVersion = null;
+
+    if (json.latest && (json.latest.version || typeof json.latest === 'string')) {
+      latestVersion = json.latest.version || json.latest;
+    }
+
+    if (!latestVersion && Array.isArray(json.changelog) && json.changelog.length) {
+      latestVersion = json.changelog[0].version || null;
+    }
+
+    if (!latestVersion && json.version) {
+      latestVersion = json.version;
+    }
+
     if (!latestVersion) {
-      console.log('[SW] ℹ️ version.json không có thuộc tính version.');
+      console.log('[SW] ℹ️ Không tìm được phiên bản mới nhất trong version.json.');
       return;
     }
 
@@ -171,7 +186,6 @@ self.addEventListener('activate', (event) => {
       await cacheMissingCritical(cache, missing);
     }
 
-    // ❌ KHÔNG setInterval checkForUpdates ở đây nữa.
     console.log('[SW] ✅ Kích hoạt xong (update chỉ chạy khi người dùng bấm "Kiểm tra cập nhật").');
   })());
 });
