@@ -8,7 +8,7 @@
   "orientation": "portrait",
   "background_color": "#0b1220",
   "theme_color": "#22c55e",
-  "description": "Trình quản lý mật khẩu offline trên thiết bị: mã hóa AES-256 với mật khẩu chính, lưu trữ cục bộ, sao lưu/khôi phục bằng JSON, hỗ trợ cài ứng dụng trên Android & iOS.",
+  "description": "Trình quản lý mật khẩu offline trên thiết bị: mã hóa AES-256 với mật khẩu chính, lưu trữ cục bộ, sao lưu/khôi phục dữ liệu, hỗ trợ cài ứng dụng trên Android & iOS.",
   "lang": "vi-VN",
   "dir": "ltr",
   "categories": ["productivity", "security", "utilities"],

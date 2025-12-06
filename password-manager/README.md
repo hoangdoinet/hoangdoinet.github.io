@@ -21,7 +21,7 @@ Dữ liệu được mã hóa AES-256 bằng **Mật khẩu chính** và lưu tr
 3. Khi xem hoặc chỉnh sửa, ứng dụng yêu cầu nhập lại Mật khẩu chính.  
 4. Menu (＋) cung cấp: Sao lưu, Nhập dữ liệu, Đổi mật khẩu chính, Cài đặt ứng dụng.
 
-> ⚠️ **Mất Mật khẩu chính = không thể giải mã dữ liệu.**
+> ⚠️ **Quên Mật khẩu chính = không thể giải mã dữ liệu.**
 
 ---
 

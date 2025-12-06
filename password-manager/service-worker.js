@@ -279,7 +279,7 @@ button{background:#22c55e;color:#fff;border:none;padding:12px 24px;border-radius
 </style></head>
 <body><div class="container">
 <h1>📶 Đang offline</h1>
-<p>Ứng dụng cần kết nối internet để tải lần đầu.<br>Sau khi đã tải và cài Service Worker, bạn có thể dùng offline 100%.</p>
+<p>Ứng dụng cần kết nối internet để tải lần đầu.<br>Sau khi đã tải và cài đặt xong, bạn có thể dùng khi ngoại tuyến.</p>
 <button onclick="location.reload()">🔄 Thử lại</button>
 </div></body></html>`,
     {

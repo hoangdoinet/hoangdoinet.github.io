@@ -168,7 +168,6 @@
       margin-top:10px
     }
 
-    /* Empty state khi không có kết quả */
     .empty-state{
       margin-top:14px;
       padding:14px 12px;
@@ -562,7 +561,7 @@
       left:50%;
       bottom:var(--toast-bottom-gap);
       transform:translateX(-50%);
-      display:none; /* Ẩn hoàn toàn cho tới khi có toast */
+      display:none;
       flex-direction:column;
       gap:10px;
       z-index:9999;
@@ -1953,7 +1952,6 @@
       el.aboutModal.classList.toggle('open',open);
       el.aboutModal.setAttribute('aria-hidden', open?'false':'true');
       if(open){
-        // vẫn gọi để giữ hành vi logic, dù UI không còn hiển thị quota
         updatePersistUI();
         setTimeout(()=> $('#aboutClose').focus(),0);
       }
