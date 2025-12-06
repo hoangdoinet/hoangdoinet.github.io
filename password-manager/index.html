@@ -1006,6 +1006,22 @@
       }
     }
 
+    // Chuyển YYYY-MM-DD hoặc ISO sang DD/MM/YYYY
+    function formatDateVN(dateStr){
+      if (!dateStr) return '';
+      try{
+        const onlyDate = String(dateStr).split('T')[0];
+        const parts = onlyDate.split('-');
+        if (parts.length === 3){
+          const [y, m, d] = parts;
+          return `${d}/${m}/${y}`;
+        }
+        return dateStr;
+      }catch{
+        return dateStr;
+      }
+    }
+
     async function initLatestVersionLabel(){
       const lbl = document.getElementById('latestVersion');
       if (!lbl) return;
@@ -1152,17 +1168,32 @@
           latestLbl.textContent = newV;
         }
 
-        const info = await getVersionInfo(newV);
+        // Đóng modal Thông tin ứng dụng nếu đang mở
+        if (typeof openAbout === 'function') {
+          openAbout(false);
+        }
 
-        let message = `Phiên bản mới: ${newV}\nPhiên bản hiện tại: ${curV}`;
-        if (info && info.releaseDate) {
-          message += `\nNgày phát hành: ${info.releaseDate}`;
+        // Lấy thông tin phiên bản mới và hiện tại
+        const infoNew = await getVersionInfo(newV);
+        const infoCur = await getVersionInfo(curV);
+
+        const curDateText = infoCur && infoCur.releaseDate
+          ? ` (${formatDateVN(infoCur.releaseDate)})`
+          : '';
+        const newDateText = infoNew && infoNew.releaseDate
+          ? ` (${formatDateVN(infoNew.releaseDate)})`
+          : '';
+
+        let message =
+          `• Phiên bản hiện tại: ${curV}${curDateText}\n` +
+          `• Phiên bản mới: ${newV}${newDateText}`;
+
+        if (infoNew && Array.isArray(infoNew.changes) && infoNew.changes.length){
+          message += `\n\nCó gì mới:\n` + infoNew.changes.map(c => `• ${c}`).join('\n');
         }
-        if (info && Array.isArray(info.changes) && info.changes.length){
-          message += `\n\nCó gì mới:\n` + info.changes.map(c => `• ${c}`).join('\n');
-        }
-        if (info && info.website) {
-          message += `\n\nTrang web: ${info.website}`;
+
+        if (infoNew && infoNew.website) {
+          message += `\n\nTrang web: ${infoNew.website}`;
         }
 
         const ok = await openModal({
@@ -1482,34 +1513,19 @@
         .replace(/'/g,'&#39;');
     }
 
+    // Sắp xếp danh sách từ mới đến cũ (index lớn trước)
     function render(){
-      const q=(el.search.value||'').trim().toLowerCase();
-      el.list.innerHTML=''; 
-      let count=0;
+      const q = (el.search.value || '').trim().toLowerCase();
+      el.list.innerHTML = '';
 
+      const items = [];
       data.forEach((entry, idx)=>{
         if(entry[CHECK_KEY]) return;
         if(q && !String(entry.display||'').toLowerCase().includes(q)) return;
-
-        count++;
-        const div=document.createElement('div');
-        div.className='entry';
-        div.innerHTML = `
-          <h4>${escapeHtml(entry.display||'')}</h4>
-          <div class="row">
-            <input id="acc-${idx}" class="ro" type="text" value="[Đã ẩn]" readonly autocomplete="off">
-          </div>
-          <div class="row">
-            <input id="pass-${idx}" class="ro" type="text" value="•••••••" readonly autocomplete="off">
-          </div>
-          <div class="row" style="gap:6px;flex-wrap:wrap">
-            <button class="btn green sm" data-idx="${idx}" onclick="toggleShow(this)">Hiện mật khẩu</button>
-            <button class="btn text sm" onclick="editEntry(${idx})">Chỉnh sửa</button>
-            <button class="btn danger sm" onclick="deleteEntry(${idx})">Xóa</button>
-          </div>`;
-        el.list.appendChild(div);
+        items.push({ entry, idx });
       });
 
+      const count = items.length;
       el.statCount.textContent = count;
 
       if (count === 0) {
@@ -1533,9 +1549,32 @@
             <div class="empty-sub">${subtitle.replace(/\n/g,'<br>')}</div>
           </div>`;
         el.list.style.display = 'block';
-      } else {
-        el.list.style.display = 'block';
+        return;
       }
+
+      // Sắp xếp từ mới đến cũ (idx giảm dần)
+      items.sort((a, b) => b.idx - a.idx);
+
+      items.forEach(({ entry, idx })=>{
+        const div=document.createElement('div');
+        div.className='entry';
+        div.innerHTML = `
+          <h4>${escapeHtml(entry.display||'')}</h4>
+          <div class="row">
+            <input id="acc-${idx}" class="ro" type="text" value="[Đã ẩn]" readonly autocomplete="off">
+          </div>
+          <div class="row">
+            <input id="pass-${idx}" class="ro" type="text" value="•••••••" readonly autocomplete="off">
+          </div>
+          <div class="row" style="gap:6px;flex-wrap:wrap">
+            <button class="btn green sm" data-idx="${idx}" onclick="toggleShow(this)">Hiện mật khẩu</button>
+            <button class="btn text sm" onclick="editEntry(${idx})">Chỉnh sửa</button>
+            <button class="btn danger sm" onclick="deleteEntry(${idx})">Xóa</button>
+          </div>`;
+        el.list.appendChild(div);
+      });
+
+      el.list.style.display = 'block';
     }
 
     function clearAutoHide(idx){
