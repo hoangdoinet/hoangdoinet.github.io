@@ -2,7 +2,7 @@
   "app": "Trình quản lý mật khẩu",
   "id": "password-manager",
   "website": "https://hoangdoinet.github.io/password-manager/",
-  "version": "v1.0.3",
+  "version": "v1.0.4",
   "release_date": "2025-12-06",
   "author": "Hoàng Đợi",
 
@@ -11,7 +11,7 @@
   ],
 
   "latest": {
-    "version": "v1.0.3",
+    "version": "v1.0.4",
     "release_date": "2025-12-06",
     "summary": "Cải thiện hiệu năng, tối ưu Service Worker, đồng bộ cơ chế cập nhật thủ công.",
     "changelog": [
@@ -25,7 +25,7 @@
 
   "changelog": [
     {
-      "version": "v1.0.3",
+      "version": "v1.0.4",
       "release_date": "2025-12-06",
       "changes": [
         "Cải thiện hiệu suất tải ứng dụng và tốc độ khởi chạy.",
