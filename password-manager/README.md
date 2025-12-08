@@ -10,7 +10,8 @@ Dữ liệu được mã hóa AES-256 bằng **Mật khẩu chính** và lưu tr
 - Hoạt động offline và hỗ trợ cài đặt PWA  
 - Sao lưu & khôi phục bằng file JSON  
 - Thêm / sửa / xóa / tìm kiếm tài khoản nhanh  
-- Đánh giá độ mạnh mật khẩu  
+- Đánh giá độ mạnh mật khẩu
+- Cơ chế khóa tạm thời khi nhập sai mật khẩu chính quá nhiều lần  
 - Kiểm tra & cập nhật phiên bản mới.
 
 ---
@@ -26,8 +27,8 @@ Dữ liệu được mã hóa AES-256 bằng **Mật khẩu chính** và lưu tr
 ---
 
 ## 📄 Thông tin phát hành
-- Phiên bản: **v1.0.3**  
-- Ngày phát hành: **2025-12-06**  
+- Phiên bản: **v1.0.4**  
+- Ngày phát hành: **2025-12-08**  
 - Tác giả: **Hoàng Đợi**  
 - Website: https://hoangdoinet.github.io/password-manager/
 

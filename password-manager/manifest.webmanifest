@@ -1,6 +1,6 @@
 {
   "name": "Trình quản lý mật khẩu",
-  "short_name": "QL Mật khẩu",
+  "short_name": "PW Manager",
   "id": "/password-manager/",
   "start_url": "/password-manager/?source=pwa",
   "scope": "/password-manager/",

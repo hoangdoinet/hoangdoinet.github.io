@@ -2,28 +2,37 @@
   "app": "Trình quản lý mật khẩu",
   "id": "password-manager",
   "website": "https://hoangdoinet.github.io/password-manager/",
-  "version": "v1.0.3",
-  "release_date": "2025-12-06",
+  "version": "v1.0.4",
+  "release_date": "2025-12-08",
   "author": "Hoàng Đợi",
 
   "notes": [
-    "Nâng cấp lên v1.0.3 với cải thiện hiệu suất, tối ưu Service Worker và cơ chế kiểm tra cập nhật thủ công, đồng bộ hóa toàn bộ luồng kiểm tra – phát hiện – cập nhật phiên bản, cùng một số sửa lỗi nhỏ."
+    "Nâng cấp lên v1.0.4 với cải thiện giao diện, tinh chỉnh trải nghiệm sử dụng, tối ưu hiệu năng và sửa lỗi nhỏ."
   ],
 
   "latest": {
-    "version": "v1.0.3",
-    "release_date": "2025-12-06",
-    "summary": "Cải thiện hiệu năng, tối ưu Service Worker, đồng bộ cơ chế cập nhật thủ công.",
+    "version": "v1.0.4",
+    "release_date": "2025-12-08",
+    "summary": "Cải thiện giao diện, tối ưu hiệu năng và sửa lỗi nhỏ.",
     "changelog": [
-      "Cải thiện tốc độ tải và khởi chạy ứng dụng.",
-      "Tối ưu Service Worker đảm bảo update thủ công hoạt động ổn định.",
-      "Đồng bộ luồng kiểm tra cập nhật phiên bản.",
-      "Cải thiện giao diện phần Thông tin ứng dụng.",
-      "Sửa lỗi nhỏ liên quan đến toast."
+      "Thêm cơ chế khóa tạm thời khi nhập sai mật khẩu chính quá nhiều lần.",
+      "Tinh chỉnh hệ thống thông báo và hiệu ứng.",
+      "Cải thiện trải nghiệm hiển thị và thao tác với danh sách tài khoản.",
+      "Tối ưu hiệu suất tổng thể và sửa lỗi nhỏ."
     ]
   },
 
   "changelog": [
+    {
+      "version": "v1.0.4",
+      "release_date": "2025-12-08",
+      "changes": [
+        "Thêm cơ chế khóa tạm thời khi nhập sai mật khẩu chính quá nhiều lần.",
+        "Tinh chỉnh hiệu ứng và hành vi toast.",
+        "Cải thiện trải nghiệm hiển thị và thao tác với danh sách tài khoản.",
+        "Tối ưu hiệu suất tổng thể và sửa lỗi nhỏ."
+      ]
+    },
     {
       "version": "v1.0.3",
       "release_date": "2025-12-06",
