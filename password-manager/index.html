@@ -32,7 +32,7 @@
 
   <!-- App meta -->
   <meta name="theme-color" content="#22c55e">
-  <meta name="version" content="v1.0.4"><!-- dùng để hiển thị/splash -->
+  <meta name="version" content="v1.0.5"><!-- dùng để hiển thị/splash -->
 
   <!-- iOS PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -705,7 +705,7 @@
     <img src="/password-manager/icons/icon-192.png" alt="" width="96" height="96"
          style="filter:drop-shadow(0 8px 24px rgba(0,0,0,.35)); border-radius:22%">
     <div style="font-weight:900;font-size:20px;margin-top:8px;letter-spacing:.4px">TRÌNH QUẢN LÝ MẬT KHẨU</div>
-    <div style="opacity:.95;margin-top:6px">Phiên bản: <b id="splashVersion">v1.0.4</b></div>
+    <div style="opacity:.95;margin-top:6px">Phiên bản: <b id="splashVersion">v1.0.5</b></div>
   </div>
 
   <main id="app" class="wrap" aria-live="polite">
@@ -929,7 +929,7 @@
   <footer>© 2025 - Hoàng Đợi</footer>
 
   <!-- ========== CryptoJS (INLINE) ========== -->
-    <script>
+  <script>
 	/**
 	 * Minified by jsDelivr using Terser v5.37.0.
 	 * Original file: /npm/crypto-js@4.1.1/crypto-js.js
@@ -958,9 +958,9 @@
   </script>
 
   <!-- ========== ỨNG DỤNG ========== -->
-    <script>
+  <script>
   (()=>{
-    const APP_VERSION = 'v1.0.4';
+    const APP_VERSION = 'v1.0.5';
     const localKey = "i4pw_data";
     const CHECK_KEY = "_verify";
     const CHECK_VALUE = "Xác minh";
@@ -1182,7 +1182,7 @@
         }
 
         try{
-          openToast('Đang kiểm tra cập nhật...', 'info', 2500, 'Kiểm tra cập nhật');
+          openToast('Đang kiểm tra cập nhật...', 'info', 1500, 'Kiểm tra cập nhật');
 
           const reg = await navigator.serviceWorker.ready;
           if (!reg.active) {
@@ -1497,6 +1497,9 @@
         const cleanup=()=>{
           el.modal.classList.remove('open');
           el.modal.setAttribute('aria-hidden','true');
+          el.modalInput.value = '';
+          el.modalMsg.textContent = '';
+          el.modalTitle.textContent = '';
           el.modalOk.onclick=el.modalCancel.onclick=el.modalX.onclick=null;
           window.onkeydown=null;
         };
@@ -1777,6 +1780,27 @@
       setTimeout(()=>accInput && accInput.select(),0);
     };
 
+    function clearEditForm(){
+      if (!el.editModal) return;
+      if (el.fDisplay) el.fDisplay.value = '';
+      if (el.fAccount) el.fAccount.value = '';
+      if (el.fPassword) el.fPassword.value = '';
+      if (el.fMaster) el.fMaster.value = '';
+      if (el.fMasterConfirm) el.fMasterConfirm.value = '';
+
+      if (el.strengthMsg) {
+        el.strengthMsg.style.display = 'none';
+        el.strengthMsg.textContent = '';
+      }
+      if (el.masterConfirmHint) {
+        el.masterConfirmHint.style.display = 'none';
+        el.masterConfirmHint.textContent = '';
+      }
+      if (el.masterConfirmRow) {
+        el.masterConfirmRow.style.display = 'none';
+      }
+    }
+
     function openEdit(open=true){
       el.editModal.classList.toggle('open',open);
       el.editModal.setAttribute('aria-hidden', open?'false':'true');
@@ -1784,19 +1808,15 @@
         setTimeout(()=> el.fDisplay.focus(),0);
       }else{
         editingIndex = null;
+        clearEditForm();
       }
     }
 
     async function addEntryModal(){
       editingIndex = null;
+      clearEditForm();
+
       el.editTitle.textContent='Thêm tài khoản';
-      el.fDisplay.value='';
-      el.fAccount.value='';
-      el.fPassword.value='';
-      el.fMaster.value='';
-      el.fMasterConfirm.value='';
-      el.strengthMsg.style.display='none';
-      el.masterConfirmHint.style.display='none';
 
       const verify = data.find(e => e[CHECK_KEY]);
       el.masterConfirmRow.style.display = verify ? 'none' : 'flex';
@@ -1889,6 +1909,15 @@
 
     el.btnCancelEdit.onclick=()=>openEdit(false);
     el.editX.onclick=()=>openEdit(false);
+    
+    if (el.editModal){
+      el.editModal.addEventListener('keydown', (e)=>{
+        if (e.key === 'Escape'){
+          e.preventDefault();
+          openEdit(false);
+        }
+      });
+    }
 
     window.editEntry = async function(id){
       if (!requireCrypto('chỉnh sửa tài khoản')) return;
@@ -1985,6 +2014,12 @@
         el.ckOld.value=''; el.ckNew.value=''; el.ckConfirm.value='';
         el.ckStrength.style.display='none'; el.ckHint.style.display='none';
         setTimeout(()=> el.ckOld.focus(),0);
+      } else {
+        el.ckOld.value=''; 
+        el.ckNew.value=''; 
+        el.ckConfirm.value='';
+        el.ckStrength.style.display='none'; 
+        el.ckHint.style.display='none';
       }
     }
     async function doChangeKey(){

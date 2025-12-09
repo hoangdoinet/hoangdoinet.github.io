@@ -2,27 +2,37 @@
   "app": "Trình quản lý mật khẩu",
   "id": "password-manager",
   "website": "https://hoangdoinet.github.io/password-manager/",
-  "version": "v1.0.4",
-  "release_date": "2025-12-08",
+  "version": "v1.0.5",
+  "release_date": "2025-12-09",
   "author": "Hoàng Đợi",
 
   "notes": [
-    "Nâng cấp lên v1.0.4 với cải thiện giao diện, tinh chỉnh trải nghiệm sử dụng, tối ưu hiệu năng và sửa lỗi nhỏ."
+    "Nâng cấp lên v1.0.5 với tăng cường bảo mật và tối ưu hiệu suất."
   ],
 
   "latest": {
-    "version": "v1.0.4",
-    "release_date": "2025-12-08",
-    "summary": "Cải thiện giao diện, tối ưu hiệu năng và sửa lỗi nhỏ.",
+    "version": "v1.0.5",
+    "release_date": "2025-12-09",
+    "summary": "Tăng cường bảo mật và tối ưu hiệu suất.",
     "changelog": [
-      "Thêm cơ chế khóa tạm thời khi nhập sai mật khẩu chính quá nhiều lần.",
-      "Tinh chỉnh hệ thống thông báo và hiệu ứng.",
-      "Cải thiện trải nghiệm hiển thị và thao tác với danh sách tài khoản.",
-      "Tối ưu hiệu suất tổng thể và sửa lỗi nhỏ."
+      "Tăng cường bảo mật.",
+      "Tối ưu tốc độ thao tác và khả năng phản hồi của ứng dụng.",
+      "Tinh chỉnh hiệu ứng thông báo và bố cục giao diện.",
+      "Sửa lỗi nhỏ và nâng cao độ ổn định."
     ]
   },
 
   "changelog": [
+    {
+      "version": "v1.0.5",
+      "release_date": "2025-12-09",
+      "changes": [
+        "Tăng cường bảo mật.",
+        "Tối ưu tốc độ thao tác và khả năng phản hồi của ứng dụng.",
+        "Tinh chỉnh hiệu ứng thông báo và bố cục giao diện.",
+        "Sửa lỗi nhỏ và tăng độ ổn định tổng thể."
+      ]
+    },
     {
       "version": "v1.0.4",
       "release_date": "2025-12-08",
@@ -38,9 +48,9 @@
       "release_date": "2025-12-06",
       "changes": [
         "Cải thiện hiệu suất tải ứng dụng và tốc độ khởi chạy.",
-        "Tối ưu Service Worker để đảm bảo cơ chế cập nhật thủ công hoạt động ổn định.",
-        "Đồng bộ hóa toàn bộ luồng kiểm tra cập nhật phiên bản.",
-        "Cải thiện giao diện phần Thông tin ứng dụng và hiển thị lịch sử thay đổi.",
+        "Tối ưu Service Worker cho cơ chế cập nhật thủ công.",
+        "Đồng bộ luồng kiểm tra và hiển thị thông tin phiên bản.",
+        "Cải thiện giao diện phần Thông tin ứng dụng.",
         "Sửa lỗi nhỏ liên quan đến toast thông báo."
       ]
     },
@@ -49,31 +59,30 @@
       "release_date": "2025-11-17",
       "changes": [
         "Cải thiện hiệu suất.",
-        "Hoàn thiện cơ chế kiểm tra cập nhật thủ công với thông tin phiên bản hiển thị rõ ràng hơn."
+        "Hoàn thiện cơ chế kiểm tra cập nhật thủ công."
       ]
     },
     {
       "version": "v1.0.1",
       "release_date": "2025-11-14",
       "changes": [
-        "Tối ưu để ứng dụng có thể sử dụng offline sau lần tải đầu tiên.",
-        "Thay đổi cơ chế cập nhật: không tự động kiểm tra, chỉ kiểm tra khi người dùng bấm nút \"Kiểm tra cập nhật\" trong phần Thông tin ứng dụng.",
-        "Cải thiện giao diện, bổ sung toast/thông báo rõ ràng hơn.",
-        "Thêm tính năng tự động ẩn tài khoản/mật khẩu sau 15 giây kể từ khi hiển thị.",
-        "Hỗ trợ mở nhanh với shortcuts: Thêm tài khoản mới, Tìm kiếm, Sao lưu dữ liệu.",
-        "Tối ưu trải nghiệm cài đặt ứng dụng trên Android và iOS."
+        "Tối ưu trạng thái offline.",
+        "Bổ sung toast/thông báo rõ ràng hơn.",
+        "Thêm chức năng tự động ẩn mật khẩu sau 15 giây.",
+        "Hỗ trợ shortcuts: thêm, tìm kiếm, sao lưu.",
+        "Tối ưu trải nghiệm cài đặt ứng dụng."
       ]
     },
     {
       "version": "v1.0.0",
       "release_date": "2025-11-12",
       "changes": [
-        "Khởi tạo phiên bản đầu tiên của ứng dụng Trình quản lý mật khẩu.",
-        "Lưu trữ dữ liệu cục bộ trên thiết bị, không gửi dữ liệu lên máy chủ.",
-        "Mã hóa dữ liệu tài khoản/mật khẩu bằng AES-256 với Mật khẩu chính do người dùng tự đặt.",
-        "Hỗ trợ thêm, chỉnh sửa, xóa tài khoản và tìm kiếm theo tên hiển thị.",
-        "Hỗ trợ sao lưu và khôi phục dữ liệu bằng file JSON.",
-        "Cấu hình PWA cơ bản: manifest, icon, cài đặt ứng dụng trên Android và iOS."
+        "Khởi tạo phiên bản đầu tiên.",
+        "Lưu trữ dữ liệu cục bộ an toàn, không gửi lên máy chủ.",
+        "Mã hóa AES-256 bằng mật khẩu chính.",
+        "Thêm, sửa, xóa tài khoản và tìm kiếm.",
+        "Hỗ trợ sao lưu/khôi phục JSON.",
+        "Cấu hình PWA: icon, manifest, cài đặt ứng dụng."
       ]
     }
   ]
