@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Tính lượng thuốc sát trùng</title>
-  <meta name="version" content="v1.0.5">
+  <meta name="version" content="v1.0.6">
 
   <!-- 🔎 SEO & Sharing -->
   <meta name="description" content="Công cụ tính lượng thuốc sát trùng theo tỷ lệ pha và dạng thuốc. Có thể cài đặt ứng dụng trên Android & iOS, hoạt động offline và sử dụng dễ dàng cho trang trại.">
@@ -57,30 +57,6 @@
       min-height:95vh;
     }
 
-    /* ===================== SPLASH ===================== */
-    #splash{
-      position:fixed;inset:0;
-      padding:calc(env(safe-area-inset-top,0) + 16px) 16px calc(env(safe-area-inset-bottom,0) + 16px);
-      background:radial-gradient(120% 90% at 50% -10%, #fff3 0%, #0000 60%),linear-gradient(180deg,var(--brand1),var(--brand2));
-      color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;text-align:center;transition:opacity .7s ease,visibility .7s
-    }
-    #splash.hidden{opacity:0;visibility:hidden}
-    .logo-wrap{position:relative;width:140px;height:140px;filter:drop-shadow(0 10px 24px rgba(0,0,0,.28))}
-    .logo-img{width:100%;height:100%;border-radius:24%;animation:popIn 900ms cubic-bezier(.2,.7,.2,1) both,glow 1.6s .9s ease-in-out 2 alternate;will-change:transform,filter}
-    .logo-wrap::after{content:"";position:absolute;inset:-8%;background:linear-gradient(75deg,transparent 30%,#fff6 48%,#fff9 52%,transparent 70%);transform:translateX(-120%) rotate(8deg);border-radius:28%;animation:sweep 1.1s .35s ease-out forwards;pointer-events:none;mix-blend-mode:overlay}
-    .app-name{margin-top:14px;font-size:24px;font-weight:800;letter-spacing:.8px;overflow:hidden;white-space:nowrap;border-right:2px solid rgba(255,255,255,.85);width:0;animation:typing 1.4s .45s steps(18,end) forwards,caret .9s step-end infinite;text-shadow:0 1px 2px #0003}
-    .meta{margin-top:8px;font-size:14px;opacity:.95}
-    .meta b{font-weight:800}
-    #app{visibility:hidden}
-    body.ready #app{visibility:visible}
-    @keyframes popIn{0%{transform:scale(.6) rotate(-8deg);opacity:0}60%{transform:scale(1.08) rotate(3deg);opacity:1}100%{transform:scale(1) rotate(0)}}
-    @keyframes glow{from{filter:drop-shadow(0 10px 24px rgba(0,0,0,.28)) brightness(1) saturate(1)}to{filter:drop-shadow(0 12px 34px rgba(0,0,0,.35)) brightness(1.08) saturate(1.1)}}
-    @keyframes sweep{to{transform:translateX(120%) rotate(8deg);opacity:0}}
-    @keyframes typing{from{width:0}to{width:100%}}
-    @keyframes caret{50%{border-color:transparent}}
-    @media (prefers-reduced-motion: reduce){.logo-img,.logo-wrap::after,.app-name{animation:none !important}#splash{transition:opacity .2s ease,visibility .2s}}
-    /* =================== /SPLASH =================== */
-
     .wrap{max-width:860px;margin:32px auto;padding:0 16px}
     header.hero{text-align:center;margin-bottom:16px}
     header.hero h1{font-size:28px;margin:0}
@@ -94,7 +70,6 @@
     .group{margin-bottom:16px}
     label{display:block;margin-bottom:6px;font-size:14px;color:var(--muted)}
 
-    /* Segmented control */
     .segmented{display:flex;border:1px solid var(--border);border-radius:999px;overflow:hidden}
     .segmented input{display:none}
     .segmented label{flex:1;text-align:center;padding:10px 14px;cursor:pointer;color:var(--muted);position:relative;user-select:none;transition:all .2s ease}
@@ -119,7 +94,6 @@
     .alert-danger{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);color:#fecaca}
     footer{text-align:center;opacity:.7;padding:18px 12px;font-size:13px}
 
-    /* ============ Modal (NỀN SÁNG) ============ */
     .modal-backdrop{
       position:fixed; inset:0; background:rgba(0,0,0,.45);
       display:none; align-items:center; justify-content:center; z-index:10000;
@@ -151,14 +125,12 @@
     }
     .modal .btn.secondary{ background:#e2e8f0; color:#0f172a; }
 
-    /* ============ Install button (floating) ============ */
     .install-btn{
       position:fixed; right:14px; bottom:14px;
       background:#22c55e; color:#063016; border:none; border-radius:14px;
       padding:12px 14px; font-weight:700; box-shadow:0 10px 24px rgba(0,0,0,.25); display:none;
     }
 
-    /* ============ Update Notification ============ */
     .update-notification {
       position: fixed;
       top: 0;
@@ -173,12 +145,7 @@
       font-family: system-ui;
       animation: slideDown 0.3s ease-out;
     }
-    
-    @keyframes slideDown {
-      from { transform: translateY(-100%); }
-      to { transform: translateY(0); }
-    }
-    
+    @keyframes slideDown { from { transform: translateY(-100%);} to { transform: translateY(0);} }
     .update-notification button {
       background: white;
       color: #22c55e;
@@ -189,7 +156,6 @@
       font-weight: bold;
       cursor: pointer;
     }
-    
     .update-notification button.secondary {
       background: transparent;
       color: white;
@@ -199,81 +165,72 @@
   </style>
 </head>
 <body>
-  <!-- Splash Screen -->
-  <div id="splash" role="status" aria-label="Đang khởi động ứng dụng">
-    <div class="logo-wrap"><img src="/pha-thuoc/icons/icon-512.png" class="logo-img" alt="Logo Tính lượng thuốc sát trùng" width="140" height="140"></div>
-    <div class="app-name" aria-hidden="true">PHA THUỐC SÁT TRÙNG</div>
-    <div class="meta">Phiên bản: <b id="splashVersion">v1.0.5</b></div>
-    <div class="meta">Tác giả: <b>Hoàng Đợi</b></div>
+
+  <!-- iOS Installation Tip -->
+  <div class="ios-tip" id="iosTip" style="display:none;background:rgba(15,23,42,.95);padding:12px 14px;border-radius:14px;border:1px solid #1f2937;font-size:14px;backdrop-filter:blur(6px);position:fixed;left:12px;right:12px;bottom:12px;z-index:50">
+    <button id="iosClose" style="float:right;background:#22c55e;border:none;color:#063016;border-radius:10px;padding:8px 12px;font-weight:600;cursor:pointer">Đã hiểu</button>
+    <b style="color:#86efac">Mẹo:</b> Trên iPhone/iPad → Safari → <b>Chia sẻ</b> → <b>Thêm vào MH chính</b> để cài như ứng dụng.
   </div>
 
-  <div id="app">
-    <!-- iOS Installation Tip -->
-    <div class="ios-tip" id="iosTip" style="display:none;background:rgba(15,23,42,.95);padding:12px 14px;border-radius:14px;border:1px solid #1f2937;font-size:14px;backdrop-filter:blur(6px);position:fixed;left:12px;right:12px;bottom:12px;z-index:50">
-      <button id="iosClose" style="float:right;background:#22c55e;border:none;color:#063016;border-radius:10px;padding:8px 12px;font-weight:600;cursor:pointer">Đã hiểu</button>
-      <b style="color:#86efac">Mẹo:</b> Trên iPhone/iPad → Safari → <b>Chia sẻ</b> → <b>Thêm vào MH chính</b> để cài như ứng dụng.
-    </div>
+  <!-- Install Button -->
+  <button class="install-btn" id="btnInstall">📥 Cài đặt ứng dụng</button>
 
-    <!-- Install Button -->
-    <button class="install-btn" id="btnInstall">📥 Cài đặt ứng dụng</button>
+  <div class="wrap">
+    <header class="hero">
+      <h1>Tính lượng thuốc sát trùng</h1>
+      <div id="appBadge" class="badge" role="button" tabindex="0" aria-label="Xem thông tin ứng dụng">Phiên bản: v1.0.6</div>
+    </header>
 
-    <div class="wrap">
-      <header class="hero">
-        <h1>Tính lượng thuốc sát trùng</h1>
-        <div id="appBadge" class="badge" role="button" tabindex="0" aria-label="Xem thông tin ứng dụng">Phiên bản: v1.0.5</div>
-      </header>
-
-      <main class="card">
-        <div class="group">
-          <label>Loại thuốc</label>
-          <div class="segmented">
-            <input type="radio" name="medicineFormType" id="liquidMedicine" value="liquid" checked>
-            <label for="liquidMedicine">Thuốc nước</label>
-            <input type="radio" name="medicineFormType" id="powderMedicine" value="powder">
-            <label for="powderMedicine">Thuốc bột</label>
-          </div>
+    <main class="card">
+      <div class="group">
+        <label>Loại thuốc</label>
+        <div class="segmented">
+          <input type="radio" name="medicineFormType" id="liquidMedicine" value="liquid" checked>
+          <label for="liquidMedicine">Thuốc nước</label>
+          <input type="radio" name="medicineFormType" id="powderMedicine" value="powder">
+          <label for="powderMedicine">Thuốc bột</label>
         </div>
+      </div>
 
-        <div class="group">
-          <label for="medicineType">Tỷ lệ pha</label>
-          <select id="medicineType" required>
-            <option value="">Chọn tỷ lệ</option>
-            <option value="1:100">1:100</option>
-            <option value="1:200">1:200</option>
-            <option value="1:300">1:300</option>
-            <option value="1:400">1:400</option>
-            <option value="1:500">1:500</option>
-            <option value="1:600">1:600</option>
-            <option value="1:700">1:700</option>
-            <option value="1:800">1:800</option>
-            <option value="1:900">1:900</option>
-            <option value="1:1000">1:1000</option>
-          </select>
-          <div class="chips" id="ratioChips">
-            <div class="chip" data-ratio="1:100">1:100</div>
-            <div class="chip" data-ratio="1:200">1:200</div>
-            <div class="chip" data-ratio="1:300">1:300</div>
-            <div class="chip" data-ratio="1:400">1:400</div>
-            <div class="chip" data-ratio="1:500">1:500</div>
-            <div class="chip" data-ratio="1:600">1:600</div>
-            <div class="chip" data-ratio="1:700">1:700</div>
-            <div class="chip" data-ratio="1:800">1:800</div>
-            <div class="chip" data-ratio="1:900">1:900</div>
-            <div class="chip" data-ratio="1:1000">1:1000</div>
-          </div>
+      <div class="group">
+        <label for="medicineType">Tỷ lệ pha</label>
+        <select id="medicineType" required>
+          <option value="">Chọn tỷ lệ</option>
+          <option value="1:100">1:100</option>
+          <option value="1:200">1:200</option>
+          <option value="1:300">1:300</option>
+          <option value="1:400">1:400</option>
+          <option value="1:500">1:500</option>
+          <option value="1:600">1:600</option>
+          <option value="1:700">1:700</option>
+          <option value="1:800">1:800</option>
+          <option value="1:900">1:900</option>
+          <option value="1:1000">1:1000</option>
+        </select>
+        <div class="chips" id="ratioChips">
+          <div class="chip" data-ratio="1:100">1:100</div>
+          <div class="chip" data-ratio="1:200">1:200</div>
+          <div class="chip" data-ratio="1:300">1:300</div>
+          <div class="chip" data-ratio="1:400">1:400</div>
+          <div class="chip" data-ratio="1:500">1:500</div>
+          <div class="chip" data-ratio="1:600">1:600</div>
+          <div class="chip" data-ratio="1:700">1:700</div>
+          <div class="chip" data-ratio="1:800">1:800</div>
+          <div class="chip" data-ratio="1:900">1:900</div>
+          <div class="chip" data-ratio="1:1000">1:1000</div>
         </div>
+      </div>
 
-        <div class="group">
-          <label for="litersOfWater">Số lượng nước (lít)</label>
-          <input type="number" id="litersOfWater" step="0.1" min="0" inputmode="decimal" placeholder="Nhập số lít nước cần sử dụng" required>
-        </div>
+      <div class="group">
+        <label for="litersOfWater">Số lượng nước (lít)</label>
+        <input type="number" id="litersOfWater" step="0.1" min="0" inputmode="decimal" placeholder="Nhập số lít nước cần sử dụng" required>
+      </div>
 
-        <div class="alert alert-info" id="result" aria-live="polite"></div>
-        <div class="alert alert-danger" id="error">Bạn chưa <strong>chọn tỷ lệ thuốc</strong> để hiển thị kết quả.</div>
-      </main>
+      <div class="alert alert-info" id="result" aria-live="polite"></div>
+      <div class="alert alert-danger" id="error">Bạn chưa <strong>chọn tỷ lệ thuốc</strong> để hiển thị kết quả.</div>
+    </main>
 
-      <footer>© 2025 - Hoàng Đợi</footer>
-    </div>
+    <footer>© 2025 - Hoàng Đợi</footer>
   </div>
 
   <!-- About Modal -->
@@ -286,9 +243,8 @@
       <div class="content">
         <p id="aboutDesc">Công cụ tính nhanh lượng thuốc sát trùng theo tỷ lệ pha và dạng thuốc (nước/bột). Hỗ trợ cài đặt để dùng offline trên Android và iOS.</p>
         <div class="kv">
-          <div class="key"><li>Phiên bản:</li></div><div><b>v1.0.5</b></div>
+          <div class="key"><li>Phiên bản:</li></div><div><b>v1.0.6</b></div>
           <div class="key"><li>Tác giả:</li></div><div><b>Hoàng Đợi</b></div>
-          <div class="key"><li>Bộ nhớ offline:</li></div><div><b id="persistStatus">Đang kiểm tra…</b></div>
         </div>
       </div>
       <footer>
@@ -299,145 +255,163 @@
   </div>
 
   <script>
-    // ========== APP UPDATER ==========
+    // ========== HELPERS ==========
+    function isIos(){return /iphone|ipad|ipod/i.test(navigator.userAgent)}
+    function isStandalone(){return navigator.standalone || window.matchMedia('(display-mode: standalone)').matches}
+
+    function setFormFromParam(form){
+      if(form === 'powder'){
+        const el = document.getElementById('powderMedicine');
+        if(el) el.checked = true;
+      }else if(form === 'liquid'){
+        const el = document.getElementById('liquidMedicine');
+        if(el) el.checked = true;
+      }
+    }
+
+    // ========== APP UPDATER (SYNC, WAITING-FIRST) ==========
     class AppUpdater {
       constructor() {
         this.updateAvailable = false;
         this.newVersion = null;
+        this._notiEl = null;
+        this._reloading = false;
         this.init();
       }
-      
+
       init() {
-        // Listen for update messages from Service Worker
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.addEventListener('message', (event) => {
-            const { type, version, currentVersion } = event.data;
-            
-            if (type === 'UPDATE_AVAILABLE') {
-              this.showUpdateNotification(version, currentVersion);
-            }
-          });
-          
-          // Check for updates on app start
-          this.checkForUpdate();
-          
-          // Check when app comes to foreground
-          document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) {
-              this.checkForUpdate();
-            }
-          });
+        if (!('serviceWorker' in navigator)) return;
+
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          const { type, version, currentVersion } = event.data || {};
+          if (type === 'UPDATE_AVAILABLE') this.showUpdateNotification(version, currentVersion);
+        });
+
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (this._reloading) return;
+          this._reloading = true;
+          window.location.reload();
+        });
+
+        this.checkForUpdate();
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) this.checkForUpdate();
+        });
+      }
+
+      async getRegistration() {
+        try {
+          return await navigator.serviceWorker.getRegistration('/pha-thuoc/');
+        } catch {
+          return null;
         }
       }
-      
+
       async checkForUpdate() {
-        if ('serviceWorker' in navigator) {
-          const registration = await navigator.serviceWorker.ready;
-          registration.active?.postMessage({ type: 'CHECK_UPDATE' });
-        }
+        const reg = await this.getRegistration();
+        if (!reg) return;
+
+        try { await reg.update(); } catch {}
+
+        reg.active?.postMessage({ type: 'CHECK_UPDATE' });
       }
-      
+
       showUpdateNotification(newVersion, currentVersion) {
         if (this.updateAvailable) return;
-        
         this.updateAvailable = true;
         this.newVersion = newVersion;
-        
+
         const updateDiv = document.createElement('div');
         updateDiv.className = 'update-notification';
         updateDiv.innerHTML = `
-          <strong>🎉 Có bản cập nhật mới!</strong> 
+          <strong>🎉 Có bản cập nhật mới!</strong>
           (${currentVersion} → ${newVersion})
-          <button onclick="appUpdater.applyUpdate()">Cập nhật ngay</button>
-          <button onclick="appUpdater.hideUpdate()" class="secondary">Để sau</button>
+          <button id="btnDoUpdate">Cập nhật ngay</button>
+          <button id="btnLater" class="secondary">Để sau</button>
         `;
-        
         document.body.appendChild(updateDiv);
+        this._notiEl = updateDiv;
+
+        updateDiv.querySelector('#btnDoUpdate')?.addEventListener('click', () => this.applyUpdate());
+        updateDiv.querySelector('#btnLater')?.addEventListener('click', () => this.hideUpdate());
       }
-      
+
       async applyUpdate() {
-        if ('serviceWorker' in navigator) {
-          const registration = await navigator.serviceWorker.ready;
-          
-          // Request SW update
-          registration.active?.postMessage({ type: 'FORCE_UPDATE' });
-          
-          // Show updating message
-          const updateDiv = document.querySelector('.update-notification');
-          if (updateDiv) {
-            updateDiv.innerHTML = '<strong>🔄 Đang cập nhật...</strong>';
-          }
-          
-          // Reload after 2 seconds
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
+        const reg = await this.getRegistration();
+        if (!reg) return;
+
+        if (this._notiEl) this._notiEl.innerHTML = '<strong>🔄 Đang cập nhật...</strong>';
+
+        try { await reg.update(); } catch {}
+
+        if (reg.waiting) {
+          reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+          return; // controllerchange sẽ reload
         }
+
+        if (reg.installing) {
+          reg.installing.addEventListener('statechange', () => {
+            if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+          });
+          return;
+        }
+
+        reg.active?.postMessage({ type: 'CHECK_UPDATE' });
+        setTimeout(() => window.location.reload(), 1500);
       }
-      
+
       hideUpdate() {
-        const dialog = document.querySelector('.update-notification');
-        if (dialog) {
-          dialog.remove();
-          this.updateAvailable = false;
-        }
+        if (this._notiEl) this._notiEl.remove();
+        this._notiEl = null;
+        this.updateAvailable = false;
       }
     }
 
     // ========== SERVICE WORKER REGISTRATION ==========
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', async () => {
-        try { 
-          await navigator.serviceWorker.register('/pha-thuoc/service-worker.js', { 
-            scope: '/pha-thuoc/', 
-            updateViaCache: 'none' 
-          }); 
+        try {
+          await navigator.serviceWorker.register('/pha-thuoc/service-worker.js', {
+            scope: '/pha-thuoc/',
+            updateViaCache: 'none'
+          });
           console.log('✅ Service Worker registered');
-        }
-        catch (e) { 
-          console.warn('❌ Service Worker registration failed', e); 
+        } catch (e) {
+          console.warn('❌ Service Worker registration failed', e);
         }
       });
     }
 
-    // ========== SPLASH SCREEN CONTROL ==========
-    const hideSplash = () => { 
-      const el = document.getElementById('splash'); 
-      if(!el || el.classList.contains('hidden')) return; 
-      el.classList.add('hidden'); 
-      document.body.classList.add('ready'); 
-    };
-    window.addEventListener('load', () => { setTimeout(hideSplash, 2200); });
-    setTimeout(hideSplash, 3000);
-
     // ========== IOS INSTALL TIP ==========
-    function isIos(){return /iphone|ipad|ipod/i.test(navigator.userAgent)}
-    function isStandalone(){return navigator.standalone || window.matchMedia('(display-mode: standalone)').matches}
-    window.addEventListener('load',()=>{ 
-      if(isIos()&&!isStandalone()) document.getElementById('iosTip').style.display='block'; 
-      document.getElementById('iosClose').onclick=()=>document.getElementById('iosTip').remove(); 
+    window.addEventListener('load',()=>{
+      if(isIos() && !isStandalone()) document.getElementById('iosTip').style.display='block';
+      document.getElementById('iosClose').onclick=()=>document.getElementById('iosTip').remove();
     });
 
     // ========== CALCULATION LOGIC ==========
     function calculate(){
-      const liters=parseFloat(document.getElementById('litersOfWater').value);
-      const type=document.getElementById('medicineType').value;
-      const form=document.querySelector('input[name="medicineFormType"]:checked').value;
-      const error=document.getElementById('error');
-      const result=document.getElementById('result');
+      const liters = parseFloat(document.getElementById('litersOfWater').value);
+      const type   = document.getElementById('medicineType').value;
+      const form   = document.querySelector('input[name="medicineFormType"]:checked').value;
+      const error  = document.getElementById('error');
+      const result = document.getElementById('result');
       error.style.display='none'; result.style.display='none';
+
       if(!liters) return;
+
       if(!type){ error.style.display='block'; error.innerHTML='Bạn chưa <strong>Chọn tỷ lệ thuốc</strong> để hiển thị kết quả.'; return; }
       if(isNaN(liters)||liters<=0){ error.style.display='block'; error.innerHTML='Bạn chưa <strong>Nhập lượng nước</strong> để hiển thị kết quả.'; return; }
+
       const ratios={'1:100':100,'1:200':200,'1:300':300,'1:400':400,'1:500':500,'1:600':600,'1:700':700,'1:800':800,'1:900':900,'1:1000':1000};
       const volume=(1000/ratios[type])*liters;
       const display=(form==='powder') ? (Math.round(volume)+' gram') : ((Number.isInteger(volume)?volume:volume.toFixed(2))+' ml');
+
       result.style.display='block';
       result.innerHTML=`Với tỷ lệ <strong>${type}</strong>, cần pha:<br><strong>${liters} lít</strong> nước = <strong>${display}</strong> thuốc`;
     }
     document.getElementById('litersOfWater').addEventListener('input',calculate);
     document.getElementById('medicineType').addEventListener('change',calculate);
-    document.querySelectorAll('input[name="medicineFormType"]').forEach(r=>{ r.addEventListener('change',calculate); });
+    document.querySelectorAll('input[name="medicineFormType"]').forEach(r=> r.addEventListener('change',calculate));
 
     // ========== RATIO CHIPS ==========
     const selectRatio = document.getElementById('medicineType');
@@ -527,10 +501,10 @@
         return;
       }
       deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
+      await deferredPrompt.userChoice;
       deferredPrompt = null;
       updateInstallVisibility();
-      if(outcome === 'accepted' && modalBackdrop.classList.contains('show')) closeModal();
+      if(modalBackdrop.classList.contains('show')) closeModal();
     }
     window.addEventListener('appinstalled', () => {
       deferredPrompt = null;
@@ -539,48 +513,37 @@
     if(btnInstall)   btnInstall.addEventListener('click', triggerInstall);
     if(modalInstall) modalInstall.addEventListener('click', triggerInstall);
 
-    // ========== PERSISTENT STORAGE ==========
-    async function ensurePersistentStorage() {
-      const el = document.getElementById('persistStatus');
-      if (!('storage' in navigator) || !navigator.storage || !('persist' in navigator.storage)) {
-        if (el) el.textContent = 'Không hỗ trợ';
-        return;
-      }
-      try {
-        let isPersisted = await navigator.storage.persisted();
-        if (!isPersisted) {
-          const granted = await navigator.storage.persist();
-          isPersisted = granted;
-        }
-        if (el) {
-          el.textContent = isPersisted ? 'Dài hạn' : 'Tạm thời';
-          if ('estimate' in navigator.storage) {
-            const { usage = 0, quota = 0 } = await navigator.storage.estimate();
-            const kb = n => Math.round(n / 1024);
-            el.title = `Đã dùng ~${kb(usage)}KB / Giới hạn ~${kb(quota)}KB`;
-          }
-        }
-      } catch (err) {
-        if (el) el.textContent = 'Không hỗ trợ';
-        console.warn('Persistent storage error:', err);
-      }
+    // ========== AUTO REQUEST PERSIST (NO UI) ==========
+    async function autoPersist(){
+      if (!navigator.storage || !navigator.storage.persist || !navigator.storage.persisted) return;
+      try{
+        const persisted = await navigator.storage.persisted();
+        if(!persisted) await navigator.storage.persist();
+      }catch(_){}
     }
 
-    // ========== URL PARAMETERS ==========
-    const p=new URLSearchParams(location.search);
-    const r=p.get('ratio');
-    if(r){ selectRatio.value=r; }
-    setActiveChip(selectRatio.value || r || '');
-    if(selectRatio.value) calculate();
+    // ========== URL PARAMETERS (SHORTCUT SUPPORT) ==========
+    const p = new URLSearchParams(location.search);
+    const ratioParam = p.get('ratio'); // tự decode %3A -> :
+    const formParam  = p.get('form');  // liquid|powder
 
-    // ========== INITIALIZE APP ==========
+    if(formParam) setFormFromParam(formParam);
+
+    if(ratioParam){
+      selectRatio.value = ratioParam;
+      setActiveChip(ratioParam);
+    }else{
+      setActiveChip(selectRatio.value || '');
+    }
+
+    // ========== INITIALIZE ==========
     updateInstallVisibility();
-    
-    // Initialize updater
+
     let appUpdater;
     window.addEventListener('load', () => {
       appUpdater = new AppUpdater();
-      setTimeout(ensurePersistentStorage, 800);
+      autoPersist();
+      if(selectRatio.value) calculate();
     });
   </script>
 </body>
