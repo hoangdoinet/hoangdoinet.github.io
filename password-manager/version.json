@@ -2,8 +2,8 @@
   "app": "Trình quản lý mật khẩu",
   "id": "password-manager",
   "website": "https://hoangdoinet.github.io/password-manager/",
-  "version": "v1.0.8",
-  "release_date": "2025-12-24",
+  "version": "v1.0.7",
+  "release_date": "2025-12-23",
   "author": "Hoàng Đợi",
 
   "notes": [
@@ -11,8 +11,8 @@
   ],
 
   "latest": {
-    "version": "v1.0.8",
-    "release_date": "2025-12-24",
+    "version": "v1.0.7",
+    "release_date": "2025-12-23",
     "summary": "Tăng cường bảo mật dữ liệu, bổ sung nhắc sao lưu dữ liệu định kỳ, cải thiện giao diện và hiệu suất ứng dụng.",
     "changelog": [
       "Khóa tạm thời khi nhập sai mật khẩu chính nhiều lần để tránh truy cập trái phép.",
@@ -27,8 +27,8 @@
 
   "changelog": [
     {
-      "version": "v1.0.8",
-      "release_date": "2025-12-24",
+      "version": "v1.0.7",
+      "release_date": "2025-12-23",
       "changes": [
         "Khóa tạm thời khi nhập sai mật khẩu chính nhiều lần để tránh truy cập trái phép.",
         "Tự động ẩn lại mật khẩu sau khi xem nhằm hạn chế lộ thông tin.",
@@ -40,7 +40,7 @@
       ]
     },
     {
-      "version": "v1.0.7",
+      "version": "v1.0.6",
       "release_date": "2025-12-15",
       "changes": [
         "Tăng cường bảo mật.",

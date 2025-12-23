@@ -1,5 +1,5 @@
-/* service-worker.js - OFFLINE 100% GUARANTEED v1.0.8 (manual update check) */
-const APP_VERSION = 'v1.0.8';
+/* service-worker.js - OFFLINE 100% GUARANTEED v1.0.7 (manual update check) */
+const APP_VERSION = 'v1.0.7';
 const CACHE_STATIC = `static-${APP_VERSION}`;
 const BASE = '/password-manager/';
 const VERSION_FILE = BASE + 'version.json';
