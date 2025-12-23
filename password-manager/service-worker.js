@@ -1,5 +1,5 @@
-/* service-worker.js - OFFLINE 100% GUARANTEED v1.0.5 (manual update check) */
-const APP_VERSION = 'v1.0.5';
+/* service-worker.js - OFFLINE 100% GUARANTEED v1.0.7 (manual update check) */
+const APP_VERSION = 'v1.0.7';
 const CACHE_STATIC = `static-${APP_VERSION}`;
 const BASE = '/password-manager/';
 const VERSION_FILE = BASE + 'version.json';
@@ -30,35 +30,15 @@ const CRITICAL_ASSETS = [
 
 console.log(`[SW ${APP_VERSION}] 🚀 Khởi động - OFFLINE 100% GUARANTEED`);
 
-// ========== CÀI ĐẶT ==========
-self.addEventListener('install', (event) => {
-  console.log('[SW] 🔧 Đang cài đặt - ĐẢM BẢO OFFLINE 100%...');
-  event.waitUntil((async () => {
-    const cache = await caches.open(CACHE_STATIC);
-    const results = { success: [], failed: [] };
-
-    // Cache index trước (quan trọng nhất)
-    const indexSuccess = await cacheWithRetry(cache, BASE + 'index.html', 3);
-    if (!indexSuccess) console.error('[SW] 💥 CRITICAL FAIL: Không thể cache index.html');
-
-    // Cache các asset còn lại
-    for (const url of CRITICAL_ASSETS.filter(a => a !== BASE + 'index.html')) {
-      const ok = await cacheWithRetry(cache, url, 2);
-      (ok ? results.success : results.failed).push(url);
-    }
-
-    console.log(`[SW] ✅ Thành công: ${results.success.length}/${CRITICAL_ASSETS.length}`);
-    if (results.failed.length) console.error('[SW] ❌ Lỗi cache:', results.failed);
-
-    const hasCriticalAssets = await verifyCriticalAssets(cache);
-    if (hasCriticalAssets) {
-      console.log('[SW] 🎉 Sẵn sàng OFFLINE 100% sau lần tải đầu tiên');
-    } else {
-      console.error('[SW] 🚨 Có thể chưa offline hoàn toàn (thiếu asset quan trọng)');
-    }
-  })());
-  self.skipWaiting();
-});
+// ========== TIỆN ÍCH GỬI MESSAGE ==========
+async function broadcastMessage(payload) {
+  try {
+    const clientsList = await self.clients.matchAll({ includeUncontrolled: true });
+    clientsList.forEach(client => {
+      try { client.postMessage(payload); } catch {}
+    });
+  } catch {}
+}
 
 // ========== CACHE VỚI RETRY ==========
 async function cacheWithRetry(cache, url, maxRetries = 3) {
@@ -69,7 +49,7 @@ async function cacheWithRetry(cache, url, maxRetries = 3) {
     } catch (error) {
       if (attempt === maxRetries) {
         try {
-          const response = await fetch(url);
+          const response = await fetch(url, { cache: 'no-store' });
           if (response.ok) {
             await cache.put(url, response.clone());
             return true;
@@ -77,7 +57,7 @@ async function cacheWithRetry(cache, url, maxRetries = 3) {
         } catch {}
         return false;
       }
-      await new Promise(r => setTimeout(r, 1000 * attempt));
+      await new Promise(r => setTimeout(r, 800 * attempt));
     }
   }
   return false;
@@ -99,56 +79,94 @@ async function verifyCriticalAssets(cache) {
   return hasMinimal && totalIcons >= 10;
 }
 
+// ========== CÀI ĐẶT ==========
+self.addEventListener('install', (event) => {
+  console.log('[SW] 🔧 Đang cài đặt - ĐẢM BẢO OFFLINE 100%...');
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_STATIC);
+    const results = { success: [], failed: [] };
+
+    // Cache index trước (quan trọng nhất)
+    const indexSuccess = await cacheWithRetry(cache, BASE + 'index.html', 3);
+    if (!indexSuccess) console.error('[SW] 💥 CRITICAL FAIL: Không thể cache index.html');
+
+    // Cache các asset còn lại
+    for (const url of CRITICAL_ASSETS.filter(a => a !== BASE + 'index.html')) {
+      const ok = await cacheWithRetry(cache, url, 2);
+      (ok ? results.success : results.failed).push(url);
+    }
+
+    console.log(`[SW] ✅ Thành công: ${results.success.length}/${CRITICAL_ASSETS.length}`);
+    if (results.failed.length) console.error('[SW] ❌ Lỗi cache:', results.failed);
+
+    const okMinimal = await verifyCriticalAssets(cache);
+
+    if (okMinimal) {
+      console.log('[SW] 🎉 Sẵn sàng OFFLINE 100% sau lần tải đầu tiên');
+      // ✅ chỉ skipWaiting khi tối thiểu đã chắc chắn
+      self.skipWaiting();
+    } else {
+      console.error('[SW] 🚨 Thiếu asset tối thiểu → KHÔNG skipWaiting để tránh SW lỗi lên active');
+      // không skipWaiting: để SW cũ vẫn phục vụ, tránh người dùng “mất offline”
+    }
+  })());
+});
+
 // ========== CHECK UPDATE (CHỈ GỌI KHI TRANG GỬI MESSAGE) ==========
 async function checkForUpdates() {
   try {
     const res = await fetch(VERSION_FILE + '?t=' + Date.now(), { cache: 'no-cache' });
+
     if (!res.ok) {
       console.log('[SW] 🌐 Không đọc được version.json (HTTP ' + res.status + ')');
+      await broadcastMessage({ type: 'UPDATE_ERROR', reason: 'HTTP_STATUS', status: res.status });
       return;
     }
 
-    const json = await res.json();
+    let json;
+    try {
+      json = await res.json();
+    } catch (eJson) {
+      console.log('[SW] 🌐 Lỗi phân tích JSON version.json:', eJson?.message || eJson);
+      await broadcastMessage({ type: 'UPDATE_ERROR', reason: 'INVALID_JSON' });
+      return;
+    }
 
-    // Ưu tiên đọc phiên bản mới nhất:
-    // 1) json.latest.version hoặc json.latest (string)
-    // 2) json.changelog[0].version
-    // 3) json.version
     let latestVersion = null;
 
     if (json.latest && (json.latest.version || typeof json.latest === 'string')) {
-      latestVersion = json.latest.version || json.latest;
+      latestVersion = json.latest.version || String(json.latest);
     }
 
     if (!latestVersion && Array.isArray(json.changelog) && json.changelog.length) {
-      latestVersion = json.changelog[0].version || null;
+      const sorted = json.changelog.slice().sort((a, b) => {
+        if (a.release_date && b.release_date) {
+          return new Date(b.release_date) - new Date(a.release_date);
+        }
+        return 0;
+      });
+      latestVersion = sorted[0].version || null;
     }
 
-    if (!latestVersion && json.version) {
-      latestVersion = json.version;
-    }
+    if (!latestVersion && json.version) latestVersion = json.version;
 
     if (!latestVersion) {
       console.log('[SW] ℹ️ Không tìm được phiên bản mới nhất trong version.json.');
+      await broadcastMessage({ type: 'UPDATE_ERROR', reason: 'INVALID_JSON' });
       return;
     }
 
     const cmp = compareVersions(latestVersion, APP_VERSION);
     if (cmp > 0) {
       console.log(`[SW] 🔔 Có bản mới: ${APP_VERSION} → ${latestVersion}`);
-      const clientsList = await self.clients.matchAll();
-      clientsList.forEach(client => {
-        client.postMessage({
-          type: 'UPDATE_AVAILABLE',
-          version: latestVersion,
-          currentVersion: APP_VERSION
-        });
-      });
+      await broadcastMessage({ type: 'UPDATE_AVAILABLE', version: latestVersion, currentVersion: APP_VERSION });
     } else {
-      console.log('[SW] ✅ Đang ở phiên bản mới nhất hoặc mới hơn server.');
+      console.log('[SW] ✅ Đang ở phiên bản mới nhất (hoặc mới hơn server).');
+      await broadcastMessage({ type: 'NO_UPDATE', version: latestVersion || APP_VERSION, currentVersion: APP_VERSION });
     }
   } catch (e) {
     console.log('[SW] 🌐 Lỗi check update:', e?.message || e);
+    await broadcastMessage({ type: 'UPDATE_ERROR', reason: 'NETWORK_ERROR' });
   }
 }
 
@@ -163,9 +181,7 @@ self.addEventListener('activate', (event) => {
     // Xoá cache static-* cũ
     const keys = await caches.keys();
     await Promise.all(
-      keys
-        .filter(k => k.startsWith('static-') && k !== CACHE_STATIC)
-        .map(k => caches.delete(k))
+      keys.filter(k => k.startsWith('static-') && k !== CACHE_STATIC).map(k => caches.delete(k))
     );
 
     await self.clients.claim();
@@ -193,7 +209,7 @@ self.addEventListener('activate', (event) => {
 async function cacheMissingCritical(cache, missingAssets) {
   for (const a of missingAssets) {
     try {
-      const res = await fetch(a);
+      const res = await fetch(a, { cache: 'no-store' });
       if (res.ok) await cache.put(a, res.clone());
     } catch {}
   }
@@ -219,10 +235,15 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(req.url);
 
   // Chỉ xử lý trong scope /password-manager/
-  if (!url.pathname.startsWith('/password-manager/')) return;
+  if (!url.pathname.startsWith(BASE)) return;
+
+  // ✅ FIX: so sánh pathname với đúng path version.json
+  if (url.pathname === (BASE + 'version.json')) {
+    event.respondWith(handleVersionJsonRequest(req));
+    return;
+  }
 
   const isNavigation = req.mode === 'navigate';
-
   if (isNavigation) {
     event.respondWith(handleNavigationRequest());
     return;
@@ -240,7 +261,7 @@ async function handleNavigationRequest() {
     if (cached) return cached;
 
     try {
-      const net = await fetch(BASE + 'index.html');
+      const net = await fetch(BASE + 'index.html', { cache: 'no-store' });
       if (net.ok) await cache.put(BASE + 'index.html', net.clone());
       return net;
     } catch {}
@@ -251,18 +272,39 @@ async function handleNavigationRequest() {
   }
 }
 
+// ✅ version.json: network-first + fallback cache (đảm bảo “kiểm tra cập nhật” đúng)
+async function handleVersionJsonRequest(request) {
+  const cache = await caches.open(CACHE_STATIC);
+
+  try {
+    const net = await fetch(request, { cache: 'no-store' });
+    if (net && net.ok) {
+      await cache.put(VERSION_FILE, net.clone());
+      return net;
+    }
+  } catch {}
+
+  const cached = await cache.match(VERSION_FILE, { ignoreSearch: true });
+  if (cached) return cached;
+
+  return new Response(
+    JSON.stringify({ version: APP_VERSION }),
+    { status: 200, headers: { 'Content-Type': 'application/json; charset=utf-8' } }
+  );
+}
+
 async function handleStaticRequest(request) {
   const cache = await caches.open(CACHE_STATIC);
   const cached = await cache.match(request, { ignoreSearch: true });
   if (cached) return cached;
 
   try {
-    const net = await fetch(request);
+    const net = await fetch(request, { cache: 'no-store' });
     if (net.ok) await cache.put(request, net.clone());
     return net;
   } catch {
-    // Không có cache, không có mạng → trả về 204 (im lặng)
-    return new Response('', { status: 204 });
+    // ✅ FIX: trả 404 thay vì 204 để dễ debug và đúng semantics
+    return new Response('Offline & not cached', { status: 404 });
   }
 }
 
@@ -282,28 +324,16 @@ button{background:#22c55e;color:#fff;border:none;padding:12px 24px;border-radius
 <p>Ứng dụng cần kết nối internet để tải lần đầu.<br>Sau khi đã tải và cài đặt xong, bạn có thể dùng khi ngoại tuyến.</p>
 <button onclick="location.reload()">🔄 Thử lại</button>
 </div></body></html>`,
-    {
-      headers: {
-        'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'no-cache'
-      }
-    }
+    { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache' } }
   );
 }
 
 // ========== MESSAGE (TƯƠNG TÁC VỚI TRANG) ==========
 self.addEventListener('message', (event) => {
   const { type } = event.data || {};
-  if (type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-  if (type === 'CHECK_UPDATE') {
-    // Chỉ khi trang yêu cầu mới kiểm tra cập nhật
-    checkForUpdates();
-  }
-  if (type === 'FORCE_UPDATE') {
-    self.skipWaiting();
-  }
+  if (type === 'SKIP_WAITING') self.skipWaiting();
+  if (type === 'CHECK_UPDATE') checkForUpdates();
+  if (type === 'FORCE_UPDATE') self.skipWaiting();
 });
 
 console.log(`[SW ${APP_VERSION}] ✅ Đã tải - OFFLINE 100% GUARANTEED (manual updates)`);

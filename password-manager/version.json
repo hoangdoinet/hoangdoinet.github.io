@@ -2,27 +2,53 @@
   "app": "Trình quản lý mật khẩu",
   "id": "password-manager",
   "website": "https://hoangdoinet.github.io/password-manager/",
-  "version": "v1.0.5",
-  "release_date": "2025-12-09",
+  "version": "v1.0.7",
+  "release_date": "2025-12-23",
   "author": "Hoàng Đợi",
 
   "notes": [
-    "Nâng cấp lên v1.0.5 với tăng cường bảo mật và tối ưu hiệu suất."
+    "Phiên bản v1.0.7 tập trung tăng cường bảo mật dữ liệu, bổ sung nhắc sao lưu dữ liệu định kỳ, cải thiện giao diện và hiệu suất ứng dụng."
   ],
 
   "latest": {
-    "version": "v1.0.5",
-    "release_date": "2025-12-09",
-    "summary": "Tăng cường bảo mật và tối ưu hiệu suất.",
+    "version": "v1.0.7",
+    "release_date": "2025-12-23",
+    "summary": "Tăng cường bảo mật dữ liệu, bổ sung nhắc sao lưu dữ liệu định kỳ, cải thiện giao diện và hiệu suất ứng dụng.",
     "changelog": [
-      "Tăng cường bảo mật.",
-      "Tối ưu tốc độ thao tác và khả năng phản hồi của ứng dụng.",
-      "Tinh chỉnh hiệu ứng thông báo và bố cục giao diện.",
-      "Sửa lỗi nhỏ và nâng cao độ ổn định."
+      "Khóa tạm thời khi nhập sai mật khẩu chính nhiều lần để tránh truy cập trái phép.",
+      "Tự động ẩn lại mật khẩu sau khi xem nhằm hạn chế lộ thông tin.",
+      "Màn hình Thông tin ứng dụng mới, hiển thị rõ phiên bản đang dùng và phiên bản mới nhất.",
+      "Nhắc sao lưu dữ liệu định kỳ để tránh mất dữ liệu khi đổi máy hoặc gặp sự cố.",
+      "Cải thiện quá trình cài đặt ứng dụng trên Android và iOS.",
+      "Kiểm tra và lọc dữ liệu lỗi khi khôi phục từ file sao lưu.",
+      "Cải thiện độ ổn định và thông báo trong quá trình sử dụng."
     ]
   },
 
   "changelog": [
+    {
+      "version": "v1.0.7",
+      "release_date": "2025-12-23",
+      "changes": [
+        "Khóa tạm thời khi nhập sai mật khẩu chính nhiều lần để tránh truy cập trái phép.",
+        "Tự động ẩn lại mật khẩu sau khi xem nhằm hạn chế lộ thông tin.",
+        "Màn hình Thông tin ứng dụng mới, hiển thị rõ phiên bản đang dùng và phiên bản mới nhất.",
+        "Nhắc sao lưu dữ liệu định kỳ để tránh mất dữ liệu khi đổi máy hoặc gặp sự cố.",
+        "Cải thiện quá trình cài đặt ứng dụng trên Android và iOS.",
+        "Kiểm tra và lọc dữ liệu lỗi khi khôi phục từ file sao lưu.",
+        "Cải thiện độ ổn định và thông báo trong quá trình sử dụng."
+      ]
+    },
+    {
+      "version": "v1.0.6",
+      "release_date": "2025-12-15",
+      "changes": [
+        "Tăng cường bảo mật.",
+        "Tối ưu tốc độ thao tác và khả năng phản hồi của ứng dụng.",
+        "Tinh chỉnh hiệu ứng thông báo và bố cục giao diện.",
+        "Sửa lỗi nhỏ và tăng độ ổn định tổng thể."
+      ]
+    },
     {
       "version": "v1.0.5",
       "release_date": "2025-12-09",
@@ -38,7 +64,7 @@
       "release_date": "2025-12-08",
       "changes": [
         "Thêm cơ chế khóa tạm thời khi nhập sai mật khẩu chính quá nhiều lần.",
-        "Tinh chỉnh hiệu ứng và hành vi toast.",
+        "Tinh chỉnh hiệu ứng và hành vi thông báo.",
         "Cải thiện trải nghiệm hiển thị và thao tác với danh sách tài khoản.",
         "Tối ưu hiệu suất tổng thể và sửa lỗi nhỏ."
       ]
@@ -47,11 +73,10 @@
       "version": "v1.0.3",
       "release_date": "2025-12-06",
       "changes": [
-        "Cải thiện hiệu suất tải ứng dụng và tốc độ khởi chạy.",
-        "Tối ưu Service Worker cho cơ chế cập nhật thủ công.",
-        "Đồng bộ luồng kiểm tra và hiển thị thông tin phiên bản.",
+        "Cải thiện tốc độ khởi chạy ứng dụng.",
+        "Hoàn thiện cơ chế kiểm tra cập nhật thủ công.",
         "Cải thiện giao diện phần Thông tin ứng dụng.",
-        "Sửa lỗi nhỏ liên quan đến toast thông báo."
+        "Sửa lỗi nhỏ liên quan đến thông báo."
       ]
     },
     {
@@ -59,18 +84,18 @@
       "release_date": "2025-11-17",
       "changes": [
         "Cải thiện hiệu suất.",
-        "Hoàn thiện cơ chế kiểm tra cập nhật thủ công."
+        "Hoàn thiện cơ chế kiểm tra cập nhật."
       ]
     },
     {
       "version": "v1.0.1",
       "release_date": "2025-11-14",
       "changes": [
-        "Tối ưu trạng thái offline.",
-        "Bổ sung toast/thông báo rõ ràng hơn.",
+        "Tối ưu trạng thái hoạt động offline.",
+        "Bổ sung thông báo rõ ràng hơn.",
         "Thêm chức năng tự động ẩn mật khẩu sau 15 giây.",
-        "Hỗ trợ shortcuts: thêm, tìm kiếm, sao lưu.",
-        "Tối ưu trải nghiệm cài đặt ứng dụng."
+        "Hỗ trợ phím tắt: thêm, tìm kiếm, sao lưu.",
+        "Cải thiện trải nghiệm cài đặt ứng dụng."
       ]
     },
     {
@@ -79,10 +104,10 @@
       "changes": [
         "Khởi tạo phiên bản đầu tiên.",
         "Lưu trữ dữ liệu cục bộ an toàn, không gửi lên máy chủ.",
-        "Mã hóa AES-256 bằng mật khẩu chính.",
+        "Mã hóa dữ liệu bằng mật khẩu chính.",
         "Thêm, sửa, xóa tài khoản và tìm kiếm.",
-        "Hỗ trợ sao lưu/khôi phục JSON.",
-        "Cấu hình PWA: icon, manifest, cài đặt ứng dụng."
+        "Hỗ trợ sao lưu và khôi phục dữ liệu.",
+        "Hỗ trợ cài đặt ứng dụng trên thiết bị di động."
       ]
     }
   ]

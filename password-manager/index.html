@@ -18,7 +18,7 @@
   <!-- Open Graph (Facebook/Zalo...) -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Trình quản lý mật khẩu – Mã hóa và lưu trữ offline 100%">
-  <meta property="og:description" content="Lưu và mã hóa mật khẩu bằng mật khẩu chính, hoạt động offline, không gửi dữ liệu lên máy chủ. Hỗ trợ sao lưu/khôi phục dữ liệu, cài được trên Android & iOS.">
+  <meta property="og:description" content="Lưu trữ và mã hóa mật khẩu bằng mật khẩu chính, hoạt động offline, không gửi dữ liệu lên máy chủ. Hỗ trợ sao lưu/khôi phục dữ liệu, cài được trên Android & iOS.">
   <meta property="og:url" content="https://hoangdoinet.github.io/password-manager/">
   <meta property="og:site_name" content="Trình quản lý mật khẩu • Password Manager">
   <meta property="og:locale" content="vi_VN">
@@ -27,12 +27,12 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Trình quản lý mật khẩu – Mã hóa và lưu trữ offline 100%">
-  <meta name="twitter:description" content="Lưu và mã hóa mật khẩu bằng mật khẩu chính, hoạt động offline, không gửi dữ liệu lên máy chủ.">
+  <meta name="twitter:description" content="Lưu trữ và mã hóa mật khẩu bằng mật khẩu chính, hoạt động offline, không gửi dữ liệu lên máy chủ.">
   <meta name="twitter:image" content="https://hoangdoinet.github.io/password-manager/icons/icon-512.png">
 
   <!-- App meta -->
   <meta name="theme-color" content="#22c55e">
-  <meta name="version" content="v1.0.5"><!-- dùng để hiển thị/splash -->
+  <meta name="version" content="v1.0.7">
 
   <!-- iOS PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -55,6 +55,24 @@
       --fs2:clamp(16px, 3vw, 19px);
 
       --focus:#f97316;
+      
+      --toast-success-bg: linear-gradient(135deg,#22c55e,#16a34a);
+      --toast-success-border: rgba(34,197,94,.6);
+      --toast-success-accent: #bbf7d0;
+
+      --toast-error-bg: linear-gradient(135deg,#f87171,#dc2626);
+      --toast-error-border: rgba(248,113,113,.8);
+      --toast-error-accent: #fee2e2;
+
+      --toast-info-bg: linear-gradient(135deg,#60a5fa,#3b82f6);
+      --toast-info-border: rgba(147,197,253,.8);
+      --toast-info-accent: #dbeafe;
+
+      --toast-warning-bg: linear-gradient(135deg,#facc15,#eab308);
+      --toast-warning-border: rgba(250,204,21,.7);
+      --toast-warning-accent: #fef9c3;
+
+      --toast-bottom-gap: 80px;
     }
     *{box-sizing:border-box}
     body{
@@ -548,26 +566,6 @@
       min-width:120px;
     }
 
-    :root{
-      --toast-success-bg: linear-gradient(135deg,#22c55e,#16a34a);
-      --toast-success-border: rgba(34,197,94,.6);
-      --toast-success-accent: #bbf7d0;
-
-      --toast-error-bg: linear-gradient(135deg,#f87171,#dc2626);
-      --toast-error-border: rgba(248,113,113,.8);
-      --toast-error-accent: #fee2e2;
-
-      --toast-info-bg: linear-gradient(135deg,#60a5fa,#3b82f6);
-      --toast-info-border: rgba(147,197,253,.8);
-      --toast-info-accent: #dbeafe;
-
-      --toast-warning-bg: linear-gradient(135deg,#facc15,#eab308);
-      --toast-warning-border: rgba(250,204,21,.7);
-      --toast-warning-accent: #fef9c3;
-
-      --toast-bottom-gap: 80px;
-    }
-
     .toast-container{
       position:fixed;
       left:50%;
@@ -705,7 +703,7 @@
     <img src="/password-manager/icons/icon-192.png" alt="" width="96" height="96"
          style="filter:drop-shadow(0 8px 24px rgba(0,0,0,.35)); border-radius:22%">
     <div style="font-weight:900;font-size:20px;margin-top:8px;letter-spacing:.4px">TRÌNH QUẢN LÝ MẬT KHẨU</div>
-    <div style="opacity:.95;margin-top:6px">Phiên bản: <b id="splashVersion">v1.0.5</b></div>
+    <div style="opacity:.95;margin-top:6px">Phiên bản: <b id="splashVersion">v1.0.7</b></div>
   </div>
 
   <main id="app" class="wrap" aria-live="polite">
@@ -716,7 +714,7 @@
       </div>
       <div class="stats">
         <div class="stat">
-          <strong>Tổng số tài khoản</strong>
+          <strong>Tổng tài khoản</strong>
           <span id="statCount">0</span>
         </div>
       </div>
@@ -789,13 +787,13 @@
 
           <div class="form-row" id="masterConfirmRow" style="display:none">
             <label>Nhập lại mật khẩu chính</label>
-            <input id="fMasterConfirm" class="modal-input" type="password" placeholder="Gõ lại mật khẩu chính để xác nhận">
+            <input id="fMasterConfirm" class="modal-input" type="password" placeholder="Nhập lại mật khẩu chính để xác nhận">
             <small id="masterConfirmHint" class="small" style="display:none"></small>
           </div>
         </div>
         <div class="modal-actions">
-          <button id="btnCancelEdit" class="btn text">Hủy</button>
-          <button id="btnSaveEdit" class="btn green">Lưu</button>
+          <button id="btnCancelEdit" class="btn text">Đóng</button>
+          <button id="btnSaveEdit" class="btn green">Lưu thay đổi</button>
         </div>
       </div>
     </div>
@@ -817,23 +815,23 @@
               </div>
               <div class="about-title-wrap">
                 <p class="about-title">Trình quản lý mật khẩu</p>
-                <p class="about-sub">Lưu và mã hóa mật khẩu an toàn, trực tiếp trên thiết bị của bạn.</p>
+                <p class="about-sub">Lưu trữ và mã hóa mật khẩu an toàn, trực tiếp trên thiết bị của bạn.</p>
               </div>
             </div>
-            <p><strong>Trình quản lý mật khẩu</strong> giúp bạn lưu gọn gàng các tài khoản và mật khẩu ngay trên thiết bị – không cần ghi nhớ quá nhiều mật khẩu khác nhau.</p>
+            <p><strong>Trình quản lý mật khẩu</strong> giúp bạn lưu trữ gọn gàng các tài khoản và mật khẩu ngay trên thiết bị, không cần phải ghi nhớ quá nhiều mật khẩu khác nhau.</p>
 
             <ul class="about-features">
               <li>
                 <span class="about-bullet">✓</span>
-                <span>Dữ liệu được <strong>mã hóa AES-256</strong> bằng <em>mật khẩu chính</em> do bạn tự đặt.</span>
+                <span>Dữ liệu được <strong>mã hóa AES-256</strong> bằng <em>mật khẩu chính</em> do bạn tự thiết lập.</span>
               </li>
               <li>
                 <span class="about-bullet">✓</span>
-                <span>Ứng dụng không gửi dữ liệu lên máy chủ. Mọi thông tin tài khoản và mật khẩu đều được lưu và xử lý trên chính thiết bị của bạn.</span>
+                <span>Ứng dụng không gửi bất kỳ dữ liệu lên máy chủ. Tất cả dữ liệu đều được xử lý mã hóa và lưu trữ ngay trên thiết bị của bạn.</span>
               </li>
               <li>
                 <span class="about-bullet">✓</span>
-                <span>Hỗ trợ <strong>sao lưu</strong> và <strong>khôi phục</strong> dữ liệu để phòng trường hợp đổi máy hoặc cài lại.</span>
+                <span>Hỗ trợ <strong>sao lưu</strong> và <strong>khôi phục</strong> dữ liệu để phòng trường hợp đổi máy, cài đặt lại hoặc gặp sự cố.</span>
               </li>
               <li>
                 <span class="about-bullet">!</span>
@@ -908,8 +906,8 @@
         <div style="display:flex; gap:12px; align-items:center; margin-bottom:6px">
           <img src="/password-manager/icons/icon-192.png" alt="" width="48" height="48" style="border-radius:12px">
           <div>
-            <div style="font-weight:800">Trình quản lý mật khẩu - PW Manager</div>
-            <div class="small">Cài đặt ứng dụng PW Manager vào thiết bị để mở nhanh, hoạt động mượt và sử dụng hoàn toàn không cần internet.</div>
+            <div style="font-weight:800">Trình quản lý mật khẩu</div>
+            <div class="small">Cài đặt ứng dụng vào thiết bị để mở nhanh, hoạt động mượt và sử dụng hoàn toàn không cần kết nối internet.</div>
           </div>
         </div>
         <div id="iosTip" class="small"
@@ -960,16 +958,16 @@
   <!-- ========== ỨNG DỤNG ========== -->
   <script>
   (()=>{
-    const APP_VERSION = 'v1.0.5';
-    const localKey = "i4pw_data";
+    const APP_VERSION = 'v1.0.7';
+    const localKey = "pwm_data";
     const CHECK_KEY = "_verify";
     const CHECK_VALUE = "Xác minh";
-    const BACKUP_REMIND_AT_KEY = 'i4pw_remindAt';
-    const BACKUP_REMIND_INTERVAL_KEY = 'i4pw_remindIntervalHours';
+    const BACKUP_REMIND_AT_KEY = 'pwm_remindAt';
+    const BACKUP_REMIND_INTERVAL_KEY = 'pwm_remindIntervalHours';
     const DEFAULT_REMIND_HOURS = 48;
-    const MAX_MASTER_FAIL = 5; // Khóa sau x lần sai
+    const MAX_MASTER_FAIL = 5;
     const MASTER_LOCK_MS = 3 * 60 * 1000;
-    const LOCK_STATE_KEY = 'i4pw_masterLockState_v1';
+    const LOCK_STATE_KEY = 'pwm_masterLockState_v1';
 
     let masterFailCount = 0;
     let masterLockUntil = 0;
@@ -1029,7 +1027,7 @@
     }
     function getMasterLockMessage(){
       const remain = getMasterLockRemainingSeconds();
-      return `Bạn đã nhập sai mật khẩu chính quá ${MAX_MASTER_FAIL} lần.\nVui lòng đợi sau ${remain} giây rồi thử lại.`;
+      return `Bạn đã nhập sai mật khẩu chính quá số lần cho phép.\nHãy thử lại sau ${remain} giây.`;
     }
     function getWrongMasterMessage(baseText = 'Mật khẩu chính không đúng'){
       if (isMasterLocked()) {
@@ -1037,14 +1035,14 @@
       }
       const remain = Math.max(0, MAX_MASTER_FAIL - masterFailCount);
       if (remain > 0) {
-        return `${baseText} ( Còn ${remain} lần thử ).`;
+        return `${baseText} (còn ${remain} lần thử).`;
       }
       return baseText;
     }
 
     const $ = s => document.querySelector(s);
 
-    const PERSIST_AUTO_FLAG = 'i4pw_persist_auto_v1';
+    const PERSIST_AUTO_FLAG = 'pwm_persist_auto_v1';
 
     function isStandalone(){
       return navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
@@ -1107,146 +1105,275 @@
       }
     }
 
-    async function initLatestVersionLabel(){
-      const lbl = document.getElementById('latestVersion');
-      if (!lbl) return;
+    // ==== HELPER LẤY BẢN MỚI NHẤT TỪ SERVER ====
+    function extractLatestVersion(json){
+      if (!json || typeof json !== 'object') return null;
+
+      if (json.latest && (json.latest.version || typeof json.latest === 'string')){
+        return json.latest.version || String(json.latest);
+      }
+
+      if (Array.isArray(json.changelog) && json.changelog.length){
+        const sorted = json.changelog.slice().sort((a, b) => {
+          if (a.release_date && b.release_date){
+            return new Date(b.release_date) - new Date(a.release_date);
+          }
+          return 0;
+        });
+        return sorted[0].version || null;
+      }
+
+      if (json.version) return json.version;
+
+      return null;
+    }
+
+    async function getLatestVersionFromServerSafe(){
       try{
         const res = await fetch('/password-manager/version.json?ts=' + Date.now(), {
-          cache:'no-cache'
+          cache: 'no-cache'
         });
-        if (!res.ok){
-          return;
-        }
+        if (!res.ok) return null;
         const json = await res.json();
-
-        let latest = null;
-        if (json.latest && (json.latest.version || typeof json.latest === 'string')){
-          latest = json.latest.version || json.latest;
-        }
-        if (!latest && Array.isArray(json.changelog) && json.changelog.length){
-          latest = json.changelog[0].version || null;
-        }
-        if (!latest && json.version){
-          latest = json.version;
-        }
-
-        if (latest){
-          lbl.textContent = latest;
-        }else{
-          lbl.textContent = APP_VERSION;
-        }
+        const latest = extractLatestVersion(json);
+        return { latest, json };
       }catch(e){
-        console.warn('Không thể khởi tạo nhãn phiên bản mới nhất', e);
+        console.warn('Không thể đọc latest từ version.json:', e);
+        return null;
       }
     }
 
+    async function initLatestVersionLabel(){
+      const lbl = document.getElementById('latestVersion');
+      if (!lbl) return;
+
+      const info = await getLatestVersionFromServerSafe();
+      if (info && info.latest){
+        lbl.textContent = info.latest;
+      } else {
+        lbl.textContent = 'Không xác định';
+      }
+    }
+
+    // =========================================================
+    // ✅ SW UPDATE SYNC (đồng bộ service-worker.js manual check)
+    // =========================================================
+    const SW_SCOPE = '/password-manager/';
+
+    async function getSwReg(){
+      try{
+        if(!('serviceWorker' in navigator)) return null;
+        return await navigator.serviceWorker.getRegistration(SW_SCOPE);
+      }catch{
+        return null;
+      }
+    }
+
+    async function postToSW(msg){
+      const reg = await getSwReg();
+      const target = reg?.active || reg?.waiting || reg?.installing;
+      if(!target) return false;
+      try{
+        target.postMessage(msg);
+        return true;
+      }catch{
+        return false;
+      }
+    }
+
+    // ==== APP UPDATER ====
     class AppUpdater{
       constructor(){
         this.updateAvailable = false;
         this.newVersion = null;
-        this.pendingCheckTimer = null;
         this.lastCheck = null;
+
+        this._userInitiatedCheck = false;
+        this._fallbackTimer = null;
+
         this.init();
       }
       init(){
         if('serviceWorker' in navigator){
           navigator.serviceWorker.addEventListener('message', e=>{
-            const {type, version, currentVersion} = e.data||{};
+            const data = e.data || {};
+            const {type, version, currentVersion, reason, status} = data;
+
             if(type==='UPDATE_AVAILABLE'){
-              this.show(version, currentVersion);
+              this.handleSwUpdate(version, currentVersion);
+              return;
+            }
+            if(type==='NO_UPDATE'){
+              this.handleSwNoUpdate(version, currentVersion);
+              return;
+            }
+            if(type==='UPDATE_ERROR'){
+              this.handleSwError(reason, status);
+              return;
             }
           });
         }
       }
+
       async check(){
-        if (!('serviceWorker' in navigator)) {
+        if (!navigator.onLine){
           await showAlert(
-            'Thiết bị không hỗ trợ Service Worker nên không thể kiểm tra cập nhật.',
-            {
-              title: 'Kiểm tra cập nhật',
-              type: 'info'
-            }
+            `Thiết bị đang ngoại tuyến nên không thể kiểm tra phiên bản mới nhất từ máy chủ.\n\n` +
+            `• Phiên bản hiện tại trên thiết bị: ${APP_VERSION}`,
+            { title: 'Không thể kiểm tra cập nhật', type: 'info' }
           );
           return;
         }
 
-        if (!navigator.onLine) {
-          await showAlert(
-            'Hiện không có kết nối internet nên không thể kiểm tra cập nhật.\nVui lòng kết nối mạng rồi thử lại.',
-            {
-              title: 'Không thể kiểm tra cập nhật',
-              type: 'error'
-            }
-          );
-          return;
-        }
+        this._userInitiatedCheck = true;
+        this.lastCheck = Date.now();
 
-        try{
-          openToast('Đang kiểm tra cập nhật...', 'info', 1500, 'Kiểm tra cập nhật');
+        openToast('Đang kiểm tra cập nhật...', 'info', 2000, 'Kiểm tra cập nhật');
 
-          const reg = await navigator.serviceWorker.ready;
-          if (!reg.active) {
-            await showAlert(
-              'Ứng dụng chưa sẵn sàng, vui lòng tải lại trang rồi thử lại.',
-              {
-                title: 'Kiểm tra cập nhật',
-                type: 'info'
+        const sent = await postToSW({type:'CHECK_UPDATE'});
+
+        if (sent){
+          clearTimeout(this._fallbackTimer);
+          this._fallbackTimer = setTimeout(async ()=>{
+            const info = await getLatestVersionFromServerSafe();
+            if (info && info.latest){
+              const lbl = document.getElementById('latestVersion');
+              if (lbl) lbl.textContent = info.latest;
+
+              if (APP_VERSION === info.latest){
+                await showAlert(
+                  `Bạn đang sử dụng phiên bản mới nhất.\n\n• Phiên bản hiện tại: ${APP_VERSION}`,
+                  { title:'Kiểm tra cập nhật', type:'info' }
+                );
+              }else{
+                this.show(info.latest, APP_VERSION);
               }
-            );
+            }else{
+              await showAlert(
+                'Không thể lấy thông tin phiên bản từ máy chủ, chưa thể kiểm tra cập nhật vào lúc này.\n\n' +
+                `• Phiên bản hiện tại trên thiết bị: ${APP_VERSION}`,
+                { title:'Kiểm tra cập nhật', type:'warning' }
+              );
+            }
+            this._userInitiatedCheck = false;
+          }, 2500);
+          return;
+        }
+
+        const info = await getLatestVersionFromServerSafe();
+        if (!info || !info.latest){
+          await showAlert(
+            'Không thể lấy thông tin phiên bản từ máy chủ, chưa thể kiểm tra cập nhật vào lúc này.\n\n' +
+            `• Phiên bản hiện tại trên thiết bị: ${APP_VERSION}`,
+            { title: 'Kiểm tra cập nhật', type: 'warning' }
+          );
+          this._userInitiatedCheck = false;
+          return;
+        }
+
+        const latest = info.latest;
+        const lbl = document.getElementById('latestVersion');
+        if (lbl) lbl.textContent = latest;
+
+        if (APP_VERSION === latest){
+          await showAlert(
+            `Bạn đang sử dụng phiên bản mới nhất.\n\n` +
+            `• Phiên bản hiện tại: ${APP_VERSION}`,
+            { title: 'Kiểm tra cập nhật', type: 'info' }
+          );
+          this._userInitiatedCheck = false;
+          return;
+        }
+
+        this.show(latest, APP_VERSION);
+        this._userInitiatedCheck = false;
+      }
+
+      async apply(){
+        try{
+          openToast('Đang áp dụng bản cập nhật...', 'info', 2200, 'Cập nhật');
+
+          const reg = await getSwReg();
+          if(!reg){
+            location.reload();
             return;
           }
 
-          reg.active.postMessage({ type: 'CHECK_UPDATE' });
-          this.lastCheck = Date.now();
-          this.updateAvailable = false;
-
-          if (this.pendingCheckTimer) {
-            clearTimeout(this.pendingCheckTimer);
+          if (reg.waiting){
+            reg.waiting.postMessage({type:'SKIP_WAITING'});
+          } else {
+            reg.active?.postMessage({type:'FORCE_UPDATE'});
           }
-          this.pendingCheckTimer = setTimeout(() => {
-            if (!this.updateAvailable) {
-              const lbl = document.getElementById('latestVersion');
-              if (lbl && !lbl.textContent.trim()){
-                lbl.textContent = APP_VERSION;
-              }
-              showAlert(
-                'Bạn đang sử dụng phiên bản mới nhất.',
-                {
-                  title: 'Kiểm tra cập nhật',
-                  type: 'info'
-                }
-              );
-            }
-          }, 3000);
-        } catch (e) {
-          await showAlert(
-            'Không thể kiểm tra cập nhật. Vui lòng kiểm tra lại kết nối mạng.',
-            {
-              title: 'Lỗi kiểm tra cập nhật',
-              type: 'error'
-            }
-          );
-        }
-      }
-      async apply(){
-        try{
-          const reg = await navigator.serviceWorker.ready;
-          reg.active?.postMessage({type:'FORCE_UPDATE'});
-          setTimeout(()=>location.reload(), 1800);
+
+          let reloaded = false;
+          const done = ()=>{
+            if(reloaded) return;
+            reloaded = true;
+            location.reload();
+          };
+
+          const t = setTimeout(done, 2500);
+          navigator.serviceWorker.addEventListener('controllerchange', ()=>{
+            clearTimeout(t);
+            done();
+          }, { once:true });
+
         }catch(e){
-          await showAlert('Không thể áp dụng bản cập nhật. Vui lòng thử lại sau.', {
+          await showAlert('Không thể áp dụng bản cập nhật. Hãy thử lại sau.', {
             title:'Lỗi cập nhật',
             type:'error'
           });
         }
       }
-      async show(newV, curV){
+
+      async handleSwUpdate(newV, curV){
+        clearTimeout(this._fallbackTimer);
         this.updateAvailable = true;
-        if (this.pendingCheckTimer){
-          clearTimeout(this.pendingCheckTimer);
-          this.pendingCheckTimer = null;
+        this.newVersion = newV || this.newVersion;
+        this.show(newV || this.newVersion, curV || APP_VERSION);
+        this._userInitiatedCheck = false;
+      }
+
+      async handleSwNoUpdate(latestV, curV){
+        clearTimeout(this._fallbackTimer);
+
+        const lbl = document.getElementById('latestVersion');
+        if (lbl && latestV) lbl.textContent = latestV;
+
+        if (this._userInitiatedCheck){
+          await showAlert(
+            `Bạn đang sử dụng phiên bản mới nhất.\n\n• Phiên bản hiện tại: ${curV || APP_VERSION}`,
+            { title:'Kiểm tra cập nhật', type:'info' }
+          );
         }
-        this.newVersion = newV;
+        this._userInitiatedCheck = false;
+      }
+
+      async handleSwError(reason, status){
+        clearTimeout(this._fallbackTimer);
+
+        if (this._userInitiatedCheck){
+          let msg = 'Không thể kiểm tra cập nhật vào lúc này.';
+          if (reason === 'HTTP_STATUS') msg = `Không đọc được version.json (HTTP ${status}).`;
+          if (reason === 'INVALID_JSON') msg = 'version.json không hợp lệ.';
+          if (reason === 'NETWORK_ERROR') msg = 'Lỗi mạng khi kiểm tra cập nhật.';
+
+          await showAlert(
+            msg + `\n\n• Phiên bản hiện tại: ${APP_VERSION}`,
+            { title:'Kiểm tra cập nhật', type:'warning' }
+          );
+        }
+        this._userInitiatedCheck = false;
+      }
+
+      async show(newV, curV){
+        if (!newV || !curV){
+          await showAlert(
+            'Đã có phiên bản mới của ứng dụng. \nHãy tải lại trang để cập nhật.',
+            { title: 'Có bản cập nhật mới', type: 'info' }
+          );
+          return;
+        }
 
         const latestLbl = document.getElementById('latestVersion');
         if (latestLbl && newV){
@@ -1286,9 +1413,7 @@
           cancelText:'Để sau',
           cancelVisible:true
         });
-        if (ok) {
-          this.apply();
-        }
+        if (ok) this.apply();
       }
     }
     let appUpdater;
@@ -1327,12 +1452,35 @@
     el.appVersion.textContent = APP_VERSION;
     $('#splashVersion').textContent = APP_VERSION;
 
+    try{
+      const fabMenu = document.querySelector('.fab-menu');
+      if (fabMenu) fabMenu.addEventListener('click', (e)=> e.stopPropagation());
+      if (el.fabMain) el.fabMain.addEventListener('click', (e)=> e.stopPropagation());
+    }catch{}
+
     const toastContainer = document.getElementById('toastContainer');
-    const activeToasts = new Set();
+
+    const toastQueue = [];
+    let isShowingToast = false;
     let escBound = false;
 
     function openToast(message, type = 'info', duration = 3000, customTitle){
       if (!toastContainer) return;
+      toastQueue.push({ message, type, duration, customTitle });
+      processToastQueue();
+    }
+
+    function processToastQueue(){
+      if (isShowingToast) return;
+      if (!toastQueue.length) return;
+
+      const job = toastQueue.shift();
+      isShowingToast = true;
+      showToastNow(job.message, job.type, job.duration, job.customTitle);
+    }
+
+    function showToastNow(message, type = 'info', duration = 3000, customTitle){
+      if (!toastContainer) { isShowingToast = false; return; }
 
       const MAP = {
         success:{ icon:'✓', title:'Thành công' },
@@ -1353,8 +1501,8 @@
       elToast.innerHTML = `
         <div class="toast__icon">${info.icon}</div>
         <div class="toast__content">
-          <div class="toast__title">${finalTitle}</div>
-          <div class="toast__message">${message}</div>
+          <div class="toast__title">${escapeHtml(finalTitle)}</div>
+          <div class="toast__message">${escapeHtml(message).replace(/\n/g, '<br>')}</div>
         </div>
         <button class="toast__close" type="button" aria-label="Đóng thông báo">&times;</button>
         <div class="toast__progress">
@@ -1366,8 +1514,7 @@
         toastContainer.style.display = 'flex';
       }
 
-      toastContainer.prepend(elToast);
-      activeToasts.add(elToast);
+      toastContainer.appendChild(elToast);
 
       const bar = elToast.querySelector('.toast__progress-bar');
       if (bar){
@@ -1380,13 +1527,28 @@
 
       requestAnimationFrame(()=> elToast.classList.add('show'));
 
-      const timer = setTimeout(()=> removeToast(elToast), duration);
+      let closed = false;
+      const finish = ()=>{
+        if (closed) return;
+        closed = true;
+
+        elToast.classList.remove('show');
+        setTimeout(()=>{
+          try{ elToast.remove(); }catch{}
+          if (toastContainer) toastContainer.style.display = 'none';
+
+          isShowingToast = false;
+          processToastQueue();
+        }, 200);
+      };
+
+      const timer = setTimeout(finish, duration);
 
       const closeBtn = elToast.querySelector('.toast__close');
       if (closeBtn){
         closeBtn.onclick = () => {
           clearTimeout(timer);
-          removeToast(elToast);
+          finish();
         };
       }
 
@@ -1394,32 +1556,26 @@
         escBound = true;
         window.addEventListener('keydown', (e)=>{
           if(e.key === 'Escape'){
-            const top = toastContainer.firstElementChild;
-            if(top) removeToast(top);
+            const cur = toastContainer?.lastElementChild;
+            if(cur) {
+              const b = cur.querySelector('.toast__close');
+              if (b) b.click();
+              else finish();
+            }
           }
         });
       }
     }
 
-    function removeToast(elToast){
-      if (!elToast || !activeToasts.has(elToast)) return;
-      activeToasts.delete(elToast);
-      elToast.classList.remove('show');
-      setTimeout(()=>{
-        elToast.remove();
-        if (activeToasts.size === 0 && toastContainer) {
-          toastContainer.style.display = 'none';
-        }
-      }, 200);
-    }
-
     window.showToast = openToast;
 
-    let data=[]; 
-    let visible={}; 
+    let data=[];
+    let visible={};
     let editingIndex = null;
     let autoHideTimers = {};
     const AUTO_HIDE_SECONDS = 15;
+
+    let savingEdit = false;
 
     try{
       const s = localStorage.getItem(localKey);
@@ -1428,21 +1584,25 @@
 
     const save = ()=> localStorage.setItem(localKey, JSON.stringify(data));
 
-    // ==== ID CHO TỪNG TÀI KHOẢN ====
     function generateId(){
       return 'pw_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8);
     }
 
     function ensureIds(){
       let changed = false;
+      if(!Array.isArray(data)) return;
+
       for(const entry of data){
-        if(entry && !entry[CHECK_KEY] && !entry.id){
+        if(!entry || typeof entry !== 'object') continue;
+        if(entry[CHECK_KEY]) continue;
+
+        if(!entry.id || typeof entry.id !== 'string' || !entry.id.trim()){
           entry.id = generateId();
           changed = true;
         }
       }
       if(changed){
-        save();
+        try{ save(); }catch{}
       }
     }
 
@@ -1494,6 +1654,20 @@
         el.modalCancel.textContent=cancelText||'Hủy';
         el.modalCancel.style.display = cancelVisible ? 'inline-flex' : 'none';
 
+        let resolved = false;
+
+        const onKeydown = (e)=>{
+          if(!el.modal.classList.contains('open')) return;
+          if(e.key==='Enter'){
+            e.preventDefault();
+            el.modalOk.click();
+          }
+          if(e.key==='Escape'){
+            e.preventDefault();
+            el.modalCancel.click();
+          }
+        };
+
         const cleanup=()=>{
           el.modal.classList.remove('open');
           el.modal.setAttribute('aria-hidden','true');
@@ -1501,23 +1675,30 @@
           el.modalMsg.textContent = '';
           el.modalTitle.textContent = '';
           el.modalOk.onclick=el.modalCancel.onclick=el.modalX.onclick=null;
-          window.onkeydown=null;
+          window.removeEventListener('keydown', onKeydown, true);
         };
+
+        const done = (val)=>{
+          if(resolved) return;
+          resolved = true;
+          cleanup();
+          resolve(val);
+        };
+
         el.modalOk.onclick=()=>{
           const v=showInput?el.modalInput.value:true;
-          cleanup(); resolve(v);
+          done(v);
         };
-        el.modalCancel.onclick=()=>{ cleanup(); resolve(false); };
-        el.modalX.onclick=()=>{ cleanup(); resolve(false); };
-        window.onkeydown=e=>{
-          if(e.key==='Enter'){ el.modalOk.click(); }
-          if(e.key==='Escape'){ el.modalCancel.click(); }
-        };
+        el.modalCancel.onclick=()=>{ done(false); };
+        el.modalX.onclick=()=>{ done(false); };
+
         el.modal.classList.add('open');
         el.modal.setAttribute('aria-hidden','false');
+        window.addEventListener('keydown', onKeydown, true);
         setTimeout(()=> showInput? el.modalInput.focus(): el.modalOk.focus(), 0);
       });
     }
+
     function showAlert(msg, opts={}){
       const {title='Thông báo', focus=null, type='info'}=opts||{};
       if(anyModalOpen() && !document.getElementById('modal').classList.contains('open')){
@@ -1536,7 +1717,6 @@
     const showPrompt =(msg, placeholder='', title='Nhập thông tin', inputType='text')=>
       openModal({title,message:msg,showInput:true,inputType,placeholder,okText:'Xác nhận',cancelText:'Hủy',cancelVisible:true});
 
-    // ===== KIỂM TRA THƯ VIỆN MÃ HÓA (CryptoJS) =====
     let CRYPTO_READY = (typeof CryptoJS !== 'undefined');
 
     function requireCrypto(contextLabel){
@@ -1549,7 +1729,7 @@
         'Ứng dụng chưa tải được thư viện mã hóa, nên không thể ' +
         (contextLabel || 'thực hiện thao tác này') +
         '.\n\n' +
-        'Vui lòng tải lại trang. Nếu lỗi vẫn tiếp diễn, hãy liên hệ tác giả để được hỗ trợ.';
+        'Hãy tải lại trang. Nếu lỗi vẫn tiếp diễn, hãy liên hệ tác giả để được hỗ trợ.';
 
       showAlert(msg, {
         title: 'Thiếu thư viện mã hóa',
@@ -1594,6 +1774,8 @@
     }
 
     function render(){
+      try{ ensureIds(); }catch{}
+
       const q = (el.search.value || '').trim().toLowerCase();
       el.list.innerHTML = '';
 
@@ -1613,13 +1795,13 @@
 
         if (!hasAnyEntry) {
           title = 'Chưa có tài khoản nào';
-          subtitle = 'Nhấn “＋ Thêm tài khoản” ở góc dưới bên phải để bắt đầu thêm tài khoản mới.';
+          subtitle = 'Nhấn “＋ Thêm tài khoản” ở góc dưới bên phải để thêm tài khoản.';
         } else if (q) {
           title = 'Không tìm thấy kết quả';
-          subtitle = `Không có tài khoản nào khớp với “${escapeHtml(q)}”.\nThử từ khóa khác hoặc xóa nội dung ô tìm kiếm.`;
+          subtitle = `Không có tài khoản nào khớp với “${escapeHtml(q)}”.\nHãy thử từ khóa khác hoặc xóa nội dung trong ô tìm kiếm.`;
         } else {
           title = 'Không có tài khoản được hiển thị';
-          subtitle = 'Kiểm tra lại ô tìm kiếm hoặc thêm tài khoản mới để hiển thị ở đây.';
+          subtitle = 'Kiểm tra lại ô tìm kiếm hoặc thêm tài khoản mới để hiển thị tại đây.';
         }
 
         el.list.innerHTML = `
@@ -1634,7 +1816,7 @@
       items.sort((a, b) => b.idx - a.idx);
 
       items.forEach(({ entry, idx })=>{
-        const id = entry.id || `idx-${idx}`;
+        const id = entry.id;
         const div=document.createElement('div');
         div.className='entry';
         div.dataset.id = id;
@@ -1700,12 +1882,12 @@
 
       let remaining = AUTO_HIDE_SECONDS;
       btn.disabled = false;
-      btn.textContent = `Ẩn sau ${remaining}s`;
+      btn.textContent = `Tự ẩn sau ${remaining}s`;
 
       const interval = setInterval(()=>{
         remaining--;
         if (remaining > 0) {
-          btn.textContent = `Ẩn sau ${remaining}s`;
+          btn.textContent = `Tự ẩn sau ${remaining}s`;
         } else {
           clearAutoHide(id);
           hideEntryInstant(id);
@@ -1742,7 +1924,7 @@
         return;
       }
 
-      let master = await showPrompt('Vui lòng nhập mật khẩu chính để giải mã thông tin.', '', 'Xác thực', 'password');
+      let master = await showPrompt('Nhập mật khẩu chính để tiếp tục.', '', 'Xác thực', 'password');
       if(master===false) return;
       if(!String(master).trim()){
         await showAlert('Bạn chưa nhập mật khẩu chính.',{type:'error', title:'Mật khẩu chính'});
@@ -1768,7 +1950,7 @@
       const decPass=decryptSafe(entry.password, master);
       master = null;
       if(decAcc==null||decPass==null){
-        await showAlert('Không thể giải mã dữ liệu. Vui lòng thử lại.',{type:'error', title:'Giải mã dữ liệu'});
+        await showAlert('Không thể giải mã dữ liệu. Hãy thử lại.',{type:'error', title:'Giải mã dữ liệu'});
         return;
       }
       visible[id]=true;
@@ -1838,78 +2020,91 @@
     });
 
     el.btnSaveEdit.onclick = async ()=>{
+      if (savingEdit) return;
       if (!requireCrypto('lưu tài khoản')) return;
 
-      const display=el.fDisplay.value.trim();
-      const account=el.fAccount.value.trim();
-      const password=el.fPassword.value.trim();
-      const master=el.fMaster.value;
+      savingEdit = true;
+      const btn = el.btnSaveEdit;
+      const oldText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Đang lưu...';
 
-      const isEdit = editingIndex !== null;
+      try{
+        const display=el.fDisplay.value.trim();
+        const account=el.fAccount.value.trim();
+        const password=el.fPassword.value.trim();
+        const master=el.fMaster.value;
 
-      if(!display)  return showAlert('Vui lòng nhập tên dịch vụ hoặc ứng dụng.',{focus:el.fDisplay,type:'error', title:'Thiếu thông tin'});
-      if(!account)  return showAlert('Vui lòng nhập tài khoản đăng nhập.',{focus:el.fAccount,type:'error', title:'Thiếu thông tin'});
-      if(!password) return showAlert('Vui lòng nhập mật khẩu của tài khoản.',{focus:el.fPassword,type:'error', title:'Thiếu thông tin'});
-      if(!master)   return showAlert('Vui lòng nhập mật khẩu chính.',{focus:el.fMaster,type:'error', title:'Mật khẩu chính'});
+        const isEdit = editingIndex !== null;
 
-      let verify=data.find(e=>e[CHECK_KEY]);
+        if(!display)  return showAlert('Bạn chưa nhập tên dịch vụ hoặc ứng dụng.',{focus:el.fDisplay,type:'error', title:'Thiếu thông tin'});
+        if(!account)  return showAlert('Bạn chưa nhập tài khoản đăng nhập.',{focus:el.fAccount,type:'error', title:'Thiếu thông tin'});
+        if(!password) return showAlert('Bạn chưa nhập mật khẩu của tài khoản này.',{focus:el.fPassword,type:'error', title:'Thiếu thông tin'});
+        if(!master)   return showAlert('Bạn chưa nhập mật khẩu chính.',{focus:el.fMaster,type:'error', title:'Mật khẩu chính'});
 
-      if(!verify){
-        const confirmKey = el.fMasterConfirm.value || '';
-        if(!confirmKey.trim()){
-          return showAlert('Vui lòng nhập lại mật khẩu chính để xác nhận.', {focus:el.fMasterConfirm, type:'error', title:'Mật khẩu chính'});
+        let verify=data.find(e=>e[CHECK_KEY]);
+
+        if(!verify){
+          const confirmKey = el.fMasterConfirm.value || '';
+          if(!confirmKey.trim()){
+            return showAlert('Nhập lại mật khẩu chính để xác nhận.', {focus:el.fMasterConfirm, type:'error', title:'Mật khẩu chính'});
+          }
+          if(confirmKey !== master){
+            el.masterConfirmHint.style.display = 'inline';
+            el.masterConfirmHint.textContent = '❌ Mật khẩu xác nhận không khớp';
+            el.masterConfirmHint.style.color = '#dc3545';
+            return showAlert('Mật khẩu xác nhận không khớp. Vui lòng kiểm tra lại.', {focus:el.fMasterConfirm,type:'error', title:'Mật khẩu chính'});
+          }
+          data.unshift({[CHECK_KEY]: encrypt(CHECK_VALUE, master)});
+          verify = data[0];
+        }else{
+          if (isMasterLocked()){
+            return showAlert(
+              getMasterLockMessage(),
+              {focus:el.fMaster,type:'error', title:'Mật khẩu chính tạm thời bị khóa'}
+            );
+          }
+          const ok = decryptSafe(verify[CHECK_KEY], master)===CHECK_VALUE;
+          if(!ok){
+            registerMasterFail();
+            const msg = getWrongMasterMessage();
+            return showAlert(msg,{focus:el.fMaster,type:'error', title:'Mật khẩu chính'});
+          }
+          resetMasterFail();
         }
-        if(confirmKey !== master){
-          el.masterConfirmHint.style.display = 'inline';
-          el.masterConfirmHint.textContent = '❌ Mật khẩu xác nhận không khớp';
-          el.masterConfirmHint.style.color = '#dc3545';
-          return showAlert('Mật khẩu xác nhận không khớp. Vui lòng kiểm tra lại.', {focus:el.fMasterConfirm,type:'error', title:'Mật khẩu chính'});
-        }
-        data.unshift({[CHECK_KEY]: encrypt(CHECK_VALUE, master)});
-        verify = data[0];
-      }else{
-        if (isMasterLocked()){
-          return showAlert(
-            getMasterLockMessage(),
-            {focus:el.fMaster,type:'error', title:'Mật khẩu chính tạm thời bị khóa'}
-          );
-        }
-        const ok = decryptSafe(verify[CHECK_KEY], master)===CHECK_VALUE;
-        if(!ok){
-          registerMasterFail();
-          const msg = getWrongMasterMessage();
-          return showAlert(msg,{focus:el.fMaster,type:'error', title:'Mật khẩu chính'});
-        }
-        resetMasterFail();
-      }
 
-      if(isEdit){
-        const idx = editingIndex;
-        const old = data[idx] || {};
-        const id = old.id || generateId();
-        data[idx]={
-          id,
-          display,
-          account:encrypt(account, master),
-          password:encrypt(password, master)
-        };
-        save(); render(); openEdit(false);
-        openToast('Đã cập nhật tài khoản.', 'success', 3200, 'Cập nhật tài khoản');
-      }else{
-        data.push({
-          id: generateId(),
-          display,
-          account:encrypt(account, master),
-          password:encrypt(password, master)
-        });
-        save(); render(); openEdit(false);
-        openToast('Đã thêm tài khoản mới.', 'success', 3200, 'Thêm tài khoản');
+        if(isEdit){
+          const idx = editingIndex;
+          const old = data[idx] || {};
+          const id = old.id || generateId();
+          data[idx]={
+            id,
+            display,
+            account:encrypt(account, master),
+            password:encrypt(password, master)
+          };
+          save(); render(); openEdit(false);
+          openToast('Đã cập nhật tài khoản.', 'success', 3200, 'Cập nhật tài khoản');
+        }else{
+          data.push({
+            id: generateId(),
+            display,
+            account:encrypt(account, master),
+            password:encrypt(password, master)
+          });
+          save(); render(); openEdit(false);
+          openToast('Đã thêm tài khoản.', 'success', 3200, 'Thêm tài khoản');
+        }
+      } finally {
+        savingEdit = false;
+        btn.disabled = false;
+        btn.textContent = oldText;
       }
     };
 
     el.btnCancelEdit.onclick=()=>openEdit(false);
     el.editX.onclick=()=>openEdit(false);
-    
+
     if (el.editModal){
       el.editModal.addEventListener('keydown', (e)=>{
         if (e.key === 'Escape'){
@@ -1957,22 +2152,28 @@
       el.fDisplay.value=current.display||'';
       el.fAccount.value=oldAcc;
       el.fPassword.value=oldPass;
-      el.fMaster.value=master;
+
+      el.fMaster.value='';
       el.masterConfirmRow.style.display='none';
       updateStrength();
       openEdit(true);
+      setTimeout(()=> el.fMaster && el.fMaster.focus(), 0);
     };
 
     window.deleteEntry = async function(id){
       if (!requireCrypto('xóa tài khoản')) return;
 
       sync();
-      if(!data||data.length===0){
+      if(!data || data.length===0){
         openToast('Không có dữ liệu nào để xóa.', 'info', 3500, 'Xóa dữ liệu');
         return;
       }
-      const verify=data.find(e=>e[CHECK_KEY]);
-      if(!verify) return showAlert('Bạn chưa thiết lập mật khẩu chính.',{type:'info', title:'Mật khẩu chính'});
+
+      const verify = data.find(e=>e[CHECK_KEY]);
+      if(!verify){
+        await showAlert('Bạn chưa thiết lập mật khẩu chính.', { type:'info', title:'Mật khẩu chính' });
+        return;
+      }
 
       if (isMasterLocked()) {
         await showAlert(getMasterLockMessage(), {
@@ -1982,29 +2183,54 @@
         return;
       }
 
-      const master=await showPrompt('Nhập mật khẩu chính để xác nhận xóa tài khoản.', '', 'Xác thực','password');
+      const master = await showPrompt('Nhập mật khẩu chính để xác nhận xóa tài khoản.', '', 'Xác thực', 'password');
       if(master===false) return;
-      if(!String(master).trim()) return showAlert('Bạn chưa nhập mật khẩu chính.',{type:'error', title:'Mật khẩu chính'});
-      if (decryptSafe(verify[CHECK_KEY], master)!==CHECK_VALUE){
+      if(!String(master).trim()){
+        await showAlert('Bạn chưa nhập mật khẩu chính.',{type:'error', title:'Mật khẩu chính'});
+        return;
+      }
+      if(decryptSafe(verify[CHECK_KEY], master)!==CHECK_VALUE){
         registerMasterFail();
         const msg = getWrongMasterMessage();
-        return showAlert(msg,{type:'error', title:'Mật khẩu chính'});
+        await showAlert(msg,{type:'error', title:'Mật khẩu chính'});
+        return;
       }
       resetMasterFail();
 
       const index = data.findIndex(e => e && !e[CHECK_KEY] && e.id === id);
       if (index === -1) {
-        return showAlert('Không tìm thấy tài khoản cần xóa.',{type:'error', title:'Tài khoản'});
+        await showAlert('Không tìm thấy tài khoản cần xóa.',{type:'error', title:'Tài khoản'});
+        return;
       }
 
-      const acc=decryptSafe(data[index]?.account, master);
-      if(acc==null) return showAlert('Không tìm thấy tài khoản cần xóa.',{type:'error', title:'Tài khoản'});
-
-      const ok=await showConfirm(`Bạn có chắc chắn muốn xóa tài khoản “${acc}” không?`,'Xác nhận xóa');
+      const label = (data[index] && data[index].display) ? data[index].display : 'tài khoản này';
+      const ok = await showConfirm(`Bạn có chắc chắn muốn xóa “${label}” không?`, 'Xác nhận xóa');
       if(!ok) return;
-      data.splice(index,1);
-      save(); render();
-      openToast('Tài khoản đã được xóa.', 'success', 3200, 'Xóa tài khoản');
+
+      data.splice(index, 1);
+
+      const stillHasReal = Array.isArray(data) && data.some(e => e && typeof e === 'object' && !e[CHECK_KEY]);
+
+      if (!stillHasReal){
+        try{
+          localStorage.removeItem(localKey);
+          localStorage.removeItem(BACKUP_REMIND_AT_KEY);
+          localStorage.removeItem(LOCK_STATE_KEY);
+          localStorage.removeItem(BACKUP_REMIND_INTERVAL_KEY);
+        }catch{}
+
+        data = [];
+        masterFailCount = 0;
+        masterLockUntil = 0;
+
+        render();
+        openToast(`Đã xóa “${label}”.`, 'success', 3200, 'Xóa tài khoản');
+        return;
+      }
+
+      save();
+      render();
+      openToast(`Đã xóa “${label}”.`, 'success', 3200, 'Xóa tài khoản');
     };
 
     function openChangeKey(open=true){
@@ -2015,10 +2241,10 @@
         el.ckStrength.style.display='none'; el.ckHint.style.display='none';
         setTimeout(()=> el.ckOld.focus(),0);
       } else {
-        el.ckOld.value=''; 
-        el.ckNew.value=''; 
+        el.ckOld.value='';
+        el.ckNew.value='';
         el.ckConfirm.value='';
-        el.ckStrength.style.display='none'; 
+        el.ckStrength.style.display='none';
         el.ckHint.style.display='none';
       }
     }
@@ -2075,9 +2301,9 @@
           password:encrypt(pass,newKey)
         });
       }
-      data=newData; 
-      save(); 
-      render(); 
+      data=newData;
+      save();
+      render();
       openChangeKey(false);
 
       await showAlert(
@@ -2197,9 +2423,9 @@
     function isIos(){return /iphone|ipad|ipod/i.test(navigator.userAgent)}
 
     let deferredPrompt = null;
-    const INSTALL_KEYS = { 
-      dismissedAt: 'i4pw_a2hs_dismissed_at', 
-      installed:   'i4pw_a2hs_installed' 
+    const INSTALL_KEYS = {
+      dismissedAt: 'pwm_a2hs_dismissed_at',
+      installed:   'pwm_a2hs_installed'
     };
     const A2HS_COOLDOWN_HOURS = 2;
 
@@ -2279,7 +2505,7 @@
       if (canAutoOpen){
         setTimeout(openInstallModal, 800);
       } else {
-        openToast('Ứng dụng có thể cài đặt. Mở menu (＋) → "Cài đặt ứng dụng".','info', 4200, 'Cài đặt ứng dụng');
+        openToast('Bạn có thể cài đặt ứng dụng. Mở menu (＋) → "Cài đặt ứng dụng".','info', 4200, 'Cài đặt ứng dụng');
       }
     });
 
@@ -2288,7 +2514,7 @@
       deferredPrompt = null;
       el.miInstall.style.display = 'none';
       closeInstallModal();
-      openToast('Đang cài đặt ứng dụng, vui lòng chờ giây lát.', 'success', 5000, 'Cài đặt ứng dụng');
+      openToast('Ứng dụng đang được cài đặt, vui lòng chờ giây lát.', 'success', 5000, 'Cài đặt ứng dụng');
     });
 
     if (isStandalone()) {
@@ -2328,7 +2554,7 @@
       const d = pad(now.getDate());
       const hh = pad(now.getHours());
       const mm = pad(now.getMinutes());
-      return `I4PW_${y}-${m}-${d}_${hh}-${mm}.json`;
+      return `PWM_${y}-${m}-${d}_${hh}-${mm}.json`;
     }
 
     function downloadBackupFile(filename){
@@ -2363,7 +2589,7 @@
       if (last <= 0 || hoursDiff(last, now) >= needHours){
         const ok = await openModal({
           title: 'Nhắc sao lưu dữ liệu',
-          message: 'Đã một thời gian bạn chưa sao lưu dữ liệu.\n\nĐể tránh mất dữ liệu khi đổi máy, cài lại hoặc thiết bị gặp sự cố, bạn nên tải file sao lưu ngay bây giờ.',
+          message: 'Đã lâu bạn chưa sao lưu dữ liệu.\n\nĐể tránh mất dữ liệu khi đổi máy, cài lại hoặc thiết bị gặp sự cố, bạn nên tải file sao lưu ngay bây giờ.',
           okText: 'Sao lưu dữ liệu ngay',
           cancelText: 'Để sau',
           cancelVisible: true
@@ -2388,56 +2614,120 @@
       try{
         localStorage.setItem(BACKUP_REMIND_AT_KEY, String(Date.now()));
       }catch{}
-      openToast('Đã xuất file sao lưu.', 'success', 3500, 'Sao lưu dữ liệu');
+      openToast('Đã tạo file sao lưu trên thiết bị.', 'success', 3500, 'Sao lưu dữ liệu');
+    }
+
+    function normalizeText(v, maxLen){
+      const s = String(v ?? '').trim();
+      if(!s) return '';
+      return s.length > maxLen ? s.slice(0, maxLen) : s;
+    }
+
+    function sanitizeImportedData(imported){
+      if(!Array.isArray(imported)) return { ok:false, reason:'File không đúng định dạng (không phải mảng dữ liệu).' };
+
+      const verify = imported.find(x => x && typeof x === 'object' && x[CHECK_KEY]);
+      if(!verify) return { ok:false, reason:'File sao lưu thiếu thông tin xác minh mật khẩu chính (_verify).' };
+
+      const MAX_DISPLAY = 120;
+      const MAX_FIELD   = 5000;
+
+      const cleaned = [];
+      const used = new Set();
+
+      cleaned.push({ [CHECK_KEY]: String(verify[CHECK_KEY]) });
+
+      for(const x of imported){
+        if(!x || typeof x !== 'object') continue;
+        if(x[CHECK_KEY]) continue;
+
+        const display  = normalizeText(x.display, MAX_DISPLAY);
+        const account  = normalizeText(x.account, MAX_FIELD);
+        const password = normalizeText(x.password, MAX_FIELD);
+
+        if(!display || !account || !password) continue;
+
+        let id = normalizeText(x.id, 80);
+        if(!id || used.has(id)) id = generateId();
+        used.add(id);
+
+        cleaned.push({ id, display, account, password });
+      }
+
+      if(cleaned.length < 2){
+        return { ok:false, reason:'File sao lưu không có bản ghi hợp lệ (hoặc đã bị hỏng / rỗng).' };
+      }
+
+      return { ok:true, cleaned };
     }
 
     function importData(e){
-      const f=e.target.files?.[0]; if(!f) return;
-      const reader=new FileReader();
-      reader.onload=async ev=>{
+      const f = e.target.files?.[0];
+      if(!f) return;
+
+      const reader = new FileReader();
+      reader.onload = async ev => {
         if (!requireCrypto('khôi phục dữ liệu từ file sao lưu')) {
-          e.target.value='';
+          e.target.value = '';
           return;
         }
 
         try{
-          const imported=JSON.parse(String(ev.target.result||''));
-          if(!Array.isArray(imported))
-            return showAlert('File không đúng định dạng dữ liệu.',{type:'error', title:'Khôi phục dữ liệu'});
-          const verify=imported.find(x=>x[CHECK_KEY]);
-          if(!verify)
-            return showAlert('File thiếu thông tin xác minh mật khẩu chính.',{type:'error', title:'Khôi phục dữ liệu'});
+          const raw = String(ev.target.result || '');
+          let imported;
 
-          if (isMasterLocked()){
-            await showAlert(getMasterLockMessage(), {
-              type:'error',
-              title:'Mật khẩu chính tạm thời bị khóa'
+          try{
+            imported = JSON.parse(raw);
+          }catch{
+            await showAlert('File sao lưu không hợp lệ hoặc đã bị hỏng (không đọc được JSON).', {
+              type:'error', title:'Khôi phục dữ liệu'
             });
             return;
           }
 
-          const master=await showPrompt('Nhập mật khẩu chính của file sao lưu.', '', 'Khôi phục dữ liệu','password');
-          if(master===false) return;
-          if(decryptSafe(verify[CHECK_KEY], master)!==CHECK_VALUE){
+          const s = sanitizeImportedData(imported);
+          if(!s.ok){
+            await showAlert(s.reason || 'File sao lưu không hợp lệ.', { type:'error', title:'Khôi phục dữ liệu' });
+            return;
+          }
+
+          const cleaned = s.cleaned;
+          const verify = cleaned[0];
+
+          if (isMasterLocked()){
+            await showAlert(getMasterLockMessage(), {
+              type:'error', title:'Mật khẩu chính tạm thời bị khóa'
+            });
+            return;
+          }
+
+          const master = await showPrompt('Nhập mật khẩu chính của file sao lưu.', '', 'Khôi phục dữ liệu', 'password');
+          if(master === false) return;
+
+          if(decryptSafe(verify[CHECK_KEY], master) !== CHECK_VALUE){
             registerMasterFail();
             const msg = getWrongMasterMessage();
-            return showAlert(msg,{type:'error', title:'Khôi phục dữ liệu'});
+            await showAlert(msg, { type:'error', title:'Khôi phục dữ liệu' });
+            return;
           }
           resetMasterFail();
 
-          const ok=await showConfirm('Dữ liệu hiện tại sẽ bị thay thế bởi dữ liệu trong file. Bạn có chắc muốn tiếp tục?','Khôi phục dữ liệu');
+          const ok = await showConfirm(
+            'Dữ liệu hiện tại sẽ bị thay thế bởi dữ liệu trong file.\nBạn có chắc muốn tiếp tục?',
+            'Khôi phục dữ liệu'
+          );
           if(!ok) return;
-          data=imported;
-          ensureIds();
-          save(); 
+
+          data = cleaned;
+          try{ ensureIds(); }catch{}
+          save();
           render();
-          openToast('Đã nhập dữ liệu thành công.','success', 4000, 'Khôi phục dữ liệu');
-        }catch{
-          showAlert('File không hợp lệ hoặc đã bị lỗi.',{type:'error', title:'Khôi phục dữ liệu'});
+          openToast('Đã nhập dữ liệu thành công.', 'success', 4000, 'Khôi phục dữ liệu');
         }finally{
-          e.target.value='';
+          e.target.value = '';
         }
       };
+
       reader.readAsText(f);
     }
 
@@ -2471,7 +2761,7 @@
       }
       resetMasterFail();
 
-      const ok=await showConfirm('Bạn có chắc chắn muốn xóa toàn bộ dữ liệu không?','Xác nhận');
+      const ok=await showConfirm('Bạn có chắc chắn muốn xóa toàn bộ dữ liệu trên thiết bị này không?','Xác nhận');
       if(!ok) return;
 
       localStorage.removeItem(localKey);
@@ -2549,9 +2839,9 @@
 
     render();
 
-    window.__pm = { 
-      exportData, 
-      resetAll, 
+    window.__pm = {
+      exportData,
+      resetAll,
       requestPersistentStorage,
       openAddEntry: addEntryModal,
       ensureBackupReminder,
