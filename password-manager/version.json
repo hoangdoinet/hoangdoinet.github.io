@@ -2,30 +2,39 @@
   "app": "Trình quản lý mật khẩu",
   "id": "password-manager",
   "website": "https://hoangdoinet.github.io/password-manager/",
-  "version": "v1.0.7",
-  "release_date": "2025-12-23",
+  "version": "v1.0.8",
+  "release_date": "2026-03-13",
   "author": "Hoàng Đợi",
 
   "notes": [
-    "Phiên bản v1.0.7 tập trung tăng cường bảo mật dữ liệu, bổ sung nhắc sao lưu dữ liệu định kỳ, cải thiện giao diện và hiệu suất ứng dụng."
+    "Phiên bản v1.0.8: Thêm chức năng hỗ trợ tạo mật khẩu ngẫu nhiên, cải thiện giao diện và hiệu suất ứng dụng."
   ],
 
   "latest": {
-    "version": "v1.0.7",
-    "release_date": "2025-12-23",
-    "summary": "Tăng cường bảo mật dữ liệu, bổ sung nhắc sao lưu dữ liệu định kỳ, cải thiện giao diện và hiệu suất ứng dụng.",
+    "version": "v1.0.8",
+    "release_date": "2026-03-13",
+    "summary": "Thêm chức năng tạo mật khẩu ngẫu nhiên, cải thiện giao diện và tối ưu hiệu suất.",
     "changelog": [
-      "Khóa tạm thời khi nhập sai mật khẩu chính nhiều lần để tránh truy cập trái phép.",
-      "Tự động ẩn lại mật khẩu sau khi xem nhằm hạn chế lộ thông tin.",
-      "Màn hình Thông tin ứng dụng mới, hiển thị rõ phiên bản đang dùng và phiên bản mới nhất.",
-      "Nhắc sao lưu dữ liệu định kỳ để tránh mất dữ liệu khi đổi máy hoặc gặp sự cố.",
-      "Cải thiện quá trình cài đặt ứng dụng trên Android và iOS.",
-      "Kiểm tra và lọc dữ liệu lỗi khi khôi phục từ file sao lưu.",
-      "Cải thiện độ ổn định và thông báo trong quá trình sử dụng."
+      "Thêm công cụ tạo mật khẩu ngẫu nhiên với độ mạnh cao.",
+      "Cải thiện bố cục giao diện và trải nghiệm sử dụng.",
+      "Tối ưu hiệu suất xử lý khi thao tác với danh sách tài khoản.",
+      "Tinh chỉnh thông báo và một số chi tiết hiển thị.",
+      "Sửa lỗi nhỏ và tăng độ ổn định."
     ]
   },
 
   "changelog": [
+    {
+      "version": "v1.0.8",
+      "release_date": "2026-03-13",
+      "changes": [
+        "Thêm công cụ tạo mật khẩu ngẫu nhiên với độ mạnh cao.",
+        "Cải thiện bố cục giao diện và trải nghiệm sử dụng.",
+        "Tối ưu hiệu suất xử lý khi thao tác với danh sách tài khoản.",
+        "Tinh chỉnh thông báo và một số chi tiết hiển thị.",
+        "Sửa lỗi nhỏ và tăng độ ổn định."
+      ]
+    },
     {
       "version": "v1.0.7",
       "release_date": "2025-12-23",

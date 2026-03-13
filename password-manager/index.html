@@ -32,7 +32,7 @@
 
   <!-- App meta -->
   <meta name="theme-color" content="#22c55e">
-  <meta name="version" content="v1.0.7">
+  <meta name="version" content="v1.0.8">
 
   <!-- iOS PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -407,6 +407,67 @@
       z-index:71;
     }
 
+	.gen-body{
+	display:flex;
+	flex-direction:column;
+	gap:12px
+	}
+	
+	.gen-top{
+	display:flex;
+	flex-direction:column;
+	gap:10px
+	}
+	
+	.gen-options{
+	display:grid;
+	grid-template-columns:repeat(2,1fr);
+	gap:8px
+	}
+	
+	.gen-opt{
+	display:flex;
+	align-items:center;
+	gap:6px;
+	background:#f8fafc;
+	border:1px solid #e5e7eb;
+	border-radius:10px;
+	padding:8px 10px;
+	font-weight:600;
+	font-size:14px;
+	cursor:pointer
+	}
+	
+	.gen-opt input{
+	transform:scale(1.15);
+	cursor:pointer
+	}
+	
+	.gen-result-box{
+	display:flex;
+	flex-direction:column;
+	gap:6px;
+	margin-top:2px
+	}
+	
+	.gen-result{
+	font-size:16px;
+	font-weight:700;
+	text-align:center;
+	background:#f8fafc;
+	cursor:pointer
+	}
+	
+	.gen-result:hover{
+	background:#eef2f7
+	}
+	
+	.gen-strength{
+	font-size:13px;
+	font-weight:700;
+	text-align:center
+	}
+
     footer{
       text-align:center;
       color:#94a3b8;
@@ -703,7 +764,7 @@
     <img src="/password-manager/icons/icon-192.png" alt="" width="96" height="96"
          style="filter:drop-shadow(0 8px 24px rgba(0,0,0,.35)); border-radius:22%">
     <div style="font-weight:900;font-size:20px;margin-top:8px;letter-spacing:.4px">TRÌNH QUẢN LÝ MẬT KHẨU</div>
-    <div style="opacity:.95;margin-top:6px">Phiên bản: <b id="splashVersion">v1.0.7</b></div>
+    <div style="opacity:.95;margin-top:6px">Phiên bản: <b id="splashVersion">v1.0.8</b></div>
   </div>
 
   <main id="app" class="wrap" aria-live="polite">
@@ -729,6 +790,7 @@
     <div class="fab-menu" aria-label="Menu chức năng">
       <button id="miInstall" class="fab-item" style="display:none">📲 Cài đặt ứng dụng</button>
       <button id="miAdd" class="fab-item">➕ Thêm tài khoản</button>
+      <button id="miGenerate" class="fab-item">🔐 Tạo mật khẩu ngẫu nhiên</button>
       <button id="miExport" class="fab-item">📤 Sao lưu dữ liệu</button>
       <button id="miImport" class="fab-item">📄 Khôi phục dữ liệu</button>
       <button id="miChangeKey" class="fab-item">🔑 Đổi mật khẩu chính</button>
@@ -922,6 +984,70 @@
     </div>
   </div>
 
+	<div id="genModal" class="modal-backdrop" aria-hidden="true">
+	  <div class="modal-card">
+	    
+	    <div class="modal-head">
+	      <h3 class="modal-title">🔐 Tạo mật khẩu ngẫu nhiên</h3>
+	      <button id="genX" class="modal-close">×</button>
+	    </div>
+	
+	    <div class="modal-body gen-body">
+	
+	      <div class="gen-top">
+	
+	        <div class="form-row">
+	          <label>Độ dài mật khẩu</label>
+	          <input id="genLength" class="modal-input" type="number" value="16" min="6" max="100">
+	        </div>
+	
+	        <div class="gen-options">
+	
+	          <label class="gen-opt">
+	            <input type="checkbox" id="genLower" checked>
+	            <span>a–z</span>
+	          </label>
+	
+	          <label class="gen-opt">
+	            <input type="checkbox" id="genUpper" checked>
+	            <span>A–Z</span>
+	          </label>
+	
+	          <label class="gen-opt">
+	            <input type="checkbox" id="genNumber" checked>
+	            <span>0–9</span>
+	          </label>
+	
+	          <label class="gen-opt">
+	            <input type="checkbox" id="genSymbol" checked>
+	            <span>!@#$</span>
+	          </label>
+	
+	        </div>
+	
+	      </div>
+	
+	      <button id="genBtn" class="btn green">Tạo mật khẩu</button>
+	
+	      <div class="gen-result-box">
+	
+	        <input id="genResult"
+	               class="modal-input gen-result"
+	               readonly
+	               placeholder="Mật khẩu sẽ xuất hiện tại đây">
+	
+	        <div id="genStrength" class="gen-strength"></div>
+	
+	      </div>
+	
+	      <div class="modal-actions">
+	        <button id="genClose" class="btn text">Đóng</button>
+	      </div>
+	
+	    </div>
+	  </div>
+	</div>
+
   <div class="toast-container" id="toastContainer"></div>
 
   <footer>© 2025 - Hoàng Đợi</footer>
@@ -958,7 +1084,7 @@
   <!-- ========== ỨNG DỤNG ========== -->
   <script>
   (()=>{
-    const APP_VERSION = 'v1.0.7';
+    const APP_VERSION = 'v1.0.8';
     const localKey = "pwm_data";
     const CHECK_KEY = "_verify";
     const CHECK_VALUE = "Xác minh";
@@ -1419,6 +1545,18 @@
     let appUpdater;
 
     const el = {
+      miGenerate: $('#miGenerate'),
+      genModal: $('#genModal'),
+      genLength: $('#genLength'),
+      genLower: $('#genLower'),
+      genUpper: $('#genUpper'),
+      genNumber: $('#genNumber'),
+      genSymbol: $('#genSymbol'),
+      genBtn: $('#genBtn'),
+      genResult: $('#genResult'),
+      genStrength: $('#genStrength'),
+      genClose: $('#genClose'),
+      genX: $('#genX'),
       search: $('#search'), btnReset: $('#btnReset'),
       list: $('#passwordList'), statCount: $('#statCount'),
       fab: $('#fab'), fabMain: $('#fabMain'), fabBackdrop: $('#fabBackdrop'),
@@ -2391,6 +2529,10 @@
     };
 
     el.miAdd.onclick    = ()=>{ toggleFab(false); addEntryModal(); };
+    el.miGenerate.onclick = ()=>{
+      toggleFab(false)
+      openGen(true)
+    }
     el.miExport.onclick = ()=>{ toggleFab(false); exportData(); };
     el.miImport.onclick = ()=>{ toggleFab(false); el.fileImport.click(); };
 
@@ -2776,6 +2918,92 @@
       render();
       openToast('Toàn bộ dữ liệu đã bị xóa khỏi thiết bị này.', 'warning', 4500, 'Xóa dữ liệu');
     }
+    
+	function openGen(open=true){
+	  el.genModal.classList.toggle("open",open)
+	  el.genModal.setAttribute("aria-hidden",open?"false":"true")
+	
+	  if(open){
+	    generatePassword()
+	  }
+	}
+
+	function rand(max){
+	  const arr=new Uint32Array(1)
+	  crypto.getRandomValues(arr)
+	  return arr[0]%max
+	}
+	
+	function generatePassword(){
+	
+	  const length=+el.genLength.value
+	
+	  const lower="abcdefghijklmnopqrstuvwxyz"
+	  const upper="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	  const number="0123456789"
+	  const symbol="!@#$_"
+	
+	  let sets=[]
+	
+	  if(el.genLower.checked)sets.push(lower)
+	  if(el.genUpper.checked)sets.push(upper)
+	  if(el.genNumber.checked)sets.push(number)
+	  if(el.genSymbol.checked)sets.push(symbol)
+	
+	  if(!sets.length){
+	    showToast("Chọn ít nhất một loại ký tự","warning")
+	    return
+	  }
+	
+	  let pwd=[]
+	
+	  sets.forEach(s=>{
+	    pwd.push(s[rand(s.length)])
+	  })
+	
+	  const all=sets.join("")
+	
+	  while(pwd.length<length){
+	    pwd.push(all[rand(all.length)])
+	  }
+	
+	  pwd=pwd.sort(()=>rand(100)-50)
+	
+	  const result=pwd.join("")
+	
+	  el.genResult.value=result
+	
+	  updateGenStrength(result)
+	
+	}
+	
+	function updateGenStrength(pwd){
+	
+	  let score=0
+	
+	  if(pwd.length>=8)score++
+	  if(pwd.length>=12)score++
+	  if(/[a-z]/.test(pwd))score++
+	  if(/[A-Z]/.test(pwd))score++
+	  if(/[0-9]/.test(pwd))score++
+	  if(/[^A-Za-z0-9]/.test(pwd))score++
+	
+	  let txt="Yếu"
+	  let color="red"
+	
+	  if(score>=4){txt="Trung bình";color="orange"}
+	  if(score>=5){txt="Mạnh";color="green"}
+	
+	  el.genStrength.textContent="Độ mạnh: "+txt
+	  el.genStrength.style.color=color
+	
+	}
+	el.genBtn.onclick = generatePassword
+	el.genClose.onclick = ()=>openGen(false)
+	el.genX.onclick = ()=>openGen(false)
+	el.genResult.addEventListener("click",function(){
+	  this.select()
+	})
 
     function handleShortcuts(){
       try{
