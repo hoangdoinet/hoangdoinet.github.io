@@ -53,7 +53,7 @@
     {
       "name": "Sao lưu dữ liệu",
       "short_name": "Sao lưu",
-      "description": "Xuất file JSON sao lưu mật khẩu.",
+      "description": "Xuất file sao lưu mật khẩu.",
       "url": "/password-manager/?action=backup",
       "icons": [
         { "src": "icons/backup.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }
