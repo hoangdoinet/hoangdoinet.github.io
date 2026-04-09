@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Quản lý Vôi Vòng 1 - Pro</title>
+  
+  <meta name="theme-color" content="#0f766e">
+  <link rel="manifest" href="/quan-ly-voi/manifest.json">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { overscroll-behavior-y: contain; -webkit-tap-highlight-color: transparent; }
+    ::-webkit-scrollbar { display: none; }
+    .modal-overlay { transition: all 0.3s ease; opacity: 0; pointer-events: none; }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-content { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); transform: scale(0.9) translateY(20px); }
+    .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
+    .toast { transform: translate(-50%, 100px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; }
+    .toast.show { transform: translate(-50%, -20px); opacity: 1; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body class="font-sans bg-gray-100 text-gray-800 relative">
+
+  <div class="max-w-md mx-auto bg-gray-50 min-h-screen pb-24 relative shadow-2xl overflow-hidden">
+    
+    <div class="bg-teal-700 p-8 rounded-b-[3rem] text-white shadow-lg relative z-10">
+      <div class="flex justify-between items-center mb-6">
+        <span class="opacity-80 text-sm font-medium">RF Quảng Tân - Vòng 1</span>
+        <div class="flex gap-2">
+            <button id="install-btn" class="hidden p-2 bg-yellow-500 text-white rounded-xl active:scale-90 transition-all shadow-lg">
+                <i data-lucide="download-cloud" class="w-5 h-5"></i>
+            </button>
+            <button onclick="exportJSON()" class="p-2 bg-white/10 rounded-xl active:scale-90 transition-all" title="Sao lưu JSON"><i data-lucide="save" class="w-5 h-5"></i></button>
+            <button onclick="document.getElementById('fileInput').click()" class="p-2 bg-white/10 rounded-xl active:scale-90 transition-all" title="Khôi phục"><i data-lucide="folder-open" class="w-5 h-5"></i></button>
+        </div>
+      </div>
+      <p class="text-teal-100 text-[10px] uppercase tracking-[0.2em] font-bold">Tổng tồn kho hiện tại</p>
+      <h1 id="total-balance" class="text-4xl font-black mt-2 tracking-tight">0 Bao</h1>
+      
+      <div class="grid grid-cols-3 gap-2 mt-8">
+        <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md border border-white/10 text-center">
+          <span class="text-[9px] text-teal-100 uppercase font-bold block mb-1">Cổng Nhập</span>
+          <p id="gate-nhap" class="font-bold text-sm">0</p>
+        </div>
+        <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md border border-white/10 text-center">
+          <span class="text-[9px] text-teal-100 uppercase font-bold block mb-1">Cổng Xuất</span>
+          <p id="gate-xuat" class="font-bold text-sm">0</p>
+        </div>
+        <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md border border-white/10 text-center">
+          <span class="text-[9px] text-teal-100 uppercase font-bold block mb-1">Cổng Chính</span>
+          <p id="gate-chinh" class="font-bold text-sm">0</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="home-tab" class="tab-content active p-6 relative z-0">
+      <div class="relative mb-6">
+        <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+        <input type="text" id="search-input" oninput="renderApp()" placeholder="Tìm ghi chú, cổng..." 
+               class="w-full pl-12 pr-12 py-4 bg-white rounded-2xl shadow-sm focus:ring-2 focus:ring-teal-100 outline-none transition-all text-sm font-medium">
+        <button id="clear-search" onclick="clearSearch()" 
+                class="absolute right-4 top-1/2 -translate-y-1/2 hidden text-gray-400 hover:text-gray-600 active:scale-90 transition-all">
+          <i data-lucide="circle-x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="font-black text-gray-800 text-xl tracking-tight">Lịch sử giao dịch</h2>
+        <span id="transaction-count" class="text-[10px] bg-gray-200 px-2 py-1 rounded-full font-bold text-gray-500 uppercase">0 bản ghi</span>
+      </div>
+      <div id="transaction-list" class="space-y-4"></div>
+    </div>
+
+    <div id="stats-tab" class="tab-content p-6 relative z-0">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="font-black text-gray-800 text-xl tracking-tight">Báo cáo tháng</h2>
+        <input type="month" id="stats-month" onchange="renderStats()" class="p-2 bg-white rounded-xl shadow-sm border-none outline-none font-bold text-teal-600 text-sm">
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="bg-white p-4 rounded-3xl shadow-sm border-b-4 border-teal-500 text-center">
+          <p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Nhập trong tháng</p>
+          <p id="stInTotal" class="text-xl font-black text-teal-600">0</p>
+        </div>
+        <div class="bg-white p-4 rounded-3xl shadow-sm border-b-4 border-orange-400 text-center">
+          <p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Xuất trong tháng</p>
+          <p id="stOutTotal" class="text-xl font-black text-orange-500">0</p>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-[2.5rem] shadow-sm overflow-hidden">
+        <h3 class="text-sm font-bold text-gray-800 mb-6 flex items-center gap-2 uppercase tracking-wider">
+          <i data-lucide="table" class="w-4 h-4 text-teal-500"></i> Chi tiết theo cổng (Bao)
+        </h3>
+        <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left border-collapse">
+                <thead>
+                    <tr class="text-gray-400 uppercase font-bold border-b border-gray-50">
+                        <th class="py-2">Vị trí</th>
+                        <th class="py-2 text-right">Đầu</th>
+                        <th class="py-2 text-right text-teal-600">Nhập</th>
+                        <th class="py-2 text-right text-orange-500">Xuất</th>
+                        <th class="py-2 text-right">Cuối</th>
+                    </tr>
+                </thead>
+                <tbody id="stats-table-body" class="font-medium text-gray-700"></tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="form-tab" class="hidden fixed inset-0 z-[60] bg-white p-6 overflow-y-auto max-w-md mx-auto">
+       <div class="flex justify-between items-center mb-8">
+          <h2 id="form-title" class="text-2xl font-black text-gray-800">Ghi nhận mới</h2>
+          <button type="button" onclick="switchTab('home')" class="p-3 bg-gray-100 rounded-2xl text-gray-500"><i data-lucide="x"></i></button>
+       </div>
+       <form id="transaction-form" class="space-y-6">
+          <input type="hidden" id="edit-id">
+          
+          <div class="flex p-1.5 bg-gray-100 rounded-2xl">
+            <button type="button" id="btn-in" onclick="setType('in')" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all text-gray-400">NHẬP VÀO</button>
+            <button type="button" id="btn-out" onclick="setType('out')" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all bg-white shadow-sm text-orange-500">XUẤT RA</button>
+          </div>
+
+          <div class="text-center py-4">
+            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Số lượng (Bao)</span>
+            <input type="number" step="0.01" id="m_qty" class="w-full text-5xl font-black text-center focus:outline-none text-teal-600 placeholder-gray-200 mt-2" placeholder="0" required>
+          </div>
+
+          <div class="space-y-4">
+            <select id="m_gate" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none font-bold text-gray-600">
+                <option value="cong_nhap">🏭 Cổng nhập</option>
+                <option value="cong_xuat">🚚 Cổng xuất</option>
+                <option value="cong_chinh">🏢 Cổng chính</option>
+            </select>
+            <input type="text" id="m_note" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none font-medium" placeholder="Ghi chú / Nội dung... (*)" required>
+            <div class="relative">
+                <label class="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Thời gian</label>
+                <input type="datetime-local" id="m_time" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none font-bold text-gray-600">
+            </div>
+          </div>
+          <button type="submit" class="w-full py-5 bg-teal-600 text-white rounded-[2rem] font-black shadow-xl shadow-teal-200 mt-10 uppercase">Xác nhận Lưu</button>
+       </form>
+    </div>
+
+    <div id="action-modal" class="modal-overlay fixed inset-0 z-[100] flex items-end justify-center p-4">
+      <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm max-w-md mx-auto" onclick="closeActionModal()"></div>
+      <div class="modal-content bg-white rounded-[2.5rem] p-8 w-full max-w-md relative z-10 shadow-2xl text-center">
+        <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6"></div>
+        <div class="grid grid-cols-2 gap-4">
+          <button onclick="initEdit()" class="flex flex-col items-center p-6 bg-teal-50 text-teal-600 rounded-3xl font-bold gap-2"><i data-lucide="edit-3"></i> Sửa</button>
+          <button onclick="openDeleteConfirm()" class="flex flex-col items-center p-6 bg-red-50 text-red-500 rounded-3xl font-bold gap-2"><i data-lucide="trash-2"></i> Xóa</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="delete-modal" class="modal-overlay fixed inset-0 z-[110] flex items-center justify-center p-6">
+      <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm max-w-md mx-auto" onclick="closeDeleteModal()"></div>
+      <div class="modal-content bg-white rounded-[2.5rem] p-8 w-full max-w-xs relative z-10 shadow-2xl text-center">
+        <h3 class="text-xl font-bold text-gray-800 mb-8 px-4">Xóa bản ghi này?</h3>
+        <div class="flex flex-col gap-3 px-4">
+          <button id="confirm-delete-btn" class="w-full py-4 bg-red-500 text-white rounded-2xl font-black">XÓA NGAY</button>
+          <button onclick="closeDeleteModal()" class="w-full py-4 bg-gray-100 text-gray-500 rounded-2xl font-bold">HỦY</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast fixed bottom-0 left-1/2 z-[200] bg-gray-900 text-white px-6 py-4 rounded-[2rem] shadow-2xl opacity-0 pointer-events-none transition-all">
+      <span id="toast-text" class="text-sm font-bold">Thành công!</span>
+    </div>
+
+    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 backdrop-blur-xl border-t border-gray-100 px-10 py-5 flex justify-between items-center z-40">
+      <button onclick="switchTab('home')" id="nav-home" class="text-teal-600"><i data-lucide="clipboard-list"></i></button>
+      <button onclick="switchTab('add')" class="bg-teal-600 p-4 rounded-2xl -mt-14 shadow-2xl shadow-teal-300 border-4 border-white text-white active:rotate-90 transition-all"><i data-lucide="plus"></i></button>
+      <button onclick="switchTab('stats')" id="nav-stats" class="text-gray-300"><i data-lucide="bar-chart-2"></i></button>
+    </nav>
+  </div>
+
+  <input type="file" id="fileInput" accept="application/json" style="display:none" onchange="importJSON(event)">
+
+  <script>
+    // --- CẤU HÌNH DỮ LIỆU ---
+    const LS_KEY = 'voi_inventory_pro_v1';
+    const GATE_KEYS = ['cong_nhap', 'cong_xuat', 'cong_chinh'];
+    const GATES_MAP = {
+      cong_nhap: { name: 'Cổng Nhập', icon: 'package-plus' },
+      cong_xuat: { name: 'Cổng Xuất', icon: 'truck' },
+      cong_chinh: { name: 'Cổng Chính', icon: 'building' }
+    };
+
+    let db = loadDB();
+    let currentType = 'out';
+    let selectedId = null;
+    let deferredPrompt;
+
+    // --- PWA LOGIC ---
+    const installBtn = document.getElementById('install-btn');
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+    if (!isStandalone && 'serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/quan-ly-voi/sw.js').catch(() => {});
+        });
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        if (isStandalone) return;
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.classList.remove('hidden');
+    });
+
+    installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') installBtn.classList.add('hidden');
+        deferredPrompt = null;
+    });
+
+    window.addEventListener('appinstalled', () => {
+        installBtn.classList.add('hidden');
+        showToast("Đã cài đặt ứng dụng!");
+    });
+
+    // --- CORE FUNCTIONS ---
+    function loadDB() {
+      const raw = localStorage.getItem(LS_KEY);
+      if (!raw) return { inv: { cong_nhap: 0, cong_xuat: 0, cong_chinh: 0 }, history: [] };
+      const o = JSON.parse(raw);
+      return { inv: o.inv || { cong_nhap: 0, cong_xuat: 0, cong_chinh: 0 }, history: o.history || [] };
+    }
+
+    function saveDB() { localStorage.setItem(LS_KEY, JSON.stringify(db)); }
+    const fmtNum = (n) => (Math.round(n * 100) / 100).toLocaleString('vi-VN');
+    const escapeHTML = (str) => String(str ?? '').replace(/[&<>'"]/g, tag => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag]));
+    
+    // Nâng cấp Toast: Hỗ trợ hiển thị lỗi (màu đỏ)
+    function showToast(msg, isError = false) {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-text').innerText = msg;
+      
+      if(isError) {
+        t.classList.remove('bg-gray-900');
+        t.classList.add('bg-red-500');
+      } else {
+        t.classList.remove('bg-red-500');
+        t.classList.add('bg-gray-900');
+      }
+
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function toDateObj(timeStr) { return new Date(timeStr.replace(' ', 'T')); }
+    function formatDT(timeStr) {
+        const d = toDateObj(timeStr);
+        return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    }
+
+    function clearSearch() {
+        const input = document.getElementById('search-input');
+        input.value = '';
+        renderApp();
+        input.focus();
+    }
+
+    function renderApp() {
+      const list = document.getElementById('transaction-list');
+      const searchInput = document.getElementById('search-input');
+      const clearBtn = document.getElementById('clear-search');
+      const val = searchInput.value.toLowerCase();
+      
+      val.length > 0 ? clearBtn.classList.remove('hidden') : clearBtn.classList.add('hidden');
+      list.innerHTML = '';
+      
+      const total = db.inv.cong_nhap + db.inv.cong_xuat + db.inv.cong_chinh;
+      document.getElementById('total-balance').innerText = `${fmtNum(total)} Bao`;
+      document.getElementById('gate-nhap').innerText = fmtNum(db.inv.cong_nhap);
+      document.getElementById('gate-xuat').innerText = fmtNum(db.inv.cong_xuat);
+      document.getElementById('gate-chinh').innerText = fmtNum(db.inv.cong_chinh);
+
+      const filtered = db.history.filter(t => 
+        (t.note || '').toLowerCase().includes(val) || 
+        GATES_MAP[t.gate].name.toLowerCase().includes(val)
+      ).sort((a,b) => toDateObj(b.time) - toDateObj(a.time));
+
+      document.getElementById('transaction-count').innerText = `${filtered.length} BẢN GHI`;
+
+      if (filtered.length === 0) {
+         list.innerHTML = `<div class="text-center py-10 text-gray-400 text-sm font-medium">Không tìm thấy dữ liệu.</div>`;
+      } else {
+         filtered.forEach(t => {
+           const g = GATES_MAP[t.gate];
+           list.insertAdjacentHTML('beforeend', `
+             <div onclick="openActionModal('${t.id}')" class="bg-white p-5 rounded-[2rem] flex justify-between items-center shadow-sm active:scale-95 transition-all cursor-pointer">
+               <div class="flex items-center gap-4">
+                 <div class="w-11 h-11 rounded-2xl ${t.type === 'in' ? 'bg-green-50 text-green-600' : 'bg-orange-50 text-orange-600'} flex items-center justify-center">
+                   <i data-lucide="${g.icon}" class="w-5 h-5"></i>
+                 </div>
+                 <div>
+                   <p class="font-bold text-gray-800 text-sm">${t.note ? escapeHTML(t.note) : 'Giao dịch'}</p>
+                   <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">${g.name} • ${formatDT(t.time)}</p>
+                 </div>
+               </div>
+               <p class="font-black text-sm ${t.type === 'in' ? 'text-green-600' : 'text-gray-900'}">
+                 ${t.type === 'in' ? '+' : '-'}${fmtNum(t.qty)}
+               </p>
+             </div>`);
+         });
+      }
+      lucide.createIcons({ root: list });
+    }
+
+    // --- STATS LOGIC ---
+    function inventoryAt(atDate) {
+      const base = { ...db.inv };
+      const tCut = atDate.getTime();
+      db.history.forEach(tx => {
+        if (toDateObj(tx.time).getTime() <= tCut) return;
+        if (tx.type === 'in') base[tx.gate] -= tx.qty;
+        else base[tx.gate] += tx.qty;
+      });
+      return base;
+    }
+
+    function renderStats() {
+      const ym = document.getElementById('stats-month').value;
+      if(!ym) return;
+      const [y, m] = ym.split('-').map(Number);
+      const start = new Date(y, m - 1, 1, 0, 0, 0);
+      const end = new Date(y, m, 0, 23, 59, 59);
+
+      const invOpen = inventoryAt(new Date(start.getTime() - 1));
+      const invClose = inventoryAt(end);
+      const inByG = {cong_nhap:0, cong_xuat:0, cong_chinh:0}, outByG = {cong_nhap:0, cong_xuat:0, cong_chinh:0};
+      let tIn = 0, tOut = 0;
+
+      db.history.forEach(tx => {
+        const t = toDateObj(tx.time).getTime();
+        if (t >= start.getTime() && t <= end.getTime()) {
+            if (tx.type === 'in') { inByG[tx.gate] += tx.qty; tIn += tx.qty; }
+            else { outByG[tx.gate] += tx.qty; tOut += tx.qty; }
+        }
+      });
+
+      document.getElementById('stInTotal').innerText = fmtNum(tIn);
+      document.getElementById('stOutTotal').innerText = fmtNum(tOut);
+      const tbody = document.getElementById('stats-table-body');
+      tbody.innerHTML = '';
+      GATE_KEYS.forEach(g => {
+        tbody.insertAdjacentHTML('beforeend', `
+            <tr class="border-b border-gray-50">
+                <td class="py-4 font-bold text-gray-800">${GATES_MAP[g].name}</td>
+                <td class="py-4 text-right text-gray-400">${fmtNum(invOpen[g])}</td>
+                <td class="py-4 text-right text-green-600">+${fmtNum(inByG[g])}</td>
+                <td class="py-4 text-right text-orange-400">-${fmtNum(outByG[g])}</td>
+                <td class="py-4 text-right font-black">${fmtNum(invClose[g])}</td>
+            </tr>`);
+      });
+    }
+
+    // --- UI INTERACTIONS ---
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById('form-tab').classList.add('hidden');
+      const h = document.getElementById('nav-home'), s = document.getElementById('nav-stats');
+      h.classList.replace('text-teal-600', 'text-gray-300');
+      s.classList.replace('text-teal-600', 'text-gray-300');
+
+      if (tab === 'home') {
+        document.getElementById('home-tab').classList.add('active');
+        h.classList.replace('text-gray-300', 'text-teal-600');
+        renderApp();
+      } else if (tab === 'stats') {
+        document.getElementById('stats-tab').classList.add('active');
+        s.classList.replace('text-gray-300', 'text-teal-600');
+        renderStats();
+      } else if (tab === 'add') {
+        document.getElementById('form-tab').classList.remove('hidden');
+        document.getElementById('transaction-form').reset();
+        document.getElementById('edit-id').value = '';
+        document.getElementById('form-title').innerText = "Ghi nhận mới";
+        setType('out');
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        document.getElementById('m_time').value = now.toISOString().slice(0, 16);
+      }
+    }
+
+    function setType(type) {
+      currentType = type;
+      const isOut = type === 'out';
+      document.getElementById('btn-out').className = isOut ? "flex-1 py-3 rounded-xl font-bold text-sm bg-white shadow-sm text-orange-500" : "flex-1 py-3 text-gray-400 font-bold text-sm";
+      document.getElementById('btn-in').className = !isOut ? "flex-1 py-3 rounded-xl font-bold text-sm bg-white shadow-sm text-green-600" : "flex-1 py-3 text-gray-400 font-bold text-sm";
+    }
+
+    // Xử lý LƯU & CẬP NHẬT GIAO DỊCH (Có bắt lỗi âm kho và bắt buộc ghi chú)
+    document.getElementById('transaction-form').onsubmit = function(e) {
+      e.preventDefault();
+      const id = document.getElementById('edit-id').value;
+      const qty = parseFloat(document.getElementById('m_qty').value);
+      const note = document.getElementById('m_note').value.trim(); // Lấy giá trị và xóa khoảng trắng thừa
+      
+      // 1. Validate Số lượng
+      if(qty <= 0) {
+        showToast("Số lượng phải lớn hơn 0!", true);
+        return;
+      }
+
+      // 2. Validate Ghi chú
+      if(!note) {
+        showToast("Nội dung ghi chú là bắt buộc!", true);
+        document.getElementById('m_note').focus(); // Bỏ focus vào ô trống để người dùng nhập
+        return;
+      }
+
+      const gate = document.getElementById('m_gate').value;
+      const timeVal = document.getElementById('m_time').value.replace('T', ' ') + ':00';
+
+      // 3. Mô phỏng tồn kho để kiểm tra trước
+      let simInv = { ...db.inv };
+      
+      // Nếu là Sửa, hoàn tác số lượng cũ trong mô phỏng
+      if (id) {
+        const old = db.history.find(x => x.id === id);
+        if(old.type === 'in') simInv[old.gate] -= old.qty; else simInv[old.gate] += old.qty;
+      }
+      
+      // Áp dụng số lượng mới vào mô phỏng
+      if (currentType === 'in') simInv[gate] += qty; else simInv[gate] -= qty;
+
+      // 4. Chặn nếu tồn kho bị âm
+      if (simInv[gate] < 0) {
+        showToast(`Lỗi: ${GATES_MAP[gate].name} không đủ tồn kho (âm ${fmtNum(Math.abs(simInv[gate]))} bao)!`, true);
+        return; 
+      }
+
+      // 5. Nếu hợp lệ, lưu vào CSDL thật
+      if (id) {
+        const idx = db.history.findIndex(x => x.id === id);
+        db.history[idx] = { id, type: currentType, qty, gate, note, time: timeVal };
+      } else {
+        db.history.push({ id: 'id-' + Date.now(), type: currentType, qty, gate, note, time: timeVal });
+      }
+
+      db.inv = simInv; // Cập nhật tồn kho thật từ kết quả mô phỏng
+      saveDB(); 
+      switchTab('home'); 
+      showToast("Đã lưu thành công!");
+    };
+
+    const openActionModal = (id) => { selectedId = id; document.getElementById('action-modal').classList.add('active'); };
+    const closeActionModal = () => document.getElementById('action-modal').classList.remove('active');
+    const openDeleteConfirm = () => { closeActionModal(); setTimeout(() => document.getElementById('delete-modal').classList.add('active'), 300); };
+    const closeDeleteModal = () => document.getElementById('delete-modal').classList.remove('active');
+
+    // Xử lý XÓA (Có bắt lỗi âm kho)
+    document.getElementById('confirm-delete-btn').onclick = () => {
+      const tx = db.history.find(t => t.id === selectedId);
+      
+      // Mô phỏng tồn kho sau khi xóa
+      let simInv = { ...db.inv };
+      if (tx.type === 'in') simInv[tx.gate] -= tx.qty; else simInv[tx.gate] += tx.qty;
+      
+      // Nếu việc xóa phiếu NHẬP làm tồn kho bị âm -> Chặn
+      if (simInv[tx.gate] < 0) {
+         showToast(`Không thể xóa! Sẽ làm âm tồn kho ở ${GATES_MAP[tx.gate].name}.`, true);
+         closeDeleteModal();
+         return;
+      }
+
+      db.inv = simInv;
+      db.history = db.history.filter(t => t.id !== selectedId);
+      saveDB(); renderApp(); closeDeleteModal(); showToast("Đã xóa bản ghi!");
+    };
+
+    function initEdit() {
+      const tx = db.history.find(t => t.id === selectedId);
+      closeActionModal();
+      setTimeout(() => {
+        switchTab('add');
+        document.getElementById('form-title').innerText = "Chỉnh sửa";
+        document.getElementById('edit-id').value = tx.id;
+        document.getElementById('m_qty').value = tx.qty;
+        document.getElementById('m_gate').value = tx.gate;
+        document.getElementById('m_note').value = tx.note;
+        document.getElementById('m_time').value = tx.time.slice(0, 16).replace(' ', 'T');
+        setType(tx.type);
+      }, 300);
+    }
+
+    // Xử lý XUẤT FILE (Chặn file trống)
+    function exportJSON() {
+      if (!db.history || db.history.length === 0) {
+        showToast("Chưa có dữ liệu giao dịch nào để sao lưu!", true);
+        return;
+      }
+      const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `voi-backup-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+    }
+
+    // Xử lý KHÔI PHỤC FILE (Kiểm tra nghiêm ngặt cấu trúc)
+    function importJSON(ev) {
+      const file = ev.target.files[0];
+      if (!file) return;
+      const r = new FileReader();
+      r.onload = function() {
+        try {
+          const d = JSON.parse(r.result);
+          
+          // Kiểm tra xem JSON có đầy đủ thuộc tính inv và history là mảng không
+          if (d && typeof d === 'object' && d.inv && Array.isArray(d.history)) {
+            
+            // Báo lỗi nếu file backup trống (0 bản ghi)
+            if (d.history.length === 0) {
+                showToast("Lỗi: File sao lưu không chứa bản ghi nào!", true);
+                document.getElementById('fileInput').value = '';
+                return;
+            }
+
+            // Kiểm tra cấu trúc Cổng có khớp không
+            if (!('cong_nhap' in d.inv) || !('cong_xuat' in d.inv) || !('cong_chinh' in d.inv)) {
+                showToast("Lỗi: Dữ liệu tồn kho bị sai lệch cổng!", true);
+                document.getElementById('fileInput').value = '';
+                return;
+            }
+
+            db = d; 
+            saveDB(); 
+            renderApp(); 
+            showToast("Đã khôi phục dữ liệu thành công!");
+          } else {
+            showToast("Lỗi: Cấu trúc file không thuộc ứng dụng này!", true);
+          }
+        } catch (e) { 
+          showToast("Lỗi: File bị hỏng hoặc không đúng định dạng JSON!", true); 
+        }
+        
+        // Reset input để chọn lại file cũ vẫn bắt sự kiện
+        document.getElementById('fileInput').value = '';
+      };
+      r.readAsText(file);
+    }
+
+    (function init() {
+      const n = new Date();
+      document.getElementById('stats-month').value = `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;
+      renderApp();
+      lucide.createIcons();
+    })();
+  </script>
+</body>
+</html>

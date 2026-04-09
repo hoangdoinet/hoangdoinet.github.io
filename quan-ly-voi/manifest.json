@@ -1,0 +1,22 @@
+{
+  "name": "Quản lý Vôi Vòng 1 - Pro",
+  "short_name": "Vôi Pro",
+  "description": "Ứng dụng quản lý tồn kho vôi chuyên nghiệp, hoạt động offline",
+  "start_url": "/quan-ly-voi/",
+  "display": "standalone",
+  "background_color": "#0f766e",
+  "theme_color": "#0f766e",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1034/1034153.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1034/1034153.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
