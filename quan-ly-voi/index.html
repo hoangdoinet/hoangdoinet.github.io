@@ -8,8 +8,8 @@
   <meta name="theme-color" content="#0f766e">
   <link rel="manifest" href="/quan-ly-voi/manifest.json">
   
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="libs/tailwind.min.js"></script>
+  <script src="libs/lucide.min.js"></script>
   <style>
     body { overscroll-behavior-y: contain; -webkit-tap-highlight-color: transparent; }
     ::-webkit-scrollbar { display: none; }
@@ -60,7 +60,7 @@
     <div id="home-tab" class="tab-content active p-6 relative z-0">
       <div class="relative mb-6">
         <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-        <input type="text" id="search-input" oninput="renderApp()" placeholder="Tìm ghi chú, cổng..." 
+        <input type="text" id="search-input" oninput="handleSearch()" placeholder="Tìm ghi chú, cổng..." 
                class="w-full pl-12 pr-12 py-4 bg-white rounded-2xl shadow-sm focus:ring-2 focus:ring-teal-100 outline-none transition-all text-sm font-medium">
         <button id="clear-search" onclick="clearSearch()" 
                 class="absolute right-4 top-1/2 -translate-y-1/2 hidden text-gray-400 hover:text-gray-600 active:scale-90 transition-all">
@@ -69,7 +69,7 @@
       </div>
 
       <div class="flex justify-between items-center mb-4">
-        <h2 class="font-black text-gray-800 text-xl tracking-tight">Lịch sử giao dịch</h2>
+        <h2 class="font-black text-gray-800 text-xl tracking-tight">Lịch sử xuất/nhập vôi</h2>
         <span id="transaction-count" class="text-[10px] bg-gray-200 px-2 py-1 rounded-full font-bold text-gray-500 uppercase">0 bản ghi</span>
       </div>
       <div id="transaction-list" class="space-y-4"></div>
@@ -140,7 +140,7 @@
             <input type="text" id="m_note" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none font-medium" placeholder="Ghi chú / Nội dung... (*)" required>
             <div class="relative">
                 <label class="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Thời gian</label>
-                <input type="datetime-local" id="m_time" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none font-bold text-gray-600">
+                <input type="datetime-local" step="1" id="m_time" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none font-bold text-gray-600" required>
             </div>
           </div>
           <button type="submit" class="w-full py-5 bg-teal-600 text-white rounded-[2rem] font-black shadow-xl shadow-teal-200 mt-10 uppercase">Xác nhận Lưu</button>
@@ -169,7 +169,7 @@
       </div>
     </div>
 
-    <div id="toast" class="toast fixed bottom-0 left-1/2 z-[200] bg-gray-900 text-white px-6 py-4 rounded-[2rem] shadow-2xl opacity-0 pointer-events-none transition-all">
+    <div id="toast" class="toast fixed bottom-0 left-1/2 z-[200] bg-gray-900 text-white px-6 py-4 rounded-[2rem] shadow-2xl opacity-0 pointer-events-none transition-all w-max max-w-[90%] text-center">
       <span id="toast-text" class="text-sm font-bold">Thành công!</span>
     </div>
 
@@ -200,96 +200,113 @@
     // --- PWA LOGIC ---
     const installBtn = document.getElementById('install-btn');
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-
     if (!isStandalone && 'serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/quan-ly-voi/sw.js').catch(() => {});
-        });
+        // TỐI ƯU 3: Sửa đường dẫn Service Worker thành đường dẫn tương đối
+        window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); });
     }
-
     window.addEventListener('beforeinstallprompt', (e) => {
-        if (isStandalone) return;
-        e.preventDefault();
-        deferredPrompt = e;
-        installBtn.classList.remove('hidden');
+        if (isStandalone) return; e.preventDefault(); deferredPrompt = e; installBtn.classList.remove('hidden');
     });
-
     installBtn.addEventListener('click', async () => {
-        if (!deferredPrompt) return;
-        deferredPrompt.prompt();
+        if (!deferredPrompt) return; deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
         if (outcome === 'accepted') installBtn.classList.add('hidden');
         deferredPrompt = null;
     });
 
-    window.addEventListener('appinstalled', () => {
-        installBtn.classList.add('hidden');
-        showToast("Đã cài đặt ứng dụng!");
-    });
-
     // --- CORE FUNCTIONS ---
+    function generateUUID() {
+        return 'tx-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6);
+    }
+
     function loadDB() {
       const raw = localStorage.getItem(LS_KEY);
       if (!raw) return { inv: { cong_nhap: 0, cong_xuat: 0, cong_chinh: 0 }, history: [] };
-      const o = JSON.parse(raw);
-      return { inv: o.inv || { cong_nhap: 0, cong_xuat: 0, cong_chinh: 0 }, history: o.history || [] };
+      return JSON.parse(raw);
     }
-
     function saveDB() { localStorage.setItem(LS_KEY, JSON.stringify(db)); }
     const fmtNum = (n) => (Math.round(n * 100) / 100).toLocaleString('vi-VN');
     const escapeHTML = (str) => String(str ?? '').replace(/[&<>'"]/g, tag => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag]));
     
-    // Nâng cấp Toast: Hỗ trợ hiển thị lỗi (màu đỏ)
     function showToast(msg, isError = false) {
       const t = document.getElementById('toast');
       document.getElementById('toast-text').innerText = msg;
-      
-      if(isError) {
-        t.classList.remove('bg-gray-900');
-        t.classList.add('bg-red-500');
-      } else {
-        t.classList.remove('bg-red-500');
-        t.classList.add('bg-gray-900');
-      }
-
+      if(isError) { t.classList.replace('bg-gray-900', 'bg-red-500'); } 
+      else { t.classList.replace('bg-red-500', 'bg-gray-900'); }
       t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 3000);
+      setTimeout(() => t.classList.remove('show'), 4000);
     }
 
     function toDateObj(timeStr) { return new Date(timeStr.replace(' ', 'T')); }
+    
     function formatDT(timeStr) {
         const d = toDateObj(timeStr);
-        return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+        return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    }
+    
+    function formatDate(timeStr) {
+        const d = toDateObj(timeStr);
+        return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
     }
 
-    function clearSearch() {
-        const input = document.getElementById('search-input');
-        input.value = '';
-        renderApp();
-        input.focus();
+    function formatTime(timeStr) {
+        const d = toDateObj(timeStr);
+        return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    }
+
+    // --- LOGIC TIME-TRAVEL & RECALCULATION ---
+    function checkTimelineValidity(historyArray) {
+        const sorted = [...historyArray].sort((a, b) => toDateObj(a.time) - toDateObj(b.time));
+        let runningInv = { cong_nhap: 0, cong_xuat: 0, cong_chinh: 0 };
+        
+        for (let tx of sorted) {
+            if (tx.type === 'in') {
+                runningInv[tx.gate] += tx.qty;
+            } else {
+                runningInv[tx.gate] -= tx.qty;
+            }
+            if (runningInv[tx.gate] < 0) {
+                return { valid: false, gate: tx.gate, time: tx.time, deficit: Math.abs(runningInv[tx.gate]) };
+            }
+        }
+        return { valid: true, finalInv: runningInv };
     }
 
     function renderApp() {
-      const list = document.getElementById('transaction-list');
-      const searchInput = document.getElementById('search-input');
-      const clearBtn = document.getElementById('clear-search');
-      const val = searchInput.value.toLowerCase();
+      const timelineCheck = checkTimelineValidity(db.history);
       
-      val.length > 0 ? clearBtn.classList.remove('hidden') : clearBtn.classList.add('hidden');
-      list.innerHTML = '';
-      
+      // TỐI ƯU 4: Bắt lỗi nếu logic tính toán tồn kho bị vỡ (do F12 sửa localStorage)
+      if (timelineCheck.valid) {
+          db.inv = timelineCheck.finalInv;
+      } else {
+          showToast("CẢNH BÁO: Dữ liệu lịch sử đang có lỗi logic âm kho!", true);
+      }
+
+      // Cập nhật thẻ tổng quan
       const total = db.inv.cong_nhap + db.inv.cong_xuat + db.inv.cong_chinh;
       document.getElementById('total-balance').innerText = `${fmtNum(total)} Bao`;
       document.getElementById('gate-nhap').innerText = fmtNum(db.inv.cong_nhap);
       document.getElementById('gate-xuat').innerText = fmtNum(db.inv.cong_xuat);
       document.getElementById('gate-chinh').innerText = fmtNum(db.inv.cong_chinh);
 
+      // Render danh sách
+      const val = document.getElementById('search-input').value.toLowerCase();
+      renderList(val);
+    }
+
+    // TỐI ƯU 1: Tách riêng hàm renderList để không phải checkTimelineValidity mỗi khi gõ tìm kiếm
+    function renderList(val) {
+      const list = document.getElementById('transaction-list');
+      const clearBtn = document.getElementById('clear-search');
+      
+      val.length > 0 ? clearBtn.classList.remove('hidden') : clearBtn.classList.add('hidden');
+      list.innerHTML = '';
+
       const filtered = db.history.filter(t => 
-        (t.note || '').toLowerCase().includes(val) || 
-        GATES_MAP[t.gate].name.toLowerCase().includes(val)
+        (t.note || '').toLowerCase().includes(val) || GATES_MAP[t.gate].name.toLowerCase().includes(val)
       ).sort((a,b) => toDateObj(b.time) - toDateObj(a.time));
 
-      document.getElementById('transaction-count').innerText = `${filtered.length} BẢN GHI`;
+      document.getElementById('transaction-count').innerText = `${filtered.length} bản ghi`;
 
       if (filtered.length === 0) {
          list.innerHTML = `<div class="text-center py-10 text-gray-400 text-sm font-medium">Không tìm thấy dữ liệu.</div>`;
@@ -304,30 +321,32 @@
                  </div>
                  <div>
                    <p class="font-bold text-gray-800 text-sm">${t.note ? escapeHTML(t.note) : 'Giao dịch'}</p>
-                   <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">${g.name} • ${formatDT(t.time)}</p>
+                   <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">${g.name} • ${formatDate(t.time)}</p>
                  </div>
                </div>
-               <p class="font-black text-sm ${t.type === 'in' ? 'text-green-600' : 'text-gray-900'}">
-                 ${t.type === 'in' ? '+' : '-'}${fmtNum(t.qty)}
-               </p>
+               <div class="text-right">
+                 <p class="font-black text-sm ${t.type === 'in' ? 'text-green-600' : 'text-gray-900'}">
+                   ${t.type === 'in' ? '+' : '-'}${fmtNum(t.qty)}
+                 </p>
+                 <p class="text-[10px] text-gray-400 font-bold mt-1">${formatTime(t.time)}</p>
+               </div>
              </div>`);
          });
       }
       lucide.createIcons({ root: list });
     }
 
-    // --- STATS LOGIC ---
-    function inventoryAt(atDate) {
-      const base = { ...db.inv };
-      const tCut = atDate.getTime();
-      db.history.forEach(tx => {
-        if (toDateObj(tx.time).getTime() <= tCut) return;
-        if (tx.type === 'in') base[tx.gate] -= tx.qty;
-        else base[tx.gate] += tx.qty;
-      });
-      return base;
+    // TỐI ƯU 1: Kỹ thuật Debounce cho ô tìm kiếm
+    let searchTimeout;
+    function handleSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            const val = document.getElementById('search-input').value.toLowerCase();
+            renderList(val);
+        }, 300);
     }
 
+    // --- STATS LOGIC ---
     function renderStats() {
       const ym = document.getElementById('stats-month').value;
       if(!ym) return;
@@ -335,14 +354,25 @@
       const start = new Date(y, m - 1, 1, 0, 0, 0);
       const end = new Date(y, m, 0, 23, 59, 59);
 
-      const invOpen = inventoryAt(new Date(start.getTime() - 1));
-      const invClose = inventoryAt(end);
-      const inByG = {cong_nhap:0, cong_xuat:0, cong_chinh:0}, outByG = {cong_nhap:0, cong_xuat:0, cong_chinh:0};
+      const tStart = start.getTime();
+      const tEnd = end.getTime();
+
+      // TỐI ƯU 2: Chỉ chạy 1 vòng lặp duy nhất để tính toàn bộ Đầu Kỳ và Phát Sinh
+      const invOpen = {cong_nhap:0, cong_xuat:0, cong_chinh:0};
+      const inByG = {cong_nhap:0, cong_xuat:0, cong_chinh:0};
+      const outByG = {cong_nhap:0, cong_xuat:0, cong_chinh:0};
       let tIn = 0, tOut = 0;
 
       db.history.forEach(tx => {
         const t = toDateObj(tx.time).getTime();
-        if (t >= start.getTime() && t <= end.getTime()) {
+        
+        if (t < tStart) {
+            // Tính Tồn đầu kỳ
+            if (tx.type === 'in') invOpen[tx.gate] += tx.qty;
+            else invOpen[tx.gate] -= tx.qty;
+        } 
+        else if (t >= tStart && t <= tEnd) {
+            // Tính Phát sinh trong kỳ
             if (tx.type === 'in') { inByG[tx.gate] += tx.qty; tIn += tx.qty; }
             else { outByG[tx.gate] += tx.qty; tOut += tx.qty; }
         }
@@ -352,19 +382,26 @@
       document.getElementById('stOutTotal').innerText = fmtNum(tOut);
       const tbody = document.getElementById('stats-table-body');
       tbody.innerHTML = '';
+      
       GATE_KEYS.forEach(g => {
+        const invClose = invOpen[g] + inByG[g] - outByG[g]; // Tồn cuối kỳ
         tbody.insertAdjacentHTML('beforeend', `
             <tr class="border-b border-gray-50">
                 <td class="py-4 font-bold text-gray-800">${GATES_MAP[g].name}</td>
                 <td class="py-4 text-right text-gray-400">${fmtNum(invOpen[g])}</td>
                 <td class="py-4 text-right text-green-600">+${fmtNum(inByG[g])}</td>
                 <td class="py-4 text-right text-orange-400">-${fmtNum(outByG[g])}</td>
-                <td class="py-4 text-right font-black">${fmtNum(invClose[g])}</td>
+                <td class="py-4 text-right font-black">${fmtNum(invClose)}</td>
             </tr>`);
       });
     }
 
     // --- UI INTERACTIONS ---
+    function clearSearch() { 
+        document.getElementById('search-input').value = ''; 
+        renderList(''); // Clear xong chỉ render lại list
+    }
+    
     function switchTab(tab) {
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       document.getElementById('form-tab').classList.add('hidden');
@@ -373,22 +410,15 @@
       s.classList.replace('text-teal-600', 'text-gray-300');
 
       if (tab === 'home') {
-        document.getElementById('home-tab').classList.add('active');
-        h.classList.replace('text-gray-300', 'text-teal-600');
-        renderApp();
+        document.getElementById('home-tab').classList.add('active'); h.classList.replace('text-gray-300', 'text-teal-600'); renderApp();
       } else if (tab === 'stats') {
-        document.getElementById('stats-tab').classList.add('active');
-        s.classList.replace('text-gray-300', 'text-teal-600');
-        renderStats();
+        document.getElementById('stats-tab').classList.add('active'); s.classList.replace('text-gray-300', 'text-teal-600'); renderStats();
       } else if (tab === 'add') {
-        document.getElementById('form-tab').classList.remove('hidden');
-        document.getElementById('transaction-form').reset();
-        document.getElementById('edit-id').value = '';
-        document.getElementById('form-title').innerText = "Ghi nhận mới";
+        document.getElementById('form-tab').classList.remove('hidden'); document.getElementById('transaction-form').reset();
+        document.getElementById('edit-id').value = ''; document.getElementById('form-title').innerText = "Ghi nhận mới";
         setType('out');
-        const now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        document.getElementById('m_time').value = now.toISOString().slice(0, 16);
+        const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        document.getElementById('m_time').value = now.toISOString().slice(0, 19);
       }
     }
 
@@ -399,56 +429,37 @@
       document.getElementById('btn-in').className = !isOut ? "flex-1 py-3 rounded-xl font-bold text-sm bg-white shadow-sm text-green-600" : "flex-1 py-3 text-gray-400 font-bold text-sm";
     }
 
-    // Xử lý LƯU & CẬP NHẬT GIAO DỊCH (Có bắt lỗi âm kho và bắt buộc ghi chú)
+    // XỬ LÝ LƯU 
     document.getElementById('transaction-form').onsubmit = function(e) {
       e.preventDefault();
       const id = document.getElementById('edit-id').value;
       const qty = parseFloat(document.getElementById('m_qty').value);
-      const note = document.getElementById('m_note').value.trim(); // Lấy giá trị và xóa khoảng trắng thừa
-      
-      // 1. Validate Số lượng
-      if(qty <= 0) {
-        showToast("Số lượng phải lớn hơn 0!", true);
-        return;
-      }
-
-      // 2. Validate Ghi chú
-      if(!note) {
-        showToast("Nội dung ghi chú là bắt buộc!", true);
-        document.getElementById('m_note').focus(); // Bỏ focus vào ô trống để người dùng nhập
-        return;
-      }
-
+      const note = document.getElementById('m_note').value.trim();
       const gate = document.getElementById('m_gate').value;
-      const timeVal = document.getElementById('m_time').value.replace('T', ' ') + ':00';
-
-      // 3. Mô phỏng tồn kho để kiểm tra trước
-      let simInv = { ...db.inv };
       
-      // Nếu là Sửa, hoàn tác số lượng cũ trong mô phỏng
-      if (id) {
-        const old = db.history.find(x => x.id === id);
-        if(old.type === 'in') simInv[old.gate] -= old.qty; else simInv[old.gate] += old.qty;
-      }
+      let timeVal = document.getElementById('m_time').value.replace('T', ' ');
+      if (timeVal.length === 16) timeVal += ':00'; 
+
+      if(qty <= 0) return showToast("Số lượng phải lớn hơn 0!", true);
+      if(!note) { document.getElementById('m_note').focus(); return showToast("Nội dung ghi chú là bắt buộc!", true); }
+
+      let mockHistory = [...db.history];
+      const txData = { id: id || generateUUID(), type: currentType, qty, gate, note, time: timeVal };
       
-      // Áp dụng số lượng mới vào mô phỏng
-      if (currentType === 'in') simInv[gate] += qty; else simInv[gate] -= qty;
-
-      // 4. Chặn nếu tồn kho bị âm
-      if (simInv[gate] < 0) {
-        showToast(`Lỗi: ${GATES_MAP[gate].name} không đủ tồn kho (âm ${fmtNum(Math.abs(simInv[gate]))} bao)!`, true);
-        return; 
-      }
-
-      // 5. Nếu hợp lệ, lưu vào CSDL thật
       if (id) {
-        const idx = db.history.findIndex(x => x.id === id);
-        db.history[idx] = { id, type: currentType, qty, gate, note, time: timeVal };
+        const idx = mockHistory.findIndex(x => x.id === id);
+        mockHistory[idx] = txData;
       } else {
-        db.history.push({ id: 'id-' + Date.now(), type: currentType, qty, gate, note, time: timeVal });
+        mockHistory.push(txData);
       }
 
-      db.inv = simInv; // Cập nhật tồn kho thật từ kết quả mô phỏng
+      const timelineCheck = checkTimelineValidity(mockHistory);
+      if (!timelineCheck.valid) {
+        return showToast(`Gây lỗi thời gian! Vào lúc ${formatDT(timelineCheck.time)}, kho ${GATES_MAP[timelineCheck.gate].name} sẽ bị âm ${fmtNum(timelineCheck.deficit)} bao.`, true);
+      }
+
+      db.history = mockHistory;
+      db.inv = timelineCheck.finalInv; 
       saveDB(); 
       switchTab('home'); 
       showToast("Đã lưu thành công!");
@@ -459,23 +470,19 @@
     const openDeleteConfirm = () => { closeActionModal(); setTimeout(() => document.getElementById('delete-modal').classList.add('active'), 300); };
     const closeDeleteModal = () => document.getElementById('delete-modal').classList.remove('active');
 
-    // Xử lý XÓA (Có bắt lỗi âm kho)
+    // XỬ LÝ XÓA
     document.getElementById('confirm-delete-btn').onclick = () => {
-      const tx = db.history.find(t => t.id === selectedId);
+      let mockHistory = db.history.filter(t => t.id !== selectedId);
       
-      // Mô phỏng tồn kho sau khi xóa
-      let simInv = { ...db.inv };
-      if (tx.type === 'in') simInv[tx.gate] -= tx.qty; else simInv[tx.gate] += tx.qty;
-      
-      // Nếu việc xóa phiếu NHẬP làm tồn kho bị âm -> Chặn
-      if (simInv[tx.gate] < 0) {
-         showToast(`Không thể xóa! Sẽ làm âm tồn kho ở ${GATES_MAP[tx.gate].name}.`, true);
+      const timelineCheck = checkTimelineValidity(mockHistory);
+      if (!timelineCheck.valid) {
+         showToast(`Không thể xóa! Sẽ làm kho ${GATES_MAP[timelineCheck.gate].name} bị âm ${fmtNum(timelineCheck.deficit)} bao vào lúc ${formatDT(timelineCheck.time)}.`, true);
          closeDeleteModal();
          return;
       }
 
-      db.inv = simInv;
-      db.history = db.history.filter(t => t.id !== selectedId);
+      db.history = mockHistory;
+      db.inv = timelineCheck.finalInv;
       saveDB(); renderApp(); closeDeleteModal(); showToast("Đã xóa bản ghi!");
     };
 
@@ -489,25 +496,19 @@
         document.getElementById('m_qty').value = tx.qty;
         document.getElementById('m_gate').value = tx.gate;
         document.getElementById('m_note').value = tx.note;
-        document.getElementById('m_time').value = tx.time.slice(0, 16).replace(' ', 'T');
+        document.getElementById('m_time').value = tx.time.replace(' ', 'T');
         setType(tx.type);
       }, 300);
     }
 
-    // Xử lý XUẤT FILE (Chặn file trống)
     function exportJSON() {
-      if (!db.history || db.history.length === 0) {
-        showToast("Chưa có dữ liệu giao dịch nào để sao lưu!", true);
-        return;
-      }
+      if (!db.history || db.history.length === 0) return showToast("Chưa có dữ liệu để sao lưu!", true);
       const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `voi-backup-${new Date().toISOString().slice(0,10)}.json`;
-      a.click();
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+      a.download = `voi-backup-${new Date().toISOString().slice(0,10)}.json`; a.click();
     }
 
-    // Xử lý KHÔI PHỤC FILE (Kiểm tra nghiêm ngặt cấu trúc)
+    // DEEP VALIDATION CHO IMPORT JSON
     function importJSON(ev) {
       const file = ev.target.files[0];
       if (!file) return;
@@ -516,35 +517,37 @@
         try {
           const d = JSON.parse(r.result);
           
-          // Kiểm tra xem JSON có đầy đủ thuộc tính inv và history là mảng không
-          if (d && typeof d === 'object' && d.inv && Array.isArray(d.history)) {
-            
-            // Báo lỗi nếu file backup trống (0 bản ghi)
-            if (d.history.length === 0) {
-                showToast("Lỗi: File sao lưu không chứa bản ghi nào!", true);
-                document.getElementById('fileInput').value = '';
-                return;
-            }
-
-            // Kiểm tra cấu trúc Cổng có khớp không
-            if (!('cong_nhap' in d.inv) || !('cong_xuat' in d.inv) || !('cong_chinh' in d.inv)) {
-                showToast("Lỗi: Dữ liệu tồn kho bị sai lệch cổng!", true);
-                document.getElementById('fileInput').value = '';
-                return;
-            }
-
-            db = d; 
-            saveDB(); 
-            renderApp(); 
-            showToast("Đã khôi phục dữ liệu thành công!");
-          } else {
-            showToast("Lỗi: Cấu trúc file không thuộc ứng dụng này!", true);
+          if (!d || typeof d !== 'object' || !Array.isArray(d.history)) {
+            throw new Error("Cấu trúc file không hợp lệ (Thiếu history object).");
           }
+          if (d.history.length === 0) {
+            throw new Error("File sao lưu rỗng (0 bản ghi)!");
+          }
+
+          for (let i = 0; i < d.history.length; i++) {
+              let tx = d.history[i];
+              if (!tx.id || typeof tx.id !== 'string') throw new Error(`Bản ghi dòng ${i+1} thiếu ID`);
+              if (!['in', 'out'].includes(tx.type)) throw new Error(`Bản ghi dòng ${i+1} sai Type (in/out)`);
+              if (typeof tx.qty !== 'number' || tx.qty <= 0) throw new Error(`Bản ghi dòng ${i+1} có số lượng không hợp lệ`);
+              if (!GATE_KEYS.includes(tx.gate)) throw new Error(`Bản ghi dòng ${i+1} chứa Cổng lạ: ${tx.gate}`);
+              if (typeof tx.note !== 'string') throw new Error(`Bản ghi dòng ${i+1} sai định dạng Ghi chú`);
+              if (isNaN(new Date(tx.time.replace(' ', 'T')).getTime())) throw new Error(`Bản ghi dòng ${i+1} sai định dạng Thời gian`);
+          }
+
+          const timelineCheck = checkTimelineValidity(d.history);
+          if (!timelineCheck.valid) {
+             throw new Error(`File chứa logic lỗi: Kho ${GATES_MAP[timelineCheck.gate].name} bị âm vào lúc ${formatDT(timelineCheck.time)}`);
+          }
+
+          db.history = d.history; 
+          db.inv = timelineCheck.finalInv; 
+          saveDB(); 
+          renderApp(); 
+          showToast("Khôi phục toàn bộ dữ liệu thành công!");
+          
         } catch (e) { 
-          showToast("Lỗi: File bị hỏng hoặc không đúng định dạng JSON!", true); 
+          showToast("LỖI IMPORT: " + e.message, true); 
         }
-        
-        // Reset input để chọn lại file cũ vẫn bắt sự kiện
         document.getElementById('fileInput').value = '';
       };
       r.readAsText(file);
