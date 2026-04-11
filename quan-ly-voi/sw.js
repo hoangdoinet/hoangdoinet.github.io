@@ -4,8 +4,8 @@ const ASSETS = [
   '/quan-ly-voi/',
   '/quan-ly-voi/index.html',
   '/quan-ly-voi/manifest.json',
-  'https://cdn.tailwindcss.com',
-  'https://unpkg.com/lucide@latest'
+  '/quan-ly-voi/libs/tailwind.min.js',
+  '/quan-ly-voi/libs/lucide.min.js'
 ];
 
 // 1. Cài đặt Service Worker và lưu tài nguyên
