@@ -1,6 +1,6 @@
 {
-  "name": "Quản lý Vôi Vòng 1 - Pro",
-  "short_name": "Vôi Pro",
+  "name": "Quản lý Vôi QT",
+  "short_name": "Vôi QT",
   "description": "Ứng dụng quản lý tồn kho vôi chuyên nghiệp, hoạt động offline",
   "start_url": "/quan-ly-voi/",
   "display": "standalone",
