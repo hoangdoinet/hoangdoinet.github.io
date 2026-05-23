@@ -1,4 +1,4 @@
-const CACHE_NAME = 'voi-pro-v1';
+const CACHE_NAME = 'voi-pro-v2';
 
 // Tối ưu danh sách tài nguyên cần lưu trữ
 const ASSETS = [
@@ -20,7 +20,7 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('Vôi Pro: Đang lưu trữ tài nguyên hệ thống...');
+      console.log('Vôi QT: Đang lưu trữ tài nguyên hệ thống...');
       return cache.addAll(ASSETS);
     })
   );
