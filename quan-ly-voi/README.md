@@ -1,4 +1,4 @@
-# 🏭 Quản lý Vôi Vòng 1 - Pro (PWA)
+# 🏭 Quản lý tồn kho Vôi QT (PWA)
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen)](https://hoangdoinet.github.io/quan-ly-voi/)
 [![PWA](https://img.shields.io/badge/PWA-Ready-orange)](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
