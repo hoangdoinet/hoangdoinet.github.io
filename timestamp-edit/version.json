@@ -1,0 +1,37 @@
+{
+  "app": "Timestamp Edit Pro",
+  "id": "timestamp-edit-pro",
+  "website": "https://hoangdoinet.github.io/timestamp-edit/",
+  "version": "v1.0.0",
+  "release_date": "2026-05-27",
+  "author": "Hoàng Đợi",
+
+  "notes": [
+    "Phiên bản v1.0.0: Khởi chạy chính thức ứng dụng biên tập thông tin Exif và chèn Timestamp cho ảnh với khả năng hoạt động ngoại tuyến 100%."
+  ],
+
+  "latest": {
+    "version": "v1.0.0",
+    "release_date": "2026-05-27",
+    "summary": "Khởi tạo dự án, tích hợp thư viện xử lý Exif piexif.min.js và tối ưu hóa PWA.",
+    "changelog": [
+      "Hỗ trợ đọc và ghi đè dữ liệu DateTime trong thẻ Meta Exif của ảnh JPEG/JPG.",
+      "Tích hợp công cụ chèn dấu thời gian (Timestamp) trực tiếp lên giao diện ảnh.",
+      "Thiết lập Service Worker và Manifest để ứng dụng chạy độc lập không cần mạng (Offline First).",
+      "Giao diện responsive hiện đại tối ưu trên cả thiết bị di động và máy tính.",
+      "Chức năng tải ảnh xuống giữ nguyên hoặc tùy biến chất lượng gốc."
+    ]
+  },
+
+  "changelog": [
+    {
+      "version": "v1.0.0",
+      "release_date": "2026-05-27",
+      "changes": [
+        "Khởi tạo phiên bản đầu tiên.",
+        "Xử lý metadata ảnh cục bộ hoàn toàn trên trình duyệt bảo mật dữ liệu.",
+        "Hỗ trợ lưu trữ ngoại tuyến qua cơ chế bộ nhớ đệm Cache Storage."
+      ]
+    }
+  ]
+}

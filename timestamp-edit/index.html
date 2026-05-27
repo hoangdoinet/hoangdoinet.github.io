@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Timestamp Edit Pro</title>
+  
+  <meta name="theme-color" content="#0f766e">
+  <link rel="manifest" href="/timestamp-edit/manifest.json">
+  
+  <script src="libs/tailwind.min.js"></script>
+  <script src="libs/lucide.min.js"></script>
+  <script src="libs/piexif.min.js"></script>
+
+  <style>
+    body { overscroll-behavior-y: contain; -webkit-tap-highlight-color: transparent; }
+    ::-webkit-scrollbar { display: none; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    
+    #previewContainer {
+        border-radius: 2.5rem;
+        overflow: hidden;
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+    
+    #previewContainer canvas {
+        max-width: 100%;
+        max-height: 55vh;
+        object-fit: contain;
+        border-radius: 0 !important;
+    }
+    .toast { transform: translate(-50%, 100px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; }
+    .toast.show { transform: translate(-50%, -20px); opacity: 1; }
+  </style>
+</head>
+<body class="font-sans bg-gray-100 text-gray-800 relative">
+
+  <div class="max-w-md mx-auto bg-gray-50 min-h-screen pb-24 relative shadow-2xl overflow-hidden">
+    
+    <div class="bg-gradient-to-b from-teal-800 to-teal-700 p-8 rounded-b-[3rem] text-white shadow-xl relative z-10 overflow-hidden">
+      <div class="absolute top-0 right-0 -mt-10 -mr-10 w-48 h-48 bg-white opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-32 h-32 bg-teal-300 opacity-10 rounded-full blur-2xl pointer-events-none"></div>
+      
+      <div class="flex justify-between items-center mb-6 relative z-10">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm shadow-inner border border-white/10">
+                <i data-lucide="image-plus" class="w-4 h-4 text-teal-50"></i>
+            </div>
+            <span class="opacity-90 text-sm font-bold tracking-wide drop-shadow-sm">Timestamp Edit Pro</span>
+        </div>
+        <div class="flex gap-2 items-center">
+            <button id="install-btn" class="hidden p-2 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 rounded-xl active:scale-95 transition-all shadow-md">
+                <i data-lucide="download-cloud" class="w-4 h-4"></i>
+            </button>
+            <div class="px-3 py-1.5 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-teal-50 text-[10px] font-black tracking-wider shadow-inner">
+                Version 1.0.0
+            </div>
+        </div>
+      </div>
+
+      <div class="relative z-10">
+          <div class="flex items-center gap-2 mb-1">
+              <span class="flex h-2.5 w-2.5 relative">
+                <span id="status-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-300 opacity-75 hidden"></span>
+                <span id="status-dot" class="relative inline-flex rounded-full h-2.5 w-2.5 bg-gray-400/80"></span>
+              </span>
+              <p class="text-teal-100 text-[10px] uppercase tracking-[0.2em] font-bold">Chi tiết ảnh</p>
+          </div>
+          
+          <div class="flex items-center justify-between gap-3">
+              <h1 id="top-status" class="text-2xl sm:text-3xl font-black mt-1 tracking-tight truncate text-white drop-shadow-md" title="Chưa chọn ảnh">Chưa chọn ảnh</h1>
+              
+              <button id="clear-img-btn" onclick="clearCurrentImage()" class="hidden shrink-0 p-2.5 bg-red-500/20 hover:bg-red-500/40 border border-red-400/30 text-red-100 rounded-2xl transition-all active:scale-90 backdrop-blur-sm" title="Xóa ảnh hiện tại">
+                  <i data-lucide="trash-2" class="w-5 h-5"></i>
+              </button>
+          </div>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-3 mt-7 relative z-10">
+        <div class="bg-white/10 p-3.5 rounded-[1.25rem] backdrop-blur-md border border-white/10 flex flex-col justify-center transition-all shadow-inner">
+          <div class="flex items-center gap-1.5 mb-1 opacity-80">
+            <i data-lucide="maximize" class="w-3.5 h-3.5 text-teal-100"></i>
+            <span class="text-[9px] text-teal-100 uppercase font-black tracking-wider">Độ phân giải</span>
+          </div>
+          <p id="info-res" class="font-black text-sm text-white tracking-wide">---</p>
+        </div>
+        <div class="bg-white/10 p-3.5 rounded-[1.25rem] backdrop-blur-md border border-white/10 flex flex-col justify-center transition-all shadow-inner">
+          <div class="flex items-center gap-1.5 mb-1 opacity-80">
+            <i data-lucide="file-type-2" class="w-3.5 h-3.5 text-teal-100"></i>
+            <span class="text-[9px] text-teal-100 uppercase font-black tracking-wider">Định dạng</span>
+          </div>
+          <p id="info-type" class="font-black text-sm text-white tracking-wide uppercase">---</p>
+        </div>
+      </div>
+    </div>
+    <div id="home-tab" class="tab-content active p-6 pb-28 relative z-0">
+      
+      <div id="timeConfigContainer" class="hidden bg-white p-4 rounded-3xl shadow-sm border border-gray-100 mb-4 space-y-3">
+        <div class="flex items-center justify-between border-b border-gray-50 pb-2">
+          <div class="flex items-center gap-2 text-teal-700">
+            <i data-lucide="calendar-clock" class="w-4 h-4"></i>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Tùy chỉnh thời gian dấu</span>
+          </div>
+          <button onclick="resetToCurrentTime()" class="text-[10px] font-bold text-teal-600 hover:text-teal-700 flex items-center gap-1 bg-teal-50 px-2 py-1 rounded-lg transition-all">
+            <i data-lucide="refresh-cw" class="w-2.5 h-2.5"></i> Hiện tại
+          </button>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-gray-50 p-2 rounded-xl flex items-center gap-2">
+            <i data-lucide="calendar" class="w-3.5 h-3.5 text-gray-400"></i>
+            <input type="date" id="custom_date" onchange="onCustomTimeChange()" class="bg-transparent border-none outline-none text-xs font-bold text-gray-700 w-full cursor-pointer">
+          </div>
+          <div class="bg-gray-50 p-2 rounded-xl flex items-center gap-2">
+            <i data-lucide="clock" class="w-3.5 h-3.5 text-gray-400"></i>
+            <input type="time" id="custom_time" step="1" onchange="onCustomTimeChange()" class="bg-transparent border-none outline-none text-xs font-bold text-gray-700 w-full cursor-pointer">
+          </div>
+        </div>
+      </div>
+
+      <div id="previewContainer" class="w-full min-h-[300px] bg-gray-200/50 flex items-center justify-center border-2 border-dashed border-gray-300 p-2 mb-6">
+        <div id="placeholderText" class="text-center p-6">
+            <div class="w-16 h-16 bg-teal-50 text-teal-600 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                <i data-lucide="image" class="w-8 h-8"></i>
+            </div>
+            <p class="text-sm font-bold text-gray-500">Chưa có dữ liệu ảnh</p>
+            <p class="text-xs text-gray-400 mt-1">Bấm nút (+) bên dưới để nạp ảnh</p>
+        </div>
+        <canvas id="mainCanvas" class="hidden"></canvas>
+      </div>
+
+      <button id="downloadBtn" disabled onclick="exportHighQualityImage()" 
+              class="w-full py-5 bg-teal-600 disabled:bg-gray-300 disabled:text-gray-400 disabled:shadow-none text-white rounded-[2rem] font-black shadow-xl shadow-teal-200 uppercase transition-all active:scale-95 flex items-center justify-center gap-3">
+        <i data-lucide="download"></i> Lưu ảnh
+      </button>
+    </div>
+
+    <div id="stats-tab" class="tab-content p-6 pb-28 relative z-0 overflow-y-auto max-h-[75vh]">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="font-black text-gray-800 text-xl tracking-tight flex items-center gap-2">
+          <i data-lucide="sliders" class="text-teal-600"></i> Cấu hình nhãn dấu
+        </h2>
+      </div>
+
+      <div class="bg-gradient-to-br from-teal-50 to-emerald-50 p-5 rounded-[2rem] border border-teal-100 shadow-sm mb-6 space-y-3">
+        <label class="text-[10px] text-teal-800 font-bold uppercase tracking-wider block">Bộ nhớ lưu cấu hình nhanh</label>
+        <div class="flex gap-2">
+          <input type="text" id="preset_name" placeholder="Đặt tên cấu hình" class="w-full p-3 bg-white rounded-xl text-xs font-bold border border-teal-200 outline-none placeholder-gray-400">
+          <button onclick="saveCurrentPreset()" class="px-4 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-black transition-all shadow-sm active:scale-95 flex items-center gap-1 whitespace-nowrap"><i data-lucide="save" class="w-3.5 h-3.5"></i> Lưu lại</button>
+        </div>
+        <div id="preset_list" class="flex flex-wrap gap-1.5 pt-1"></div>
+      </div>
+
+      <div class="bg-white p-6 rounded-[2.5rem] shadow-sm space-y-5 border border-gray-100">
+        <div>
+          <label class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-2">1. Tiêu đề / Văn bản đi kèm</label>
+          <div class="bg-gray-50 p-3 rounded-2xl flex items-center gap-2 border border-transparent focus-within:border-teal-500 transition-all">
+            <i data-lucide="type" class="w-4 h-4 text-gray-400"></i>
+            <input type="text" id="m_title" value="Timestamp Edit Pro" placeholder="Nhập tiêu đề..." oninput="triggerProcess()" class="w-full bg-transparent border-none outline-none font-bold text-gray-700 text-sm">
+          </div>
+        </div>
+
+        <div>
+          <label class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-2">2. Kiểu hiển thị thời gian</label>
+          <select id="m_format" onchange="triggerProcess()" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none font-bold text-gray-600 text-sm">
+            <option value="datetime_default" id="opt_datetime_default">27/05/2026 12:34:56</option>
+            <option value="datetime_ampm" id="opt_datetime_ampm">27/05/2026 12:34:56 PM</option>
+            <option value="datetime_ms" id="opt_datetime_ms">27/05/2026 12:34:56.125</option>
+            <option value="dateonly" id="opt_dateonly">27 / 05 / 2026</option>
+            <option value="timeonly" id="opt_timeonly">12 : 34 : 56</option>
+            <option value="custom_vn1" id="opt_custom_vn1">Thứ Tư, ngày 27 tháng 05 năm 2026</option>
+            <option value="custom_vn2" id="opt_custom_vn2">27 thg 05, 2026 - 12:34</option>
+            <option value="iso" id="opt_iso">2026-05-27 12:34:56</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-2">3. Font chữ thiết kế</label>
+          <select id="m_font" onchange="triggerProcess()" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none font-bold text-gray-600 text-sm">
+            <option value="system-ui, sans-serif">Hệ thống (Mặc định)</option>
+            <option value="Arial, Helvetica, sans-serif">Arial / Helvetica (Đơn giản)</option>
+            <option value="Georgia, serif">Georgia (Sang trọng / Có chân)</option>
+            <option value="'Times New Roman', Times, serif">Times New Roman (Cổ điển)</option>
+            <option value="ui-monospace, monospace">Monospace (Mã số / Kỹ thuật)</option>
+          </select>
+        </div>
+
+        <div>
+          <div class="flex justify-between text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2">
+            <label>4. Kích thước chữ</label>
+            <span id="sizeValue" class="text-teal-600 font-bold">3.0%</span>
+          </div>
+          <input type="range" id="m_size" min="1.5" max="7.0" step="0.5" value="3.0" 
+                 oninput="updateSizeValueLabel(this.value); triggerProcess();"
+                 class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-teal-600">
+        </div>
+
+        <div>
+          <div class="flex justify-between text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2">
+            <label>5. Khoảng cách căn lề biên độ ảnh</label>
+            <span id="marginValue" class="text-teal-600 font-bold">0.00x</span>
+          </div>
+          <input type="range" id="m_margin" min="0.0" max="1.5" step="0.1" value="0.0" 
+                 oninput="document.getElementById('marginValue').innerText = parseFloat(this.value).toFixed(2) + 'x'; triggerProcess();"
+                 class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-teal-600">
+        </div>
+
+        <div>
+          <label class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-2">6. Vị trí đóng dấu</label>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <button data-pos="tl" onclick="setPos('tl', this)" class="pos-btn p-3 bg-gray-50 hover:bg-gray-100 rounded-xl text-center font-bold text-gray-500 transition-all">Góc Trên - Trái</button>
+            <button data-pos="tr" onclick="setPos('tr', this)" class="pos-btn p-3 bg-gray-50 hover:bg-gray-100 rounded-xl text-center font-bold text-gray-500 transition-all">Góc Trên - Phải</button>
+            <button data-pos="bl" onclick="setPos('bl', this)" class="pos-btn p-3 bg-gray-50 hover:bg-gray-100 rounded-xl text-center font-bold text-gray-500 transition-all">Góc Dưới - Trái</button>
+            <button data-pos="br" onclick="setPos('br', this)" class="pos-btn p-3 bg-teal-600 text-white rounded-xl text-center font-black transition-all">Góc Dưới - Phải ✓</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 pt-2 border-b border-gray-100 pb-2">
+          <div>
+            <label class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Màu chữ chính</label>
+            <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-2xl">
+                <input type="color" id="m_color_text" value="#ffffff" oninput="triggerProcess()" class="w-8 h-8 rounded-xl border-none cursor-pointer bg-transparent">
+                <span class="text-xs font-bold text-gray-500">Màu sắc</span>
+            </div>
+          </div>
+          <div>
+            <label class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-1">Màu viền chữ</label>
+            <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-2xl">
+                <input type="color" id="m_color_stroke" value="#000000" oninput="triggerProcess()" class="w-8 h-8 rounded-xl border-none cursor-pointer bg-transparent">
+                <span class="text-xs font-bold text-gray-500">Màu viền</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2">
+            <label>Độ dày viền chữ</label>
+            <span id="strokeValue" class="text-teal-600 font-bold">0px (Không viền)</span>
+          </div>
+          <input type="range" id="m_stroke_width" min="0" max="10" step="1" value="0" 
+                 oninput="document.getElementById('strokeValue').innerText = this.value == 0 ? '0px (Không viền)' : this.value + 'px'; triggerProcess();"
+                 class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-teal-600">
+        </div>
+
+        <div class="pt-2 border-t border-gray-100">
+          <div class="flex justify-between text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">
+            <label>Nền khối mờ bao quanh</label>
+            <span id="bgAlphaValue" class="text-teal-600 font-bold">0%</span>
+          </div>
+          <div class="flex flex-col gap-2 p-2 bg-gray-50 rounded-2xl">
+              <div class="flex items-center gap-2">
+                <input type="color" id="m_color_bg" value="#000000" oninput="triggerProcess()" class="w-8 h-8 rounded-xl border-none cursor-pointer bg-transparent">
+                <span class="text-xs font-bold text-gray-500">Màu nền</span>
+              </div>
+              <input type="range" id="m_bg_alpha" min="0" max="100" step="5" value="0" 
+                     oninput="document.getElementById('bgAlphaValue').innerText = this.value + '%'; triggerProcess();"
+                     class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-teal-600">
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <button onclick="resetToDefaultConfig()" class="w-full py-3.5 font-bold text-sm text-red-600 bg-red-50 hover:bg-red-100 rounded-2xl transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm border border-red-100">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Đặt lại mặc định hệ thống
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="confirm-modal" class="hidden fixed inset-0 z-[300] bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-4 transition-all duration-300 opacity-0 pointer-events-none">
+      <div class="bg-white w-full max-w-sm rounded-[2rem] p-6 shadow-2xl transform translate-y-8 transition-transform duration-300">
+        <div class="flex flex-col items-center text-center">
+          <div class="w-14 h-14 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mb-4 shadow-inner">
+            <i data-lucide="triangle-alert" class="w-7 h-7"></i>
+          </div>
+          <h3 class="text-lg font-black text-gray-800 tracking-tight">Xóa cấu hình nhanh?</h3>
+          <p class="text-xs font-medium text-gray-400 mt-2 px-2 leading-relaxed">
+            Bạn có chắc muốn xóa cấu hình <span id="modal-preset-name" class="text-gray-700 font-bold bg-gray-100 px-1.5 py-0.5 rounded"></span> không? Thao tác này không thể hoàn tác.
+          </p>
+        </div>
+        <div class="grid grid-cols-2 gap-3 mt-6">
+          <button onclick="closeConfirmModal()" class="py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl text-xs font-bold transition-all active:scale-95">
+            Hủy thao tác
+          </button>
+          <button id="modal-confirm-btn" class="py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-black transition-all shadow-md shadow-red-100 active:scale-95">
+            Xác nhận xóa
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast fixed bottom-0 left-1/2 z-[200] bg-gray-900 text-white px-6 py-4 rounded-[2rem] shadow-2xl opacity-0 pointer-events-none transition-all w-max max-w-[90%] text-center">
+      <span id="toast-text" class="text-sm font-bold">Thành công!</span>
+    </div>
+
+    <input type="file" id="imageInput" accept="image/jpeg, image/png, image/webp" class="hidden" onchange="handleFileImport(event)">
+
+    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 backdrop-blur-xl border-t border-gray-100 px-10 py-5 flex justify-between items-center z-40">
+      <button onclick="switchTab('home')" id="nav-home" class="text-teal-600 active:scale-90 transition-all"><i data-lucide="camera"></i></button>
+      <button onclick="document.getElementById('imageInput').click()" class="bg-teal-600 p-4 rounded-2xl -mt-14 shadow-2xl shadow-teal-300 border-4 border-white text-white active:rotate-90 transition-all"><i data-lucide="plus"></i></button>
+      <button onclick="switchTab('stats')" id="nav-stats" class="text-gray-300 active:scale-90 transition-all"><i data-lucide="sliders"></i></button>
+    </nav>
+  </div>
+
+  <script>
+    let appState = {
+        currentImg: null,
+        originalExif: null,
+        currentPos: 'br',
+        originalMimeType: 'image/jpeg',
+        originalFileExtension: 'jpg',
+        imgOrientation: 1,
+        presetToDelete: null,
+        isProcessingPending: false 
+    };
+
+    // --- BIẾN QUẢN LÝ SỰ KIỆN CÀI ĐẶT PWA ---
+    let deferredPrompt = null;
+    const installBtn = document.getElementById('install-btn');
+
+    function showToast(msg, isError = false) {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-text').innerText = msg;
+      t.classList.replace(isError ? 'bg-gray-900' : 'bg-red-500', isError ? 'bg-red-500' : 'bg-gray-900');
+      t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    function switchTab(tab) {
+      const h = document.getElementById('nav-home'), s = document.getElementById('nav-stats');
+      h.classList.replace('text-teal-600', 'text-gray-300'); s.classList.replace('text-teal-600', 'text-gray-300');
+      if (tab === 'home') {
+        document.getElementById('home-tab').classList.add('active'); document.getElementById('stats-tab').classList.remove('active');
+        h.classList.replace('text-gray-300', 'text-teal-600'); triggerProcess();
+      } else if (tab === 'stats') {
+        document.getElementById('stats-tab').classList.add('active'); document.getElementById('home-tab').classList.remove('active');
+        s.classList.replace('text-gray-300', 'text-teal-600');
+        updateSelectOptionsLive(); 
+      }
+    }
+
+    function updateSizeValueLabel(val) { document.getElementById('sizeValue').innerText = val + '%'; }
+
+    function setPos(pos, element) {
+        document.querySelectorAll('.pos-btn').forEach(btn => {
+            btn.className = "pos-btn p-3 bg-gray-50 hover:bg-gray-100 rounded-xl text-center font-bold text-gray-500 transition-all";
+            btn.innerText = btn.innerText.replace(' ✓', '');
+        });
+        element.className = "pos-btn p-3 bg-teal-600 text-white rounded-xl text-center font-black transition-all";
+        element.innerText = element.innerText + " ✓"; appState.currentPos = pos; 
+        triggerProcess();
+    }
+
+    function setDefaultInputsTime() {
+        const now = new Date();
+        document.getElementById('custom_date').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        document.getElementById('custom_time').value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+    }
+    
+    function onCustomTimeChange() { 
+        triggerProcess(); 
+        updateSelectOptionsLive(); 
+    }
+    
+    function resetToCurrentTime() { 
+        setDefaultInputsTime(); 
+        triggerProcess(); 
+        updateSelectOptionsLive();
+        showToast("Đã đặt lại thời gian hiện tại!"); 
+    }
+
+    function handleFileImport(e) {
+        const file = e.target.files[0]; if (!file) return;
+        
+        appState.originalMimeType = file.type || 'image/jpeg';
+        const nameParts = file.name.split('.');
+        appState.originalFileExtension = nameParts.length > 1 ? nameParts.pop().toLowerCase() : (appState.originalMimeType.split('/')[1] || 'jpg');
+        if (appState.originalFileExtension === 'jpeg') appState.originalFileExtension = 'jpg';
+        
+        document.getElementById('top-status').innerText = file.name;
+        document.getElementById('info-type').innerText = appState.originalFileExtension.toUpperCase();
+        
+        document.getElementById('status-dot').classList.replace('bg-gray-400/80', 'bg-green-400');
+        document.getElementById('status-ping').classList.remove('hidden');
+        document.getElementById('clear-img-btn').classList.remove('hidden');
+        document.getElementById('top-status').title = file.name;
+        
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            appState.imgOrientation = 1;
+            try { 
+                if (appState.originalMimeType === 'image/jpeg' || appState.originalMimeType === 'image/jpg') {
+                    appState.originalExif = piexif.load(event.target.result);
+                    if (appState.originalExif?.["0th"]?.[piexif.ImageIFD.Orientation]) {
+                        appState.imgOrientation = parseInt(appState.originalExif["0th"][piexif.ImageIFD.Orientation]);
+                    }
+                } else { appState.originalExif = null; }
+            } catch(err) { appState.originalExif = null; }
+            
+            appState.currentImg = new Image();
+            appState.currentImg.onload = function() {
+                document.getElementById('placeholderText').classList.add('hidden'); 
+                document.getElementById('mainCanvas').classList.remove('hidden');
+                document.getElementById('downloadBtn').disabled = false;
+                
+                document.getElementById('timeConfigContainer').classList.remove('hidden');
+
+                document.fonts.ready.then(() => { triggerProcess(); switchTab('home'); showToast("Đã nạp ảnh thành công!"); });
+            };
+            appState.currentImg.src = event.target.result;
+        };
+        reader.readAsDataURL(file); e.target.value = '';
+    }
+
+    function clearCurrentImage() {
+        appState.currentImg = null;
+        appState.originalExif = null;
+        
+        document.getElementById('top-status').innerText = 'Chưa chọn ảnh';
+        document.getElementById('top-status').title = 'Chưa chọn ảnh';
+        document.getElementById('info-type').innerText = '---';
+        document.getElementById('info-res').innerText = '---';
+        
+        document.getElementById('status-dot').classList.replace('bg-green-400', 'bg-gray-400/80');
+        document.getElementById('status-ping').classList.add('hidden');
+        document.getElementById('clear-img-btn').classList.add('hidden');
+        
+        document.getElementById('timeConfigContainer').classList.add('hidden');
+
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        document.getElementById('placeholderText').classList.remove('hidden');
+        document.getElementById('mainCanvas').classList.add('hidden');
+        document.getElementById('downloadBtn').disabled = true;
+        
+        showToast("Đã xóa ảnh, sẵn sàng cấu hình mới!");
+        lucide.createIcons();
+    }
+
+    function formatTimeCore(formatType, year, month, day, hours, minutes, seconds) {
+        const targetDate = new Date(year, month - 1, day);
+        const daysOfWeek = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+        const h12 = parseInt(hours) % 12 || 12; 
+        const ampm = parseInt(hours) >= 12 ? "PM" : "AM";
+
+        switch (formatType) {
+            case 'datetime_ampm': return `${day}/${month}/${year} ${String(h12).padStart(2,'0')}:${minutes}:${seconds} ${ampm}`;
+            case 'datetime_ms': return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}.125`;
+            case 'dateonly': return `${day}/${month}/${year}`;
+            case 'timeonly': return `${hours}:${minutes}:${seconds}`;
+            case 'custom_vn1': return `${daysOfWeek[targetDate.getDay() ]}, ngày ${day} tháng ${month} năm ${year}`;
+            case 'custom_vn2': return `${day} thg ${month}, ${year} - ${hours}:${minutes}`;
+            case 'iso': return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            case 'datetime_default':
+            default: return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+        }
+    }
+
+    function updateSelectOptionsLive() {
+        const dateVal = document.getElementById('custom_date').value;
+        const timeVal = document.getElementById('custom_time').value;
+        if (!dateVal || !timeVal) return;
+
+        const [year, month, day] = dateVal.split('-'); 
+        const timeParts = timeVal.split(':');
+        const hours = timeParts[0], minutes = timeParts[1], seconds = timeParts[2] || "00";
+
+        const formats = ['datetime_default', 'datetime_ampm', 'datetime_ms', 'dateonly', 'timeonly', 'custom_vn1', 'custom_vn2', 'iso'];
+        formats.forEach(f => {
+            const el = document.getElementById(`opt_${f}`);
+            if (el) {
+                el.innerText = formatTimeCore(f, year, month, day, hours, minutes, seconds);
+            }
+        });
+    }
+
+    function getFormattedTimestamp() {
+        const dateVal = document.getElementById('custom_date').value;
+        const timeVal = document.getElementById('custom_time').value;
+        if (!dateVal || !timeVal) return "";
+        const [year, month, day] = dateVal.split('-'); 
+        const timeParts = timeVal.split(':');
+        const hours = timeParts[0], minutes = timeParts[1], seconds = timeParts[2] || "00";
+        
+        return formatTimeCore(document.getElementById('m_format').value, year, month, day, hours, minutes, seconds);
+    }
+
+    function triggerProcess() {
+        saveAutoConfig();
+        if (!appState.isProcessingPending) {
+            appState.isProcessingPending = true;
+            requestAnimationFrame(() => {
+                processImage();
+                appState.isProcessingPending = false;
+            });
+        }
+    }
+
+    function processImage() {
+        if (!appState.currentImg) return;
+        const canvas = document.getElementById('mainCanvas'); const ctx = canvas.getContext('2d');
+        
+        const rawW = appState.currentImg.naturalWidth;
+        const rawH = appState.currentImg.naturalHeight;
+
+        if (appState.imgOrientation >= 5 && appState.imgOrientation <= 8) {
+            canvas.width = rawH; canvas.height = rawW;
+        } else {
+            canvas.width = rawW; canvas.height = rawH;
+        }
+
+        document.getElementById('info-res').innerText = `${canvas.width} x ${canvas.height} px`;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.save();
+        switch (appState.imgOrientation) {
+            case 2: ctx.translate(canvas.width, 0); ctx.scale(-1, 1); break;
+            case 3: ctx.translate(canvas.width, canvas.height); ctx.rotate(Math.PI); break;
+            case 4: ctx.translate(0, canvas.height); ctx.scale(1, -1); break;
+            case 5: ctx.rotate(0.5 * Math.PI); ctx.scale(1, -1); break;
+            case 6: ctx.translate(canvas.width, 0); ctx.rotate(0.5 * Math.PI); break;
+            case 7: ctx.rotate(0.5 * Math.PI); ctx.translate(canvas.width, -canvas.height); ctx.scale(-1, 1); break;
+            case 8: ctx.translate(0, canvas.height); ctx.rotate(-0.5 * Math.PI); break;
+            default: break;
+        }
+        ctx.drawImage(appState.currentImg, 0, 0, rawW, rawH);
+        ctx.restore();
+
+        const scale = parseFloat(document.getElementById('m_size').value) / 100;
+        const fontSizeCommon = Math.round(canvas.width * scale); 
+        const fontName = document.getElementById('m_font').value;
+
+        const timeTxt = getFormattedTimestamp();
+        const titleTxt = document.getElementById('m_title').value.trim();
+
+        ctx.font = `bold ${fontSizeCommon}px ${fontName}`;
+        ctx.textBaseline = 'top';
+
+        const strokeInputVal = parseInt(document.getElementById('m_stroke_width').value);
+        const strokeWidthActual = strokeInputVal > 0 ? Math.max(1, Math.round(fontSizeCommon * (strokeInputVal / 40))) : 0;
+
+        const timeWidth = ctx.measureText(timeTxt).width;
+        let titleWidth = titleTxt ? ctx.measureText(titleTxt).width : 0;
+
+        const maxTxtWidth = Math.max(timeWidth, titleWidth);
+        const lineSpacing = fontSizeCommon * 0.25; 
+        const totalTxtHeight = titleTxt ? (fontSizeCommon * 2 + lineSpacing) : fontSizeCommon;
+
+        const padX = fontSizeCommon * 0.4 + (strokeWidthActual / 2); 
+        const padY = fontSizeCommon * 0.25 + (strokeWidthActual / 2);
+        const marginMultiplier = parseFloat(document.getElementById('m_margin').value);
+        const margin = fontSizeCommon * marginMultiplier; 
+        
+        let bgX = 0, bgY = 0;
+        switch (appState.currentPos) {
+            case 'tl': bgX = margin; bgY = margin; break;
+            case 'tr': bgX = canvas.width - maxTxtWidth - margin - (padX * 2); bgY = margin; break;
+            case 'bl': bgX = margin; bgY = canvas.height - totalTxtHeight - margin - (padY * 2); break;
+            case 'br':
+            default: bgX = canvas.width - maxTxtWidth - margin - (padX * 2); bgY = canvas.height - totalTxtHeight - margin - (padY * 2); break;
+        }
+
+        const hex = document.getElementById('m_color_bg').value;
+        const alpha = parseFloat(document.getElementById('m_bg_alpha').value) / 100;
+        if (alpha > 0) {
+            const r = parseInt(hex.slice(1,3), 16), g = parseInt(hex.slice(3,5), 16), b = parseInt(hex.slice(5,7), 16);
+            ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            ctx.fillRect(bgX, bgY, maxTxtWidth + (padX * 2), totalTxtHeight + (padY * 2));
+        }
+
+        ctx.lineJoin = "round";
+        ctx.miterLimit = 2;
+
+        let timeX = (appState.currentPos === 'tr' || appState.currentPos === 'br') ? bgX + padX + (maxTxtWidth - timeWidth) : bgX + padX;
+        
+        if (strokeWidthActual > 0) {
+            ctx.strokeStyle = document.getElementById('m_color_stroke').value;
+            ctx.lineWidth = strokeWidthActual;
+            ctx.strokeText(timeTxt, timeX, bgY + padY);
+        }
+        ctx.fillStyle = document.getElementById('m_color_text').value;
+        ctx.fillText(timeTxt, timeX, bgY + padY);
+
+        if (titleTxt) {
+            let titleX = (appState.currentPos === 'tr' || appState.currentPos === 'br') ? bgX + padX + (maxTxtWidth - titleWidth) : bgX + padX;
+            if (strokeWidthActual > 0) {
+                ctx.strokeText(titleTxt, titleX, bgY + padY + fontSizeCommon + lineSpacing);
+            }
+            ctx.fillText(titleTxt, titleX, bgY + padY + fontSizeCommon + lineSpacing);
+        }
+    }
+
+    function saveAutoConfig() {
+        const config = {
+            title: document.getElementById('m_title').value,
+            format: document.getElementById('m_format').value,
+            font: document.getElementById('m_font').value,
+            size: document.getElementById('m_size').value,
+            margin: document.getElementById('m_margin').value,
+            pos: appState.currentPos,
+            textColor: document.getElementById('m_color_text').value,
+            strokeColor: document.getElementById('m_color_stroke').value,
+            strokeWidth: document.getElementById('m_stroke_width').value,
+            bgColor: document.getElementById('m_color_bg').value,
+            bgAlpha: document.getElementById('m_bg_alpha').value
+        };
+        localStorage.setItem('ts_last_config', JSON.stringify(config));
+    }
+
+    function resetToDefaultConfig() {
+        localStorage.removeItem('ts_last_config');
+        const defaultConfig = {
+            title: 'Timestamp Edit Pro', format: 'datetime_default', font: "system-ui, sans-serif",
+            size: '3.0', margin: '0.0', pos: 'br',
+            textColor: '#ffffff', strokeColor: '#000000', strokeWidth: '0', 
+            bgColor: '#000000', bgAlpha: '0'
+        };
+        loadPreset(defaultConfig);
+        triggerProcess();
+        updateSelectOptionsLive();
+        showToast("Đã đặt lại cấu hình mặc định!");
+    }
+
+    function saveCurrentPreset() {
+        const name = document.getElementById('preset_name').value.trim();
+        if (!name) { showToast("Vui lòng nhập tên để lưu cấu hình!", true); return; }
+        const config = {
+            title: document.getElementById('m_title').value, format: document.getElementById('m_format').value,
+            font: document.getElementById('m_font').value, size: document.getElementById('m_size').value,
+            margin: document.getElementById('m_margin').value,
+            pos: appState.currentPos, textColor: document.getElementById('m_color_text').value,
+            strokeColor: document.getElementById('m_color_stroke').value, strokeWidth: document.getElementById('m_stroke_width').value,
+            bgColor: document.getElementById('m_color_bg').value, bgAlpha: document.getElementById('m_bg_alpha').value
+        };
+        let presets = JSON.parse(localStorage.getItem('ts_presets') || '{}');
+        presets[name] = config; localStorage.setItem('ts_presets', JSON.stringify(presets));
+        document.getElementById('preset_name').value = ''; renderPresets();
+        showToast(`Đã lưu cấu hình "${name}"!`);
+    }
+
+    function renderPresets() {
+        const listDiv = document.getElementById('preset_list'); listDiv.innerHTML = '';
+        const presets = JSON.parse(localStorage.getItem('ts_presets') || '{}');
+        if (Object.keys(presets).length === 0) {
+            listDiv.innerHTML = '<span class="text-[10px] text-gray-400 italic">Chưa có cấu hình nào được lưu.</span>'; return;
+        }
+        Object.keys(presets).forEach(name => {
+            const btn = document.createElement('button');
+            btn.className = "px-2.5 py-1 bg-white hover:bg-teal-100 border border-teal-200 text-teal-800 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all active:scale-95";
+            btn.innerHTML = `<span>${name}</span><span onclick="deletePreset(event, '${name}')" class="text-red-400 hover:text-red-600 font-black ml-1 text-xs px-1">×</span>`;
+            btn.addEventListener('click', (e) => {
+                if(e.target.tagName === 'SPAN' && e.target.innerText === '×') return; 
+                loadPreset(presets[name]);
+                triggerProcess();
+                updateSelectOptionsLive();
+                showToast(`Đã tải cấu hình "${name}"!`);
+            });
+            listDiv.appendChild(btn);
+        });
+    }
+
+    function exportHighQualityImage() {
+        if (!appState.currentImg) return;
+        const canvas = document.getElementById('mainCanvas');
+        let exportMime = appState.originalMimeType;
+        
+        let dataUrl = canvas.toDataURL(exportMime, 0.90);
+
+        if (appState.originalExif && (exportMime === 'image/jpeg' || exportMime === 'image/jpg')) {
+            try { 
+                appState.originalExif["0th"][piexif.ImageIFD.Orientation] = 1; 
+                const exifBytes = piexif.dump(appState.originalExif);
+                dataUrl = piexif.insert(exifBytes, dataUrl); 
+            } catch (e) { console.warn("Lỗi sao chép thông tin ExifMetadata:", e); }
+        }
+
+        try {
+            const byteString = atob(dataUrl.split(',')[1]); 
+            const ab = new ArrayBuffer(byteString.length); const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
+            
+            const link = document.createElement('a'); 
+            const url = URL.createObjectURL(new Blob([ab], {type: exportMime}));
+            link.href = url;
+            link.download = `TS_${Date.now()}.${appState.originalFileExtension}`; 
+            link.click();
+            
+            // Giải phóng bộ nhớ Blob URL ngay sau khi kích hoạt tải xuống
+            setTimeout(() => URL.revokeObjectURL(url), 100);
+            
+            showToast(`Xuất file thành công!`);
+        } catch (err) {
+            showToast("Gặp lỗi trong quá trình đóng gói ảnh tải xuống.", true);
+        }
+    }
+
+    function loadPreset(config) {
+        document.getElementById('m_title').value = config.title !== undefined ? config.title : 'Timestamp Edit Pro'; 
+        document.getElementById('m_format').value = config.format || 'datetime_default';
+        document.getElementById('m_font').value = config.font || "system-ui, sans-serif"; 
+        document.getElementById('m_size').value = config.size || '3.0';
+        updateSizeValueLabel(config.size || '3.0'); 
+        
+        const marginVal = config.margin !== undefined ? config.margin : '0.0';
+        document.getElementById('m_margin').value = marginVal;
+        document.getElementById('marginValue').innerText = parseFloat(marginVal).toFixed(2) + 'x';
+
+        document.getElementById('m_color_text').value = config.textColor || '#ffffff';
+        
+        document.getElementById('m_color_stroke').value = config.strokeColor || '#000000';
+        const strokeW = config.strokeWidth !== undefined ? config.strokeWidth : '0';
+        document.getElementById('m_stroke_width').value = strokeW;
+        document.getElementById('strokeValue').innerText = strokeW == 0 ? '0px (Không viền)' : strokeW + 'px';
+
+        document.getElementById('m_color_bg').value = config.bgColor || '#000000'; 
+        document.getElementById('m_bg_alpha').value = config.bgAlpha || '0';
+        document.getElementById('bgAlphaValue').innerText = (config.bgAlpha || '0') + '%';
+        
+        appState.currentPos = config.pos || 'br';
+        document.querySelectorAll('.pos-btn').forEach(btn => { 
+            if(btn.getAttribute('data-pos') === appState.currentPos) {
+                btn.className = "pos-btn p-3 bg-teal-600 text-white rounded-xl text-center font-black transition-all";
+                btn.innerText = btn.innerText.includes('✓') ? btn.innerText : btn.innerText + " ✓";
+            } else {
+                btn.className = "pos-btn p-3 bg-gray-50 hover:bg-gray-100 rounded-xl text-center font-bold text-gray-500 transition-all";
+                btn.innerText = btn.innerText.replace(' ✓', '');
+            }
+        });
+    }
+
+    function deletePreset(event, name) {
+        event.stopPropagation();
+        appState.presetToDelete = name;
+        
+        document.getElementById('modal-preset-name').innerText = name;
+        
+        const confirmBtn = document.getElementById('modal-confirm-btn');
+        confirmBtn.onclick = function() {
+            let presets = JSON.parse(localStorage.getItem('ts_presets') || '{}');
+            delete presets[appState.presetToDelete];
+            localStorage.setItem('ts_presets', JSON.stringify(presets));
+            renderPresets();
+            closeConfirmModal();
+            showToast("Đã xóa cấu hình!");
+        };
+
+        const modal = document.getElementById('confirm-modal');
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; 
+        setTimeout(() => {
+          modal.classList.remove('opacity-0', 'pointer-events-none');
+          modal.querySelector('div').classList.remove('translate-y-8');
+        }, 10);
+    }
+
+    function closeConfirmModal() {
+        const modal = document.getElementById('confirm-modal');
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        modal.querySelector('div').classList.add('translate-y-8');
+        document.body.style.overflow = ''; 
+        setTimeout(() => {
+          modal.classList.add('hidden');
+          appState.presetToDelete = null;
+        }, 300);
+    }
+
+    // --- LOGIC XỬ LÝ SỰ KIỆN CÀI ĐẶT PWA TỰ ĐỘNG ẨN/HIỆN ---
+    // 1. Kiểm tra xem ứng dụng đã cài đặt và đang chạy ở chế độ App Standalone chưa
+    function isAppStandalone() {
+        return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    }
+
+    // 2. Lắng nghe sự kiện hệ thống cung cấp Prompt cài đặt
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Ngăn chặn trình duyệt tự kích hoạt banner mặc định của nó
+        e.preventDefault();
+        
+        // Nếu app đang được bật sẵn trong môi trường Standalone thì tuyệt đối ẩn nút
+        if (isAppStandalone()) {
+            if (installBtn) installBtn.classList.add('hidden');
+            return;
+        }
+
+        // Lưu trữ sự kiện để kích hoạt sau khi click chuột
+        deferredPrompt = e;
+        
+        // Hiển thị nút cài đặt trên thanh Topbar
+        if (installBtn) {
+            installBtn.classList.remove('hidden');
+        }
+    });
+
+    // 3. Xử lý logic khi người dùng nhấp nút Cài đặt
+    if (installBtn) {
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            
+            // Hiện bảng hỏi cài đặt hệ thống
+            deferredPrompt.prompt();
+            
+            // Đợi phản hồi lựa chọn từ người dùng
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`[PWA Install] Lựa chọn của người dùng: ${outcome}`);
+            
+            // Hủy biến lưu vì sự kiện chỉ dùng được duy nhất 1 lần
+            deferredPrompt = null;
+            
+            // Ẩn nút ngay lập tức sau khi xử lý xong prompt
+            installBtn.classList.add('hidden');
+        });
+    }
+
+    // 4. Lắng nghe sự kiện cài đặt thành công từ hệ thống
+    window.addEventListener('appinstalled', (event) => {
+        console.log('[PWA Install] 🎉 Ứng dụng đã được cài đặt thành công!');
+        if (installBtn) {
+            installBtn.classList.add('hidden');
+        }
+        deferredPrompt = null;
+        showToast("Ứng dụng đã cài đặt và tạo icon ngoài màn hình chính!");
+    });
+
+    (function init() { 
+        setDefaultInputsTime(); 
+        renderPresets(); 
+        
+        // Ẩn nút cài đặt nếu đang chạy trực tiếp từ App Standalone đã cài
+        if (isAppStandalone() && installBtn) {
+            installBtn.classList.add('hidden');
+        }
+
+        const lastConfig = localStorage.getItem('ts_last_config');
+        if (lastConfig) {
+            try { loadPreset(JSON.parse(lastConfig)); } catch (e) { console.log("Chưa có cấu hình cũ."); }
+        } else {
+            loadPreset({
+                title: 'Timestamp Edit Pro', format: 'datetime_default', font: "system-ui, sans-serif",
+                size: '3.0', margin: '0.0', pos: 'br',
+                textColor: '#ffffff', strokeColor: '#000000', strokeWidth: '0', 
+                bgColor: '#000000', bgAlpha: '0'
+            });
+        }
+        updateSelectOptionsLive(); 
+        lucide.createIcons(); 
+    })();
+
+    // 5. Đăng ký Service Worker để ứng dụng chạy offline
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/timestamp-edit/sw.js')
+          .then(reg => console.log('Service Worker đã đăng ký thành công!', reg))
+          .catch(err => console.error('Lỗi đăng ký Service Worker:', err));
+      });
+    }
+  </script>
+</body>
+</html>
