@@ -1,4 +1,4 @@
-const CACHE_NAME = 'voi-pro-v3';
+const CACHE_NAME = 'voi-pro-v4';
 
 // Tối ưu danh sách tài nguyên cần lưu trữ
 const ASSETS = [
