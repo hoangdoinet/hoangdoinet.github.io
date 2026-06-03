@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Quản lý Vôi QT</title>
   
-  <meta name="theme-color" content="#0f766e">
+  <meta name="theme-color" content="#0d9488">
   <link rel="manifest" href="/quan-ly-voi/manifest.json">
   
   <script src="libs/tailwind.min.js"></script>
@@ -27,36 +27,67 @@
 
   <div class="max-w-md mx-auto bg-gray-50 min-h-screen pb-24 relative shadow-2xl overflow-hidden">
     
-    <div class="bg-teal-700 p-8 rounded-b-[3rem] text-white shadow-lg relative z-10">
-      <div class="flex justify-between items-center mb-6">
-        <span class="opacity-80 text-sm font-medium">RF Quảng Tân</span>
-        <div class="flex gap-2">
-            <button id="install-btn" class="hidden p-2 bg-yellow-500 text-white rounded-xl active:scale-90 transition-all shadow-lg">
-                <i data-lucide="download-cloud" class="w-5 h-5"></i>
-            </button>
-            <button onclick="exportJSON()" class="p-2 bg-white/10 rounded-xl active:scale-90 transition-all" title="Sao lưu JSON"><i data-lucide="save" class="w-5 h-5"></i></button>
-            <button onclick="document.getElementById('fileInput').click()" class="p-2 bg-white/10 rounded-xl active:scale-90 transition-all" title="Khôi phục"><i data-lucide="folder-open" class="w-5 h-5"></i></button>
-        </div>
-      </div>
-      <p class="text-teal-100 text-[10px] uppercase tracking-[0.2em] font-bold">Tổng tồn kho hiện tại</p>
-      <h1 id="total-balance" class="text-4xl font-black mt-2 tracking-tight">0 Bao</h1>
+    <div class="relative z-10 px-6 pt-5 pb-6 overflow-hidden text-white bg-gradient-to-br from-teal-500 via-teal-600 to-teal-800 rounded-b-[2.5rem] shadow-2xl shadow-teal-700/30">
       
-      <div class="grid grid-cols-3 gap-2 mt-8">
-        <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md border border-white/10 text-center">
-          <span class="text-[9px] text-teal-100 uppercase font-bold block mb-1">Cổng Nhập</span>
-          <p id="gate-nhap" class="font-bold text-sm">0</p>
+      <div class="absolute top-0 right-0 w-40 h-40 transition-transform duration-700 rounded-full pointer-events-none bg-white/10 blur-3xl -mr-10 -mt-10"></div>
+      <div class="absolute bottom-0 left-0 w-32 h-32 rounded-full pointer-events-none bg-teal-900/30 blur-2xl -ml-10 -mb-10"></div>
+      
+      <div class="relative flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2.5">
+          <div class="flex items-center justify-center w-8 h-8 rounded-xl bg-white/20 backdrop-blur-md border border-white/20 shadow-inner">
+             <i data-lucide="boxes" class="w-4 h-4 text-white"></i>
+          </div>
+          <span class="text-sm font-bold tracking-wide">RF Quảng Tân</span>
         </div>
-        <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md border border-white/10 text-center">
-          <span class="text-[9px] text-teal-100 uppercase font-bold block mb-1">Cổng Xuất</span>
-          <p id="gate-xuat" class="font-bold text-sm">0</p>
-        </div>
-        <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md border border-white/10 text-center">
-          <span class="text-[9px] text-teal-100 uppercase font-bold block mb-1">Cổng Chính</span>
-          <p id="gate-chinh" class="font-bold text-sm">0</p>
+        <div class="flex gap-1.5">
+            <button id="install-btn" class="hidden p-2 bg-yellow-400 text-teal-900 rounded-xl active:scale-95 transition-all shadow-lg">
+                <i data-lucide="download-cloud" class="w-3.5 h-3.5"></i>
+            </button>
+            <button onclick="exportJSON()" class="p-2 bg-white/10 hover:bg-white/20 rounded-xl backdrop-blur-md border border-white/10 active:scale-95 transition-all" title="Sao lưu JSON"><i data-lucide="save" class="w-3.5 h-3.5"></i></button>
+            <button onclick="document.getElementById('fileInput').click()" class="p-2 bg-white/10 hover:bg-white/20 rounded-xl backdrop-blur-md border border-white/10 active:scale-95 transition-all" title="Khôi phục"><i data-lucide="folder-open" class="w-3.5 h-3.5"></i></button>
         </div>
       </div>
-    </div>
+      
+      <div class="relative w-3/4 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent mx-auto mb-4"></div>
+      
+      <div class="relative flex flex-col items-center mb-4 text-center">
+        <p class="text-teal-100 text-[9px] uppercase tracking-[0.2em] font-bold mb-0.5 opacity-85">Tổng tồn kho hiện tại</p>
+        <div class="flex items-baseline gap-1">
+           <h1 id="total-balance" class="text-4xl font-black tracking-tighter drop-shadow-md">0</h1>
+           <span class="text-sm font-bold text-teal-100/80">Bao</span>
+        </div>
+      </div>
+      
+      <div class="relative grid grid-cols-3 gap-2.5">
+        <div class="flex flex-col items-center p-2.5 transition-all border shadow-md bg-white/10 rounded-xl backdrop-blur-md border-white/20">
+          <div class="flex items-center justify-center w-6 h-6 mb-1.5 rounded-full bg-white/20 shadow-inner">
+            <i data-lucide="package-plus" class="w-3 h-3 text-teal-50"></i>
+          </div>
+          <span class="text-[8px] text-teal-100 uppercase font-bold text-center w-full truncate mb-0.5">Cổng Nhập</span>
+          <p id="gate-nhap" class="text-sm font-bold tracking-tight">0</p>
+        </div>
+        <div class="flex flex-col items-center p-2.5 transition-all border shadow-md bg-white/10 rounded-xl backdrop-blur-md border-white/20">
+          <div class="flex items-center justify-center w-6 h-6 mb-1.5 rounded-full bg-white/20 shadow-inner">
+            <i data-lucide="truck" class="w-3 h-3 text-teal-50"></i>
+          </div>
+          <span class="text-[8px] text-teal-100 uppercase font-bold text-center w-full truncate mb-0.5">Cổng Xuất</span>
+          <p id="gate-xuat" class="text-sm font-bold tracking-tight">0</p>
+        </div>
+        <div class="flex flex-col items-center p-2.5 transition-all border shadow-md bg-white/10 rounded-xl backdrop-blur-md border-white/20">
+          <div class="flex items-center justify-center w-6 h-6 mb-1.5 rounded-full bg-white/20 shadow-inner">
+            <i data-lucide="building" class="w-3 h-3 text-teal-50"></i>
+          </div>
+          <span class="text-[8px] text-teal-100 uppercase font-bold text-center w-full truncate mb-0.5">Cổng Chính</span>
+          <p id="gate-chinh" class="text-sm font-bold tracking-tight">0</p>
+        </div>
+      </div>
 
+      <div class="relative flex items-center justify-center gap-1 mt-3.5 text-[10px] font-bold text-teal-100/80 bg-white/5 py-1 px-3 rounded-full w-fit mx-auto border border-white/5 backdrop-blur-sm shadow-inner">
+        <i data-lucide="clock" class="w-3 h-3 text-teal-200"></i>
+        <span id="live-clock">Hôm nay --/--/---- - --:--:--</span>
+      </div>
+
+    </div>
     <div id="home-tab" class="tab-content active p-6 relative z-0">
       <div class="relative mb-6">
         <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
@@ -253,7 +284,28 @@
         return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     }
 
-    // --- LOGIC TIME-TRAVEL & RECALCULATION (ĐÃ NÂNG CẤP SỐ NGUYÊN) ---
+    // --- LOGIC ĐỒNG HỒ CHẠY THỰC ---
+    function initLiveClock() {
+      const clockEl = document.getElementById('live-clock');
+      if (!clockEl) return;
+      
+      const update = () => {
+        const now = new Date();
+        const d = String(now.getDate()).padStart(2, '0');
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const y = now.getFullYear();
+        const h = String(now.getHours()).padStart(2, '0');
+        const min = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+        
+        clockEl.innerText = `Hôm nay ${d}/${m}/${y} - ${h}:${min}:${s}`;
+      };
+      
+      update();
+      setInterval(update, 1000);
+    }
+
+    // --- LOGIC TIME-TRAVEL & RECALCULATION ---
     function checkTimelineValidity(historyArray) {
         const sorted = [...historyArray].sort((a, b) => {
             const timeA = toDateObj(a.time).getTime();
@@ -287,7 +339,8 @@
       }
 
       const total = db.inv.cong_nhap + db.inv.cong_xuat + db.inv.cong_chinh;
-      document.getElementById('total-balance').innerText = `${fmtNum(total)} Bao`;
+      
+      document.getElementById('total-balance').innerText = fmtNum(total);
       document.getElementById('gate-nhap').innerText = fmtNum(db.inv.cong_nhap);
       document.getElementById('gate-xuat').innerText = fmtNum(db.inv.cong_xuat);
       document.getElementById('gate-chinh').innerText = fmtNum(db.inv.cong_chinh);
@@ -425,7 +478,6 @@
       document.getElementById('btn-in').className = !isOut ? "flex-1 py-3 rounded-xl font-bold text-sm bg-white shadow-sm text-green-600" : "flex-1 py-3 text-gray-400 font-bold text-sm";
     }
 
-    // XỬ LÝ LƯU (CẬP NHẬT CHẶN HOÀN TOÀN SỐ LẺ 1.5 VÀ 1,5)
     document.getElementById('transaction-form').onsubmit = function(e) {
       e.preventDefault();
       
@@ -434,13 +486,11 @@
       const note = document.getElementById('m_note').value.trim();
       const gate = document.getElementById('m_gate').value;
       
-      // Chốt chặn 1: Phát hiện dấu chấm hoặc dấu phẩy trong chuỗi thô người dùng nhập
       if (qtyRaw.includes('.') || qtyRaw.includes(',')) {
         document.getElementById('m_qty').focus();
         return showToast("Số lượng phải là số nguyên, không được nhập số lẻ!", true);
       }
 
-      // Chốt chặn 2: Ép kiểu sang số nguyên khi chuỗi đã được xác thực sạch sẽ
       const qty = parseInt(qtyRaw, 10);
       
       let timeVal = document.getElementById('m_time').value.replace('T', ' ');
@@ -479,7 +529,6 @@
     const openDeleteConfirm = () => { closeActionModal(); setTimeout(() => document.getElementById('delete-modal').classList.add('active'), 300); };
     const closeDeleteModal = () => document.getElementById('delete-modal').classList.remove('active');
 
-    // XỬ LÝ XÓA
     document.getElementById('confirm-delete-btn').onclick = () => {
       let mockHistory = db.history.filter(t => t.id !== selectedId);
       const timelineCheck = checkTimelineValidity(mockHistory);
@@ -516,7 +565,6 @@
       a.download = `voi-backup-${new Date().toISOString().slice(0,10)}.json`; a.click();
     }
 
-    // DEEP VALIDATION CHO IMPORT JSON
     function importJSON(ev) {
       const file = ev.target.files[0];
       if (!file) return;
@@ -563,6 +611,7 @@
       const n = new Date();
       document.getElementById('stats-month').value = `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;
       renderApp();
+      initLiveClock();
       lucide.createIcons();
     })();
   </script>
