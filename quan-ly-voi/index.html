@@ -52,6 +52,10 @@
           <span class="text-sm font-bold tracking-wide">RF Quảng Tân</span>
         </div>
         <div class="flex gap-1.5 items-center">
+            <button id="btn-admin" onclick="window.switchTab('admin')" class="hidden p-2 bg-purple-500 hover:bg-purple-600 rounded-xl backdrop-blur-md border border-white/10 active:scale-95 transition-all text-white" title="Trang Quản trị">
+                <i data-lucide="shield" class="w-3.5 h-3.5"></i>
+            </button>
+
             <button id="btn-install" class="hidden p-2 bg-yellow-400 hover:bg-yellow-500 text-teal-900 rounded-xl backdrop-blur-md border border-white/10 active:scale-95 transition-all shadow-lg animate-bounce" title="Cài đặt Ứng dụng">
                 <i data-lucide="download" class="w-3.5 h-3.5"></i>
             </button>
@@ -163,6 +167,36 @@
       </div>
     </div>
 
+    <div id="admin-tab" class="tab-content p-6 relative z-0">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="font-black text-gray-800 text-xl tracking-tight">Trang Quản Trị</h2>
+        <button onclick="window.loadAdminData()" class="p-2 bg-purple-100 text-purple-600 rounded-xl active:scale-95"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
+      </div>
+
+      <div class="bg-white p-5 rounded-[2rem] shadow-sm mb-6 border border-purple-50">
+        <h3 class="font-bold text-gray-800 text-sm mb-4 flex items-center gap-2"><i data-lucide="user-plus" class="w-4 h-4 text-purple-500"></i> Cấp quyền Tài khoản mới</h3>
+        <input type="email" id="admin-email" placeholder="Nhập Email (vd: user@gmail.com)" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none text-sm font-medium mb-3">
+        
+        <div class="grid grid-cols-2 gap-3 mb-4 text-sm font-bold text-gray-600">
+          <label class="flex items-center gap-2 bg-gray-50 p-3 rounded-xl"><input type="checkbox" id="perm-view" class="w-4 h-4 text-teal-600 rounded"> Xem dữ liệu</label>
+          <label class="flex items-center gap-2 bg-gray-50 p-3 rounded-xl"><input type="checkbox" id="perm-write" class="w-4 h-4 text-teal-600 rounded"> Ghi / Sửa</label>
+          <label class="flex items-center gap-2 bg-gray-50 p-3 rounded-xl"><input type="checkbox" id="perm-delete" class="w-4 h-4 text-orange-500 rounded"> Xóa</label>
+          <label class="flex items-center gap-2 bg-purple-50 p-3 rounded-xl text-purple-700"><input type="checkbox" id="perm-admin" class="w-4 h-4 text-purple-600 rounded"> Admin</label>
+        </div>
+        <button onclick="window.saveUserPermission()" class="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl font-black transition-all active:scale-95 shadow-lg shadow-purple-200">CẬP NHẬT QUYỀN</button>
+      </div>
+
+      <div class="mb-8">
+        <h3 class="font-bold text-gray-800 text-sm mb-3 ml-2 flex items-center gap-2"><i data-lucide="users" class="w-4 h-4 text-gray-500"></i> Danh sách Tài khoản</h3>
+        <div id="admin-users-list" class="space-y-3"></div>
+      </div>
+
+      <div>
+        <h3 class="font-bold text-gray-800 text-sm mb-3 ml-2 flex items-center gap-2"><i data-lucide="activity" class="w-4 h-4 text-gray-500"></i> Nhật ký hoạt động (Audit Logs)</h3>
+        <div id="admin-logs-list" class="space-y-3"></div>
+      </div>
+    </div>
+
     <div id="form-tab" class="hidden fixed inset-0 z-[60] bg-white p-6 overflow-y-auto max-w-md mx-auto">
        <div class="flex justify-between items-center mb-8">
           <h2 id="form-title" class="text-2xl font-black text-gray-800">Ghi nhận mới</h2>
@@ -228,6 +262,7 @@
         <button onclick="window.closeErrorModal()" class="w-full py-4 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-2xl font-black transition-all active:scale-95">ĐÃ HIỂU</button>
       </div>
     </div>
+    
     <div id="toast" class="toast fixed bottom-0 left-1/2 z-[500] bg-gray-900 text-white px-6 py-4 rounded-[2rem] shadow-2xl opacity-0 pointer-events-none transition-all w-max max-w-[90%] text-center">
       <span id="toast-text" class="text-sm font-bold">Thành công!</span>
     </div>
@@ -242,7 +277,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, doc, getDoc, setDoc, deleteDoc, onSnapshot, query, orderBy, limit, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, doc, getDoc, setDoc, deleteDoc, onSnapshot, query, orderBy, limit, writeBatch, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyACLwflykRg3WiL7xyPbcQ53EiV-Mp4aUA",
@@ -264,7 +299,7 @@
     });
 
     window.db = { inv: { cong_nhap: 0, cong_xuat: 0, cong_chinh: 0 }, history: [] };
-    window.userPermissions = { canView: false, canWrite: false, canDelete: false };
+    window.userPermissions = { canView: false, canWrite: false, canDelete: false, isAdmin: false };
     window.currentType = 'out';
     window.selectedId = null;
     
@@ -292,7 +327,7 @@
           if (error.code === 'auth/user-disabled') {
               window.showErrorModal("Tài khoản bị khóa", "Tài khoản Google của bạn đã bị vô hiệu hóa quyền truy cập trên hệ thống.");
           } else {
-              showToast("Lỗi đăng nhập: " + error.message, true);
+              window.showToast("Lỗi đăng nhập: " + error.message, true);
           }
       });
     });
@@ -314,6 +349,16 @@
               if (window.userPermissions.canView) {
                 loginOverlay.classList.add('opacity-0', 'pointer-events-none');
                 
+                // Nếu là Admin, cấp toàn quyền và hiển thị nút Admin
+                if (window.userPermissions.isAdmin) {
+                    window.userPermissions.canView = true;
+                    window.userPermissions.canWrite = true;
+                    window.userPermissions.canDelete = true;
+                    document.getElementById('btn-admin').classList.remove('hidden');
+                } else {
+                    document.getElementById('btn-admin').classList.add('hidden');
+                }
+
                 if (window.userPermissions.canWrite) {
                     document.getElementById('btn-import').classList.remove('hidden');
                     document.getElementById('btn-export').classList.remove('hidden');
@@ -323,7 +368,7 @@
                 }
 
                 initRealtimeSync();
-                showToast(`Xin chào, ${user.displayName}!`);
+                window.showToast(`Xin chào, ${user.displayName}!`);
               } else {
                 window.showErrorModal("Tài khoản bị khóa", `Tài khoản ${user.email} đã bị khóa quyền truy cập. Vui lòng liên hệ quản trị viên.`);
                 signOut(auth);
@@ -334,7 +379,7 @@
             }
         } catch(e) {
             console.error("Lỗi xác thực quyền:", e);
-            showToast("Lỗi lấy thông tin phân quyền!", true);
+            window.showToast("Lỗi lấy thông tin phân quyền!", true);
             signOut(auth);
         }
       } else {
@@ -368,7 +413,7 @@
         if (timelineCheck.valid) {
             window.db.inv = timelineCheck.finalInv;
         } else {
-            showToast("CẢNH BÁO: Dữ liệu lịch sử đang có lỗi logic âm kho!", true);
+            window.showToast("CẢNH BÁO: Dữ liệu lịch sử đang có lỗi logic âm kho!", true);
         }
         window.renderApp();
         if(document.getElementById('stats-tab').classList.contains('active')) window.renderStats();
@@ -531,17 +576,27 @@
       h.classList.replace('text-teal-600', 'text-gray-300'); s.classList.replace('text-teal-600', 'text-gray-300');
 
       if (tab === 'home') {
-        document.getElementById('home-tab').classList.add('active'); h.classList.replace('text-gray-300', 'text-teal-600'); window.renderApp();
+        document.getElementById('home-tab').classList.add('active'); 
+        h.classList.replace('text-gray-300', 'text-teal-600'); 
+        window.renderApp();
       } else if (tab === 'stats') {
-        document.getElementById('stats-tab').classList.add('active'); s.classList.replace('text-gray-300', 'text-teal-600'); window.renderStats();
+        document.getElementById('stats-tab').classList.add('active'); 
+        s.classList.replace('text-gray-300', 'text-teal-600'); 
+        window.renderStats();
+      } else if (tab === 'admin') {
+        if(!window.userPermissions.isAdmin) return window.showToast("Truy cập bị từ chối", true);
+        document.getElementById('admin-tab').classList.add('active');
+        window.loadAdminData();
       } else if (tab === 'add') {
         if(!window.userPermissions.canWrite) {
           window.showToast("Bạn không có quyền Ghi dữ liệu!", true);
           window.switchTab('home'); 
           return;
         }
-        document.getElementById('form-tab').classList.remove('hidden'); document.getElementById('transaction-form').reset();
-        document.getElementById('edit-id').value = ''; document.getElementById('form-title').innerText = "Ghi nhận mới";
+        document.getElementById('form-tab').classList.remove('hidden'); 
+        document.getElementById('transaction-form').reset();
+        document.getElementById('edit-id').value = ''; 
+        document.getElementById('form-title').innerText = "Ghi nhận mới";
         window.setType('out');
         const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
         document.getElementById('m_time').value = now.toISOString().slice(0, 19);
@@ -605,11 +660,10 @@
       
       const idx = mockHistory.findIndex(x => x.id === id);
       
-      // LẤY DỮ LIỆU CŨ ĐỂ LÀM AUDIT LOG CHI TIẾT
       let oldData = null;
       if (idx > -1) {
           oldData = { ...window.db.history[idx] };
-          delete oldData.isPending; // Xóa trạng thái local không cần thiết
+          delete oldData.isPending;
       }
 
       if (idx > -1) mockHistory[idx] = { id, ...txData }; else mockHistory.push({ id, ...txData });
@@ -625,7 +679,6 @@
           const txRef = doc(firestore, 'transactions', id);
           batch.set(txRef, txData);
 
-          // HỆ THỐNG AUDIT LOGS CHI TIẾT KHI THÊM / SỬA
           const auditRef = doc(collection(firestore, 'audit_logs'));
           batch.set(auditRef, {
               action: idx > -1 ? 'UPDATE' : 'CREATE',
@@ -639,7 +692,7 @@
                   userAgent: navigator.userAgent,
                   online: navigator.onLine
               },
-              oldData: oldData, // Sẽ là null nếu là lệnh Thêm mới
+              oldData: oldData,
               newData: txData
           });
 
@@ -686,7 +739,6 @@
       this.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin inline-block mr-2"></i> ĐANG XÓA...';
       lucide.createIcons({ root: this });
 
-      // LẤY LẠI OBJECT ĐỂ AUDIT LOG
       const deletedTx = window.db.history.find(t => t.id === window.selectedId);
       let oldData = null;
       if (deletedTx) {
@@ -698,7 +750,6 @@
           const batch = writeBatch(firestore);
           batch.delete(doc(firestore, 'transactions', window.selectedId));
           
-          // HỆ THỐNG AUDIT LOGS CHI TIẾT KHI XÓA
           batch.set(doc(collection(firestore, 'audit_logs')), {
               action: 'DELETE',
               txId: window.selectedId,
@@ -711,7 +762,7 @@
                   userAgent: navigator.userAgent,
                   online: navigator.onLine
               },
-              oldData: oldData, // Lưu lại cụ thể object đã bị xóa mất
+              oldData: oldData,
               newData: null
           });
 
@@ -793,6 +844,104 @@
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
       a.download = `voi-backup-${new Date().toISOString().slice(0,10)}.json`; a.click();
     }
+
+    // --- LOGIC TRANG QUẢN TRỊ ---
+    window.loadAdminData = async function() {
+        if (!window.userPermissions.isAdmin) return;
+        
+        try {
+            const usersSnap = await getDocs(collection(firestore, 'users'));
+            const usersList = document.getElementById('admin-users-list');
+            usersList.innerHTML = '';
+            
+            usersSnap.forEach(doc => {
+                const data = doc.data();
+                const email = doc.id;
+                const perms = [];
+                if(data.isAdmin) perms.push('<span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full text-[10px]">Admin</span>');
+                if(data.canView) perms.push('<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-[10px]">Xem</span>');
+                if(data.canWrite) perms.push('<span class="bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full text-[10px]">Ghi</span>');
+                if(data.canDelete) perms.push('<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-[10px]">Xóa</span>');
+                
+                usersList.insertAdjacentHTML('beforeend', `
+                    <div class="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm border border-gray-50">
+                        <div>
+                            <p class="font-bold text-sm text-gray-800">${email}</p>
+                            <div class="flex gap-1 mt-1">${perms.join('')}</div>
+                        </div>
+                        <button onclick="window.editUser('${email}', ${data.canView}, ${data.canWrite}, ${data.canDelete}, ${data.isAdmin})" class="p-2 text-gray-400 hover:text-teal-600 bg-gray-50 rounded-xl"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                    </div>
+                `);
+            });
+            
+            const logsSnap = await getDocs(query(collection(firestore, 'audit_logs'), orderBy('timestamp', 'desc'), limit(50)));
+            const logsList = document.getElementById('admin-logs-list');
+            logsList.innerHTML = '';
+            
+            if (logsSnap.empty) {
+                logsList.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">Chưa có bản ghi nhật ký nào.</p>';
+            } else {
+                logsSnap.forEach(doc => {
+                    const log = doc.data();
+                    let actionColor, actionText;
+                    if(log.action === 'CREATE') { actionColor = 'text-green-600 bg-green-50'; actionText = 'THÊM MỚI'; }
+                    else if(log.action === 'UPDATE') { actionColor = 'text-blue-600 bg-blue-50'; actionText = 'SỬA ĐỔI'; }
+                    else { actionColor = 'text-red-600 bg-red-50'; actionText = 'ĐÃ XÓA'; }
+
+                    const time = new Date(log.timestamp).toLocaleString('vi-VN');
+                    
+                    logsList.insertAdjacentHTML('beforeend', `
+                        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-50">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="${actionColor} px-2 py-1 rounded-lg text-[9px] font-black tracking-wider">${actionText}</span>
+                                <span class="text-[10px] text-gray-400 font-bold">${time}</span>
+                            </div>
+                            <p class="text-xs text-gray-800 font-medium mb-1"><span class="text-gray-400">Tài khoản:</span> ${log.by.email}</p>
+                            <p class="text-xs text-gray-800 font-medium"><span class="text-gray-400">ID phiếu:</span> ${log.txId}</p>
+                        </div>
+                    `);
+                });
+            }
+            lucide.createIcons({ root: document.getElementById('admin-tab') });
+        } catch (e) {
+            console.error("Lỗi tải data admin:", e);
+            window.showToast("Không thể tải dữ liệu Admin", true);
+        }
+    };
+
+    window.editUser = function(email, view, write, del, admin) {
+        document.getElementById('admin-email').value = email;
+        document.getElementById('perm-view').checked = view;
+        document.getElementById('perm-write').checked = write;
+        document.getElementById('perm-delete').checked = del;
+        document.getElementById('perm-admin').checked = admin;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.saveUserPermission = async function() {
+        const email = document.getElementById('admin-email').value.trim().toLowerCase();
+        if (!email || !email.includes('@')) return window.showToast("Email không hợp lệ!", true);
+        
+        const data = {
+            canView: document.getElementById('perm-view').checked,
+            canWrite: document.getElementById('perm-write').checked,
+            canDelete: document.getElementById('perm-delete').checked,
+            isAdmin: document.getElementById('perm-admin').checked
+        };
+
+        try {
+            const btn = event.currentTarget;
+            btn.innerText = "ĐANG LƯU...";
+            await setDoc(doc(firestore, 'users', email), data);
+            window.showToast(`Đã cập nhật quyền cho ${email}`);
+            document.getElementById('admin-email').value = '';
+            ['view','write','delete','admin'].forEach(id => document.getElementById(`perm-${id}`).checked = false);
+            window.loadAdminData();
+            btn.innerText = "CẬP NHẬT QUYỀN";
+        } catch (e) {
+            window.showToast("Lỗi cập nhật! Kiểm tra lại quyền Admin của bạn.", true);
+        }
+    };
 
     function initLiveClock() {
       const clockEl = document.getElementById('live-clock');
