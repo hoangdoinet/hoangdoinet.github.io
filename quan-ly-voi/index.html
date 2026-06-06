@@ -25,10 +25,22 @@
 </head>
 <body class="font-sans bg-gray-100 text-gray-800 relative">
 
+  <div id="login-overlay" class="fixed inset-0 z-[300] bg-teal-800 flex flex-col items-center justify-center text-white transition-opacity duration-500">
+    <div class="bg-white/10 p-8 rounded-[2.5rem] backdrop-blur-md border border-white/20 text-center max-w-sm w-full mx-4 shadow-2xl">
+      <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner">
+        <i data-lucide="shield-check" class="w-8 h-8"></i>
+      </div>
+      <h2 class="text-2xl font-black mb-2">RF QUẢNG TÂN</h2>
+      <p class="text-sm text-teal-100 mb-8">Vui lòng đăng nhập bằng tài khoản đã được cấp phép truy cập vào hệ thống.</p>
+      <button id="btn-login-google" class="w-full py-4 bg-white text-teal-800 rounded-2xl font-black flex items-center justify-center gap-3 active:scale-95 transition-all shadow-lg">
+        <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Đăng nhập với Google
+      </button>
+    </div>
+  </div>
+
   <div class="max-w-md mx-auto bg-gray-50 min-h-screen pb-24 relative shadow-2xl overflow-hidden">
-    
     <div class="relative z-10 px-6 pt-5 pb-6 overflow-hidden text-white bg-gradient-to-br from-teal-500 via-teal-600 to-teal-800 rounded-b-[2.5rem] shadow-2xl shadow-teal-700/30">
-      
       <div class="absolute top-0 right-0 w-40 h-40 transition-transform duration-700 rounded-full pointer-events-none bg-white/10 blur-3xl -mr-10 -mt-10"></div>
       <div class="absolute bottom-0 left-0 w-32 h-32 rounded-full pointer-events-none bg-teal-900/30 blur-2xl -ml-10 -mb-10"></div>
       
@@ -39,12 +51,23 @@
           </div>
           <span class="text-sm font-bold tracking-wide">RF Quảng Tân</span>
         </div>
-        <div class="flex gap-1.5">
-            <button id="install-btn" class="hidden p-2 bg-yellow-400 text-teal-900 rounded-xl active:scale-95 transition-all shadow-lg">
-                <i data-lucide="download-cloud" class="w-3.5 h-3.5"></i>
+        <div class="flex gap-1.5 items-center">
+            <button id="btn-install" class="hidden p-2 bg-yellow-400 hover:bg-yellow-500 text-teal-900 rounded-xl backdrop-blur-md border border-white/10 active:scale-95 transition-all shadow-lg animate-bounce" title="Cài đặt Ứng dụng">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
             </button>
-            <button onclick="exportJSON()" class="p-2 bg-white/10 hover:bg-white/20 rounded-xl backdrop-blur-md border border-white/10 active:scale-95 transition-all" title="Sao lưu JSON"><i data-lucide="save" class="w-3.5 h-3.5"></i></button>
-            <button onclick="document.getElementById('fileInput').click()" class="p-2 bg-white/10 hover:bg-white/20 rounded-xl backdrop-blur-md border border-white/10 active:scale-95 transition-all" title="Khôi phục"><i data-lucide="folder-open" class="w-3.5 h-3.5"></i></button>
+            
+            <button id="btn-export" onclick="window.exportJSON()" class="hidden p-2 bg-white/10 hover:bg-white/20 rounded-xl backdrop-blur-md border border-white/10 active:scale-95 transition-all" title="Sao lưu JSON">
+                <i data-lucide="save" class="w-3.5 h-3.5"></i>
+            </button>
+            
+            <button id="btn-import" onclick="document.getElementById('import-file').click()" class="hidden p-2 bg-white/10 hover:bg-white/20 rounded-xl backdrop-blur-md border border-white/10 active:scale-95 transition-all" title="Phục hồi JSON">
+                <i data-lucide="upload-cloud" class="w-3.5 h-3.5"></i>
+            </button>
+            <input type="file" id="import-file" accept=".json" class="hidden" onchange="window.importJSON(event)">
+            
+            <button onclick="window.logoutApp()" class="p-2 bg-red-500/80 hover:bg-red-500 rounded-xl backdrop-blur-md border border-white/10 active:scale-95 transition-all" title="Đăng xuất">
+                <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            </button>
         </div>
       </div>
       
@@ -86,15 +109,14 @@
         <i data-lucide="clock" class="w-3 h-3 text-teal-200"></i>
         <span id="live-clock">Hôm nay --/--/---- - --:--:--</span>
       </div>
-
     </div>
+
     <div id="home-tab" class="tab-content active p-6 relative z-0">
       <div class="relative mb-6">
         <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-        <input type="text" id="search-input" oninput="handleSearch()" placeholder="Tìm ghi chú, cổng..." 
+        <input type="text" id="search-input" oninput="window.handleSearch()" placeholder="Tìm ghi chú, cổng..." 
                class="w-full pl-12 pr-12 py-4 bg-white rounded-2xl shadow-sm focus:ring-2 focus:ring-teal-100 outline-none transition-all text-sm font-medium">
-        <button id="clear-search" onclick="clearSearch()" 
-                class="absolute right-4 top-1/2 -translate-y-1/2 hidden text-gray-400 hover:text-gray-600 active:scale-90 transition-all">
+        <button id="clear-search" onclick="window.clearSearch()" class="absolute right-4 top-1/2 -translate-y-1/2 hidden text-gray-400 hover:text-gray-600 active:scale-90 transition-all">
           <i data-lucide="circle-x" class="w-5 h-5"></i>
         </button>
       </div>
@@ -109,7 +131,7 @@
     <div id="stats-tab" class="tab-content p-6 relative z-0">
       <div class="flex justify-between items-center mb-6">
         <h2 class="font-black text-gray-800 text-xl tracking-tight">Báo cáo tháng</h2>
-        <input type="month" id="stats-month" onchange="renderStats()" class="p-2 bg-white rounded-xl shadow-sm border-none outline-none font-bold text-teal-600 text-sm">
+        <input type="month" id="stats-month" onchange="window.renderStats()" class="p-2 bg-white rounded-xl shadow-sm border-none outline-none font-bold text-teal-600 text-sm">
       </div>
 
       <div class="grid grid-cols-2 gap-4 mb-6">
@@ -124,9 +146,6 @@
       </div>
 
       <div class="bg-white p-6 rounded-[2.5rem] shadow-sm overflow-hidden">
-        <h3 class="text-sm font-bold text-gray-800 mb-6 flex items-center gap-2 uppercase tracking-wider">
-          <i data-lucide="table" class="w-4 h-4 text-teal-500"></i> Chi tiết theo cổng (Bao)
-        </h3>
         <div class="overflow-x-auto">
             <table class="w-full text-xs text-left border-collapse">
                 <thead>
@@ -147,21 +166,18 @@
     <div id="form-tab" class="hidden fixed inset-0 z-[60] bg-white p-6 overflow-y-auto max-w-md mx-auto">
        <div class="flex justify-between items-center mb-8">
           <h2 id="form-title" class="text-2xl font-black text-gray-800">Ghi nhận mới</h2>
-          <button type="button" onclick="switchTab('home')" class="p-3 bg-gray-100 rounded-2xl text-gray-500"><i data-lucide="x"></i></button>
+          <button type="button" onclick="window.switchTab('home')" class="p-3 bg-gray-100 rounded-2xl text-gray-500"><i data-lucide="x"></i></button>
        </div>
        <form id="transaction-form" class="space-y-6">
           <input type="hidden" id="edit-id">
-          
           <div class="flex p-1.5 bg-gray-100 rounded-2xl">
-            <button type="button" id="btn-in" onclick="setType('in')" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all text-gray-400">NHẬP VÀO</button>
-            <button type="button" id="btn-out" onclick="setType('out')" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all bg-white shadow-sm text-orange-500">XUẤT RA</button>
+            <button type="button" id="btn-in" onclick="window.setType('in')" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all text-gray-400">NHẬP VÀO</button>
+            <button type="button" id="btn-out" onclick="window.setType('out')" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all bg-white shadow-sm text-orange-500">XUẤT RA</button>
           </div>
-
           <div class="text-center py-4">
             <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Số lượng (Bao)</span>
             <input type="number" step="1" inputmode="numeric" id="m_qty" class="w-full text-5xl font-black text-center focus:outline-none text-teal-600 placeholder-gray-200 mt-2" placeholder="0" required onkeypress="return event.charCode >= 48 && event.charCode <= 57">
           </div>
-
           <div class="space-y-4">
             <select id="m_gate" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none font-bold text-gray-600">
                 <option value="cong_nhap">🏭 Cổng nhập</option>
@@ -174,48 +190,84 @@
                 <input type="datetime-local" step="1" id="m_time" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none font-bold text-gray-600" required>
             </div>
           </div>
-          <button type="submit" class="w-full py-5 bg-teal-600 text-white rounded-[2rem] font-black shadow-xl shadow-teal-200 mt-10 uppercase">Xác nhận Lưu</button>
+          <button type="submit" class="w-full py-5 bg-teal-600 text-white rounded-[2rem] font-black shadow-xl shadow-teal-200 mt-10 uppercase transition-all">Xác nhận Lưu</button>
        </form>
     </div>
 
     <div id="action-modal" class="modal-overlay fixed inset-0 z-[100] flex items-end justify-center p-4">
-      <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm max-w-md mx-auto" onclick="closeActionModal()"></div>
+      <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm max-w-md mx-auto"></div>
       <div class="modal-content bg-white rounded-[2.5rem] p-8 w-full max-w-md relative z-10 shadow-2xl text-center">
         <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6"></div>
-        <div class="grid grid-cols-2 gap-4">
-          <button onclick="initEdit()" class="flex flex-col items-center p-6 bg-teal-50 text-teal-600 rounded-3xl font-bold gap-2"><i data-lucide="edit-3"></i> Sửa</button>
-          <button onclick="openDeleteConfirm()" class="flex flex-col items-center p-6 bg-red-50 text-red-500 rounded-3xl font-bold gap-2"><i data-lucide="trash-2"></i> Xóa</button>
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <button onclick="window.initEdit()" class="flex flex-col items-center p-6 bg-teal-50 text-teal-600 rounded-3xl font-bold gap-2"><i data-lucide="edit-3"></i> Sửa</button>
+          <button onclick="window.openDeleteConfirm()" class="flex flex-col items-center p-6 bg-red-50 text-red-500 rounded-3xl font-bold gap-2"><i data-lucide="trash-2"></i> Xóa</button>
         </div>
+        <button onclick="window.closeActionModal()" class="w-full py-4 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-2xl font-bold transition-all active:scale-95">Hủy bỏ</button>
       </div>
     </div>
 
     <div id="delete-modal" class="modal-overlay fixed inset-0 z-[110] flex items-center justify-center p-6">
-      <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm max-w-md mx-auto" onclick="closeDeleteModal()"></div>
+      <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm max-w-md mx-auto"></div>
       <div class="modal-content bg-white rounded-[2.5rem] p-8 w-full max-w-xs relative z-10 shadow-2xl text-center">
         <h3 class="text-xl font-bold text-gray-800 mb-8 px-4">Xóa bản ghi này?</h3>
         <div class="flex flex-col gap-3 px-4">
-          <button id="confirm-delete-btn" class="w-full py-4 bg-red-500 text-white rounded-2xl font-black">XÓA NGAY</button>
-          <button onclick="closeDeleteModal()" class="w-full py-4 bg-gray-100 text-gray-500 rounded-2xl font-bold">HỦY</button>
+          <button id="confirm-delete-btn" class="w-full py-4 bg-red-500 text-white rounded-2xl font-black transition-all">XÓA NGAY</button>
+          <button onclick="window.closeDeleteModal()" class="w-full py-4 bg-gray-100 text-gray-500 rounded-2xl font-bold">HỦY</button>
         </div>
       </div>
     </div>
 
-    <div id="toast" class="toast fixed bottom-0 left-1/2 z-[200] bg-gray-900 text-white px-6 py-4 rounded-[2rem] shadow-2xl opacity-0 pointer-events-none transition-all w-max max-w-[90%] text-center">
+    <div id="error-modal" class="modal-overlay fixed inset-0 z-[400] flex items-center justify-center p-6">
+      <div class="absolute inset-0 bg-gray-900/70 backdrop-blur-md max-w-md mx-auto"></div>
+      <div class="modal-content bg-white rounded-[2.5rem] p-8 w-full max-w-sm relative z-10 shadow-2xl text-center border border-red-100">
+        <div class="w-20 h-20 bg-red-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-inner border border-red-100">
+          <i data-lucide="shield-alert" class="w-10 h-10 text-red-500"></i>
+        </div>
+        <h3 id="error-modal-title" class="text-2xl font-black text-gray-800 mb-3 tracking-tight">Tài khoản bị khóa</h3>
+        <p id="error-modal-message" class="text-sm text-gray-500 mb-8 font-medium leading-relaxed">Chi tiết lỗi hiển thị ở đây...</p>
+        <button onclick="window.closeErrorModal()" class="w-full py-4 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-2xl font-black transition-all active:scale-95">ĐÃ HIỂU</button>
+      </div>
+    </div>
+    <div id="toast" class="toast fixed bottom-0 left-1/2 z-[500] bg-gray-900 text-white px-6 py-4 rounded-[2rem] shadow-2xl opacity-0 pointer-events-none transition-all w-max max-w-[90%] text-center">
       <span id="toast-text" class="text-sm font-bold">Thành công!</span>
     </div>
 
     <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 backdrop-blur-xl border-t border-gray-100 px-10 py-5 flex justify-between items-center z-40">
-      <button onclick="switchTab('home')" id="nav-home" class="text-teal-600"><i data-lucide="clipboard-list"></i></button>
-      <button onclick="switchTab('add')" class="bg-teal-600 p-4 rounded-2xl -mt-14 shadow-2xl shadow-teal-300 border-4 border-white text-white active:rotate-90 transition-all"><i data-lucide="plus"></i></button>
-      <button onclick="switchTab('stats')" id="nav-stats" class="text-gray-300"><i data-lucide="bar-chart-2"></i></button>
+      <button onclick="window.switchTab('home')" id="nav-home" class="text-teal-600"><i data-lucide="clipboard-list"></i></button>
+      <button onclick="window.switchTab('add')" class="bg-teal-600 p-4 rounded-2xl -mt-14 shadow-2xl shadow-teal-300 border-4 border-white text-white active:rotate-90 transition-all"><i data-lucide="plus"></i></button>
+      <button onclick="window.switchTab('stats')" id="nav-stats" class="text-gray-300"><i data-lucide="bar-chart-2"></i></button>
     </nav>
   </div>
 
-  <input type="file" id="fileInput" accept="application/json" style="display:none" onchange="importJSON(event)">
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, doc, getDoc, setDoc, deleteDoc, onSnapshot, query, orderBy, limit, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  <script>
-    // --- CẤU HÌNH DỮ LIỆU ---
-    const LS_KEY = 'voi_inventory_pro_v1';
+    const firebaseConfig = {
+      apiKey: "AIzaSyACLwflykRg3WiL7xyPbcQ53EiV-Mp4aUA",
+      authDomain: "quanlyvoiqt.firebaseapp.com",
+      databaseURL: "https://quanlyvoiqt-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "quanlyvoiqt",
+      storageBucket: "quanlyvoiqt.firebasestorage.app",
+      messagingSenderId: "809590905026",
+      appId: "1:809590905026:web:2b01889daf34e6c8f8c35b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    
+    const firestore = initializeFirestore(app, {
+      localCache: persistentLocalCache({
+        tabManager: persistentMultipleTabManager()
+      })
+    });
+
+    window.db = { inv: { cong_nhap: 0, cong_xuat: 0, cong_chinh: 0 }, history: [] };
+    window.userPermissions = { canView: false, canWrite: false, canDelete: false };
+    window.currentType = 'out';
+    window.selectedId = null;
+    
     const GATE_KEYS = ['cong_nhap', 'cong_xuat', 'cong_chinh'];
     const GATES_MAP = {
       cong_nhap: { name: 'Cổng Nhập', icon: 'package-plus' },
@@ -223,42 +275,113 @@
       cong_chinh: { name: 'Cổng Chính', icon: 'building' }
     };
 
-    let db = loadDB();
-    let currentType = 'out';
-    let selectedId = null;
-    let deferredPrompt;
+    const provider = new GoogleAuthProvider();
+    const loginOverlay = document.getElementById('login-overlay');
 
-    // --- PWA LOGIC ---
-    const installBtn = document.getElementById('install-btn');
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-    if (!isStandalone && 'serviceWorker' in navigator) {
-        window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); });
-    }
-    window.addEventListener('beforeinstallprompt', (e) => {
-        if (isStandalone) return; e.preventDefault(); deferredPrompt = e; installBtn.classList.remove('hidden');
+    window.showErrorModal = function(title, message) {
+        document.getElementById('error-modal-title').innerText = title;
+        document.getElementById('error-modal-message').innerText = message;
+        document.getElementById('error-modal').classList.add('active');
+    };
+    window.closeErrorModal = function() {
+        document.getElementById('error-modal').classList.remove('active');
+    };
+    
+    document.getElementById('btn-login-google').addEventListener('click', () => {
+      signInWithPopup(auth, provider).catch(error => {
+          if (error.code === 'auth/user-disabled') {
+              window.showErrorModal("Tài khoản bị khóa", "Tài khoản Google của bạn đã bị vô hiệu hóa quyền truy cập trên hệ thống.");
+          } else {
+              showToast("Lỗi đăng nhập: " + error.message, true);
+          }
+      });
     });
-    installBtn.addEventListener('click', async () => {
-        if (!deferredPrompt) return; deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') installBtn.classList.add('hidden');
-        deferredPrompt = null;
+
+    window.logoutApp = () => {
+        if (unsubscribeSync) { unsubscribeSync(); unsubscribeSync = null; }
+        signOut(auth);
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+            const userRef = doc(firestore, 'users', user.email);
+            const userSnap = await getDoc(userRef);
+            
+            if (userSnap.exists()) {
+              window.userPermissions = userSnap.data();
+              
+              if (window.userPermissions.canView) {
+                loginOverlay.classList.add('opacity-0', 'pointer-events-none');
+                
+                if (window.userPermissions.canWrite) {
+                    document.getElementById('btn-import').classList.remove('hidden');
+                    document.getElementById('btn-export').classList.remove('hidden');
+                } else {
+                    document.getElementById('btn-import').classList.add('hidden');
+                    document.getElementById('btn-export').classList.add('hidden');
+                }
+
+                initRealtimeSync();
+                showToast(`Xin chào, ${user.displayName}!`);
+              } else {
+                window.showErrorModal("Tài khoản bị khóa", `Tài khoản ${user.email} đã bị khóa quyền truy cập. Vui lòng liên hệ quản trị viên.`);
+                signOut(auth);
+              }
+            } else {
+              window.showErrorModal("Chưa được cấp phép", `Tài khoản ${user.email} chưa được đăng ký trong hệ thống. Vui lòng liên hệ quản trị viên để được cấp quyền.`);
+              signOut(auth);
+            }
+        } catch(e) {
+            console.error("Lỗi xác thực quyền:", e);
+            showToast("Lỗi lấy thông tin phân quyền!", true);
+            signOut(auth);
+        }
+      } else {
+        loginOverlay.classList.remove('opacity-0', 'pointer-events-none');
+      }
     });
 
-    // --- CORE FUNCTIONS ---
-    function generateUUID() {
-        return 'tx-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6);
+    let unsubscribeSync = null;
+    function initRealtimeSync() {
+      if (unsubscribeSync) {
+          unsubscribeSync();
+          unsubscribeSync = null;
+      }
+      
+      const txRef = collection(firestore, 'transactions');
+      const q = query(txRef, orderBy('time', 'desc'), limit(500));
+      
+      unsubscribeSync = onSnapshot(q, { includeMetadataChanges: true }, (snapshot) => {
+        let mockHistory = [];
+        snapshot.forEach((doc) => { 
+            mockHistory.push({ 
+                id: doc.id, 
+                isPending: doc.metadata.hasPendingWrites,
+                ...doc.data() 
+            }); 
+        });
+        
+        const timelineCheck = window.checkTimelineValidity(mockHistory);
+        window.db.history = mockHistory;
+        
+        if (timelineCheck.valid) {
+            window.db.inv = timelineCheck.finalInv;
+        } else {
+            showToast("CẢNH BÁO: Dữ liệu lịch sử đang có lỗi logic âm kho!", true);
+        }
+        window.renderApp();
+        if(document.getElementById('stats-tab').classList.contains('active')) window.renderStats();
+      }, (error) => {
+        console.error("Lỗi đồng bộ:", error);
+      });
     }
 
-    function loadDB() {
-      const raw = localStorage.getItem(LS_KEY);
-      if (!raw) return { inv: { cong_nhap: 0, cong_xuat: 0, cong_chinh: 0 }, history: [] };
-      return JSON.parse(raw);
-    }
-    function saveDB() { localStorage.setItem(LS_KEY, JSON.stringify(db)); }
+    function generateUUID() { return 'tx-' + crypto.randomUUID(); }
     const fmtNum = (n) => (Math.round(n * 100) / 100).toLocaleString('vi-VN');
     const escapeHTML = (str) => String(str ?? '').replace(/[&<>'"]/g, tag => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag]));
     
-    function showToast(msg, isError = false) {
+    window.showToast = function(msg, isError = false) {
       const t = document.getElementById('toast');
       document.getElementById('toast-text').innerText = msg;
       if(isError) { t.classList.replace('bg-gray-900', 'bg-red-500'); } 
@@ -268,95 +391,52 @@
     }
 
     function toDateObj(timeStr) { return new Date(timeStr.replace(' ', 'T')); }
-    
-    function formatDT(timeStr) {
-        const d = toDateObj(timeStr);
-        return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-    }
-    
     function formatDate(timeStr) {
         const d = toDateObj(timeStr);
         return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
     }
-
     function formatTime(timeStr) {
         const d = toDateObj(timeStr);
         return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     }
 
-    // --- LOGIC ĐỒNG HỒ CHẠY THỰC ---
-    function initLiveClock() {
-      const clockEl = document.getElementById('live-clock');
-      if (!clockEl) return;
-      
-      const update = () => {
-        const now = new Date();
-        const d = String(now.getDate()).padStart(2, '0');
-        const m = String(now.getMonth() + 1).padStart(2, '0');
-        const y = now.getFullYear();
-        const h = String(now.getHours()).padStart(2, '0');
-        const min = String(now.getMinutes()).padStart(2, '0');
-        const s = String(now.getSeconds()).padStart(2, '0');
-        
-        clockEl.innerText = `Hôm nay ${d}/${m}/${y} - ${h}:${min}:${s}`;
-      };
-      
-      update();
-      setInterval(update, 1000);
-    }
-
-    // --- LOGIC TIME-TRAVEL & RECALCULATION ---
-    function checkTimelineValidity(historyArray) {
+    window.checkTimelineValidity = function(historyArray) {
         const sorted = [...historyArray].sort((a, b) => {
             const timeA = toDateObj(a.time).getTime();
             const timeB = toDateObj(b.time).getTime();
-            if (timeA === timeB) {
-                return a.type === 'in' ? -1 : 1;
-            }
+            if (timeA === timeB) return a.type === 'in' ? -1 : 1;
             return timeA - timeB;
         });
-
         let runningInv = { cong_nhap: 0, cong_xuat: 0, cong_chinh: 0 };
         for (let tx of sorted) {
-            if (tx.type === 'in') {
-                runningInv[tx.gate] += tx.qty;
-            } else {
-                runningInv[tx.gate] -= tx.qty;
-            }
+            if (tx.type === 'in') runningInv[tx.gate] += tx.qty;
+            else runningInv[tx.gate] -= tx.qty;
+            
             if (runningInv[tx.gate] < 0) {
                 return { valid: false, gate: tx.gate, time: tx.time, deficit: Math.abs(runningInv[tx.gate]) };
             }
         }
         return { valid: true, finalInv: runningInv };
-    }
+    };
 
-    function renderApp() {
-      const timelineCheck = checkTimelineValidity(db.history);
-      if (timelineCheck.valid) {
-          db.inv = timelineCheck.finalInv;
-      } else {
-          showToast("CẢNH BÁO: Dữ liệu lịch sử đang có lỗi logic âm kho!", true);
-      }
-
-      const total = db.inv.cong_nhap + db.inv.cong_xuat + db.inv.cong_chinh;
-      
+    window.renderApp = function() {
+      const total = window.db.inv.cong_nhap + window.db.inv.cong_xuat + window.db.inv.cong_chinh;
       document.getElementById('total-balance').innerText = fmtNum(total);
-      document.getElementById('gate-nhap').innerText = fmtNum(db.inv.cong_nhap);
-      document.getElementById('gate-xuat').innerText = fmtNum(db.inv.cong_xuat);
-      document.getElementById('gate-chinh').innerText = fmtNum(db.inv.cong_chinh);
+      document.getElementById('gate-nhap').innerText = fmtNum(window.db.inv.cong_nhap);
+      document.getElementById('gate-xuat').innerText = fmtNum(window.db.inv.cong_xuat);
+      document.getElementById('gate-chinh').innerText = fmtNum(window.db.inv.cong_chinh);
 
       const val = document.getElementById('search-input').value.toLowerCase();
-      renderList(val);
+      window.renderList(val);
     }
 
-    function renderList(val) {
+    window.renderList = function(val) {
       const list = document.getElementById('transaction-list');
       const clearBtn = document.getElementById('clear-search');
-      
       val.length > 0 ? clearBtn.classList.remove('hidden') : clearBtn.classList.add('hidden');
       list.innerHTML = '';
 
-      const filtered = db.history.filter(t => 
+      const filtered = window.db.history.filter(t => 
         (t.note || '').toLowerCase().includes(val) || GATES_MAP[t.gate].name.toLowerCase().includes(val)
       ).sort((a,b) => toDateObj(b.time) - toDateObj(a.time));
 
@@ -368,7 +448,7 @@
          filtered.forEach(t => {
            const g = GATES_MAP[t.gate];
            list.insertAdjacentHTML('beforeend', `
-             <div onclick="openActionModal('${t.id}')" class="bg-white p-5 rounded-[2rem] flex justify-between items-center shadow-sm active:scale-95 transition-all cursor-pointer">
+             <div onclick="window.openActionModal('${t.id}')" class="bg-white p-5 rounded-[2rem] flex justify-between items-center shadow-sm active:scale-95 transition-all cursor-pointer">
                <div class="flex items-center gap-4">
                  <div class="w-11 h-11 rounded-2xl ${t.type === 'in' ? 'bg-green-50 text-green-600' : 'bg-orange-50 text-orange-600'} flex items-center justify-center">
                    <i data-lucide="${g.icon}" class="w-5 h-5"></i>
@@ -378,11 +458,14 @@
                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">${g.name} • ${formatDate(t.time)}</p>
                  </div>
                </div>
-               <div class="text-right">
+               <div class="text-right flex flex-col items-end">
                  <p class="font-black text-sm ${t.type === 'in' ? 'text-green-600' : 'text-gray-900'}">
                    ${t.type === 'in' ? '+' : '-'}${fmtNum(t.qty)}
                  </p>
-                 <p class="text-[10px] text-gray-400 font-bold mt-1">${formatTime(t.time)}</p>
+                 <div class="flex items-center gap-1 mt-1">
+                   ${t.isPending ? '<i data-lucide="cloud-off" class="w-3 h-3 text-orange-500"></i>' : '<i data-lucide="cloud-check" class="w-3 h-3 text-teal-500"></i>'}
+                   <p class="text-[10px] text-gray-400 font-bold">${formatTime(t.time)}</p>
+                 </div>
                </div>
              </div>`);
          });
@@ -391,37 +474,33 @@
     }
 
     let searchTimeout;
-    function handleSearch() {
+    window.handleSearch = function() {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
             const val = document.getElementById('search-input').value.toLowerCase();
-            renderList(val);
+            window.renderList(val);
         }, 300);
     }
+    window.clearSearch = function() { document.getElementById('search-input').value = ''; window.renderList(''); }
 
-    // --- STATS LOGIC ---
-    function renderStats() {
+    window.renderStats = function() {
       const ym = document.getElementById('stats-month').value;
       if(!ym) return;
       const [y, m] = ym.split('-').map(Number);
       const start = new Date(y, m - 1, 1, 0, 0, 0);
       const end = new Date(y, m, 0, 23, 59, 59);
 
-      const tStart = start.getTime();
-      const tEnd = end.getTime();
-
+      const tStart = start.getTime(), tEnd = end.getTime();
       const invOpen = {cong_nhap:0, cong_xuat:0, cong_chinh:0};
       const inByG = {cong_nhap:0, cong_xuat:0, cong_chinh:0};
       const outByG = {cong_nhap:0, cong_xuat:0, cong_chinh:0};
       let tIn = 0, tOut = 0;
 
-      db.history.forEach(tx => {
+      window.db.history.forEach(tx => {
         const t = toDateObj(tx.time).getTime();
         if (t < tStart) {
-            if (tx.type === 'in') invOpen[tx.gate] += tx.qty;
-            else invOpen[tx.gate] -= tx.qty;
-        } 
-        else if (t >= tStart && t <= tEnd) {
+            if (tx.type === 'in') invOpen[tx.gate] += tx.qty; else invOpen[tx.gate] -= tx.qty;
+        } else if (t >= tStart && t <= tEnd) {
             if (tx.type === 'in') { inByG[tx.gate] += tx.qty; tIn += tx.qty; }
             else { outByG[tx.gate] += tx.qty; tOut += tx.qty; }
         }
@@ -445,172 +524,332 @@
       });
     }
 
-    // --- UI INTERACTIONS ---
-    function clearSearch() { 
-        document.getElementById('search-input').value = ''; 
-        renderList(''); 
-    }
-    
-    function switchTab(tab) {
+    window.switchTab = function(tab) {
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       document.getElementById('form-tab').classList.add('hidden');
       const h = document.getElementById('nav-home'), s = document.getElementById('nav-stats');
-      h.classList.replace('text-teal-600', 'text-gray-300');
-      s.classList.replace('text-teal-600', 'text-gray-300');
+      h.classList.replace('text-teal-600', 'text-gray-300'); s.classList.replace('text-teal-600', 'text-gray-300');
 
       if (tab === 'home') {
-        document.getElementById('home-tab').classList.add('active'); h.classList.replace('text-gray-300', 'text-teal-600'); renderApp();
+        document.getElementById('home-tab').classList.add('active'); h.classList.replace('text-gray-300', 'text-teal-600'); window.renderApp();
       } else if (tab === 'stats') {
-        document.getElementById('stats-tab').classList.add('active'); s.classList.replace('text-gray-300', 'text-teal-600'); renderStats();
+        document.getElementById('stats-tab').classList.add('active'); s.classList.replace('text-gray-300', 'text-teal-600'); window.renderStats();
       } else if (tab === 'add') {
+        if(!window.userPermissions.canWrite) {
+          window.showToast("Bạn không có quyền Ghi dữ liệu!", true);
+          window.switchTab('home'); 
+          return;
+        }
         document.getElementById('form-tab').classList.remove('hidden'); document.getElementById('transaction-form').reset();
         document.getElementById('edit-id').value = ''; document.getElementById('form-title').innerText = "Ghi nhận mới";
-        setType('out');
+        window.setType('out');
         const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
         document.getElementById('m_time').value = now.toISOString().slice(0, 19);
       }
     }
 
-    function setType(type) {
-      currentType = type;
+    window.setType = function(type) {
+      window.currentType = type;
       const isOut = type === 'out';
       document.getElementById('btn-out').className = isOut ? "flex-1 py-3 rounded-xl font-bold text-sm bg-white shadow-sm text-orange-500" : "flex-1 py-3 text-gray-400 font-bold text-sm";
       document.getElementById('btn-in').className = !isOut ? "flex-1 py-3 rounded-xl font-bold text-sm bg-white shadow-sm text-green-600" : "flex-1 py-3 text-gray-400 font-bold text-sm";
     }
 
-    document.getElementById('transaction-form').onsubmit = function(e) {
+    let isSubmitting = false;
+
+    document.getElementById('transaction-form').onsubmit = async function(e) {
       e.preventDefault();
       
+      if (isSubmitting) return;
+      isSubmitting = true;
+
+      if (!window.userPermissions.canWrite) {
+          isSubmitting = false;
+          return window.showToast("Bạn không có quyền Ghi/Sửa!", true);
+      }
+      
+      const submitBtn = this.querySelector('button[type="submit"]');
+      const originalHTML = submitBtn.innerHTML; 
+      
+      const resetBtnState = () => {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalHTML;
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin inline-block mr-2"></i> ĐANG LƯU...';
+      lucide.createIcons({ root: submitBtn });
+
       const qtyRaw = document.getElementById('m_qty').value.trim();
-      const id = document.getElementById('edit-id').value;
+      const id = document.getElementById('edit-id').value || generateUUID();
       const note = document.getElementById('m_note').value.trim();
       const gate = document.getElementById('m_gate').value;
       
       if (qtyRaw.includes('.') || qtyRaw.includes(',')) {
-        document.getElementById('m_qty').focus();
-        return showToast("Số lượng phải là số nguyên, không được nhập số lẻ!", true);
+        resetBtnState();
+        document.getElementById('m_qty').focus(); return window.showToast("Số lượng phải là số nguyên!", true);
       }
-
-      const qty = parseInt(qtyRaw, 10);
       
+      const qty = parseInt(qtyRaw, 10);
       let timeVal = document.getElementById('m_time').value.replace('T', ' ');
       if (timeVal.length === 16) timeVal += ':00'; 
 
       if(isNaN(qty) || qty <= 0) {
-        document.getElementById('m_qty').focus();
-        return showToast("Số lượng phải là số nguyên lớn hơn 0!", true);
+        resetBtnState();
+        return window.showToast("Số lượng phải lớn hơn 0!", true);
       }
-      if(!note) { document.getElementById('m_note').focus(); return showToast("Nội dung ghi chú là bắt buộc!", true); }
 
-      let mockHistory = [...db.history];
-      const txData = { id: id || generateUUID(), type: currentType, qty, gate, note, time: timeVal };
+      let mockHistory = [...window.db.history];
+      const txData = { type: window.currentType, qty, gate, note, time: timeVal, updatedBy: auth.currentUser.email };
       
-      if (id) {
-        const idx = mockHistory.findIndex(x => x.id === id);
-        mockHistory[idx] = txData;
-      } else {
-        mockHistory.push(txData);
+      const idx = mockHistory.findIndex(x => x.id === id);
+      
+      // LẤY DỮ LIỆU CŨ ĐỂ LÀM AUDIT LOG CHI TIẾT
+      let oldData = null;
+      if (idx > -1) {
+          oldData = { ...window.db.history[idx] };
+          delete oldData.isPending; // Xóa trạng thái local không cần thiết
       }
 
-      const timelineCheck = checkTimelineValidity(mockHistory);
+      if (idx > -1) mockHistory[idx] = { id, ...txData }; else mockHistory.push({ id, ...txData });
+
+      const timelineCheck = window.checkTimelineValidity(mockHistory);
       if (!timelineCheck.valid) {
-        return showToast(`Gây lỗi thời gian! Vào lúc ${formatDT(timelineCheck.time)}, kho ${GATES_MAP[timelineCheck.gate].name} sẽ bị âm ${fmtNum(timelineCheck.deficit)} bao.`, true);
+        resetBtnState();
+        return window.showToast(`Gây lỗi thời gian! Kho ${GATES_MAP[timelineCheck.gate].name} sẽ bị âm ${fmtNum(timelineCheck.deficit)} bao.`, true);
       }
 
-      db.history = mockHistory;
-      db.inv = timelineCheck.finalInv; 
-      saveDB(); 
-      switchTab('home'); 
-      showToast("Đã lưu thành công!");
+      try {
+          const batch = writeBatch(firestore);
+          const txRef = doc(firestore, 'transactions', id);
+          batch.set(txRef, txData);
+
+          // HỆ THỐNG AUDIT LOGS CHI TIẾT KHI THÊM / SỬA
+          const auditRef = doc(collection(firestore, 'audit_logs'));
+          batch.set(auditRef, {
+              action: idx > -1 ? 'UPDATE' : 'CREATE',
+              txId: id,
+              by: {
+                  email: auth.currentUser.email,
+                  name: auth.currentUser.displayName || 'Ẩn danh'
+              },
+              timestamp: new Date().toISOString(),
+              client: {
+                  userAgent: navigator.userAgent,
+                  online: navigator.onLine
+              },
+              oldData: oldData, // Sẽ là null nếu là lệnh Thêm mới
+              newData: txData
+          });
+
+          batch.commit().catch(err => console.error("Lỗi đồng bộ ngầm:", err));
+          
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+          window.switchTab('home');
+          if (navigator.onLine) {
+              window.showToast("Đã lưu dữ liệu thành công!");
+          } else {
+              window.showToast("Đã lưu cục bộ. Sẽ đồng bộ khi có mạng!", false);
+          }
+      } catch (err) {
+          console.error("Lỗi thiết lập lưu trữ:", err);
+          window.showToast("Có lỗi xảy ra khi thiết lập lệnh lưu!", true);
+      } finally {
+          setTimeout(resetBtnState, 300);
+      }
     };
 
-    const openActionModal = (id) => { selectedId = id; document.getElementById('action-modal').classList.add('active'); };
-    const closeActionModal = () => document.getElementById('action-modal').classList.remove('active');
-    const openDeleteConfirm = () => { closeActionModal(); setTimeout(() => document.getElementById('delete-modal').classList.add('active'), 300); };
-    const closeDeleteModal = () => document.getElementById('delete-modal').classList.remove('active');
+    window.openActionModal = (id) => { window.selectedId = id; document.getElementById('action-modal').classList.add('active'); };
+    window.closeActionModal = () => document.getElementById('action-modal').classList.remove('active');
+    window.openDeleteConfirm = () => { window.closeActionModal(); setTimeout(() => document.getElementById('delete-modal').classList.add('active'), 300); };
+    window.closeDeleteModal = () => document.getElementById('delete-modal').classList.remove('active');
 
-    document.getElementById('confirm-delete-btn').onclick = () => {
-      let mockHistory = db.history.filter(t => t.id !== selectedId);
-      const timelineCheck = checkTimelineValidity(mockHistory);
-      if (!timelineCheck.valid) {
-         showToast(`Không thể xóa! Sẽ làm kho ${GATES_MAP[timelineCheck.gate].name} bị âm ${fmtNum(timelineCheck.deficit)} bao vào lúc ${formatDT(timelineCheck.time)}.`, true);
-         closeDeleteModal();
-         return;
+    let isDeleting = false;
+    document.getElementById('confirm-delete-btn').onclick = async function() {
+      if (isDeleting) return;
+      
+      if (!window.userPermissions.canDelete) {
+         window.closeDeleteModal(); return window.showToast("Bạn không có quyền Xóa dữ liệu!", true);
       }
 
-      db.history = mockHistory;
-      db.inv = timelineCheck.finalInv;
-      saveDB(); renderApp(); closeDeleteModal(); showToast("Đã xóa bản ghi!");
+      let mockHistory = window.db.history.filter(t => t.id !== window.selectedId);
+      const timelineCheck = window.checkTimelineValidity(mockHistory);
+      if (!timelineCheck.valid) {
+         window.showToast(`Không thể xóa! Sẽ làm kho ${GATES_MAP[timelineCheck.gate].name} bị âm.`, true);
+         window.closeDeleteModal(); return;
+      }
+
+      isDeleting = true;
+      const originalHTML = this.innerHTML;
+      this.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin inline-block mr-2"></i> ĐANG XÓA...';
+      lucide.createIcons({ root: this });
+
+      // LẤY LẠI OBJECT ĐỂ AUDIT LOG
+      const deletedTx = window.db.history.find(t => t.id === window.selectedId);
+      let oldData = null;
+      if (deletedTx) {
+          oldData = { ...deletedTx };
+          delete oldData.isPending;
+      }
+
+      try {
+          const batch = writeBatch(firestore);
+          batch.delete(doc(firestore, 'transactions', window.selectedId));
+          
+          // HỆ THỐNG AUDIT LOGS CHI TIẾT KHI XÓA
+          batch.set(doc(collection(firestore, 'audit_logs')), {
+              action: 'DELETE',
+              txId: window.selectedId,
+              by: {
+                  email: auth.currentUser.email,
+                  name: auth.currentUser.displayName || 'Ẩn danh'
+              },
+              timestamp: new Date().toISOString(),
+              client: {
+                  userAgent: navigator.userAgent,
+                  online: navigator.onLine
+              },
+              oldData: oldData, // Lưu lại cụ thể object đã bị xóa mất
+              newData: null
+          });
+
+          batch.commit().catch(err => console.error("Lỗi xóa ngầm:", err));
+
+          await new Promise(resolve => setTimeout(resolve, 500));
+
+          window.closeDeleteModal(); 
+          if (navigator.onLine) window.showToast("Đã xóa bản ghi!");
+          else window.showToast("Đã xóa cục bộ. Sẽ đồng bộ khi có mạng!", false);
+      } catch(err) {
+          console.error("Lỗi thiết lập xóa:", err);
+          window.showToast("Có lỗi xảy ra khi thiết lập lệnh xóa!", true);
+      } finally {
+          setTimeout(() => {
+              isDeleting = false;
+              this.innerHTML = originalHTML;
+          }, 300);
+      }
     };
 
-    function initEdit() {
-      const tx = db.history.find(t => t.id === selectedId);
-      closeActionModal();
+    window.initEdit = function() {
+      if (!window.userPermissions.canWrite) {
+         window.closeActionModal(); return window.showToast("Bạn không có quyền Sửa dữ liệu!", true);
+      }
+      const tx = window.db.history.find(t => t.id === window.selectedId);
+      window.closeActionModal();
       setTimeout(() => {
-        switchTab('add');
+        window.switchTab('add');
         document.getElementById('form-title').innerText = "Chỉnh sửa";
         document.getElementById('edit-id').value = tx.id;
         document.getElementById('m_qty').value = tx.qty;
         document.getElementById('m_gate').value = tx.gate;
         document.getElementById('m_note').value = tx.note;
         document.getElementById('m_time').value = tx.time.replace(' ', 'T');
-        setType(tx.type);
+        window.setType(tx.type);
       }, 300);
     }
 
-    function exportJSON() {
-      if (!db.history || db.history.length === 0) return showToast("Chưa có dữ liệu để sao lưu!", true);
-      const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' });
+    window.importJSON = async function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      if (!window.userPermissions || !window.userPermissions.canWrite) {
+        event.target.value = '';
+        return window.showToast("Bạn không có quyền Ghi dữ liệu!", true);
+      }
+
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        try {
+          const importedData = JSON.parse(e.target.result);
+          if (!importedData.history || !Array.isArray(importedData.history)) throw new Error("File không hợp lệ.");
+
+          if (confirm(`Khôi phục ${importedData.history.length} bản ghi?`)) {
+            window.showToast("Đang đồng bộ...");
+            const chunkSize = 400; 
+            for (let i = 0; i < importedData.history.length; i += chunkSize) {
+              const batch = writeBatch(firestore);
+              importedData.history.slice(i, i + chunkSize).forEach(tx => {
+                batch.set(doc(firestore, 'transactions', tx.id), {
+                  type: tx.type, qty: tx.qty, gate: tx.gate, note: tx.note, time: tx.time, updatedBy: auth.currentUser.email
+                }, { merge: true });
+              });
+              await batch.commit();
+            }
+            window.showToast("Phục hồi thành công!");
+          }
+        } catch (err) {
+          window.showToast("Lỗi import: " + err.message, true);
+        }
+        event.target.value = '';
+      };
+      reader.readAsText(file);
+    };
+
+    window.exportJSON = function() {
+      if (!window.db.history || window.db.history.length === 0) return window.showToast("Chưa có dữ liệu để sao lưu!", true);
+      const blob = new Blob([JSON.stringify(window.db, null, 2)], { type: 'application/json' });
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
       a.download = `voi-backup-${new Date().toISOString().slice(0,10)}.json`; a.click();
     }
 
-    function importJSON(ev) {
-      const file = ev.target.files[0];
-      if (!file) return;
-      const r = new FileReader();
-      r.onload = function() {
-        try {
-          const d = JSON.parse(r.result);
-          if (!d || typeof d !== 'object' || !Array.isArray(d.history)) {
-            throw new Error("Cấu trúc file không hợp lệ (Thiếu history object).");
-          }
-          if (d.history.length === 0) {
-            throw new Error("File sao lưu rỗng (0 bản ghi)!");
-          }
+    function initLiveClock() {
+      const clockEl = document.getElementById('live-clock');
+      if (!clockEl) return;
+      setInterval(() => {
+        const now = new Date();
+        clockEl.innerText = `Hôm nay ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()} - ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+      }, 1000);
+    }
 
-          for (let i = 0; i < d.history.length; i++) {
-              let tx = d.history[i];
-              if (!tx.id || typeof tx.id !== 'string') throw new Error(`Bản ghi dòng ${i+1} thiếu ID`);
-              if (!['in', 'out'].includes(tx.type)) throw new Error(`Bản ghi dòng ${i+1} sai Type (in/out)`);
-              if (typeof tx.qty !== 'number' || tx.qty <= 0) throw new Error(`Bản ghi dòng ${i+1} có số lượng không hợp lệ`);
-              if (!GATE_KEYS.includes(tx.gate)) throw new Error(`Bản ghi dòng ${i+1} chứa Cổng lạ: ${tx.gate}`);
-              if (typeof tx.note !== 'string') throw new Error(`Bản ghi dòng ${i+1} sai định dạng Ghi chú`);
-              if (isNaN(new Date(tx.time.replace(' ', 'T')).getTime())) throw new Error(`Bản ghi dòng ${i+1} sai định dạng Thời gian`);
-          }
+    let deferredPrompt;
+    const installBtn = document.getElementById('btn-install');
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
-          const timelineCheck = checkTimelineValidity(d.history);
-          if (!timelineCheck.valid) {
-             throw new Error(`File chứa logic lỗi: Kho ${GATES_MAP[timelineCheck.gate].name} bị âm vào lúc ${formatDT(timelineCheck.time)}`);
-          }
+    if (isStandalone) {
+      installBtn.classList.add('hidden');
+    }
 
-          db.history = d.history; 
-          db.inv = timelineCheck.finalInv; 
-          saveDB(); 
-          renderApp(); 
-          showToast("Khôi phục toàn bộ dữ liệu thành công!");
-        } catch (e) { 
-          showToast("LỖI IMPORT: " + e.message, true); 
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (!isStandalone) {
+        installBtn.classList.remove('hidden');
+      }
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          console.log('User đồng ý cài đặt');
         }
-        document.getElementById('fileInput').value = '';
-      };
-      r.readAsText(file);
+        deferredPrompt = null;
+        installBtn.classList.add('hidden');
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      installBtn.classList.add('hidden');
+      deferredPrompt = null;
+      if (typeof window.showToast === 'function') {
+        window.showToast("Đã thêm ứng dụng vào Màn hình chính!");
+      }
+    });
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker đã đăng ký thành công!', reg.scope))
+          .catch(err => console.error('Đăng ký Service Worker thất bại:', err));
+      });
     }
 
     (function init() {
       const n = new Date();
       document.getElementById('stats-month').value = `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;
-      renderApp();
       initLiveClock();
       lucide.createIcons();
     })();
