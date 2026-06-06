@@ -118,7 +118,7 @@
     <div id="home-tab" class="tab-content active p-6 relative z-0">
       <div class="relative mb-6">
         <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-        <input type="text" id="search-input" oninput="window.handleSearch()" placeholder="Tìm ghi chú, cổng..." 
+        <input type="text" id="search-input" oninput="window.handleSearch()" placeholder="Tìm ghi chú, cổng, ID phiếu..." 
                class="w-full pl-12 pr-12 py-4 bg-white rounded-2xl shadow-sm focus:ring-2 focus:ring-teal-100 outline-none transition-all text-sm font-medium">
         <button id="clear-search" onclick="window.clearSearch()" class="absolute right-4 top-1/2 -translate-y-1/2 hidden text-gray-400 hover:text-gray-600 active:scale-90 transition-all">
           <i data-lucide="circle-x" class="w-5 h-5"></i>
@@ -482,7 +482,9 @@
       list.innerHTML = '';
 
       const filtered = window.db.history.filter(t => 
-        (t.note || '').toLowerCase().includes(val) || GATES_MAP[t.gate].name.toLowerCase().includes(val)
+        (t.note || '').toLowerCase().includes(val) || 
+        GATES_MAP[t.gate].name.toLowerCase().includes(val) ||
+        (t.id || '').toLowerCase().includes(val)
       ).sort((a,b) => toDateObj(b.time) - toDateObj(a.time));
 
       document.getElementById('transaction-count').innerText = `${filtered.length} bản ghi`;
