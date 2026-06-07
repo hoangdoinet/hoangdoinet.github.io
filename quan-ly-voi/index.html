@@ -295,7 +295,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, doc, getDoc, setDoc, deleteDoc, onSnapshot, query, orderBy, limit, writeBatch, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, doc, getDoc, setDoc, deleteDoc, onSnapshot, query, orderBy, limit, writeBatch, getDocs, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyACLwflykRg3WiL7xyPbcQ53EiV-Mp4aUA",
@@ -350,11 +350,16 @@
       });
     });
 
+    let unsubscribeSync = null;
+    let unsubscribeInv = null;
+
     window.logoutApp = () => {
         if (unsubscribeSync) { unsubscribeSync(); unsubscribeSync = null; }
+        if (unsubscribeInv) { unsubscribeInv(); unsubscribeInv = null; }
         signOut(auth);
     };
 
+    // PHẦN CẬP NHẬT: onAuthStateChanged ĐÃ ĐƯỢC THAY THẾ VÀ TỐI ƯU
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
@@ -367,25 +372,24 @@
               if (window.userPermissions.canView) {
                 loginOverlay.classList.add('opacity-0', 'pointer-events-none');
                 
-                // Nếu là Admin, cấp toàn quyền và hiển thị nút Admin
                 if (window.userPermissions.isAdmin) {
                     window.userPermissions.canView = true;
                     window.userPermissions.canWrite = true;
                     window.userPermissions.canDelete = true;
                     document.getElementById('btn-admin').classList.remove('hidden');
-                } else {
-                    document.getElementById('btn-admin').classList.add('hidden');
-                }
-
-                if (window.userPermissions.canWrite) {
                     document.getElementById('btn-import').classList.remove('hidden');
                     document.getElementById('btn-export').classList.remove('hidden');
                 } else {
+                    document.getElementById('btn-admin').classList.add('hidden');
                     document.getElementById('btn-import').classList.add('hidden');
                     document.getElementById('btn-export').classList.add('hidden');
                 }
 
+                // KHẮC PHỤC 1: Ép chuyển về trang chủ mỗi khi đăng nhập thành công
+                window.switchTab('home');
+
                 initRealtimeSync();
+                initInventorySync();
                 window.showToast(`Xin chào, ${user.displayName}!`);
               } else {
                 window.showErrorModal("Tài khoản bị khóa", `Tài khoản ${user.email} đã bị khóa quyền truy cập. Vui lòng liên hệ quản trị viên.`);
@@ -401,11 +405,28 @@
             signOut(auth);
         }
       } else {
+        // KHẮC PHỤC 2: Dọn dẹp toàn bộ dữ liệu và giao diện khi đăng xuất
         loginOverlay.classList.remove('opacity-0', 'pointer-events-none');
+        
+        // Xóa bộ nhớ phân quyền và dữ liệu tĩnh
+        window.userPermissions = { canView: false, canWrite: false, canDelete: false, isAdmin: false };
+        window.db = { inv: { cong_nhap: 0, cong_xuat: 0, cong_chinh: 0 }, history: [] };
+        
+        // Đưa UI về lại màn hình mặc định
+        window.switchTab('home');
+        
+        // Xóa sạch dữ liệu hiển thị trên trang Admin để tránh rò rỉ DOM
+        const adminUsersList = document.getElementById('admin-users-list');
+        const adminLogsList = document.getElementById('admin-logs-list');
+        const transactionList = document.getElementById('transaction-list');
+        
+        if (adminUsersList) adminUsersList.innerHTML = '';
+        if (adminLogsList) adminLogsList.innerHTML = '';
+        if (transactionList) transactionList.innerHTML = '';
       }
     });
 
-    let unsubscribeSync = null;
+    // 1. LUỒNG ĐỒNG BỘ LỊCH SỬ GIAO DỊCH
     function initRealtimeSync() {
       if (unsubscribeSync) {
           unsubscribeSync();
@@ -425,19 +446,33 @@
             }); 
         });
         
-        const timelineCheck = window.checkTimelineValidity(mockHistory);
         window.db.history = mockHistory;
-        
-        if (timelineCheck.valid) {
-            window.db.inv = timelineCheck.finalInv;
-        } else {
-            window.showToast("CẢNH BÁO: Dữ liệu lịch sử đang có lỗi logic âm kho!", true);
-        }
         window.renderApp();
         if(document.getElementById('stats-tab').classList.contains('active')) window.renderStats();
       }, (error) => {
-        console.error("Lỗi đồng bộ:", error);
+        console.error("Lỗi đồng bộ lịch sử:", error);
       });
+    }
+
+    // 2. LUỒNG ĐỒNG BỘ TỒN KHO THEO THỜI GIAN THỰC
+    function initInventorySync() {
+        if (unsubscribeInv) {
+            unsubscribeInv();
+            unsubscribeInv = null;
+        }
+        
+        const invRef = doc(firestore, 'inventory', 'current');
+        
+        unsubscribeInv = onSnapshot(invRef, (docSnap) => {
+            if (docSnap.exists()) {
+                window.db.inv = { cong_nhap: 0, cong_xuat: 0, cong_chinh: 0, ...docSnap.data() };
+            } else {
+                window.db.inv = { cong_nhap: 0, cong_xuat: 0, cong_chinh: 0 };
+            }
+            window.renderApp();
+        }, (error) => {
+            console.error("Lỗi đồng bộ tồn kho:", error);
+        });
     }
 
     function generateUUID() { return 'tx-' + crypto.randomUUID(); }
@@ -462,25 +497,6 @@
         const d = toDateObj(timeStr);
         return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     }
-
-    window.checkTimelineValidity = function(historyArray) {
-        const sorted = [...historyArray].sort((a, b) => {
-            const timeA = toDateObj(a.time).getTime();
-            const timeB = toDateObj(b.time).getTime();
-            if (timeA === timeB) return a.type === 'in' ? -1 : 1;
-            return timeA - timeB;
-        });
-        let runningInv = { cong_nhap: 0, cong_xuat: 0, cong_chinh: 0 };
-        for (let tx of sorted) {
-            if (tx.type === 'in') runningInv[tx.gate] += tx.qty;
-            else runningInv[tx.gate] -= tx.qty;
-            
-            if (runningInv[tx.gate] < 0) {
-                return { valid: false, gate: tx.gate, time: tx.time, deficit: Math.abs(runningInv[tx.gate]) };
-            }
-        }
-        return { valid: true, finalInv: runningInv };
-    };
 
     window.renderApp = function() {
       const total = window.db.inv.cong_nhap + window.db.inv.cong_xuat + window.db.inv.cong_chinh;
@@ -632,6 +648,7 @@
 
     let isSubmitting = false;
 
+    // 3. THÊM / SỬA PHIẾU BẰNG WRITEBATCH & INCREMENT()
     document.getElementById('transaction-form').onsubmit = async function(e) {
       e.preventDefault();
       
@@ -686,19 +703,33 @@
           delete oldData.isPending;
       }
 
-      if (idx > -1) mockHistory[idx] = { id, ...txData }; else mockHistory.push({ id, ...txData });
+      // TÍNH TOÁN ĐỘ LỆCH KHO (DELTAS)
+      let gateDeltas = { cong_nhap: 0, cong_xuat: 0, cong_chinh: 0 };
+      
+      if (oldData) {
+          let oldSign = oldData.type === 'in' ? -1 : 1; 
+          gateDeltas[oldData.gate] += (oldData.qty * oldSign); // Hoàn tác thao tác cũ
+      }
+      
+      let newSign = txData.type === 'in' ? 1 : -1;
+      gateDeltas[txData.gate] += (txData.qty * newSign); // Áp dụng thao tác mới
 
-      const timelineCheck = window.checkTimelineValidity(mockHistory);
-      if (!timelineCheck.valid) {
-        resetBtnState();
-        return window.showToast(`Gây lỗi thời gian! Kho ${GATES_MAP[timelineCheck.gate].name} sẽ bị âm ${fmtNum(timelineCheck.deficit)} bao.`, true);
+      // Chặn lỗi âm kho (Kiểm tra phía Client dựa trên db hiện tại)
+      for (const g of GATE_KEYS) {
+          if ((window.db.inv[g] || 0) + gateDeltas[g] < 0) {
+              resetBtnState();
+              return window.showToast(`Gây lỗi! Kho ${GATES_MAP[g].name} sẽ bị âm.`, true);
+          }
       }
 
       try {
           const batch = writeBatch(firestore);
+          
+          // Ghi dữ liệu giao dịch
           const txRef = doc(firestore, 'transactions', id);
           batch.set(txRef, txData);
 
+          // Ghi Log
           const auditRef = doc(collection(firestore, 'audit_logs'));
           batch.set(auditRef, {
               action: idx > -1 ? 'UPDATE' : 'CREATE',
@@ -715,6 +746,17 @@
               oldData: oldData,
               newData: txData
           });
+
+          // GHI CẬP NHẬT TỒN KHO TỰ ĐỘNG BẰNG INCREMENT
+          const invUpdates = {};
+          for (const g of GATE_KEYS) {
+              if (gateDeltas[g] !== 0) {
+                  invUpdates[g] = increment(gateDeltas[g]);
+              }
+          }
+          if (Object.keys(invUpdates).length > 0) {
+              batch.set(doc(firestore, 'inventory', 'current'), invUpdates, { merge: true });
+          }
 
           batch.commit().catch(err => console.error("Lỗi đồng bộ ngầm:", err));
           
@@ -740,6 +782,8 @@
     window.closeDeleteModal = () => document.getElementById('delete-modal').classList.remove('active');
 
     let isDeleting = false;
+
+    // 4. XÓA PHIẾU KẾT HỢP HOÀN TÁC TỒN KHO BẰNG WRITEBATCH & INCREMENT()
     document.getElementById('confirm-delete-btn').onclick = async function() {
       if (isDeleting) return;
       
@@ -747,10 +791,17 @@
          window.closeDeleteModal(); return window.showToast("Bạn không có quyền Xóa dữ liệu!", true);
       }
 
-      let mockHistory = window.db.history.filter(t => t.id !== window.selectedId);
-      const timelineCheck = window.checkTimelineValidity(mockHistory);
-      if (!timelineCheck.valid) {
-         window.showToast(`Không thể xóa! Sẽ làm kho ${GATES_MAP[timelineCheck.gate].name} bị âm.`, true);
+      const deletedTx = window.db.history.find(t => t.id === window.selectedId);
+      if (!deletedTx) {
+          window.closeDeleteModal(); return;
+      }
+
+      // Tính lượng cần hoàn tác cho kho
+      let oldSign = deletedTx.type === 'in' ? -1 : 1; 
+      let delta = deletedTx.qty * oldSign;
+
+      if ((window.db.inv[deletedTx.gate] || 0) + delta < 0) {
+         window.showToast(`Không thể xóa! Sẽ làm kho ${GATES_MAP[deletedTx.gate].name} bị âm.`, true);
          window.closeDeleteModal(); return;
       }
 
@@ -759,17 +810,16 @@
       this.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin inline-block mr-2"></i> ĐANG XÓA...';
       lucide.createIcons({ root: this });
 
-      const deletedTx = window.db.history.find(t => t.id === window.selectedId);
-      let oldData = null;
-      if (deletedTx) {
-          oldData = { ...deletedTx };
-          delete oldData.isPending;
-      }
+      let oldData = { ...deletedTx };
+      delete oldData.isPending;
 
       try {
           const batch = writeBatch(firestore);
+          
+          // Xóa phiếu
           batch.delete(doc(firestore, 'transactions', window.selectedId));
           
+          // Ghi nhật ký Log
           batch.set(doc(collection(firestore, 'audit_logs')), {
               action: 'DELETE',
               txId: window.selectedId,
@@ -785,6 +835,11 @@
               oldData: oldData,
               newData: null
           });
+
+          // HOÀN TÁC TỒN KHO 
+          batch.set(doc(firestore, 'inventory', 'current'), {
+              [deletedTx.gate]: increment(delta)
+          }, { merge: true });
 
           batch.commit().catch(err => console.error("Lỗi xóa ngầm:", err));
 
@@ -822,12 +877,15 @@
       }, 300);
     }
 
+    // Khôi phục Import JSON
     window.importJSON = async function(event) {
       const file = event.target.files[0];
       if (!file) return;
-      if (!window.userPermissions || !window.userPermissions.canWrite) {
+      
+      // CHỈ CHO PHÉP ADMIN
+      if (!window.userPermissions || !window.userPermissions.isAdmin) {
         event.target.value = '';
-        return window.showToast("Bạn không có quyền Ghi dữ liệu!", true);
+        return window.showToast("Bạn không có quyền Phục hồi dữ liệu!", true);
       }
 
       const reader = new FileReader();
@@ -836,8 +894,34 @@
           const importedData = JSON.parse(e.target.result);
           if (!importedData.history || !Array.isArray(importedData.history)) throw new Error("File không hợp lệ.");
 
-          if (confirm(`Khôi phục ${importedData.history.length} bản ghi?`)) {
+          if (confirm(`Khôi phục ${importedData.history.length} bản ghi? Hệ thống sẽ ghi đè tồn kho theo dữ liệu hiện tại.`)) {
             window.showToast("Đang đồng bộ...");
+            
+            // Tính toán tổng tồn kho thực tế từ file Import
+            let newInv = { cong_nhap: 0, cong_xuat: 0, cong_chinh: 0 };
+            importedData.history.forEach(tx => {
+                let sign = tx.type === 'in' ? 1 : -1;
+                if (newInv[tx.gate] !== undefined) {
+                    newInv[tx.gate] += (tx.qty * sign);
+                }
+            });
+
+            // Set lại Tồn kho
+            const invBatch = writeBatch(firestore);
+            invBatch.set(doc(firestore, 'inventory', 'current'), newInv);
+            
+            // Ghi Log Khôi phục
+            invBatch.set(doc(collection(firestore, 'audit_logs')), {
+                action: 'RESTORE',
+                txId: 'ALL',
+                by: { email: auth.currentUser.email, name: auth.currentUser.displayName || 'Ẩn danh' },
+                timestamp: new Date().toISOString(),
+                client: { userAgent: navigator.userAgent, online: navigator.onLine },
+                oldData: null,
+                newData: { message: `Đã khôi phục ${importedData.history.length} bản ghi` }
+            });
+            await invBatch.commit();
+
             const chunkSize = 400; 
             for (let i = 0; i < importedData.history.length; i += chunkSize) {
               const batch = writeBatch(firestore);
@@ -858,12 +942,34 @@
       reader.readAsText(file);
     };
 
-    window.exportJSON = function() {
+    // Sao lưu Export JSON
+    window.exportJSON = async function() {
+      // CHỈ CHO PHÉP ADMIN
+      if (!window.userPermissions || !window.userPermissions.isAdmin) {
+          return window.showToast("Bạn không có quyền Sao lưu dữ liệu!", true);
+      }
+      
       if (!window.db.history || window.db.history.length === 0) return window.showToast("Chưa có dữ liệu để sao lưu!", true);
+      
       const blob = new Blob([JSON.stringify(window.db, null, 2)], { type: 'application/json' });
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
       a.download = `voi-backup-${new Date().toISOString().slice(0,10)}.json`; a.click();
-    }
+      
+      // Ghi Log Sao Lưu
+      try {
+          await setDoc(doc(collection(firestore, 'audit_logs')), {
+              action: 'BACKUP',
+              txId: 'ALL',
+              by: { email: auth.currentUser.email, name: auth.currentUser.displayName || 'Ẩn danh' },
+              timestamp: new Date().toISOString(),
+              client: { userAgent: navigator.userAgent, online: navigator.onLine },
+              oldData: null,
+              newData: { message: `Đã sao lưu ${window.db.history.length} bản ghi` }
+          });
+      } catch (err) {
+          console.error("Lỗi ghi log sao lưu:", err);
+      }
+    };
 
     // --- LOGIC TRANG QUẢN TRỊ ---
     
@@ -880,7 +986,6 @@
         const titleEl = document.getElementById('user-modal-title');
         if (email) {
             titleEl.innerHTML = '<i data-lucide="user-check" class="w-5 h-5 text-purple-500"></i> Chỉnh sửa Tài khoản';
-            // Khóa không cho đổi email khi đang sửa (vì Firestore dùng Email làm ID Document)
             emailInput.disabled = true;
             emailInput.classList.add('opacity-60', 'cursor-not-allowed');
         } else {
@@ -893,7 +998,6 @@
         lucide.createIcons({ root: document.getElementById('user-modal') });
     };
 
-    // Đóng Modal
     window.closeUserModal = function() {
         document.getElementById('user-modal').classList.remove('active');
     };
@@ -915,7 +1019,6 @@
                 if(data.canWrite) perms.push('<span class="bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full text-[10px] font-bold">Ghi</span>');
                 if(data.canDelete) perms.push('<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-[10px] font-bold">Xóa</span>');
                 
-                // CẬP NHẬT: Nhãn màu cam, không icon cho tài khoản bị đình chỉ
                 if(perms.length === 0) {
                     perms.push('<span class="bg-orange-500 text-white shadow-sm shadow-orange-200 px-2 py-0.5 rounded-full text-[10px] font-bold">Tài khoản bị đình chỉ</span>');
                 }
@@ -944,11 +1047,12 @@
                     
                     if(log.action === 'CREATE') { actionColor = 'text-green-600 bg-green-50'; actionText = 'THÊM MỚI'; }
                     else if(log.action === 'UPDATE') { actionColor = 'text-blue-600 bg-blue-50'; actionText = 'SỬA ĐỔI'; }
-                    else { actionColor = 'text-red-600 bg-red-50'; actionText = 'ĐÃ XÓA'; }
+                    else if(log.action === 'DELETE') { actionColor = 'text-red-600 bg-red-50'; actionText = 'ĐÃ XÓA'; }
+                    else if(log.action === 'BACKUP') { actionColor = 'text-purple-600 bg-purple-50'; actionText = 'SAO LƯU'; }
+                    else if(log.action === 'RESTORE') { actionColor = 'text-yellow-600 bg-yellow-50'; actionText = 'KHÔI PHỤC'; }
+                    else { actionColor = 'text-gray-600 bg-gray-50'; actionText = 'HỆ THỐNG'; }
 
                     const time = new Date(log.timestamp).toLocaleString('vi-VN');
-                    
-                    // Khởi tạo HTML chi tiết thay đổi
                     let detailsHTML = '';
 
                     if (log.action === 'UPDATE' && log.oldData && log.newData) {
@@ -972,9 +1076,10 @@
                         detailsHTML = `<p class="mt-2 text-[11px] text-gray-500 bg-gray-50 p-2 rounded-xl">Tạo phiếu <b>${log.newData.type === 'in' ? 'nhập' : 'xuất'} ${fmtNum(log.newData.qty)} bao</b> tại ${GATES_MAP[log.newData.gate]?.name}.</p>`;
                     } else if (log.action === 'DELETE' && log.oldData) {
                         detailsHTML = `<p class="mt-2 text-[11px] text-red-400 bg-red-50/50 p-2 rounded-xl border border-red-100">Xóa phiếu <b>${log.oldData.type === 'in' ? 'nhập' : 'xuất'} ${fmtNum(log.oldData.qty)} bao</b> tại ${GATES_MAP[log.oldData.gate]?.name}.</p>`;
+                    } else if ((log.action === 'BACKUP' || log.action === 'RESTORE') && log.newData) {
+                        detailsHTML = `<p class="mt-2 text-[11px] text-gray-600 bg-gray-50 p-2 rounded-xl font-medium"><i data-lucide="database" class="w-3 h-3 inline mr-1 text-gray-400"></i> ${log.newData.message}</p>`;
                     }
 
-                    // Xuất ra HTML
                     logsList.insertAdjacentHTML('beforeend', `
                         <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-50 mb-3">
                             <div class="flex justify-between items-center mb-2">
@@ -999,7 +1104,6 @@
         const email = document.getElementById('admin-email').value.trim().toLowerCase();
         if (!email || !email.includes('@')) return window.showToast("Email không hợp lệ!", true);
         
-        // CẬP NHẬT: Nếu là Admin, tự động bật tất cả các quyền
         const isAdminChecked = document.getElementById('perm-admin').checked;
         const data = {
             canView: isAdminChecked || document.getElementById('perm-view').checked,
@@ -1018,7 +1122,7 @@
             
             window.showToast(`Đã cập nhật tài khoản: ${email}`);
             window.loadAdminData();
-            window.closeUserModal(); // Đóng modal sau khi xong
+            window.closeUserModal(); 
             
             setTimeout(() => { btn.innerText = originalText; }, 300);
         } catch (e) {
