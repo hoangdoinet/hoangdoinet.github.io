@@ -271,7 +271,7 @@
           <label class="flex items-center gap-2 bg-gray-50 p-3 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"><input type="checkbox" id="perm-view" class="w-4 h-4 text-teal-600 rounded"> Xem dữ liệu</label>
           <label class="flex items-center gap-2 bg-gray-50 p-3 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"><input type="checkbox" id="perm-write" class="w-4 h-4 text-teal-600 rounded"> Ghi / Sửa</label>
           <label class="flex items-center gap-2 bg-gray-50 p-3 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"><input type="checkbox" id="perm-delete" class="w-4 h-4 text-orange-500 rounded"> Xóa</label>
-          <label class="flex items-center gap-2 bg-purple-50 p-3 rounded-xl text-purple-700 cursor-pointer hover:bg-purple-100 transition-colors"><input type="checkbox" id="perm-admin" class="w-4 h-4 text-purple-600 rounded"> Admin</label>
+          <label class="flex items-center gap-2 bg-purple-50 p-3 rounded-xl text-purple-700 cursor-pointer hover:bg-purple-100 transition-colors"><input type="checkbox" id="perm-admin" onchange="if(this.checked){ document.getElementById('perm-view').checked = true; document.getElementById('perm-write').checked = true; document.getElementById('perm-delete').checked = true; }" class="w-4 h-4 text-purple-600 rounded"> Admin</label>
         </div>
         
         <div class="flex gap-3">
@@ -999,11 +999,13 @@
         const email = document.getElementById('admin-email').value.trim().toLowerCase();
         if (!email || !email.includes('@')) return window.showToast("Email không hợp lệ!", true);
         
+        // CẬP NHẬT: Nếu là Admin, tự động bật tất cả các quyền
+        const isAdminChecked = document.getElementById('perm-admin').checked;
         const data = {
-            canView: document.getElementById('perm-view').checked,
-            canWrite: document.getElementById('perm-write').checked,
-            canDelete: document.getElementById('perm-delete').checked,
-            isAdmin: document.getElementById('perm-admin').checked
+            canView: isAdminChecked || document.getElementById('perm-view').checked,
+            canWrite: isAdminChecked || document.getElementById('perm-write').checked,
+            canDelete: isAdminChecked || document.getElementById('perm-delete').checked,
+            isAdmin: isAdminChecked
         };
 
         try {
