@@ -171,7 +171,6 @@
       <div class="flex justify-between items-center mb-6">
         <h2 class="font-black text-gray-800 text-xl tracking-tight">Trang Quản Trị</h2>
         <div class="flex gap-2">
-            <!-- Nút Thêm tài khoản mở Modal -->
             <button onclick="window.openUserModal()" class="flex items-center gap-1.5 p-2 px-3 bg-teal-600 text-white rounded-xl active:scale-95 shadow-md shadow-teal-200 text-sm font-bold transition-all hover:bg-teal-700">
                 <i data-lucide="user-plus" class="w-4 h-4"></i> Thêm TK
             </button>
@@ -256,7 +255,6 @@
       </div>
     </div>
 
-    <!-- Modal Thêm/Sửa Tài khoản -->
     <div id="user-modal" class="modal-overlay fixed inset-0 z-[120] flex items-center justify-center p-4">
       <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm max-w-md mx-auto" onclick="window.closeUserModal()"></div>
       <div class="modal-content bg-white rounded-[2.5rem] p-6 w-full max-w-md relative z-10 shadow-2xl border border-gray-100">
@@ -912,16 +910,21 @@
                 const data = doc.data();
                 const email = doc.id;
                 const perms = [];
-                if(data.isAdmin) perms.push('<span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full text-[10px]">Admin</span>');
-                if(data.canView) perms.push('<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-[10px]">Xem</span>');
-                if(data.canWrite) perms.push('<span class="bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full text-[10px]">Ghi</span>');
-                if(data.canDelete) perms.push('<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-[10px]">Xóa</span>');
+                if(data.isAdmin) perms.push('<span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full text-[10px] font-bold">Admin</span>');
+                if(data.canView) perms.push('<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-[10px] font-bold">Xem</span>');
+                if(data.canWrite) perms.push('<span class="bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full text-[10px] font-bold">Ghi</span>');
+                if(data.canDelete) perms.push('<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-[10px] font-bold">Xóa</span>');
+                
+                // CẬP NHẬT: Nhãn màu cam, không icon cho tài khoản bị đình chỉ
+                if(perms.length === 0) {
+                    perms.push('<span class="bg-orange-500 text-white shadow-sm shadow-orange-200 px-2 py-0.5 rounded-full text-[10px] font-bold">Tài khoản bị đình chỉ</span>');
+                }
                 
                 usersList.insertAdjacentHTML('beforeend', `
                     <div class="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm border border-gray-50 cursor-pointer hover:bg-gray-50 transition-colors" onclick="window.openUserModal('${email}', ${data.canView}, ${data.canWrite}, ${data.canDelete}, ${data.isAdmin})">
                         <div>
                             <p class="font-bold text-sm text-gray-800">${email}</p>
-                            <div class="flex gap-1 mt-1">${perms.join('')}</div>
+                            <div class="flex gap-1.5 mt-1.5">${perms.join('')}</div>
                         </div>
                         <button class="p-2 text-gray-400 text-teal-600 bg-teal-50 rounded-xl"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
                     </div>
