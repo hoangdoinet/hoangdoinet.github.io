@@ -170,20 +170,13 @@
     <div id="admin-tab" class="tab-content p-6 relative z-0">
       <div class="flex justify-between items-center mb-6">
         <h2 class="font-black text-gray-800 text-xl tracking-tight">Trang Quản Trị</h2>
-        <button onclick="window.loadAdminData()" class="p-2 bg-purple-100 text-purple-600 rounded-xl active:scale-95"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
-      </div>
-
-      <div class="bg-white p-5 rounded-[2rem] shadow-sm mb-6 border border-purple-50">
-        <h3 class="font-bold text-gray-800 text-sm mb-4 flex items-center gap-2"><i data-lucide="user-plus" class="w-4 h-4 text-purple-500"></i> Cấp quyền Tài khoản mới</h3>
-        <input type="email" id="admin-email" placeholder="Nhập Email (vd: user@gmail.com)" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none text-sm font-medium mb-3">
-        
-        <div class="grid grid-cols-2 gap-3 mb-4 text-sm font-bold text-gray-600">
-          <label class="flex items-center gap-2 bg-gray-50 p-3 rounded-xl"><input type="checkbox" id="perm-view" class="w-4 h-4 text-teal-600 rounded"> Xem dữ liệu</label>
-          <label class="flex items-center gap-2 bg-gray-50 p-3 rounded-xl"><input type="checkbox" id="perm-write" class="w-4 h-4 text-teal-600 rounded"> Ghi / Sửa</label>
-          <label class="flex items-center gap-2 bg-gray-50 p-3 rounded-xl"><input type="checkbox" id="perm-delete" class="w-4 h-4 text-orange-500 rounded"> Xóa</label>
-          <label class="flex items-center gap-2 bg-purple-50 p-3 rounded-xl text-purple-700"><input type="checkbox" id="perm-admin" class="w-4 h-4 text-purple-600 rounded"> Admin</label>
+        <div class="flex gap-2">
+            <!-- Nút Thêm tài khoản mở Modal -->
+            <button onclick="window.openUserModal()" class="flex items-center gap-1.5 p-2 px-3 bg-teal-600 text-white rounded-xl active:scale-95 shadow-md shadow-teal-200 text-sm font-bold transition-all hover:bg-teal-700">
+                <i data-lucide="user-plus" class="w-4 h-4"></i> Thêm TK
+            </button>
+            <button onclick="window.loadAdminData()" class="p-2 bg-purple-100 text-purple-600 rounded-xl active:scale-95"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
         </div>
-        <button onclick="window.saveUserPermission()" class="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl font-black transition-all active:scale-95 shadow-lg shadow-purple-200">CẬP NHẬT QUYỀN</button>
       </div>
 
       <div class="mb-8">
@@ -260,6 +253,33 @@
         <h3 id="error-modal-title" class="text-2xl font-black text-gray-800 mb-3 tracking-tight">Tài khoản bị khóa</h3>
         <p id="error-modal-message" class="text-sm text-gray-500 mb-8 font-medium leading-relaxed">Chi tiết lỗi hiển thị ở đây...</p>
         <button onclick="window.closeErrorModal()" class="w-full py-4 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-2xl font-black transition-all active:scale-95">ĐÃ HIỂU</button>
+      </div>
+    </div>
+
+    <!-- Modal Thêm/Sửa Tài khoản -->
+    <div id="user-modal" class="modal-overlay fixed inset-0 z-[120] flex items-center justify-center p-4">
+      <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm max-w-md mx-auto" onclick="window.closeUserModal()"></div>
+      <div class="modal-content bg-white rounded-[2.5rem] p-6 w-full max-w-md relative z-10 shadow-2xl border border-gray-100">
+        <h3 id="user-modal-title" class="font-black text-gray-800 text-lg mb-5 flex items-center gap-2">
+            <i data-lucide="user-cog" class="w-5 h-5 text-purple-500"></i> Cấp quyền Tài khoản
+        </h3>
+        
+        <div class="mb-4">
+            <label class="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Địa chỉ Email</label>
+            <input type="email" id="admin-email" placeholder="Nhập Email (vd: user@gmail.com)" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none text-sm font-medium transition-all">
+        </div>
+        
+        <div class="grid grid-cols-2 gap-3 mb-6 text-sm font-bold text-gray-600">
+          <label class="flex items-center gap-2 bg-gray-50 p-3 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"><input type="checkbox" id="perm-view" class="w-4 h-4 text-teal-600 rounded"> Xem dữ liệu</label>
+          <label class="flex items-center gap-2 bg-gray-50 p-3 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"><input type="checkbox" id="perm-write" class="w-4 h-4 text-teal-600 rounded"> Ghi / Sửa</label>
+          <label class="flex items-center gap-2 bg-gray-50 p-3 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"><input type="checkbox" id="perm-delete" class="w-4 h-4 text-orange-500 rounded"> Xóa</label>
+          <label class="flex items-center gap-2 bg-purple-50 p-3 rounded-xl text-purple-700 cursor-pointer hover:bg-purple-100 transition-colors"><input type="checkbox" id="perm-admin" class="w-4 h-4 text-purple-600 rounded"> Admin</label>
+        </div>
+        
+        <div class="flex gap-3">
+            <button onclick="window.closeUserModal()" class="flex-1 py-4 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-2xl font-bold transition-all active:scale-95">Hủy bỏ</button>
+            <button onclick="window.saveUserPermission(event)" class="flex-1 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl font-black transition-all active:scale-95 shadow-lg shadow-purple-200">LƯU QUYỀN</button>
+        </div>
       </div>
     </div>
     
@@ -848,6 +868,38 @@
     }
 
     // --- LOGIC TRANG QUẢN TRỊ ---
+    
+    // Mở Modal Thêm/Sửa Tài khoản
+    window.openUserModal = function(email = '', view = false, write = false, del = false, admin = false) {
+        const emailInput = document.getElementById('admin-email');
+        emailInput.value = email;
+        document.getElementById('perm-view').checked = view;
+        document.getElementById('perm-write').checked = write;
+        document.getElementById('perm-delete').checked = del;
+        document.getElementById('perm-admin').checked = admin;
+        
+        // Đổi tiêu đề dựa trên trạng thái (Thêm mới hay Chỉnh sửa)
+        const titleEl = document.getElementById('user-modal-title');
+        if (email) {
+            titleEl.innerHTML = '<i data-lucide="user-check" class="w-5 h-5 text-purple-500"></i> Chỉnh sửa Tài khoản';
+            // Khóa không cho đổi email khi đang sửa (vì Firestore dùng Email làm ID Document)
+            emailInput.disabled = true;
+            emailInput.classList.add('opacity-60', 'cursor-not-allowed');
+        } else {
+            titleEl.innerHTML = '<i data-lucide="user-plus" class="w-5 h-5 text-purple-500"></i> Thêm Tài khoản mới';
+            emailInput.disabled = false;
+            emailInput.classList.remove('opacity-60', 'cursor-not-allowed');
+        }
+
+        document.getElementById('user-modal').classList.add('active');
+        lucide.createIcons({ root: document.getElementById('user-modal') });
+    };
+
+    // Đóng Modal
+    window.closeUserModal = function() {
+        document.getElementById('user-modal').classList.remove('active');
+    };
+
     window.loadAdminData = async function() {
         if (!window.userPermissions.isAdmin) return;
         
@@ -866,12 +918,12 @@
                 if(data.canDelete) perms.push('<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-[10px]">Xóa</span>');
                 
                 usersList.insertAdjacentHTML('beforeend', `
-                    <div class="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm border border-gray-50">
+                    <div class="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm border border-gray-50 cursor-pointer hover:bg-gray-50 transition-colors" onclick="window.openUserModal('${email}', ${data.canView}, ${data.canWrite}, ${data.canDelete}, ${data.isAdmin})">
                         <div>
                             <p class="font-bold text-sm text-gray-800">${email}</p>
                             <div class="flex gap-1 mt-1">${perms.join('')}</div>
                         </div>
-                        <button onclick="window.editUser('${email}', ${data.canView}, ${data.canWrite}, ${data.canDelete}, ${data.isAdmin})" class="p-2 text-gray-400 hover:text-teal-600 bg-gray-50 rounded-xl"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                        <button class="p-2 text-gray-400 text-teal-600 bg-teal-50 rounded-xl"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
                     </div>
                 `);
             });
@@ -940,16 +992,7 @@
         }
     };
 
-    window.editUser = function(email, view, write, del, admin) {
-        document.getElementById('admin-email').value = email;
-        document.getElementById('perm-view').checked = view;
-        document.getElementById('perm-write').checked = write;
-        document.getElementById('perm-delete').checked = del;
-        document.getElementById('perm-admin').checked = admin;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    window.saveUserPermission = async function() {
+    window.saveUserPermission = async function(event) {
         const email = document.getElementById('admin-email').value.trim().toLowerCase();
         if (!email || !email.includes('@')) return window.showToast("Email không hợp lệ!", true);
         
@@ -962,13 +1005,17 @@
 
         try {
             const btn = event.currentTarget;
-            btn.innerText = "ĐANG LƯU...";
+            const originalText = btn.innerText;
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin inline-block mr-1"></i> ĐANG LƯU...';
+            lucide.createIcons({ root: btn });
+            
             await setDoc(doc(firestore, 'users', email), data);
-            window.showToast(`Đã cập nhật quyền cho ${email}`);
-            document.getElementById('admin-email').value = '';
-            ['view','write','delete','admin'].forEach(id => document.getElementById(`perm-${id}`).checked = false);
+            
+            window.showToast(`Đã cập nhật tài khoản: ${email}`);
             window.loadAdminData();
-            btn.innerText = "CẬP NHẬT QUYỀN";
+            window.closeUserModal(); // Đóng modal sau khi xong
+            
+            setTimeout(() => { btn.innerText = originalText; }, 300);
         } catch (e) {
             window.showToast("Lỗi cập nhật! Kiểm tra lại quyền Admin của bạn.", true);
         }
