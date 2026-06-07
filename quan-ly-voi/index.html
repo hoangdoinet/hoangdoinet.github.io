@@ -966,7 +966,7 @@
                         if (changes.length > 0) {
                             detailsHTML = `<ul class="mt-3 text-[11px] space-y-1.5 bg-blue-50/50 p-2.5 rounded-xl border border-blue-100 text-gray-600">${changes.join('')}</ul>`;
                         } else {
-                            detailsHTML = `<p class="mt-2 text-[11px] text-gray-400 italic">Không có thay đổi dữ liệu thực tế.</p>`;
+                            detailsHTML = `<p class="mt-2 text-[11px] text-gray-500 bg-gray-50 p-2 rounded-xl">Không có thay đổi dữ liệu thực tế.</p>`;
                         }
                     } else if (log.action === 'CREATE' && log.newData) {
                         detailsHTML = `<p class="mt-2 text-[11px] text-gray-500 bg-gray-50 p-2 rounded-xl">Tạo phiếu <b>${log.newData.type === 'in' ? 'nhập' : 'xuất'} ${fmtNum(log.newData.qty)} bao</b> tại ${GATES_MAP[log.newData.gate]?.name}.</p>`;
