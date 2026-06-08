@@ -25,6 +25,19 @@
 </head>
 <body class="font-sans bg-gray-100 text-gray-800 relative">
 
+  <!-- MÀN HÌNH CHỜ TẢI DỮ LIỆU TOÀN CỤC -->
+  <div id="global-loader" class="fixed inset-0 z-[1000] bg-teal-800 flex flex-col items-center justify-center transition-opacity duration-500">
+    <div class="relative w-20 h-20 flex items-center justify-center mb-6">
+       <!-- Vòng tròn mờ bên dưới -->
+       <div class="absolute inset-0 border-4 border-teal-600/50 rounded-full"></div>
+       <!-- Vòng tròn xoay bên trên -->
+       <div class="absolute inset-0 border-4 border-white rounded-full border-t-transparent animate-spin"></div>
+       <!-- Icon ở giữa -->
+       <i data-lucide="boxes" class="w-8 h-8 text-white absolute"></i>
+    </div>
+    <h2 class="text-white text-sm font-black tracking-[0.3em] animate-pulse">ĐANG TẢI...</h2>
+  </div>
+
   <div id="login-overlay" class="fixed inset-0 z-[300] bg-teal-800 flex flex-col items-center justify-center text-white transition-opacity duration-500">
     <div class="bg-white/10 p-8 rounded-[2.5rem] backdrop-blur-md border border-white/20 text-center max-w-sm w-full mx-4 shadow-2xl">
       <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner">
@@ -171,7 +184,7 @@
 
     <div id="admin-users-tab" class="tab-content p-6 relative z-0">
       <div class="flex justify-between items-center mb-6">
-        <h2 class="font-black text-gray-800 text-xl tracking-tight">Tài Khoản</h2>
+        <h2 class="font-black text-gray-800 text-xl tracking-tight">Tài khoản</h2>
         <div class="flex gap-2">
             <button onclick="window.openUserModal()" class="flex items-center gap-1.5 p-2 px-3 bg-teal-600 text-white rounded-xl active:scale-95 shadow-md shadow-teal-200 text-sm font-bold transition-all hover:bg-teal-700">
                 <i data-lucide="user-plus" class="w-4 h-4"></i> Thêm
@@ -355,6 +368,17 @@
     const provider = new GoogleAuthProvider();
     const loginOverlay = document.getElementById('login-overlay');
 
+    // Hàm ẩn màn hình loading với hiệu ứng mờ dần (fade-out)
+    window.hideGlobalLoader = function() {
+        const loader = document.getElementById('global-loader');
+        if (loader && !loader.classList.contains('hidden')) {
+            loader.classList.add('opacity-0');
+            setTimeout(() => {
+                loader.classList.add('hidden');
+            }, 500); // Đợi 0.5s cho hiệu ứng CSS chạy xong
+        }
+    };
+
     window.showErrorModal = function(title, message) {
         document.getElementById('error-modal-title').innerText = title;
         document.getElementById('error-modal-message').innerText = message;
@@ -368,7 +392,6 @@
     window.showConfirmModal = function(title, message, okText = "ĐỒNG Ý", okBgColor = "bg-yellow-500 hover:bg-yellow-600 shadow-yellow-200") {
         return new Promise((resolve) => {
             const modal = document.getElementById('confirm-modal');
-            //const backdrop = document.getElementById('confirm-backdrop');
             const btnOk = document.getElementById('confirm-modal-ok');
             const btnCancel = document.getElementById('confirm-modal-cancel');
 
@@ -384,7 +407,6 @@
                 modal.classList.remove('active');
                 btnOk.removeEventListener('click', onOk);
                 btnCancel.removeEventListener('click', onCancel);
-                //backdrop.removeEventListener('click', onCancel);
             };
 
             const onOk = () => { cleanup(); resolve(true); };
@@ -392,7 +414,6 @@
 
             btnOk.addEventListener('click', onOk);
             btnCancel.addEventListener('click', onCancel);
-            //backdrop.addEventListener('click', onCancel);
         });
     };
     
@@ -414,7 +435,7 @@
 	        "Đăng xuất hệ thống",
 	        "Bạn có chắc chắn muốn đăng xuất khỏi tài khoản Quản lý Vôi QT không?",
 	        "ĐĂNG XUẤT",
-	        "bg-red-500 hover:bg-red-600 shadow-red-200" // Đổi màu nút xác nhận thành màu đỏ cho phù hợp hành động
+	        "bg-red-500 hover:bg-red-600 shadow-red-200"
 	    );
 	
 	    if (isConfirmed) {
@@ -465,10 +486,14 @@
               window.showErrorModal("Chưa được cấp phép", `Tài khoản ${user.email} chưa được đăng ký trong hệ thống. Vui lòng liên hệ quản trị viên để được cấp quyền.`);
               signOut(auth);
             }
+            
+            window.hideGlobalLoader();
         } catch(e) {
             console.error("Lỗi xác thực quyền:", e);
             window.showToast("Lỗi lấy thông tin phân quyền!", true);
             signOut(auth);
+            
+            window.hideGlobalLoader();
         }
       } else {
         loginOverlay.classList.remove('opacity-0', 'pointer-events-none');
@@ -485,6 +510,8 @@
         if (adminUsersList) adminUsersList.innerHTML = '';
         if (adminLogsList) adminLogsList.innerHTML = '';
         if (transactionList) transactionList.innerHTML = '';
+        
+        window.hideGlobalLoader();
       }
     });
 
@@ -952,7 +979,6 @@
           const importedData = JSON.parse(e.target.result);
           if (!importedData.history || !Array.isArray(importedData.history)) throw new Error("File không hợp lệ.");
 
-          // Sử dụng Modal Xác nhận tùy biến đẹp mắt thay cho confirm mặc định
           const isConfirmed = await window.showConfirmModal(
               "Khôi phục dữ liệu",
               `Hệ thống sẽ tiến hành nhập ${importedData.history.length} bản ghi và ghi đè toàn bộ dữ liệu tồn kho hiện tại. Bạn chắc chắn muốn tiếp tục?`,
