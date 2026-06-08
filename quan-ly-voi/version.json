@@ -1,0 +1,71 @@
+{
+  "app": "Quản lý Vôi QT",
+  "id": "voi-inventory-qt",
+  "website": "https://hoangdoinet.github.io/quan-ly-voi/",
+  "version": "v1.0.4",
+  "release_date": "2026-06-08",
+  "author": "Hoàng Đợi",
+
+  "notes": [
+    "Phiên bản v1.0.4: Chuyển đổi sang hệ thống cơ sở dữ liệu thời gian thực Firebase, tích hợp hoàn thiện tính năng phục hồi dữ liệu JSON và tối ưu hóa bộ nhớ đệm (Cache) cho hoạt động kho vận."
+  ],
+
+  "latest": {
+    "version": "v1.0.4",
+    "release_date": "2026-06-08",
+    "summary": "Nâng cấp hạ tầng dữ liệu và tính năng quản trị.",
+    "changelog": [
+      "Tích hợp Firebase Firestore làm cơ sở dữ liệu tập trung, hỗ trợ đồng bộ thời gian thực.",
+      "Thêm tính năng Phục hồi dữ liệu từ file JSON trực tiếp từ giao diện quản trị.",
+      "Cải thiện cơ chế kiểm tra cập nhật (Update Banner) để đảm bảo người dùng luôn dùng bản mới nhất.",
+      "Tối ưu Service Worker để đảm bảo hoạt động Offline 100% các thành phần UI cốt lõi.",
+      "Hoàn thiện hệ thống phân quyền người dùng (Firebase Auth)."
+    ]
+  },
+
+  "changelog": [
+    {
+      "version": "v1.0.4",
+      "release_date": "2026-06-08",
+      "changes": [
+        "Chuyển đổi lưu trữ từ LocalStorage sang Firebase Firestore.",
+        "Bổ sung tính năng Phục hồi JSON.",
+        "Cải thiện độ ổn định của Service Worker."
+      ]
+    },
+    {
+      "version": "v1.0.3",
+      "release_date": "2026-05-08",
+      "changes": [
+        "Nâng cấp hệ thống thông báo cập nhật tự động.",
+        "Tối ưu hóa bộ nhớ đệm (Cache) cho chế độ offline tại kho."
+      ]
+    },
+    {
+      "version": "v1.0.2",
+      "release_date": "2026-04-25",
+      "changes": [
+        "Thêm bộ lọc nhanh theo Cổng Nhập, Cổng Xuất và Cổng Chính.",
+        "Cải thiện giao diện báo cáo chi tiết theo từng cổng."
+      ]
+    },
+    {
+      "version": "v1.0.1",
+      "release_date": "2026-04-10",
+      "changes": [
+        "Thêm chức năng Báo cáo tháng và thống kê chi tiết.",
+        "Hỗ trợ xuất file JSON để sao lưu dữ liệu.",
+        "Cảnh báo khi người dùng nhập số lượng gây âm kho."
+      ]
+    },
+    {
+      "version": "v1.0.0",
+      "release_date": "2026-01-15",
+      "changes": [
+        "Khởi tạo phiên bản đầu tiên.",
+        "Quản lý xuất/nhập vôi cơ bản.",
+        "Lưu trữ dữ liệu cục bộ trên trình duyệt (LocalStorage)."
+      ]
+    }
+  ]
+}

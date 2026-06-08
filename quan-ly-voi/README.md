@@ -1,31 +1,31 @@
-# 🏭 Quản lý tồn kho Vôi QT (PWA)
+# 🏭 Quản lý Vôi QT (PWA)
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen)](https://hoangdoinet.github.io/quan-ly-voi/)
 [![PWA](https://img.shields.io/badge/PWA-Ready-orange)](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
 
-Ứng dụng web để quản lý xuất nhập tồn kho vôi tại các cổng (Cổng Nhập, Cổng Xuất, Cổng Chính). Được thiết kế tối ưu cho thiết bị di động với khả năng hoạt động ngoại tuyến hoàn hảo sau khi cài đặt vào thiết bị.
+Ứng dụng web tiến bộ (**Progressive Web App**) chuyên dụng để quản lý xuất nhập tồn kho vôi tại các cổng (Cổng Nhập, Cổng Xuất, Cổng Chính). Được thiết kế tối ưu cho thiết bị di động với khả năng đồng bộ thời gian thực và làm việc ổn định trong môi trường thiếu mạng.
 
 ---
 
 ## ✨ Tính năng nổi bật
 
-* **📱 Trải nghiệm App:** Hỗ trợ cài đặt trực tiếp lên màn hình chính điện thoại (Android & iOS).
-* **📡 Hoạt động Offline:** Truy cập và nhập liệu bình thường ngay cả khi không có kết nối internet nhờ **Service Worker**.
-* **📊 Thống kê chi tiết:** Báo cáo số dư đầu kỳ, tổng nhập/xuất và số dư cuối kỳ theo từng tháng.
-* **🔍 Tìm kiếm thông minh:** Lọc nhanh lịch sử giao dịch theo ghi chú, tên cổng hoặc biển số xe.
-* **💾 Sao lưu & Phục hồi:** Xuất/Nhập dữ liệu qua file JSON để đảm bảo an toàn thông tin khi chuyển đổi thiết bị.
-* **⚡ Hiệu năng cao:** Giao diện tối giản, mượt mà, không giật lag.
+* **📱 Trải nghiệm App:** Cài đặt trực tiếp lên màn hình chính (Android & iOS) với giao diện tối ưu cho người dùng di động.
+* **📡 Đồng bộ thời gian thực:** Kết nối Firebase giúp dữ liệu được cập nhật tức thì trên mọi thiết bị.
+* **📶 Hoạt động Offline:** Hỗ trợ nhập liệu ngay cả khi mất kết nối mạng, tự động đồng bộ khi có kết nối trở lại.
+* **📊 Thống kê chuyên sâu:** Báo cáo tồn kho, nhập/xuất theo tháng, theo cổng với độ chính xác cao.
+* **🔍 Tìm kiếm thông minh:** Lọc nhanh lịch sử giao dịch theo nhiều tiêu chí (Ghi chú, Cổng, Loại phiếu).
+* **💾 Sao lưu & Phục hồi:** Hỗ trợ tính năng Xuất/Nhập dữ liệu qua file JSON để quản trị và dự phòng dữ liệu an toàn.
+* **⚡ Hiệu năng cao:** Giao diện tối giản, sử dụng bộ icon Lucide sắc nét, mượt mà.
 
 ---
 
 ## 🛠 Công nghệ sử dụng
 
-* **HTML5 & CSS3:** Cấu trúc giao diện.
-* **Tailwind CSS:** Framework CSS giúp tối ưu UI/UX mobile.
-* **Lucide Icons:** Bộ icon vector sắc nét.
-* **Vanilla JavaScript:** Xử lý logic nghiệp vụ.
-* **PWA Technologies:** Web Manifest & Service Worker API.
-* **LocalStorage:** Lưu trữ dữ liệu trực tiếp trên trình duyệt người dùng.
+* **Frontend:** HTML5, Tailwind CSS, JavaScript (Vanilla).
+* **Backend & Database:** Firebase Firestore (Realtime Database).
+* **Authentication:** Firebase Auth (Đăng nhập an toàn qua tài khoản Google).
+* **PWA:** Web Manifest & Service Worker API.
+* **Icons:** Lucide Icons.
 
 ---
 
@@ -44,11 +44,10 @@
 ---
 
 ## 📝 Lưu ý về dữ liệu
-Dữ liệu của bạn được lưu trữ cục bộ trong bộ nhớ trình duyệt (**LocalStorage**). 
-> **Khuyến nghị:** Hãy thường xuyên sử dụng tính năng **Sao lưu (Icon lưu trữ)** để xuất file dữ liệu ra ngoài, phòng trường hợp bạn xóa lịch sử duyệt web hoặc đổi thiết bị.
+Dữ liệu được lưu trữ trên máy chủ Firebase để đảm bảo tính đồng nhất giữa nhiều người dùng. 
+> **Khuyến nghị:** Dù dữ liệu đã được lưu trữ tập trung, bạn vẫn nên sử dụng tính năng **Phục hồi JSON** định kỳ để chủ động sao lưu dữ liệu cá nhân về thiết bị, đề phòng trường hợp cần khôi phục cấu hình hoặc lịch sử giao dịch cũ.
 
 ---
 
 ## 👤 Tác giả
 * **Hoàng Đợi** - [GitHub Profile](https://github.com/hoangdoinet)
-
