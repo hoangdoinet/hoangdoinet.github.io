@@ -25,14 +25,10 @@
 </head>
 <body class="font-sans bg-gray-100 text-gray-800 relative">
 
-  <!-- MÀN HÌNH CHỜ TẢI DỮ LIỆU TOÀN CỤC -->
   <div id="global-loader" class="fixed inset-0 z-[1000] bg-teal-800 flex flex-col items-center justify-center transition-opacity duration-500">
     <div class="relative w-20 h-20 flex items-center justify-center mb-6">
-       <!-- Vòng tròn mờ bên dưới -->
        <div class="absolute inset-0 border-4 border-teal-600/50 rounded-full"></div>
-       <!-- Vòng tròn xoay bên trên -->
        <div class="absolute inset-0 border-4 border-white rounded-full border-t-transparent animate-spin"></div>
-       <!-- Icon ở giữa -->
        <i data-lucide="boxes" class="w-8 h-8 text-white absolute"></i>
     </div>
     <h2 class="text-white text-sm font-black tracking-[0.3em] animate-pulse">ĐANG TẢI...</h2>
@@ -50,7 +46,6 @@
         Đăng nhập với Google
       </button>
       
-      <!-- NÚT TẢI ỨNG DỤNG MÀN HÌNH ĐĂNG NHẬP -->
       <button id="btn-install-login" class="hidden w-full mt-4 py-4 bg-teal-700/40 hover:bg-teal-700/60 text-white rounded-2xl font-black flex items-center justify-center gap-3 active:scale-95 transition-all border border-teal-400/30">
         <i data-lucide="download" class="w-5 h-5"></i>
         Tải ứng dụng ngay
@@ -289,8 +284,11 @@
         </div>
         
         <div class="flex gap-3">
-            <button onclick="window.closeUserModal()" class="flex-1 py-4 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-2xl font-bold transition-all active:scale-95">Hủy bỏ</button>
-            <button onclick="window.saveUserPermission(event)" class="flex-1 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl font-black transition-all active:scale-95 shadow-lg shadow-purple-200">LƯU QUYỀN</button>
+            <button id="btn-delete-user" type="button" onclick="window.deleteUserAccountModal()" class="hidden py-4 px-5 bg-red-50 hover:bg-red-100 text-red-500 rounded-2xl font-bold transition-all active:scale-95 border border-red-100" title="Xóa tài khoản">
+                <i data-lucide="trash-2" class="w-5 h-5 mx-auto"></i>
+            </button>
+            <button type="button" onclick="window.closeUserModal()" class="flex-1 py-4 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-2xl font-bold transition-all active:scale-95">Hủy bỏ</button>
+            <button type="button" onclick="window.saveUserPermission(event)" class="flex-[1.5] py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl font-black transition-all active:scale-95 shadow-lg shadow-purple-200">LƯU QUYỀN</button>
         </div>
       </div>
     </div>
@@ -318,13 +316,9 @@
 
     <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 backdrop-blur-xl border-t border-gray-100 px-6 py-4 flex justify-between items-center z-40">
       <button onclick="window.switchTab('home')" id="nav-home" class="text-teal-600 p-2 transition-all"><i data-lucide="clipboard-list"></i></button>
-      
       <button onclick="window.switchTab('admin-users')" id="nav-users" class="hidden text-gray-300 p-2 transition-all" title="Tài khoản"><i data-lucide="users"></i></button>
-      
       <button onclick="window.switchTab('add')" class="bg-teal-600 p-4 rounded-2xl -mt-10 shadow-xl shadow-teal-300 border-4 border-white text-white active:rotate-90 transition-all"><i data-lucide="plus"></i></button>
-      
       <button onclick="window.switchTab('admin-logs')" id="nav-logs" class="hidden text-gray-300 p-2 transition-all" title="Nhật ký"><i data-lucide="activity"></i></button>
-      
       <button onclick="window.switchTab('stats')" id="nav-stats" class="text-gray-300 p-2 transition-all"><i data-lucide="bar-chart-2"></i></button>
     </nav>
   </div>
@@ -367,14 +361,13 @@
     const provider = new GoogleAuthProvider();
     const loginOverlay = document.getElementById('login-overlay');
 
-    // Hàm ẩn màn hình loading với hiệu ứng mờ dần (fade-out)
     window.hideGlobalLoader = function() {
         const loader = document.getElementById('global-loader');
         if (loader && !loader.classList.contains('hidden')) {
             loader.classList.add('opacity-0');
             setTimeout(() => {
                 loader.classList.add('hidden');
-            }, 500); // Đợi 0.5s cho hiệu ứng CSS chạy xong
+            }, 500); 
         }
     };
 
@@ -387,7 +380,6 @@
         document.getElementById('error-modal').classList.remove('active');
     };
 
-    // Hàm hiển thị Modal Xác nhận dùng chung (Trả về Promise)
     window.showConfirmModal = function(title, message, okText = "ĐỒNG Ý", okBgColor = "bg-yellow-500 hover:bg-yellow-600 shadow-yellow-200") {
         return new Promise((resolve) => {
             const modal = document.getElementById('confirm-modal');
@@ -912,7 +904,7 @@
               by: {
                   email: auth.currentUser.email,
                   name: auth.currentUser.displayName || 'Ẩn danh'
-              },
+                },
               timestamp: new Date().toISOString(),
               client: {
                   userAgent: navigator.userAgent,
@@ -1057,7 +1049,13 @@
     };
     
     window.openUserModal = function(email = '', view = false, write = false, del = false, admin = false) {
+        if (email && auth.currentUser && email === auth.currentUser.email) {
+            return window.showToast("Bạn không thể tự chỉnh sửa quyền của chính tài khoản mình!", true);
+        }
+
         const emailInput = document.getElementById('admin-email');
+        const btnDelete = document.getElementById('btn-delete-user');
+        
         emailInput.value = email;
         document.getElementById('perm-view').checked = view;
         document.getElementById('perm-write').checked = write;
@@ -1069,10 +1067,12 @@
             titleEl.innerHTML = '<i data-lucide="user-check" class="w-5 h-5 text-purple-500"></i> Chỉnh sửa Tài khoản';
             emailInput.disabled = true;
             emailInput.classList.add('opacity-60', 'cursor-not-allowed');
+            btnDelete.classList.remove('hidden');
         } else {
             titleEl.innerHTML = '<i data-lucide="user-plus" class="w-5 h-5 text-purple-500"></i> Thêm Tài khoản mới';
             emailInput.disabled = false;
             emailInput.classList.remove('opacity-60', 'cursor-not-allowed');
+            btnDelete.classList.add('hidden');
         }
 
         document.getElementById('user-modal').classList.add('active');
@@ -1101,7 +1101,7 @@
                 if(data.canDelete) perms.push('<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-[10px] font-bold">Xóa</span>');
                 
                 if(perms.length === 0) {
-                    perms.push('<span class="bg-orange-500 text-white shadow-sm shadow-orange-200 px-2 py-0.5 rounded-full text-[10px] font-bold">Tài khoản bị đình chỉ</span>');
+                    perms.push('<span class="bg-orange-500 text-white shadow-sm shadow-orange-200 px-2 py-0.5 rounded-full text-[10px] font-bold">Tạm khóa</span>');
                 }
                 
                 usersList.insertAdjacentHTML('beforeend', `
@@ -1126,11 +1126,14 @@
                     const log = doc.data();
                     let actionColor, actionText;
                     
-                    if(log.action === 'CREATE') { actionColor = 'text-green-600 bg-green-50'; actionText = 'THÊM MỚI'; }
-                    else if(log.action === 'UPDATE') { actionColor = 'text-blue-600 bg-blue-50'; actionText = 'SỬA ĐỔI'; }
-                    else if(log.action === 'DELETE') { actionColor = 'text-red-600 bg-red-50'; actionText = 'ĐÃ XÓA'; }
-                    else if(log.action === 'BACKUP') { actionColor = 'text-purple-600 bg-purple-50'; actionText = 'SAO LƯU'; }
-                    else if(log.action === 'RESTORE') { actionColor = 'text-yellow-600 bg-yellow-50'; actionText = 'KHÔI PHỤC'; }
+                    if(log.action === 'CREATE') { actionColor = 'text-green-600 bg-green-50'; actionText = 'THÊM PHIẾU'; }
+                    else if(log.action === 'UPDATE') { actionColor = 'text-blue-600 bg-blue-50'; actionText = 'SỬA PHIẾU'; }
+                    else if(log.action === 'DELETE') { actionColor = 'text-red-600 bg-red-50'; actionText = 'XÓA PHIẾU'; }
+                    else if(log.action === 'BACKUP') { actionColor = 'text-purple-600 bg-purple-50'; actionText = 'SAO LƯU DỮ LIỆU'; }
+                    else if(log.action === 'RESTORE') { actionColor = 'text-yellow-600 bg-yellow-50'; actionText = 'KHÔI PHỤC DỮ LIỆU'; }
+                    else if(log.action === 'CREATE_USER') { actionColor = 'text-teal-600 bg-teal-50'; actionText = 'THÊM TÀI KHOẢN'; }
+                    else if(log.action === 'UPDATE_USER') { actionColor = 'text-indigo-600 bg-indigo-50'; actionText = 'CẬP NHẬT TÀI KHOẢN'; }
+                    else if(log.action === 'DELETE_USER') { actionColor = 'text-orange-600 bg-orange-50'; actionText = 'XÓA TÀI KHOẢN'; }
                     else { actionColor = 'text-gray-600 bg-gray-50'; actionText = 'HỆ THỐNG'; }
 
                     const time = new Date(log.timestamp).toLocaleString('vi-VN');
@@ -1159,6 +1162,29 @@
                         detailsHTML = `<p class="mt-2 text-[11px] text-red-400 bg-red-50/50 p-2 rounded-xl border border-red-100">Xóa phiếu <b>${log.oldData.type === 'in' ? 'nhập' : 'xuất'} ${fmtNum(log.oldData.qty)} bao</b> tại ${GATES_MAP[log.oldData.gate]?.name}.</p>`;
                     } else if ((log.action === 'BACKUP' || log.action === 'RESTORE') && log.newData) {
                         detailsHTML = `<p class="mt-2 text-[11px] text-gray-600 bg-gray-50 p-2 rounded-xl font-medium"><i data-lucide="database" class="w-3 h-3 inline mr-1 text-gray-400"></i> ${log.newData.message}</p>`;
+                    } else if (log.action === 'CREATE_USER' && log.newData) {
+                        let perms = [];
+                        if(log.newData.isAdmin) perms.push('Admin');
+                        if(log.newData.canView) perms.push('Xem');
+                        if(log.newData.canWrite) perms.push('Ghi');
+                        if(log.newData.canDelete) perms.push('Xóa');
+                        detailsHTML = `<p class="mt-2 text-[11px] text-gray-500 bg-gray-50 p-2 rounded-xl">Cấp mới quyền truy cập hệ thống. Các quyền: <b>${perms.join(', ') || 'Đình chỉ'}</b>.</p>`;
+                    } else if (log.action === 'UPDATE_USER' && log.oldData && log.newData) {
+                        const o = log.oldData;
+                        const n = log.newData;
+                        let changes = [];
+                        if (o.isAdmin !== n.isAdmin) changes.push(`<li><b>Admin:</b> <span class="text-gray-400">${o.isAdmin}</span> <i data-lucide="arrow-right" class="w-3 h-3 inline"></i> <span class="text-indigo-600 font-bold">${n.isAdmin}</span></li>`);
+                        if (o.canView !== n.canView) changes.push(`<li><b>Xem:</b> <span class="text-gray-400">${o.canView}</span> <i data-lucide="arrow-right" class="w-3 h-3 inline"></i> <span class="text-indigo-600 font-bold">${n.canView}</span></li>`);
+                        if (o.canWrite !== n.canWrite) changes.push(`<li><b>Ghi:</b> <span class="text-gray-400">${o.canWrite}</span> <i data-lucide="arrow-right" class="w-3 h-3 inline"></i> <span class="text-indigo-600 font-bold">${n.canWrite}</span></li>`);
+                        if (o.canDelete !== n.canDelete) changes.push(`<li><b>Xóa:</b> <span class="text-gray-400">${o.canDelete}</span> <i data-lucide="arrow-right" class="w-3 h-3 inline"></i> <span class="text-indigo-600 font-bold">${n.canDelete}</span></li>`);
+                        
+                        if (changes.length > 0) {
+                            detailsHTML = `<ul class="mt-3 text-[11px] space-y-1.5 bg-indigo-50/50 p-2.5 rounded-xl border border-indigo-100 text-gray-600">${changes.join('')}</ul>`;
+                        } else {
+                            detailsHTML = `<p class="mt-2 text-[11px] text-gray-500 bg-gray-50 p-2 rounded-xl">Cập nhật thông tin nhưng cấu hình phân quyền không đổi.</p>`;
+                        }
+                    } else if (log.action === 'DELETE_USER' && log.oldData) {
+                        detailsHTML = `<p class="mt-2 text-[11px] text-red-500 bg-red-50/50 p-2 rounded-xl border border-red-100">Xóa tài khoản và Thu hồi quyền truy cập hệ thống.</p>`;
                     }
 
                     logsList.insertAdjacentHTML('beforeend', `
@@ -1168,7 +1194,7 @@
                                 <span class="text-[10px] text-gray-400 font-bold">${time}</span>
                             </div>
                             <p class="text-xs text-gray-800 font-medium mb-1"><span class="text-gray-400">Tài khoản:</span> ${log.by.email}</p>
-                            <p class="text-xs text-gray-800 font-medium"><span class="text-gray-400">ID phiếu:</span> ${log.txId}</p>
+                            <p class="text-xs text-gray-800 font-medium"><span class="text-gray-400">Đối tượng:</span> ${log.txId}</p>
                             ${detailsHTML}
                         </div>
                     `);
@@ -1186,6 +1212,10 @@
         const email = document.getElementById('admin-email').value.trim().toLowerCase();
         if (!email || !email.includes('@')) return window.showToast("Email không hợp lệ!", true);
         
+        if (auth.currentUser && email === auth.currentUser.email) {
+            return window.showToast("Hành động bị từ chối: Không thể tự đổi quyền!", true);
+        }
+        
         const isAdminChecked = document.getElementById('perm-admin').checked;
         const data = {
             canView: isAdminChecked || document.getElementById('perm-view').checked,
@@ -1200,7 +1230,32 @@
             btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin inline-block mr-1"></i> ĐANG LƯU...';
             lucide.createIcons({ root: btn });
             
-            await setDoc(doc(firestore, 'users', email), data);
+            const userRef = doc(firestore, 'users', email);
+            const userSnap = await getDoc(userRef);
+            const isUpdate = userSnap.exists();
+            const oldData = isUpdate ? userSnap.data() : null;
+
+            const batch = writeBatch(firestore);
+            batch.set(userRef, data);
+            
+            const auditRef = doc(collection(firestore, 'audit_logs'));
+            batch.set(auditRef, {
+                action: isUpdate ? 'UPDATE_USER' : 'CREATE_USER',
+                txId: email,
+                by: {
+                    email: auth.currentUser.email,
+                    name: auth.currentUser.displayName || 'Ẩn danh'
+                },
+                timestamp: new Date().toISOString(),
+                client: {
+                    userAgent: navigator.userAgent,
+                    online: navigator.onLine
+                },
+                oldData: oldData,
+                newData: data
+            });
+
+            await batch.commit();
             
             window.showToast(`Đã cập nhật tài khoản: ${email}`);
             window.loadAdminData();
@@ -1209,6 +1264,66 @@
             setTimeout(() => { btn.innerText = originalText; }, 300);
         } catch (e) {
             window.showToast("Lỗi cập nhật! Kiểm tra lại quyền Admin của bạn.", true);
+        }
+    };
+
+    window.deleteUserAccountModal = async function() {
+        const email = document.getElementById('admin-email').value.trim();
+        if (!email) return;
+
+        if (email === auth.currentUser.email) {
+            return window.showToast("Bạn không thể xóa chính tài khoản của mình!", true);
+        }
+
+        const isConfirmed = await window.showConfirmModal(
+            "Xóa tài khoản",
+            `Bạn có chắc chắn muốn thu hồi quyền truy cập và xóa tài khoản ${email} khỏi hệ thống?`,
+            "XÓA NGAY",
+            "bg-red-500 hover:bg-red-600 shadow-red-200"
+        );
+
+        if (isConfirmed) {
+            try {
+                const btnDelete = document.getElementById('btn-delete-user');
+                const originalHTML = btnDelete.innerHTML;
+                btnDelete.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto"></i>';
+                lucide.createIcons({ root: btnDelete });
+
+                const userRef = doc(firestore, 'users', email);
+                const userSnap = await getDoc(userRef);
+                const oldData = userSnap.exists() ? userSnap.data() : null;
+
+                const batch = writeBatch(firestore);
+                batch.delete(userRef);
+                
+                const auditRef = doc(collection(firestore, 'audit_logs'));
+                batch.set(auditRef, {
+                    action: 'DELETE_USER',
+                    txId: email,
+                    by: {
+                        email: auth.currentUser.email,
+                        name: auth.currentUser.displayName || 'Ẩn danh'
+                    },
+                    timestamp: new Date().toISOString(),
+                    client: {
+                        userAgent: navigator.userAgent,
+                        online: navigator.onLine
+                    },
+                    oldData: oldData,
+                    newData: null
+                });
+
+                await batch.commit();
+                
+                window.showToast(`Đã xóa tài khoản: ${email}`);
+                window.loadAdminData();
+                window.closeUserModal(); 
+                
+                setTimeout(() => { btnDelete.innerHTML = originalHTML; }, 300);
+            } catch (error) {
+                console.error("Lỗi xóa tài khoản:", error);
+                window.showToast("Có lỗi xảy ra khi xóa tài khoản!", true);
+            }
         }
     };
 
