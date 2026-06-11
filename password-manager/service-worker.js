@@ -72,6 +72,9 @@ async function verifyCriticalAssets(cache) {
   const must = [
     BASE + 'index.html',
     BASE + 'manifest.webmanifest',
+    BASE + 'libs/tailwind.min.js',
+    BASE + 'libs/lucide.min.js',
+    BASE + 'libs/crypto-js.min.js',
     BASE + 'icons/icon-192.png',
     BASE + 'icons/icon-512.png'
   ];
@@ -196,6 +199,9 @@ self.addEventListener('activate', (event) => {
 
     const critical = [
       BASE + 'index.html',
+      BASE + 'libs/tailwind.min.js',
+      BASE + 'libs/lucide.min.js',
+      BASE + 'libs/crypto-js.min.js',
       BASE + 'icons/icon-192.png',
       BASE + 'icons/icon-512.png'
     ];
