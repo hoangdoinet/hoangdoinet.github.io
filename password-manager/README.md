@@ -27,8 +27,8 @@ Dữ liệu được mã hóa AES-256 bằng **Mật khẩu chính** và lưu tr
 ---
 
 ## 📄 Thông tin phát hành
-- Phiên bản: **v1.0.8**  
-- Ngày phát hành: **2026-03-13**  
+- Phiên bản: **v1.0.9**  
+- Ngày phát hành: **2026-06-11**  
 - Tác giả: **Hoàng Đợi**  
 - Website: https://hoangdoinet.github.io/password-manager/
 
