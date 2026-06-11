@@ -1,97 +1,91 @@
 # 🧪 Tính lượng thuốc sát trùng – Ứng dụng PWA Offline
 
-**Tính lượng thuốc sát trùng** là ứng dụng web PWA giúp **tính nhanh lượng thuốc sát trùng cần dùng** theo tỷ lệ pha và dạng thuốc (nước hoặc bột). Có thể **cài đặt app trên Android/iOS** để sử dụng **offline hoàn toàn** sau khi cài đặt lần đầu.
+**Tính lượng thuốc sát trùng** là ứng dụng web Progressive Web App (PWA) giúp **tính nhanh lượng thuốc sát trùng cần dùng** theo tỷ lệ pha và dạng thuốc (nước hoặc bột). Ứng dụng có khả năng **cài đặt trực tiếp trên Android/iOS** để sử dụng **offline hoàn toàn** ngay sau lần truy cập đầu tiên.
 
 ---
 
 ## 🚀 Tính năng nổi bật
 
-- 🔢 **Tính toán tức thì** lượng thuốc sát trùng theo số lít nước và tỷ lệ pha.
-- 💧 Hỗ trợ **thuốc nước** và **thuốc bột**.
-- 📱 Có thể **cài đặt ứng dụng trên Android/iOS** – hoạt động **offline hoàn toàn** sau lần đầu truy cập.
-- ⚙️ **Tự động kiểm tra và thông báo cập nhật** khi có phiên bản mới.
-- 📂 **Lưu trữ dữ liệu bền vững (Persistent Storage)** giúp ứng dụng không bị xóa dữ liệu khi hệ thống dọn dẹp bộ nhớ.
-- 🔄 Hỗ trợ **Add to Home Screen (A2HS)** với nút cài đặt trong giao diện.
-- ⚡ Hỗ trợ **Shortcut (Quick Actions)** từ màn hình chính với các tỷ lệ pha thông dụng.
-- 🌐 Hoạt động như **ứng dụng native** với chế độ `standalone` và `fullscreen`.
+- 🔢 **Tính toán tức thì** lượng thuốc sát trùng dựa trên số lít nước và tỷ lệ pha được chọn.
+- 💧 Hỗ trợ linh hoạt cho cả **thuốc nước (đơn vị ml)** và **thuốc bột (đơn vị gram)**.
+- 📱 **Khả năng cài đặt cao (PWA)**: Hoạt động ngoại tuyến 100%, không phụ thuộc vào kết nối mạng sau lần tải đầu.
+- 🔄 **Cơ chế cập nhật tự động (Auto-Sync)**: Tự động kiểm tra file cấu hình phiên bản ngầm, thông báo bản cập nhật trực quan thông qua thanh Banner và tự động làm mới giao diện (`controllerchange`).
+- 📂 **Lưu trữ dữ liệu bền vững (Persistent Storage)**: Chủ động xin quyền hệ thống để bảo vệ ứng dụng không bị xóa bộ nhớ đệm tự động khi thiết bị rơi vào trạng thái dung lượng thấp.
+- 📥 Hỗ trợ **Add to Home Screen (A2HS)** với nút cài đặt thông minh tự động ẩn/hiện tùy biến theo trạng thái thiết bị.
+- ⚡ **PWA Shortcuts (Quick Actions)**: Cho phép nhấn giữ biểu tượng ứng dụng từ màn hình chính để truy cập nhanh các tỷ lệ pha thông dụng (`1:200`, `1:400`, `1:800`).
+- 🌐 Trải nghiệm như **ứng dụng Native** nhờ thiết lập chế độ hiển thị `standalone`, hỗ trợ cả `maskable icon` chống vỡ hình trên các dòng launcher Android hiện đại.
 
 ---
 
-## 📥 Cài đặt ứng dụng
+## 📁 Cấu trúc mã nguồn chuẩn hóa
 
-1. Truy cập trang web:  
-   👉 https://hoangdoinet.github.io/pha-thuoc
-2. Nhấn nút **📥 Cài đặt ứng dụng** khi trình duyệt gợi ý  
-   *(hoặc chọn “Thêm vào màn hình chính”)*.
-3. Sau khi cài đặt, ứng dụng hoạt động **100% offline** kể cả khi không có kết nối mạng.
+Dự án được tinh gọn trong một kiến trúc khép kín bao gồm:
+* `index.html`: Chứa toàn bộ giao diện điều khiển (Tailwind CSS) và lớp logic `AppUpdater` quản lý vòng đời ứng dụng.
+* `service-worker.js`: Trình xử lý chạy ngầm, chịu trách nhiệm quản lý bộ nhớ đệm (`CACHE_STATIC`), định tuyến mạng ngoại tuyến (`Cache-First`) và kiểm tra phiên bản.
+* `manifest.webmanifest`: File cấu hình định danh ứng dụng, màu sắc chủ đạo (`#0d9488`), hệ thống biểu tượng và liên kết lối tắt (Shortcuts).
+* `version.json`: File đặc tả cấu trúc dữ liệu phiên bản trên máy chủ nhằm phục vụ cơ chế dò tìm cập nhật tự động.
+
+---
+
+## 📥 Hướng dẫn cài đặt
+
+1. Truy cập liên kết ứng dụng chính thức:  
+   👉 [https://hoangdoinet.github.io/pha-thuoc](https://hoangdoinet.github.io/pha-thuoc)
+2. **Trên Android / Máy tính:** Nhấn trực tiếp vào nút **📥 Cài đặt ứng dụng** nổi ngay góc phải giao diện.
+3. **Trên iOS (iPhone/iPad):** Sử dụng trình duyệt **Safari** → Nhấn vào biểu tượng **Chia sẻ (Share)** → Chọn **Thêm vào màn hình chính (Add to Home Screen)**.
 
 ---
 
 ## 🛠️ Yêu cầu hệ thống
 
-- Trình duyệt hỗ trợ PWA: Chrome, Edge, Safari, Firefox (phiên bản mới)
-- Thiết bị: Android, iOS, Windows, macOS
-- Cần kết nối mạng **lần đầu** để tải cache ứng dụng
+- Trình duyệt lõi Chromium phiên bản mới (Chrome, Edge, Opera, Samsung Internet) hoặc Safari trên iOS.
+- Hệ điều hành: Android, iOS/iPadOS, Windows, macOS.
+- Thiết bị cần kết nối Internet ở **lần đầu tiên truy cập** để Service Worker tiến hành nạp đầy đủ gói tài nguyên lõi (`CRITICAL_ASSETS`).
 
 ---
 
 ## 📜 Lịch sử cập nhật (Changelog)
 
+### 🆕 v1.0.7 – 11/06/2026
+- ⚡ **Chuẩn hóa quy trình cập nhật tự động**: Đồng bộ hóa toàn diện lớp `AppUpdater` trên giao diện với vòng đời kích hoạt của Service Worker thông qua kênh truyền thông điệp `BroadcastMessage`.
+- 🔄 **Tối ưu cơ chế chiếm quyền (Claiming)**: Ép ứng dụng tự động Reload giao diện thông qua sự kiện `controllerchange` ngay sau khi người dùng nhấn "Cập nhật" trên thanh thông báo, giảm thiểu tối đa hiện tượng xung đột tài nguyên đệm cũ.
+- 🔗 **Khớp nối Shortcuts hoàn chỉnh**: Đồng bộ dữ liệu tham số URL của PWA Shortcuts từ dấu mã hóa `%3A` về chuỗi thô `:`, giúp ứng dụng nhận diện và highlight chính xác các chip tỷ lệ khi khởi động từ màn hình chính.
+- 🎨 **Đồng bộ hóa sắc diện thương hiệu**: Điều chỉnh tham số màu `theme_color` trong tệp Manifest về mã màu Teal (`#0d9488`), trùng khớp hoàn toàn với thanh trạng thái và phong cách thiết kế giao diện chính.
+
 ### 🆕 v1.0.6 – 15/12/2025
-- 🧹 **Loại bỏ Splash Screen** → vào nhanh giao diện sử dụng.
-- 🔐 **Tự động xin quyền Persistent Storage** khi ứng dụng khởi chạy.
-- 📦 **Nâng cấp Service Worker**: cache đầy đủ tài nguyên quan trọng, đảm bảo **offline 100%**.
-- ⚡ **Cải thiện cơ chế cập nhật**: phát hiện phiên bản mới và cho người dùng chủ động cập nhật.
-- 🎨 **Tinh chỉnh giao diện**, tối ưu trải nghiệm trên thiết bị di động.
+- 🧹 **Loại bỏ Splash Screen** → vào thẳng giao diện sử dụng không độ trễ.
+- 🔐 **Tự động yêu cầu quyền Persistent Storage** ngay khi ứng dụng khởi chạy lần đầu.
+- 📦 **Nâng cấp Service Worker**: Đảm bảo cache an toàn 100% tài nguyên cốt lõi.
+- ⚡ **Cải thiện cơ chế cập nhật**: Phát hiện phiên bản mới dựa trên tương tác luồng thông tin.
+- 🎨 **Tinh chỉnh giao diện**, tối ưu trải nghiệm chạm trên thiết bị di động.
 - 🔗 **Hỗ trợ Shortcut (Quick Actions)** từ màn hình chính với các tỷ lệ pha nhanh (1:200, 1:400, 1:800).
 
----
-
 ### 🆕 v1.0.5 – 30/11/2025
-- 🔄 **Hoàn thiện cơ chế cập nhật có kiểm soát** thông qua `version.json`.
-- 📂 **Tối ưu chiến lược cache offline**: ưu tiên `index.html` và icon quan trọng.
-- 📱 **Đồng bộ lại manifest PWA**: icon đầy đủ (any + maskable), hiển thị tốt trên Android & iOS.
-- 🐞 **Sửa lỗi nhỏ** khi chuyển trạng thái online/offline.
-
----
+- 🔄 Hoàn thiện cơ chế cập nhật có kiểm soát thông qua cấu trúc tệp `version.json`.
+- 📂 Tối ưu chiến lược cache offline: Ưu tiên nạp và bảo vệ tập tin `index.html`.
+- 📱 Đồng bộ lại manifest PWA: Cập nhật hệ thống biểu tượng đầy đủ thuộc tính `any` và `maskable`.
 
 ### 🆕 v1.0.4 – 21/10/2025
-- 🛠️ Tối ưu giao diện và cải thiện trải nghiệm di động.
-
----
+- 🛠️ Tối ưu hóa UI/UX, tinh gọn khoảng cách hiển thị và cải thiện trải nghiệm nhập liệu trên bàn phím di động.
 
 ### 🆕 v1.0.3 – 20/10/2025
-- 🛠️ Cải tiến **Service Worker**: xử lý ổn định hơn khi thiết bị **offline lâu ngày** (giảm lỗi `ERR_FAILED`).
-- 💾 Thêm **Persistent Storage API** để giữ dữ liệu không bị xóa.
-- 📱 Cập nhật **manifest**: hỗ trợ `display_override` & `orientation`.
-- 📦 Bổ sung fallback HTML khi chưa có cache và không có mạng.
-- 🧰 Đồng bộ nút cài đặt giữa giao diện chính và modal thông tin.
-
----
+- 🛠️ Cải tiến cơ chế xử lý lỗi mạng của **Service Worker** khi thiết bị ngắt kết nối trong thời gian dài (khắc phục mã lỗi `ERR_FAILED`).
+- 💾 Tích hợp thử nghiệm **Persistent Storage API**.
+- 📦 Bổ sung trang giao diện phản hồi Fallback HTML khi không có mạng và bộ nhớ đệm bị lỗi.
 
 ### 📦 v1.0.2 – 18/10/2025
-- ✨ Thêm modal hiển thị thông tin ứng dụng (phiên bản, tác giả, mô tả).
-- 📥 Bổ sung nút cài đặt ứng dụng trong modal.
-- 🐞 Sửa lỗi giao diện nhỏ.
-
----
+- ✨ Thêm bảng thông tin ứng dụng (Hiển thị phiên bản, tác giả, mục đích sử dụng).
+- 🐞 Khắc phục các lỗi hiển thị CSS cục bộ.
 
 ### 🚀 v1.0.1 – 11/10/2025
-- 🌐 Triển khai PWA để ứng dụng hoạt động **offline** sau khi cài đặt.
-- 📱 Giao diện tối ưu cho mọi kích thước màn hình.
-- 🔄 Tự động cập nhật khi có phiên bản mới.
-
----
+- 🌐 Triển khai giải pháp PWA biến trang web thành ứng dụng có khả năng chạy độc lập ngoại tuyến.
 
 ### 🚀 v1.0.0 – 10/10/2025
-- 🌐 Triển khai phiên bản online đầu tiên.
+- 🌐 Phát hành phiên bản trực tuyến đầu tiên.
 
 ---
 
 ## 👨‍💻 Tác giả
 
-- 👤 **Hoàng Đợi**  
-- 📧 Email: hoangdoivn.cntt@gmail.com  
-- 🌐 Website: https://hoangdoinet.github.io
-
----
+- 👤 **Hoàng Đợi** - 📧 Email: [hoangdoivn.cntt@gmail.com](mailto:hoangdoivn.cntt@gmail.com)  
+- 🌐 Dự án trên GitHub: [https://github.com/hoangdoinet/pha-thuoc](https://github.com/hoangdoinet/pha-thuoc)  
