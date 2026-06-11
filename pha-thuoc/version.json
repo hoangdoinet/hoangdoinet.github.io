@@ -1,30 +1,27 @@
 {
-  "app": "Tính lượng thuốc sát trùng",
-  "id": "pha-thuoc-sat-trung",
-  "channel": "stable",
-
-  "version": "v1.0.6",
-  "build_date": "2025-12-15",
-  "min_required": "v1.0.0",
-
-  "update_url": "https://hoangdoinet.github.io/pha-thuoc/",
-  "notes_url": "https://hoangdoinet.github.io/pha-thuoc/",
-
+  "version": "1.0.7",
   "latest": {
-    "version": "v1.0.6",
-    "build_date": "2025-12-15",
-    "changelog": [
-      "🧹 Loại bỏ Splash Screen, vào nhanh giao diện sử dụng",
-      "🔐 Xin quyền lưu trữ khi ứng dụng khởi chạy",
-      "📦 Cải thiện cơ chế offline và cache dữ liệu",
-      "🎨 Tinh chỉnh giao diện, tối ưu trải nghiệm người dùng"
-    ]
+    "version": "1.0.7",
+    "release_date": "2026-06-11",
+    "note": "Bản cập nhật tối ưu hóa đồng bộ hóa ngầm và sửa lỗi shortcuts trên thiết bị di động."
   },
-
   "changelog": [
-    "🧹 Loại bỏ Splash Screen, vào nhanh giao diện sử dụng",
-    "🔐 Xin quyền lưu trữ khi ứng dụng khởi chạy",
-    "📦 Cải thiện cơ chế offline và cache dữ liệu",
-    "🎨 Tinh chỉnh giao diện, tối ưu trải nghiệm người dùng"
+    {
+      "version": "1.0.7",
+      "release_date": "2026-06-11",
+      "changes": [
+        "Đồng bộ hóa quy trình tự động cập nhật với giao diện",
+        "Sửa lỗi mã hóa ký tự đặc biệt trên PWA Shortcuts",
+        "Tối ưu hóa bộ nhớ đệm Offline"
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "release_date": "2025-10-10",
+      "changes": [
+        "Khởi tạo ứng dụng tính lượng thuốc sát trùng",
+        "Hỗ trợ hoạt động ngoại tuyến (Offline 100%)"
+      ]
+    }
   ]
 }
