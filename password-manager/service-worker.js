@@ -1,5 +1,5 @@
-/* service-worker.js - v1.0.8 */
-const APP_VERSION = 'v1.0.8';
+/* service-worker.js - v1.0.9 */
+const APP_VERSION = 'v1.0.9';
 const CACHE_STATIC = `static-${APP_VERSION}`;
 const BASE = '/password-manager/';
 const VERSION_FILE = BASE + 'version.json';
@@ -9,6 +9,9 @@ const CRITICAL_ASSETS = [
   BASE + 'index.html',
   BASE + 'manifest.webmanifest',
   BASE + 'version.json',
+  BASE + 'libs/crypto-js.min.js',
+  BASE + 'libs/lucide.min.js',
+  BASE + 'libs/tailwind.min.js',
   BASE + 'icons/icon-32.png',
   BASE + 'icons/icon-72.png',
   BASE + 'icons/icon-96.png',

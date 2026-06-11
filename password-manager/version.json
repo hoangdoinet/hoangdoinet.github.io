@@ -2,28 +2,33 @@
   "app": "Trình quản lý mật khẩu",
   "id": "password-manager",
   "website": "https://hoangdoinet.github.io/password-manager/",
-  "version": "v1.0.8",
-  "release_date": "2026-03-13",
+  "version": "v1.0.9",
+  "release_date": "2026-06-11",
   "author": "Hoàng Đợi",
 
   "notes": [
-    "Phiên bản v1.0.8: Thêm chức năng hỗ trợ tạo mật khẩu ngẫu nhiên, cải thiện giao diện và hiệu suất ứng dụng."
+    "Phiên bản v1.0.9: Cải thiện giao diện và hiệu suất ứng dụng."
   ],
 
   "latest": {
-    "version": "v1.0.8",
-    "release_date": "2026-03-13",
-    "summary": "Thêm chức năng tạo mật khẩu ngẫu nhiên, cải thiện giao diện và tối ưu hiệu suất.",
+    "version": "v1.0.9",
+    "release_date": "2026-06-11",
+    "summary": "Cải thiện giao diện và hiệu suất ứng dụng.",
     "changelog": [
-      "Thêm công cụ tạo mật khẩu ngẫu nhiên với độ mạnh cao.",
-      "Cải thiện bố cục giao diện và trải nghiệm sử dụng.",
-      "Tối ưu hiệu suất xử lý khi thao tác với danh sách tài khoản.",
-      "Tinh chỉnh thông báo và một số chi tiết hiển thị.",
-      "Sửa lỗi nhỏ và tăng độ ổn định."
+      "Cải thiện toàn diện giao diện người dùng, tối ưu hóa bố cục hiển thị.",
+      "Tăng cường hiệu suất hoạt động, giúp ứng dụng phản hồi mượt mà hơn."
     ]
   },
 
   "changelog": [
+    {
+      "version": "v1.0.9",
+      "release_date": "2026-06-11",
+      "changes": [
+        "Cải thiện toàn diện giao diện người dùng, tối ưu hóa bố cục hiển thị.",
+        "Tăng cường hiệu suất hoạt động, giúp ứng dụng phản hồi mượt mà hơn."
+      ]
+    },
     {
       "version": "v1.0.8",
       "release_date": "2026-03-13",
