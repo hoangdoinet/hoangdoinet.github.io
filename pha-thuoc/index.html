@@ -4,210 +4,97 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Tính lượng thuốc sát trùng</title>
-  <meta name="version" content="v1.0.6">
 
-  <!-- 🔎 SEO & Sharing -->
-  <meta name="description" content="Công cụ tính lượng thuốc sát trùng theo tỷ lệ pha và dạng thuốc. Có thể cài đặt ứng dụng trên Android & iOS, hoạt động offline và sử dụng dễ dàng cho trang trại.">
-  <meta name="keywords" content="tính thuốc sát trùng, pha thuốc, thuốc sát trùng trại heo, pha thuốc chăn nuôi, thuốc nước, thuốc bột, ứng dụng offline, ATSH, an toàn sinh học">
+  <meta name="description" content="Công cụ tính lượng thuốc sát trùng theo tỷ lệ pha và dạng thuốc. Hoạt động offline và sử dụng dễ dàng cho trang trại.">
+  <meta name="keywords" content="tính thuốc sát trùng, pha thuốc, thuốc sát trùng trại heo, pha thuốc chăn nuôi, ứng dụng offline, an toàn sinh học">
   <meta name="author" content="Hoàng Đợi">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://hoangdoinet.github.io/pha-thuoc/"/>
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="Tính lượng thuốc sát trùng">
-  <meta property="og:description" content="Nhập số lít nước và chọn tỷ lệ để tính ngay lượng thuốc sát trùng cần dùng. Hỗ trợ thuốc nước & thuốc bột. Hoạt động offline sau khi cài đặt trên Android/iOS.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://hoangdoinet.github.io/pha-thuoc/">
-  <meta property="og:image" content="https://hoangdoinet.github.io/pha-thuoc/icons/og-image-1200.png">
-  <meta property="og:locale" content="vi_VN">
-  <meta property="og:site_name" content="Tính thuốc sát trùng">
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Tính lượng thuốc sát trùng – Công cụ hữu ích cho trang trại">
-  <meta name="twitter:description" content="Pha thuốc sát trùng chính xác theo tỷ lệ, hoạt động offline, cài đặt ứng dụng di động.">
-  <meta name="twitter:image" content="https://hoangdoinet.github.io/pha-thuoc/icons/og-image-1200.png">
-
-  <!-- iOS web app -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Pha thuốc">
-
-  <!-- PWA -->
-  <meta name="theme-color" content="#22c55e"/>
+  <meta name="theme-color" content="#0d9488"/>
+  
   <link rel="manifest" href="/pha-thuoc/manifest.webmanifest">
   <link rel="icon" href="/pha-thuoc/icons/icon-192.png" sizes="192x192">
-  <link rel="preload" href="/pha-thuoc/icons/icon-512.png" as="image">
-  <link rel="preload" href="/pha-thuoc/icons/icon-192.png" as="image">
   <link rel="apple-touch-icon" href="/pha-thuoc/icons/icon-180.png">
   <link rel="icon" type="image/png" href="/pha-thuoc/icons/icon-32.png" sizes="32x32">
 
-  <style>
-    :root{
-      --bg:#0b1220; --card:#0f172a; --text:#e5e7eb; --muted:#94a3b8;
-      --accent:#22c55e; --border:#94a3b8; --info:#0ea5e9; --danger:#ef4444;
-      --brand1:#22c55e; --brand2:#16a34a;
+  <script src="libs/tailwind.min.js"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: '#0d9488',
+            bgDark: '#0b1220',
+            cardDark: '#0f172a',
+          }
+        }
+      }
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
-      background:linear-gradient(180deg,#0b1220,#0e1a33);
-      color:var(--text);
-      min-height:95vh;
-    }
+  </script>
 
-    .wrap{max-width:860px;margin:32px auto;padding:0 16px}
-    header.hero{text-align:center;margin-bottom:16px}
-    header.hero h1{font-size:28px;margin:0}
-    .badge{
-      display:inline-block;background:rgba(34,197,94,.15);
-      padding:4px 10px;border-radius:20px;font-size:12px;color:#86efac;margin-top:6px;
-      cursor:pointer; user-select:none; outline:none; border:1px dashed rgba(134,239,172,.25);
-    }
-    .badge:focus{box-shadow:0 0 0 3px rgba(34,197,94,.35)}
-    .card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.35);padding:20px}
-    .group{margin-bottom:16px}
-    label{display:block;margin-bottom:6px;font-size:14px;color:var(--muted)}
-
-    .segmented{display:flex;border:1px solid var(--border);border-radius:999px;overflow:hidden}
-    .segmented input{display:none}
-    .segmented label{flex:1;text-align:center;padding:10px 14px;cursor:pointer;color:var(--muted);position:relative;user-select:none;transition:all .2s ease}
-    .segmented input:checked + label{background:var(--accent);color:#052e14;font-weight:700;margin-bottom:-1px;padding-bottom:calc(10px + 1px)}
-
-    select,input{width:100%;padding:10px;border:1px solid var(--border);border-radius:12px;background:#0b1020;color:var(--text);font-size:16px}
-    select:focus,input:focus{outline:none;border-color:var(--accent)}
-
-    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-    .chip{
-      padding:6px 16px;border:1px solid var(--border);border-radius:20px;
-      background:rgba(255,255,255,.03);cursor:pointer;font-size:13px;color:#fff;
-      transition:background .2s ease, color .2s ease, border-color .2s ease, transform .06s ease;
-    }
-    .chip:hover{ border-color:var(--accent); color:#86efac; background:rgba(34,197,94,.12) }
-    .chip.is-active, .chip[aria-pressed="true"]{
-      border-color:var(--accent); color:#86efac; background:rgba(34,197,94,.12);
-    }
-
-    .alert{border-radius:14px;padding:12px;margin-top:12px;display:none}
-    .alert-info{background:rgba(14,165,233,.12);border:1px solid rgba(14,165,233,.35);color:#bae6fd}
-    .alert-danger{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);color:#fecaca}
-    footer{text-align:center;opacity:.7;padding:18px 12px;font-size:13px}
-
-    .modal-backdrop{
-      position:fixed; inset:0; background:rgba(0,0,0,.45);
-      display:none; align-items:center; justify-content:center; z-index:10000;
-      padding:16px;
-    }
-    .modal-backdrop.show{display:flex;}
-    .modal{
-      width:min(560px, 100%); max-height:90vh; overflow:auto;
-      background:#ffffff; color:#0f172a; border:1px solid #e5e7eb; border-radius:16px;
-      box-shadow:0 20px 60px rgba(0,0,0,.35);
-    }
-    .modal header{
-      display:flex; align-items:center; justify-content:space-between;
-      padding:14px 16px; border-bottom:1px solid #e5e7eb; background:#f8fafc;
-    }
-    .modal header h3{margin:0; font-size:18px; font-weight:800; color:#0f172a}
-    .modal header .close{
-      border:0; background:#f1f5f9; color:#0f172a; border-radius:10px; padding:6px 10px; cursor:pointer; font-weight:700;
-    }
-    .modal .content{padding:14px 16px; font-size:14px; line-height:1.5}
-    .modal .content p{margin:0 0 8px}
-    .modal .kv{display:grid; grid-template-columns:140px 1fr; gap:8px 12px; margin-top:8px}
-    .modal .kv .key{color:#475569}
-    .modal footer{
-      display:flex; justify-content:flex-end; gap:8px; padding:14px 16px; border-top:1px solid #e5e7eb; background:#f8fafc;
-    }
-    .modal .btn{
-      background:#22c55e; color:#063016; border:0; border-radius:10px; padding:10px 12px; font-weight:800; cursor:pointer;
-    }
-    .modal .btn.secondary{ background:#e2e8f0; color:#0f172a; }
-
-    .install-btn{
-      position:fixed; right:14px; bottom:14px;
-      background:#22c55e; color:#063016; border:none; border-radius:14px;
-      padding:12px 14px; font-weight:700; box-shadow:0 10px 24px rgba(0,0,0,.25); display:none;
-    }
-
-    .update-notification {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(90deg, #22c55e, #16a34a);
-      color: white;
-      padding: 12px 16px;
-      text-align: center;
-      z-index: 10000;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-      font-family: system-ui;
-      animation: slideDown 0.3s ease-out;
-    }
-    @keyframes slideDown { from { transform: translateY(-100%);} to { transform: translateY(0);} }
-    .update-notification button {
-      background: white;
-      color: #22c55e;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 6px;
-      margin-left: 12px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .update-notification button.secondary {
-      background: transparent;
-      color: white;
-      border: 1px solid white;
-      margin-left: 8px;
+  <style type="text/tailwindcss">
+    @layer components {
+      .chip {
+        @apply py-1 px-3 border border-slate-700 rounded-xl bg-white/5 cursor-pointer text-sm font-semibold text-white text-center transition-all duration-200 select-none;
+      }
+      .chip:hover {
+        @apply border-brand text-teal-300 bg-teal-500/10;
+      }
+      .chip.is-active, .chip[aria-pressed="true"] {
+        @apply border-brand text-teal-300 bg-teal-500/20 ring-1 ring-brand;
+      }
     }
   </style>
+  <style>
+    /* Ẩn input number arrows */
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    
+    @keyframes slideDown { from { transform: translateY(-100%);} to { transform: translateY(0);} }
+    .animate-slideDown { animation: slideDown 0.3s ease-out; }
+  </style>
 </head>
-<body>
+<body class="bg-gradient-to-b from-bgDark to-slate-900 text-slate-200 min-h-screen font-sans antialiased selection:bg-brand selection:text-teal-950">
 
-  <!-- iOS Installation Tip -->
-  <div class="ios-tip" id="iosTip" style="display:none;background:rgba(15,23,42,.95);padding:12px 14px;border-radius:14px;border:1px solid #1f2937;font-size:14px;backdrop-filter:blur(6px);position:fixed;left:12px;right:12px;bottom:12px;z-index:50">
-    <button id="iosClose" style="float:right;background:#22c55e;border:none;color:#063016;border-radius:10px;padding:8px 12px;font-weight:600;cursor:pointer">Đã hiểu</button>
-    <b style="color:#86efac">Mẹo:</b> Trên iPhone/iPad → Safari → <b>Chia sẻ</b> → <b>Thêm vào MH chính</b> để cài như ứng dụng.
+  <div id="iosTip" class="hidden fixed left-3 right-3 bottom-3 z-50 bg-slate-900/95 backdrop-blur-md p-3 rounded-2xl border border-slate-800 text-sm shadow-2xl">
+    <button id="iosClose" class="float-right bg-brand text-teal-950 px-3 py-2 rounded-xl font-bold ml-3">Đã hiểu</button>
+    <b class="text-teal-300">Mẹo:</b> Trên iPhone/iPad → Safari → <b>Chia sẻ</b> → <b>Thêm vào MH chính</b> để cài như ứng dụng.
   </div>
 
-  <!-- Install Button -->
-  <button class="install-btn" id="btnInstall">📥 Cài đặt ứng dụng</button>
+  <button id="btnInstall" class="hidden fixed right-4 bottom-4 bg-brand text-teal-950 px-4 py-3 rounded-2xl font-bold shadow-lg shadow-brand/20 hover:scale-105 transition-transform z-40">
+    📥 Cài đặt ứng dụng
+  </button>
 
-  <div class="wrap">
-    <header class="hero">
-      <h1>Tính lượng thuốc sát trùng</h1>
-      <div id="appBadge" class="badge" role="button" tabindex="0" aria-label="Xem thông tin ứng dụng">Phiên bản: v1.0.6</div>
+  <div class="max-w-md mx-auto py-10 px-4">
+    <header class="text-center mb-8">
+      <h1 class="text-2xl font-extrabold tracking-tight text-white">Tính lượng thuốc sát trùng</h1>
     </header>
 
-    <main class="card">
-      <div class="group">
-        <label>Loại thuốc</label>
-        <div class="segmented">
-          <input type="radio" name="medicineFormType" id="liquidMedicine" value="liquid" checked>
-          <label for="liquidMedicine">Thuốc nước</label>
-          <input type="radio" name="medicineFormType" id="powderMedicine" value="powder">
-          <label for="powderMedicine">Thuốc bột</label>
+    <main class="bg-white/5 backdrop-blur-sm border border-slate-700/50 rounded-3xl shadow-2xl p-5 sm:p-6">
+      
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-slate-400 mb-2">Loại thuốc</label>
+        <div class="flex bg-slate-900/80 border border-slate-700 p-1 rounded-full">
+          <div class="flex-1 relative">
+            <input type="radio" name="medicineFormType" id="liquidMedicine" value="liquid" class="peer sr-only" checked>
+            <label for="liquidMedicine" class="block w-full py-2.5 text-center text-slate-400 cursor-pointer text-sm font-medium rounded-full transition-all peer-checked:bg-brand peer-checked:text-teal-950 peer-checked:font-bold peer-checked:shadow-sm">Thuốc nước</label>
+          </div>
+          <div class="flex-1 relative">
+            <input type="radio" name="medicineFormType" id="powderMedicine" value="powder" class="peer sr-only">
+            <label for="powderMedicine" class="block w-full py-2.5 text-center text-slate-400 cursor-pointer text-sm font-medium rounded-full transition-all peer-checked:bg-brand peer-checked:text-teal-950 peer-checked:font-bold peer-checked:shadow-sm">Thuốc bột</label>
+          </div>
         </div>
       </div>
 
-      <div class="group">
-        <label for="medicineType">Tỷ lệ pha</label>
-        <select id="medicineType" required>
-          <option value="">Chọn tỷ lệ</option>
-          <option value="1:100">1:100</option>
-          <option value="1:200">1:200</option>
-          <option value="1:300">1:300</option>
-          <option value="1:400">1:400</option>
-          <option value="1:500">1:500</option>
-          <option value="1:600">1:600</option>
-          <option value="1:700">1:700</option>
-          <option value="1:800">1:800</option>
-          <option value="1:900">1:900</option>
-          <option value="1:1000">1:1000</option>
-        </select>
-        <div class="chips" id="ratioChips">
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-slate-400 mb-2">Tỷ lệ pha</label>
+        <input type="hidden" id="medicineType" required>
+        
+        <div class="grid grid-cols-2 gap-3" id="ratioChips">
           <div class="chip" data-ratio="1:100">1:100</div>
           <div class="chip" data-ratio="1:200">1:200</div>
           <div class="chip" data-ratio="1:300">1:300</div>
@@ -221,37 +108,22 @@
         </div>
       </div>
 
-      <div class="group">
-        <label for="litersOfWater">Số lượng nước (lít)</label>
-        <input type="number" id="litersOfWater" step="0.1" min="0" inputmode="decimal" placeholder="Nhập số lít nước cần sử dụng" required>
+      <div class="mb-6">
+        <label for="litersOfWater" class="block text-sm font-medium text-slate-400 mb-2">Số lượng nước (lít)</label>
+        <input type="number" id="litersOfWater" step="0.1" min="0" inputmode="decimal" placeholder="Nhập số lít nước cần sử dụng" required class="w-full bg-slate-900 border border-slate-700 text-white px-4 py-3.5 rounded-2xl text-base outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all placeholder:text-slate-600">
       </div>
 
-      <div class="alert alert-info" id="result" aria-live="polite"></div>
-      <div class="alert alert-danger" id="error">Bạn chưa <strong>chọn tỷ lệ thuốc</strong> để hiển thị kết quả.</div>
+      <div id="result" class="hidden bg-sky-500/10 border border-sky-500/30 text-sky-200 p-4 rounded-2xl text-sm leading-relaxed" aria-live="polite"></div>
+      
+      <div id="error" class="bg-red-500/10 border border-red-500/30 text-red-200 p-4 rounded-2xl text-sm leading-relaxed">
+        Hãy <strong>chọn tỷ lệ thuốc</strong> và nhập số lít nước để hiển thị kết quả.
+      </div>
+
     </main>
 
-    <footer>© 2025 - Hoàng Đợi</footer>
-  </div>
-
-  <!-- About Modal -->
-  <div id="aboutModal" class="modal-backdrop" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" aria-describedby="aboutDesc">
-      <header>
-        <h3 id="aboutTitle">Thông tin ứng dụng</h3>
-        <button id="aboutClose" class="close" aria-label="Đóng">✕</button>
-      </header>
-      <div class="content">
-        <p id="aboutDesc">Công cụ tính nhanh lượng thuốc sát trùng theo tỷ lệ pha và dạng thuốc (nước/bột). Hỗ trợ cài đặt để dùng offline trên Android và iOS.</p>
-        <div class="kv">
-          <div class="key"><li>Phiên bản:</li></div><div><b>v1.0.6</b></div>
-          <div class="key"><li>Tác giả:</li></div><div><b>Hoàng Đợi</b></div>
-        </div>
-      </div>
-      <footer>
-        <button class="btn secondary" id="aboutOk">Đóng</button>
-        <button class="btn" id="modalInstall" style="display:none">📥 Cài đặt ứng dụng</button>
-      </footer>
-    </div>
+    <footer class="text-center text-slate-500 text-sm mt-8 pb-8">
+      © 2026 - Hoàng Đợi
+    </footer>
   </div>
 
   <script>
@@ -269,11 +141,10 @@
       }
     }
 
-    // ========== APP UPDATER (SYNC, WAITING-FIRST) ==========
+    // ========== APP UPDATER ==========
     class AppUpdater {
       constructor() {
         this.updateAvailable = false;
-        this.newVersion = null;
         this._notiEl = null;
         this._reloading = false;
         this.init();
@@ -300,53 +171,46 @@
       }
 
       async getRegistration() {
-        try {
-          return await navigator.serviceWorker.getRegistration('/pha-thuoc/');
-        } catch {
-          return null;
-        }
+        try { return await navigator.serviceWorker.getRegistration('/pha-thuoc/'); } catch { return null; }
       }
 
       async checkForUpdate() {
         const reg = await this.getRegistration();
         if (!reg) return;
-
         try { await reg.update(); } catch {}
-
         reg.active?.postMessage({ type: 'CHECK_UPDATE' });
       }
 
       showUpdateNotification(newVersion, currentVersion) {
         if (this.updateAvailable) return;
         this.updateAvailable = true;
-        this.newVersion = newVersion;
 
-        const updateDiv = document.createElement('div');
-        updateDiv.className = 'update-notification';
-        updateDiv.innerHTML = `
-          <strong>🎉 Có bản cập nhật mới!</strong>
-          (${currentVersion} → ${newVersion})
-          <button id="btnDoUpdate">Cập nhật ngay</button>
-          <button id="btnLater" class="secondary">Để sau</button>
+        const div = document.createElement('div');
+        div.className = 'fixed top-0 left-0 right-0 bg-gradient-to-r from-brand to-teal-600 text-white px-4 py-3 text-center z-[10000] shadow-md animate-slideDown flex flex-col sm:flex-row items-center justify-center gap-3';
+        div.innerHTML = `
+          <span><strong>🎉 Có bản cập nhật mới (${newVersion})!</strong></span>
+          <div class="flex gap-2">
+            <button id="btnDoUpdate" class="bg-white text-brand px-3 py-1.5 rounded-lg font-bold text-sm shadow-sm active:scale-95 transition-transform">Cập nhật</button>
+            <button id="btnLater" class="border border-white/50 text-white px-3 py-1.5 rounded-lg font-bold text-sm active:scale-95 transition-transform">Để sau</button>
+          </div>
         `;
-        document.body.appendChild(updateDiv);
-        this._notiEl = updateDiv;
+        document.body.appendChild(div);
+        this._notiEl = div;
 
-        updateDiv.querySelector('#btnDoUpdate')?.addEventListener('click', () => this.applyUpdate());
-        updateDiv.querySelector('#btnLater')?.addEventListener('click', () => this.hideUpdate());
+        div.querySelector('#btnDoUpdate')?.addEventListener('click', () => this.applyUpdate());
+        div.querySelector('#btnLater')?.addEventListener('click', () => this.hideUpdate());
       }
 
       async applyUpdate() {
         const reg = await this.getRegistration();
         if (!reg) return;
 
-        if (this._notiEl) this._notiEl.innerHTML = '<strong>🔄 Đang cập nhật...</strong>';
-
-        try { await reg.update(); } catch {}
-
+        if (this._notiEl) this._notiEl.innerHTML = '<span class="font-bold animate-pulse">🔄 Đang đồng bộ phiên bản mới...</span>';
+        
+        // Gửi lệnh SKIP_WAITING xuống service worker để kích hoạt bản mới lập tức
         if (reg.waiting) {
           reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-          return; // controllerchange sẽ reload
+          return;
         }
 
         if (reg.installing) {
@@ -356,8 +220,9 @@
           return;
         }
 
-        reg.active?.postMessage({ type: 'CHECK_UPDATE' });
-        setTimeout(() => window.location.reload(), 1500);
+        // Trường hợp SW chạy nền ngầm chưa load hoàn chỉnh, ép kiểm tra lại
+        reg.active?.postMessage({ type: 'FORCE_UPDATE' });
+        setTimeout(() => window.location.reload(), 1000);
       }
 
       hideUpdate() {
@@ -371,21 +236,19 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', async () => {
         try {
-          await navigator.serviceWorker.register('/pha-thuoc/service-worker.js', {
-            scope: '/pha-thuoc/',
-            updateViaCache: 'none'
-          });
-          console.log('✅ Service Worker registered');
-        } catch (e) {
-          console.warn('❌ Service Worker registration failed', e);
-        }
+          await navigator.serviceWorker.register('/pha-thuoc/service-worker.js', { scope: '/pha-thuoc/', updateViaCache: 'none' });
+        } catch (e) {}
       });
     }
 
     // ========== IOS INSTALL TIP ==========
     window.addEventListener('load',()=>{
-      if(isIos() && !isStandalone()) document.getElementById('iosTip').style.display='block';
-      document.getElementById('iosClose').onclick=()=>document.getElementById('iosTip').remove();
+      if(isIos() && !isStandalone()) {
+        const iosTip = document.getElementById('iosTip');
+        if(iosTip) iosTip.classList.remove('hidden');
+      }
+      const closeBtn = document.getElementById('iosClose');
+      if(closeBtn) closeBtn.onclick = () => document.getElementById('iosTip')?.remove();
     });
 
     // ========== CALCULATION LOGIC ==========
@@ -395,22 +258,32 @@
       const form   = document.querySelector('input[name="medicineFormType"]:checked').value;
       const error  = document.getElementById('error');
       const result = document.getElementById('result');
-      error.style.display='none'; result.style.display='none';
+      
+      error.classList.add('hidden'); 
+      result.classList.add('hidden');
 
       if(!liters) return;
 
-      if(!type){ error.style.display='block'; error.innerHTML='Bạn chưa <strong>Chọn tỷ lệ thuốc</strong> để hiển thị kết quả.'; return; }
-      if(isNaN(liters)||liters<=0){ error.style.display='block'; error.innerHTML='Bạn chưa <strong>Nhập lượng nước</strong> để hiển thị kết quả.'; return; }
+      if(!type){ 
+        error.classList.remove('hidden'); 
+        error.innerHTML='Bạn chưa <strong>chọn tỷ lệ thuốc</strong> để hiển thị kết quả.'; 
+        return; 
+      }
+      if(isNaN(liters)||liters<=0){ 
+        error.classList.remove('hidden'); 
+        error.innerHTML='Bạn chưa <strong>nhập lượng nước</strong> hợp lệ.'; 
+        return; 
+      }
 
       const ratios={'1:100':100,'1:200':200,'1:300':300,'1:400':400,'1:500':500,'1:600':600,'1:700':700,'1:800':800,'1:900':900,'1:1000':1000};
       const volume=(1000/ratios[type])*liters;
       const display=(form==='powder') ? (Math.round(volume)+' gram') : ((Number.isInteger(volume)?volume:volume.toFixed(2))+' ml');
 
-      result.style.display='block';
-      result.innerHTML=`Với tỷ lệ <strong>${type}</strong>, cần pha:<br><strong>${liters} lít</strong> nước = <strong>${display}</strong> thuốc`;
+      result.classList.remove('hidden');
+      result.innerHTML=`Với tỷ lệ <strong class="text-white">${type}</strong>, cần pha:<br><strong class="text-white text-base">${liters} lít</strong> nước = <strong class="text-white text-base">${display}</strong> thuốc`;
     }
+    
     document.getElementById('litersOfWater').addEventListener('input',calculate);
-    document.getElementById('medicineType').addEventListener('change',calculate);
     document.querySelectorAll('input[name="medicineFormType"]').forEach(r=> r.addEventListener('change',calculate));
 
     // ========== RATIO CHIPS ==========
@@ -421,10 +294,12 @@
     function setActiveChip(ratio){
       chips.forEach(ch=>{
         const active = ch.dataset.ratio === ratio;
-        ch.classList.toggle('is-active', active);
+        if(active) ch.classList.add('is-active');
+        else ch.classList.remove('is-active');
         ch.setAttribute('aria-pressed', active ? 'true' : 'false');
       });
     }
+    
     chipWrap.addEventListener('click', e=>{
       const c = e.target.closest('.chip'); if(!c) return;
       const ratio = c.getAttribute('data-ratio');
@@ -432,7 +307,7 @@
       setActiveChip(ratio);
       calculate();
     });
-    selectRatio.addEventListener('change', ()=> setActiveChip(selectRatio.value));
+    
     chips.forEach(ch=>{
       ch.setAttribute('role','button');
       ch.setAttribute('tabindex','0');
@@ -442,48 +317,16 @@
       });
     });
 
-    // ========== MODAL LOGIC ==========
-    const badge = document.getElementById('appBadge');
-    const modalBackdrop = document.getElementById('aboutModal');
-    const btnClose = document.getElementById('aboutClose');
-    const btnOk = document.getElementById('aboutOk');
-
-    function openModal(){
-      modalBackdrop.classList.add('show');
-      modalBackdrop.setAttribute('aria-hidden','false');
-      setTimeout(()=>btnClose.focus(),0);
-      document.documentElement.style.overflow='hidden';
-    }
-    function closeModal(){
-      modalBackdrop.classList.remove('show');
-      modalBackdrop.setAttribute('aria-hidden','true');
-      document.documentElement.style.overflow='';
-      badge && badge.focus();
-    }
-    if(badge){
-      badge.addEventListener('click', openModal);
-      badge.addEventListener('keydown', e=>{
-        if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openModal(); }
-      });
-    }
-    btnClose.addEventListener('click', closeModal);
-    btnOk.addEventListener('click', closeModal);
-    modalBackdrop.addEventListener('click', e=>{
-      if(e.target===modalBackdrop) closeModal();
-    });
-    window.addEventListener('keydown', e=>{
-      if(e.key==='Escape' && modalBackdrop.classList.contains('show')) closeModal();
-    });
-
     // ========== A2HS INSTALL PROMPT ==========
     let deferredPrompt;
     const btnInstall = document.getElementById('btnInstall');
-    const modalInstall = document.getElementById('modalInstall');
 
     function updateInstallVisibility(){
       const canShow = !!deferredPrompt && !isStandalone();
-      if (btnInstall)   btnInstall.style.display   = canShow ? 'inline-block' : 'none';
-      if (modalInstall) modalInstall.style.display = canShow ? 'inline-block' : 'none';
+      if (btnInstall) {
+        if(canShow) btnInstall.classList.remove('hidden');
+        else btnInstall.classList.add('hidden');
+      }
     }
 
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -496,7 +339,7 @@
       if(!deferredPrompt){
         if(isIos() && !isStandalone()){
           const tip = document.getElementById('iosTip');
-          if(tip) tip.style.display='block';
+          if(tip) tip.classList.remove('hidden');
         }
         return;
       }
@@ -504,16 +347,16 @@
       await deferredPrompt.userChoice;
       deferredPrompt = null;
       updateInstallVisibility();
-      if(modalBackdrop.classList.contains('show')) closeModal();
     }
+    
     window.addEventListener('appinstalled', () => {
       deferredPrompt = null;
       updateInstallVisibility();
     });
-    if(btnInstall)   btnInstall.addEventListener('click', triggerInstall);
-    if(modalInstall) modalInstall.addEventListener('click', triggerInstall);
+    
+    if(btnInstall) btnInstall.addEventListener('click', triggerInstall);
 
-    // ========== AUTO REQUEST PERSIST (NO UI) ==========
+    // ========== AUTO REQUEST PERSIST ==========
     async function autoPersist(){
       if (!navigator.storage || !navigator.storage.persist || !navigator.storage.persisted) return;
       try{
@@ -522,13 +365,12 @@
       }catch(_){}
     }
 
-    // ========== URL PARAMETERS (SHORTCUT SUPPORT) ==========
+    // ========== URL PARAMETERS INITIALIZATION ==========
     const p = new URLSearchParams(location.search);
-    const ratioParam = p.get('ratio'); // tự decode %3A -> :
-    const formParam  = p.get('form');  // liquid|powder
+    const ratioParam = p.get('ratio');
+    const formParam  = p.get('form');
 
     if(formParam) setFormFromParam(formParam);
-
     if(ratioParam){
       selectRatio.value = ratioParam;
       setActiveChip(ratioParam);
@@ -536,12 +378,11 @@
       setActiveChip(selectRatio.value || '');
     }
 
-    // ========== INITIALIZE ==========
+    // ========== STARTUP ==========
     updateInstallVisibility();
 
-    let appUpdater;
     window.addEventListener('load', () => {
-      appUpdater = new AppUpdater();
+      new AppUpdater();
       autoPersist();
       if(selectRatio.value) calculate();
     });
