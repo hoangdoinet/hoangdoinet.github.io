@@ -1439,7 +1439,7 @@
           const ok = await showConfirm('Toàn bộ cơ sở dữ liệu hiện tại trên thiết bị sẽ bị ghi đè. Tiếp tục?', 'Xác nhận');
           if(!ok) return;
 
-          data = cleaned; sync(); save(); render(); openToast('Phục hồi dữ liệu thành công.', 'success', 4000);
+          data = cleaned; save(); render(); openToast('Phục hồi dữ liệu thành công.', 'success', 4000);
           
         }finally{ e.target.value = ''; }
       };
