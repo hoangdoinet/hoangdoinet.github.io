@@ -2,25 +2,39 @@
   "app": "Trình quản lý mật khẩu",
   "id": "password-manager",
   "website": "https://hoangdoinet.github.io/password-manager/",
-  "version": "v1.0.9",
-  "release_date": "2026-06-11",
+  "version": "v2.0.0",
+  "release_date": "2026-06-12",
   "author": "Hoàng Đợi",
 
   "notes": [
-    "Phiên bản v1.0.9: Cải thiện giao diện và hiệu suất ứng dụng."
+    "Phiên bản v2.0.0: Nâng cấp toàn diện lõi bảo mật mã hóa và làm mới giao diện UI/UX."
   ],
 
   "latest": {
-    "version": "v1.0.9",
-    "release_date": "2026-06-11",
-    "summary": "Cải thiện giao diện và hiệu suất ứng dụng.",
+    "version": "v2.0.0",
+    "release_date": "2026-06-12",
+    "summary": "Nâng cấp bảo mật chuẩn Web Crypto API (AES-GCM) và làm mới toàn bộ giao diện.",
     "changelog": [
-      "Cải thiện toàn diện giao diện người dùng, tối ưu hóa bố cục hiển thị.",
-      "Tăng cường hiệu suất hoạt động, giúp ứng dụng phản hồi mượt mà hơn."
+      "Nâng cấp chuẩn mã hóa: Sử dụng Web Crypto API (AES-GCM 256-bit) với dẫn xuất khóa PBKDF2 (210.000 vòng lặp) cho độ an toàn tuyệt đối.",
+      "Làm mới giao diện UI/UX: Thiết kế hiện đại, bố cục tối ưu hóa trải nghiệm trên thiết bị di động.",
+      "Bổ sung cơ chế bảo vệ toàn vẹn dữ liệu: Tự động khôi phục an toàn (rollback) và bảo vệ dữ liệu nếu quá trình đổi mật khẩu gặp sự cố.",
+      "Nâng cấp hệ thống thông báo (Toast notifications) và các hộp thoại tương tác mượt mà hơn.",
+      "Tối ưu kiến trúc PWA (Service Worker) để hoạt động ngoại tuyến (offline) ổn định và nhanh chóng hơn."
     ]
   },
 
   "changelog": [
+    {
+      "version": "v2.0.0",
+      "release_date": "2026-06-12",
+      "changes": [
+        "Nâng cấp chuẩn mã hóa: Sử dụng Web Crypto API (AES-GCM 256-bit) với dẫn xuất khóa PBKDF2 (210.000 vòng lặp) cho độ an toàn tuyệt đối.",
+        "Làm mới giao diện UI/UX: Thiết kế hiện đại, bố cục tối ưu hóa trải nghiệm trên thiết bị di động.",
+        "Bổ sung cơ chế bảo vệ toàn vẹn dữ liệu: Tự động khôi phục an toàn (rollback) và bảo vệ dữ liệu nếu quá trình đổi mật khẩu gặp sự cố.",
+        "Nâng cấp hệ thống thông báo (Toast notifications) và các hộp thoại tương tác mượt mà hơn.",
+        "Tối ưu kiến trúc PWA (Service Worker) để hoạt động ngoại tuyến (offline) ổn định và nhanh chóng hơn."
+      ]
+    },
     {
       "version": "v1.0.9",
       "release_date": "2026-06-11",

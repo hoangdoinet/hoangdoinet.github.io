@@ -1,5 +1,5 @@
-/* service-worker.js - v1.0.9 */
-const APP_VERSION = 'v1.0.9';
+/* service-worker.js - v2.0.0 */
+const APP_VERSION = 'v2.0.0';
 const CACHE_STATIC = `static-${APP_VERSION}`;
 const BASE = '/password-manager/';
 const VERSION_FILE = BASE + 'version.json';
@@ -9,7 +9,6 @@ const CRITICAL_ASSETS = [
   BASE + 'index.html',
   BASE + 'manifest.webmanifest',
   BASE + 'version.json',
-  BASE + 'libs/crypto-js.min.js',
   BASE + 'libs/lucide.min.js',
   BASE + 'libs/tailwind.min.js',
   BASE + 'icons/icon-32.png',
@@ -74,7 +73,6 @@ async function verifyCriticalAssets(cache) {
     BASE + 'manifest.webmanifest',
     BASE + 'libs/tailwind.min.js',
     BASE + 'libs/lucide.min.js',
-    BASE + 'libs/crypto-js.min.js',
     BASE + 'icons/icon-192.png',
     BASE + 'icons/icon-512.png'
   ];
@@ -201,7 +199,6 @@ self.addEventListener('activate', (event) => {
       BASE + 'index.html',
       BASE + 'libs/tailwind.min.js',
       BASE + 'libs/lucide.min.js',
-      BASE + 'libs/crypto-js.min.js',
       BASE + 'icons/icon-192.png',
       BASE + 'icons/icon-512.png'
     ];
