@@ -943,6 +943,12 @@
 
     function render(){
       sync();
+      
+      // Dọn dẹp trạng thái ẩn/hiện khi danh sách bị render lại
+      Object.keys(autoHideTimers).forEach(id => clearAutoHide(id));
+      autoHideTimers = {};
+      visible = {};
+
       const q = (el.search.value || '').trim().toLowerCase(); el.list.innerHTML = '';
       const items = [];
       data.forEach((entry, idx)=>{ if(entry[CHECK_KEY]) return; if(q && !String(entry.display||'').toLowerCase().includes(q)) return; items.push({ entry, idx }); });
@@ -1470,78 +1476,92 @@
 
     function openGen(open=true){ el.genModal.classList.toggle("open",open); el.genModal.setAttribute("aria-hidden",open?"false":"true"); if(open) generatePassword(); }
     function rand(max){ const arr=new Uint32Array(1); crypto.getRandomValues(arr); return arr[0]%max; }
-	let isGenerating = false;
-	
-	function generatePassword() {
-	  if (isGenerating) return; 
-	
-	  const length = +el.genLength.value;
-	  let sets = [];
-	  
-	  if (el.genLower.checked) sets.push("abcdefghijklmnopqrstuvwxyz");
-	  if (el.genUpper.checked) sets.push("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-	  if (el.genNumber.checked) sets.push("0123456789");
-	  if (el.genSymbol.checked) sets.push("!@#$_");
-	
-	  if (!sets.length) { 
-	    showToast("Vui lòng tích chọn ít nhất một nhóm ký tự", "warning"); 
-	    return; 
-	  }
-	
-	  let pwd = [];
-	  
-	  sets.forEach(s => pwd.push(s[rand(s.length)]));
-	  
-	  const all = sets.join("");
-	  while (pwd.length < length) {
-	    pwd.push(all[rand(all.length)]);
-	  }
-	
-	  isGenerating = true;
-	  el.genBtn.disabled = true;
-	  
-	  const originalHtml = el.genBtn.innerHTML;
-	  el.genBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Đang trộn ký tự...';
-	  lucide.createIcons({ root: el.genBtn });
-	  
-	  el.genStrength.textContent = "Đang chạy thuật toán ...";
-	  el.genStrength.style.color = "#64748b"; 
-	
-	  const duration = 3000 + rand(2001); 
-	
-	  const shuffleInterval = setInterval(() => {
-	    for (let i = pwd.length - 1; i > 0; i--) {
-	      const j = rand(i + 1);
-	      [pwd[i], pwd[j]] = [pwd[j], pwd[i]]; 
-	    }
-	    el.genResult.value = pwd.join("");
-	  }, 40);
-	
-	  setTimeout(() => {
-	    clearInterval(shuffleInterval);
-	    
-	    for (let i = pwd.length - 1; i > 0; i--) {
-	      const j = rand(i + 1);
-	      [pwd[i], pwd[j]] = [pwd[j], pwd[i]];
-	    }
-	    
-	    const finalResult = pwd.join("");
-	    el.genResult.value = finalResult;
-	    updateGenStrength(finalResult); 
-	
-	    isGenerating = false;
-	    el.genBtn.disabled = false;
-	    el.genBtn.innerHTML = originalHtml;
-	    lucide.createIcons({ root: el.genBtn });
-	  }, duration);
-	}
-	
+    
+    let isGenerating = false;
+    let shuffleInterval = null; // Fix: Khai báo biến toàn cục để có thể dọn dẹp khi đóng modal sớm
+    
+    function generatePassword() {
+      if (isGenerating) return; 
+    
+      const length = +el.genLength.value;
+      let sets = [];
+      
+      if (el.genLower.checked) sets.push("abcdefghijklmnopqrstuvwxyz");
+      if (el.genUpper.checked) sets.push("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+      if (el.genNumber.checked) sets.push("0123456789");
+      if (el.genSymbol.checked) sets.push("!@#$_");
+    
+      if (!sets.length) { 
+        showToast("Vui lòng tích chọn ít nhất một nhóm ký tự", "warning"); 
+        return; 
+      }
+    
+      let pwd = [];
+      
+      sets.forEach(s => pwd.push(s[rand(s.length)]));
+      
+      const all = sets.join("");
+      while (pwd.length < length) {
+        pwd.push(all[rand(all.length)]);
+      }
+    
+      isGenerating = true;
+      el.genBtn.disabled = true;
+      
+      const originalHtml = el.genBtn.innerHTML;
+      el.genBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Đang trộn ký tự...';
+      lucide.createIcons({ root: el.genBtn });
+      
+      el.genStrength.textContent = "Đang chạy thuật toán ...";
+      el.genStrength.style.color = "#64748b"; 
+    
+      const duration = 3000 + rand(2001); 
+    
+      // Fix: Bỏ chữ const để gắn vào biến toàn cục
+      shuffleInterval = setInterval(() => {
+        for (let i = pwd.length - 1; i > 0; i--) {
+          const j = rand(i + 1);
+          [pwd[i], pwd[j]] = [pwd[j], pwd[i]]; 
+        }
+        el.genResult.value = pwd.join("");
+      }, 40);
+    
+      setTimeout(() => {
+        clearInterval(shuffleInterval);
+        
+        for (let i = pwd.length - 1; i > 0; i--) {
+          const j = rand(i + 1);
+          [pwd[i], pwd[j]] = [pwd[j], pwd[i]];
+        }
+        
+        const finalResult = pwd.join("");
+        el.genResult.value = finalResult;
+        updateGenStrength(finalResult); 
+    
+        isGenerating = false;
+        el.genBtn.disabled = false;
+        el.genBtn.innerHTML = originalHtml;
+        lucide.createIcons({ root: el.genBtn });
+      }, duration);
+    }
+    
     function updateGenStrength(pwd){
       let score=0; if(pwd.length>=8)score++; if(pwd.length>=12)score++; if(/[a-z]/.test(pwd))score++; if(/[A-Z]/.test(pwd))score++; if(/[0-9]/.test(pwd))score++; if(/[^A-Za-z0-9]/.test(pwd))score++;
       let txt="Yếu"; let color="#ef4444"; if(score>=4){txt="Trung bình";color="#f59e0b";} if(score>=5){txt="An toàn cao";color="#0d9488";}
       el.genStrength.textContent="Mức an toàn: "+txt; el.genStrength.style.color=color;
     }
-    el.genBtn.onclick = generatePassword; el.genClose.onclick = ()=>openGen(false); el.genX.onclick = ()=>openGen(false); el.genResult.addEventListener("click",function(){ this.select(); });
+
+    // Fix: Xử lý dọn dẹp bộ đếm khi đóng Modal
+    const closeGenModal = () => {
+        clearInterval(shuffleInterval);
+        isGenerating = false;
+        openGen(false);
+    };
+
+    el.genBtn.onclick = generatePassword; 
+    el.genClose.onclick = closeGenModal; 
+    el.genX.onclick = closeGenModal; 
+    el.genResult.addEventListener("click",function(){ this.select(); });
 
     function handleShortcuts(){
       try{
