@@ -1,0 +1,24 @@
+{
+  "app": "EncyPass | Trình quản lý mật khẩu",
+  "id": "encypass-pwa",
+  "website": "https://hoangdoinet.github.io/encypass/",
+  "author": "Hoàng Đợi",
+  "latest": {
+    "version": "v1.0.0",
+    "release_date": "2026-06-26",
+    "summary": "Phiên bản phát hành chính thức đầu tiên."
+  },
+  "changelog": [
+    {
+      "version": "v1.0.0",
+      "release_date": "2026-06-26",
+      "changes": [
+        "Kiến trúc Zero-Knowledge: Sử dụng Web Crypto API (AES-GCM 256-bit) và dẫn xuất khóa PBKDF2 (600.000 vòng lặp).",
+        "Tích hợp Firebase Realtime Database để đồng bộ dữ liệu đám mây an toàn.",
+        "Hỗ trợ hoạt động Offline 100% liền mạch qua IndexedDB và Service Worker.",
+        "Giao diện thiết kế bằng Tailwind CSS, tương thích hoàn hảo trên thiết bị di động.",
+        "Cơ chế khóa bảo mật nhiều lớp chống tấn công dò mật khẩu (Brute-force)."
+      ]
+    }
+  ]
+}
