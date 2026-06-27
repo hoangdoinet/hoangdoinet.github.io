@@ -31,7 +31,7 @@
   <link rel="manifest" href="/encypass/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/encypass/icons/icon-180.png">
   <link rel="icon" type="image/png" href="/encypass/icons/icon-32.png" sizes="32x32">
-  <link rel="preload" href="/encypass/icons/icon-512.png" as="image">
+  <link rel="preload" href="/encypass/icons/icon-192.png" as="image">
 
   <script src="libs/tailwind.min.js"></script>
   <script src="libs/lucide.min.js"></script>
@@ -120,15 +120,19 @@
 </head>
 <body>
 
-    <div id="global-loader" class="fixed inset-0 z-[9998] bg-teal-900/50 backdrop-blur-sm flex flex-col items-center justify-center transition-opacity duration-500 opacity-0 pointer-events-none">    
-    <div class="relative w-20 h-20 flex items-center justify-center mb-6">
-       <div class="absolute inset-0 border-4 border-teal-600/50 rounded-full"></div>
-       <div class="absolute inset-0 border-4 border-white rounded-full border-t-transparent animate-spin"></div>
-       <div class="absolute w-10 h-10 bg-white/10 rounded-[28%] flex items-center justify-center p-1 shadow-inner backdrop-blur-md border border-white/20 z-10">
-          <img src="/encypass/icons/icon-192.png" alt="EncyPass Logo" class="w-full h-full block rounded-[24%]">
-        </div>
+  <div id="global-loader" role="status" aria-live="polite" aria-atomic="true" class="fixed inset-0 z-[9998] bg-teal-900/60 backdrop-blur-sm flex flex-col items-center justify-center transition-all duration-300 opacity-0 pointer-events-none">
+    <div id="loader-card" class="bg-white/10 border border-white/20 p-7 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] backdrop-blur-md flex flex-col items-center transform transition-transform duration-300 scale-95">
+      <div class="relative w-16 h-16 flex items-center justify-center mb-5">
+         <div class="absolute inset-0 border-[3px] border-teal-500/30 rounded-full"></div>
+         <div class="absolute inset-0 border-[3px] border-white rounded-full border-t-transparent animate-spin" style="animation-duration: 0.8s;"></div>
+         <div class="absolute w-8 h-8 flex items-center justify-center z-10">
+            <img src="/encypass/icons/icon-192.png" alt="" class="w-full h-full block rounded-lg opacity-90 drop-shadow-sm">
+          </div>
+      </div>
+      <h2 id="loader-text" class="text-white text-[13px] font-black tracking-widest uppercase animate-pulse drop-shadow-md">
+        ĐANG XỬ LÝ...
+      </h2>
     </div>
-    <h2 class="text-white text-sm font-black tracking-[0.3em] animate-pulse drop-shadow-md">ĐANG XỬ LÝ...</h2>
   </div>
 
     <div id="loginOverlay" class="fixed inset-0 flex flex-col items-center justify-center bg-teal-800 backdrop-blur-xl text-white z-[9990] hidden">
@@ -504,14 +508,12 @@
   </div>
 
   <script type="module">
-    // --- HÀM TẠO THỜI GIAN THEO ĐỊNH DẠNG ---
     function getTimestamp() {
       const now = new Date();
       const pad = (n) => n.toString().padStart(2, '0');
       return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
     }
 
-    // --- KHỞI TẠO FIREBASE SDK ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getFirestore, collection, doc, setDoc, getDoc, deleteDoc, onSnapshot, getDocs, writeBatch, enableIndexedDbPersistence, clearIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -551,22 +553,39 @@
     const $ = s => document.querySelector(s);
     function escapeHtml(s){ return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
-    // --- CƠ CHẾ ĐẾM BẰNG ID (SET) ĐỂ GIẢI QUYẾT TRIỆT ĐỂ LỖI KẸT LOADER ---
-    const activeLoaders = new Set();
-    window.toggleLoader = (show, id = 'default') => {
+    const activeLoaders = new Map();
+    let loaderShowTimeout = null;
+
+    window.toggleLoader = (show, id = 'default', message = 'ĐANG XỬ LÝ...') => {
       const loader = document.getElementById('global-loader');
+      const loaderText = document.getElementById('loader-text');
+      const loaderCard = document.getElementById('loader-card');
       if (!loader) return;
       
       if (show) {
-        activeLoaders.add(id);
+        activeLoaders.set(id, message);
       } else {
         activeLoaders.delete(id);
       }
       
       if (activeLoaders.size > 0) {
-        loader.classList.remove('opacity-0', 'pointer-events-none');
+        const latestMessage = Array.from(activeLoaders.values()).pop();
+        if (loaderText) loaderText.textContent = latestMessage;
+        
+        if (!loaderShowTimeout && loader.classList.contains('opacity-0')) {
+          loaderShowTimeout = setTimeout(() => {
+            loader.classList.remove('opacity-0', 'pointer-events-none');
+            if (loaderCard) loaderCard.classList.remove('scale-95');
+          }, 250); 
+        }
       } else {
+        if (loaderShowTimeout) {
+          clearTimeout(loaderShowTimeout);
+          loaderShowTimeout = null;
+        }
+        
         loader.classList.add('opacity-0', 'pointer-events-none');
+        if (loaderCard) loaderCard.classList.add('scale-95');
       }
     };
 
@@ -618,7 +637,7 @@
     async function saveLockState() {
       try {
         localStorage.setItem(LOCK_STATE_KEY, JSON.stringify({ failCount: masterFailCount, lockUntil: masterLockUntil }));
-        if (currentUserUid) await setDoc(doc(db, "user_security", currentUserUid), { failCount: masterFailCount, lockUntil: masterLockUntil }, { merge: true });
+        if (currentUserUid) setDoc(doc(db, "user_security", currentUserUid), { failCount: masterFailCount, lockUntil: masterLockUntil }, { merge: true }).catch(e => console.warn(e));
       } catch (e) { console.warn("Lỗi lưu trạng thái khóa:", e); }
     }
 
@@ -636,7 +655,7 @@
       modal: $('#modal'), modalTitle: $('#modalTitle'), modalMsg: $('#modalMsg'), modalInput: $('#modalInput'), modalCancel: $('#modalCancel'), modalOk: $('#modalOk'),
       editModal: $('#editModal'), editTitle: $('#editTitle'), fDisplay: $('#fDisplay'), fAccount: $('#fAccount'), fPassword: $('#fPassword'), fMaster: $('#fMaster'), btnSaveEdit: $('#btnSaveEdit'), btnCancelEdit: $('#btnCancelEdit'), editX: $('#editX'), strengthMsg: $('#strengthMsg'), masterConfirmRow: $('#masterConfirmRow'), fMasterConfirm: $('#fMasterConfirm'), masterConfirmHint: $('#masterConfirmHint'),
       aboutModal: $('#aboutModal'), aboutX: $('#aboutX'), aboutClose: $('#aboutClose'), appVersion: $('#appVersion'), 
-      connectionStatus: $('#connection-status'), connectionIcon: $('#connection-icon'), connectionWrapper: $('#connection-wrapper'),
+      connectionStatus: $('#connection-status'), connectionWrapper: $('#connection-wrapper'),
       ckModal: $('#changeKeyModal'), ckX: $('#ckX'), ckOld: $('#ckOld'), ckNew: $('#ckNew'), ckConfirm: $('#ckConfirm'), ckStrength: $('#ckStrength'), ckHint: $('#ckHint'), ckOk: $('#ckOk'), ckCancel: $('#ckCancel'),
       installModal: $('#installModal'), installX: $('#installX'), installNow: $('#installNow'), installLater: $('#installLater'), iosTip: $('#iosTip'),
       btnInstallHeader: $('#btn-install'), btnInstallLogin: $('#btn-install-login'), btnExportHeader: $('#btn-export'), btnImportHeader: $('#btn-import'), btnLogout: $('#btn-logout'),
@@ -644,7 +663,6 @@
     };
     el.appVersion.textContent = APP_VERSION; $('#splashVersion').textContent = APP_VERSION;
 
-    // --- CẬP NHẬT PHIÊN BẢN (APP UPDATER) ---
     const SW_SCOPE = '/encypass/';
 
     async function getVersionInfo(targetVersion){
@@ -724,7 +742,7 @@
           return; 
         } 
         this._userInitiatedCheck = true; this.lastCheck = Date.now(); 
-        window.toggleLoader(true, 'updater');
+        window.toggleLoader(true, 'updater', 'ĐANG KIỂM TRA CẬP NHẬT...');
         
         const sent = await postToSW({type:'CHECK_UPDATE'}); 
         if (sent){ 
@@ -766,7 +784,7 @@
       
       async apply(){ 
         try{ 
-          window.toggleLoader(true, 'updater_apply');
+          window.toggleLoader(true, 'updater_apply', 'ĐANG CẬP NHẬT...');
           const reg = await getSwReg(); if(!reg){ location.reload(); return; } 
           if (reg.waiting){ reg.waiting.postMessage({type:'SKIP_WAITING'}); } else { reg.active?.postMessage({type:'FORCE_UPDATE'}); } 
           let reloaded = false; const done = ()=>{ if(reloaded) return; reloaded = true; location.reload(); }; const t = setTimeout(done, 2500); navigator.serviceWorker.addEventListener('controllerchange', ()=>{ clearTimeout(t); done(); }, { once:true }); 
@@ -822,7 +840,6 @@
     let appUpdater = new AppUpdater();
     setTimeout(initLatestVersionLabel, 800);
 
-    // XỬ LÝ ĐĂNG KÝ SERVICE WORKER
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', async () => {
         try {
@@ -836,7 +853,6 @@
       });
     }
 
-    // --- MODERN UI ALERTS ---
     function focusAndBlink(target){ if(!target) return; try{ target.focus({preventScroll:false}); if(typeof target.select==='function'&&target.type!=='password') target.select(); target.classList.remove('ring-invalid'); void target.offsetWidth; target.classList.add('ring-invalid'); }catch{} }
     
     function openModal({title='Thông báo', message='', showInput=false, inputType='text', placeholder='', okText='Xác nhận', cancelText='Hủy', cancelVisible=true, type='info'}) {
@@ -914,11 +930,10 @@
 
     let data = []; let visible = {}; let autoHideTimers = {}; let editingId = null; let savingEdit = false;
 
-    // 1. BẬT LOADER KHỞI ĐỘNG (KHI APP VỪA MỞ LÊN)
-    window.toggleLoader(true, 'boot');
+    window.toggleLoader(true, 'boot', 'ĐANG KHỞI ĐỘNG...');
     
     onAuthStateChanged(auth, async (user) => {
-      window.toggleLoader(true, 'auth');
+      window.toggleLoader(true, 'auth', 'ĐANG XÁC THỰC...');
       if (user) {
         try {
           const userDoc = await getDoc(doc(db, "users_list", user.email));
@@ -937,7 +952,7 @@
             systemEncryptKey = keyDoc.data().key;
           } else {
             systemEncryptKey = "encypass_display_key";
-            await setDoc(doc(db, "system", "encrypt_key"), { key: systemEncryptKey });
+            setDoc(doc(db, "system", "encrypt_key"), { key: systemEncryptKey }).catch(e => console.warn(e));
           }
 
           $('#loginOverlay').classList.add('hidden'); $('#app').classList.remove('invisible');
@@ -973,7 +988,7 @@
     });
 
     $('#btnGoogleLogin').onclick = async () => {
-      window.toggleLoader(true, 'login');
+      window.toggleLoader(true, 'login', 'ĐANG ĐĂNG NHẬP...');
       try {
         await signInWithPopup(auth, provider);
       } catch (e) {
@@ -984,7 +999,7 @@
     };
     
     el.btnLogout.onclick = async () => {
-      window.toggleLoader(true, 'logout');
+      window.toggleLoader(true, 'logout', 'ĐANG ĐĂNG XUẤT...');
       try {
         await signOut(auth);
         await clearIndexedDbPersistence(db);
@@ -1009,7 +1024,7 @@
       });
 
       unsubSnapshot = onSnapshot(collection(db, "account"), { includeMetadataChanges: true }, async (snapshot) => {
-        window.toggleLoader(true, 'sync');
+        window.toggleLoader(true, 'sync', 'ĐANG ĐỒNG BỘ...');
         try {
           const newData = [];
           for (const docChange of snapshot.docs) {
@@ -1108,7 +1123,12 @@
     el.fMasterConfirm.oninput = () => { const same = el.fMaster.value === el.fMasterConfirm.value; el.masterConfirmHint.style.display='inline'; el.masterConfirmHint.textContent=same?'✅ Khớp':'❌ Lệch'; el.masterConfirmHint.style.color=same?'#0d9488':'#dc3545'; };
     
     el.btnSaveEdit.onclick = async () => {
-      if(savingEdit) return; savingEdit=true; el.btnSaveEdit.disabled=true; el.btnSaveEdit.innerHTML='...';
+      if(savingEdit) return; savingEdit=true; 
+      
+      el.btnSaveEdit.disabled=true; 
+      el.btnSaveEdit.innerHTML='<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Đang lưu...';
+      lucide.createIcons({root: el.btnSaveEdit});
+
       try {
         const d=el.fDisplay.value.trim(), a=el.fAccount.value.trim(), p=el.fPassword.value.trim(), m=el.fMaster.value;
         if(!d||!a||!p||!m) return showAlert('Điền đủ thông tin.', {type:'error'});
@@ -1122,10 +1142,10 @@
           resetMasterFail();
         }
 
-        window.toggleLoader(true, 'save');
+        window.toggleLoader(true, 'save', 'ĐANG LƯU DỮ LIỆU...');
 
         if(!verify){
-            await setDoc(doc(db, "system", "verify"), { value: await SecureCrypto.encrypt(CHECK_VALUE, m) });
+            setDoc(doc(db, "system", "verify"), { value: await SecureCrypto.encrypt(CHECK_VALUE, m) }).catch(e => console.warn(e));
         }
 
         const currentTimeStr = getTimestamp();
@@ -1136,16 +1156,16 @@
         const encA = await SecureCrypto.encrypt(a, m);
         const encP = await SecureCrypto.encrypt(p, m);
 
-        await setDoc(doc(db, "account", record_id), {
+        setDoc(doc(db, "account", record_id), {
             record_id: record_id,
             display: encD,
             account: encA,
             password: encP,
             update: currentTimeNum
-        });
+        }).catch(e => console.warn("Lỗi đồng bộ ngầm:", e));
 
-        window.toggleLoader(false, 'save'); // Tắt Loader trước khi hiện Modal thông báo
-        openEdit(false);
+        window.toggleLoader(false, 'save'); 
+        openEdit(false); 
         await showAlert(navigator.onLine ? 'Dữ liệu đã được lưu thành công.' : 'Đã lưu nháp ngoại tuyến (sẽ tự đồng bộ khi có mạng).', {type: 'success'}); 
         
       } catch(err) {
@@ -1154,6 +1174,7 @@
       } finally { 
         savingEdit=false; 
         el.btnSaveEdit.disabled=false; 
+        
         el.btnSaveEdit.innerHTML='<i data-lucide="save" class="w-5 h-5"></i> Lưu dữ liệu'; 
         lucide.createIcons({root: el.btnSaveEdit});
       }
@@ -1184,10 +1205,11 @@
       if(await SecureCrypto.decryptSafe(verify[CHECK_KEY], m) !== CHECK_VALUE){ registerMasterFail(); return showAlert(getWrongMasterMessage(),{type:'error'}); } resetMasterFail();
       
       if(await showConfirm('Xóa tài khoản này? Sẽ không thể hoàn tác.', 'Cảnh báo', 'error')) { 
-          window.toggleLoader(true, 'delete');
+          window.toggleLoader(true, 'delete', 'ĐANG XÓA...');
           try {
-              await deleteDoc(doc(db, "account", record_id)); 
-              window.toggleLoader(false, 'delete');
+              deleteDoc(doc(db, "account", record_id)).catch(e => console.warn("Lỗi xóa ngầm:", e)); 
+              
+              window.toggleLoader(false, 'delete'); 
               await showAlert(navigator.onLine ? 'Tài khoản đã được xóa.' : 'Đã xóa ngoại tuyến (sẽ tự đồng bộ khi có mạng).', {type: 'success'}); 
           } catch(e) {
               window.toggleLoader(false, 'delete');
@@ -1208,7 +1230,12 @@
       if(!old||!nk||nk!==el.ckConfirm.value||!verify) return showAlert('Thông tin không hợp lệ.', {type:'error'});
       if(await SecureCrypto.decryptSafe(verify[CHECK_KEY], old) !== CHECK_VALUE){ registerMasterFail(); return showAlert(getWrongMasterMessage(), {type:'error'}); } resetMasterFail();
       
-      window.toggleLoader(true, 'ck');
+      window.toggleLoader(true, 'ck', 'ĐANG ĐỔI MÃ...');
+      
+      el.ckOk.disabled = true;
+      el.ckOk.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Đang xử lý...';
+      lucide.createIcons({root: el.ckOk});
+
       try {
         const batch = writeBatch(db);
         batch.set(doc(db, "system", "verify"), { value: await SecureCrypto.encrypt(CHECK_VALUE, nk) });
@@ -1232,6 +1259,10 @@
       } catch(e) { 
         window.toggleLoader(false, 'ck');
         await showAlert('Lỗi: '+e.message, {type:'error'}); 
+      } finally {
+        el.ckOk.disabled = false;
+        el.ckOk.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i> Đổi mật khẩu';
+        lucide.createIcons({root: el.ckOk});
       }
     };
     window.updateStrength = () => { const pw=el.fMaster.value||''; el.strengthMsg.style.display=pw?'inline-block':'none'; el.strengthMsg.textContent='→ '+check(pw); };
@@ -1298,7 +1329,7 @@
           if(await SecureCrypto.decryptSafe(verify[CHECK_KEY], m) !== CHECK_VALUE){ registerMasterFail(); await showAlert('Sai mật khẩu.', {type:'error'}); e.target.value=''; return; } resetMasterFail();
           if(!await showConfirm('Bạn có chắc chắn muốn dùng file này thay thế toàn bộ dữ liệu hiện tại không?', 'Cảnh báo Nguy hiểm', 'error')) { e.target.value=''; return; }
           
-          window.toggleLoader(true, 'import');
+          window.toggleLoader(true, 'import', 'ĐANG KHÔI PHỤC...');
           const batch = writeBatch(db);
           batch.set(doc(db, "system", "verify"), { value: verify[CHECK_KEY] });
           (await getDocs(collection(db, "account"))).forEach(d => batch.delete(d.ref));
@@ -1340,7 +1371,7 @@
       
       if(!await showConfirm('Chắc chắn không thể phục hồi lại dữ liệu?', 'Bước cuối cùng', 'error')) return;
       
-      window.toggleLoader(true, 'reset');
+      window.toggleLoader(true, 'reset', 'ĐANG XÓA DỮ LIỆU...');
       try {
           const batch = writeBatch(db); 
           (await getDocs(collection(db, "account"))).forEach(d => batch.delete(d.ref)); 
@@ -1380,7 +1411,6 @@
       if (el.btnInstallLogin) el.btnInstallLogin.classList.remove('hidden');
     });
 
-    // Hàm mở Modal cài đặt tùy chỉnh thay vì gọi trực tiếp prompt hệ thống
     const openInstallModal = (e) => {
       if (e) e.stopPropagation();
       window.closeMenuModal();
@@ -1419,7 +1449,6 @@
       el.installModal.classList.remove('open');
     };
 
-    // Kích hoạt nút cài đặt cho người dùng iOS nếu chưa cài đặt dạng ứng dụng (Standalone)
     window.addEventListener('DOMContentLoaded', () => {
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
       const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
@@ -1438,30 +1467,36 @@
       if(s){ s.classList.add('hidden'); document.body.classList.add('ready'); }
     }, 1200);
 
-    // --- CẬP TRẠNG THÁI KẾT NỐI MẠNG ---
     window.addEventListener('offline', () => {
-      if (currentUserUid && el.connectionStatus && el.connectionIcon && el.connectionWrapper) {
+      if (currentUserUid && el.connectionStatus && el.connectionWrapper) {
         el.connectionStatus.textContent = "Đang hoạt động ngoại tuyến";
         el.connectionWrapper.classList.replace('text-teal-100/90', 'text-amber-200');
         el.connectionWrapper.classList.replace('bg-white/10', 'bg-amber-900/40');
-        el.connectionIcon.setAttribute('data-lucide', 'cloud-off');
-        el.connectionIcon.classList.replace('text-teal-300', 'text-amber-400');
+        
+        const oldIcon = document.getElementById('connection-icon');
+        if (oldIcon) oldIcon.remove();
+        
+        el.connectionStatus.insertAdjacentHTML('beforebegin', '<i id="connection-icon" data-lucide="cloud-off" class="w-3 h-3 text-amber-400 transition-colors duration-300"></i>');
+        
         lucide.createIcons({root: el.connectionWrapper});
       }
     });
 
     window.addEventListener('online', () => {
-      if (currentUserUid && el.connectionStatus && el.connectionIcon && el.connectionWrapper) {
+      if (currentUserUid && el.connectionStatus && el.connectionWrapper) {
         el.connectionStatus.textContent = "Đã kết nối đám mây an toàn";
         el.connectionWrapper.classList.replace('text-amber-200', 'text-teal-100/90');
         el.connectionWrapper.classList.replace('bg-amber-900/40', 'bg-white/10');
-        el.connectionIcon.setAttribute('data-lucide', 'cloud-cog');
-        el.connectionIcon.classList.replace('text-amber-400', 'text-teal-300');
+        
+        const oldIcon = document.getElementById('connection-icon');
+        if (oldIcon) oldIcon.remove();
+        
+        el.connectionStatus.insertAdjacentHTML('beforebegin', '<i id="connection-icon" data-lucide="cloud-cog" class="w-3 h-3 text-teal-300 transition-colors duration-300"></i>');
+        
         lucide.createIcons({root: el.connectionWrapper});
       }
     });
 
-    // --- XỬ LÝ LỐI TẮT PWA (SHORTCUTS) ---
     window.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const action = urlParams.get('action');
@@ -1482,7 +1517,6 @@
       }
     });
 
-    // Xử lý sự kiện cho nút "Trang chính" (Home)
     const navHomeBtn = document.getElementById('nav-home');
     if (navHomeBtn) {
       navHomeBtn.onclick = () => {
