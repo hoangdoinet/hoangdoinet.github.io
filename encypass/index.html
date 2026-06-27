@@ -975,6 +975,31 @@
           window.toggleLoader(false, 'boot');
         }
       } else {
+        if (!navigator.onLine) {
+          window.toggleLoader(false, 'auth');
+          window.toggleLoader(false, 'boot');
+          
+          const isRetry = await openModal({
+            title: "Không có kết nối mạng",
+            message: "Ứng dụng cần kết nối mạng để đăng nhập và đồng bộ dữ liệu với máy chủ.\nVui lòng bật mạng (WiFi/4G) và thử lại.",
+            okText: "Thử lại",
+            cancelText: "Thoát ứng dụng",
+            cancelVisible: true,
+            type: "error"
+          });
+          
+          if (isRetry) {
+            window.location.reload();
+          } else {
+            try {
+               window.close();
+            } catch (e) {}
+            document.body.innerHTML = '<div class="fixed inset-0 bg-teal-900 flex flex-col items-center justify-center text-white text-center p-6"><i data-lucide="wifi-off" class="w-16 h-16 mb-4 text-teal-300"></i><h2 class="text-xl font-bold mb-2">Đã ngắt kết nối</h2><p class="text-teal-100/80">Vui lòng kết nối mạng và mở lại ứng dụng.</p></div>';
+            lucide.createIcons();
+          }
+          return;
+        }
+
         currentUserUid = null;
         systemEncryptKey = null;
         if (unsubSnapshot) unsubSnapshot(); 
