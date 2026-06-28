@@ -565,6 +565,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none; 
+}
+
+html {
+  overscroll-behavior-y: none;
 }
 
 *{
