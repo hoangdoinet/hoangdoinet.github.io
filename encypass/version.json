@@ -4,11 +4,20 @@
   "website": "https://hoangdoinet.github.io/encypass/",
   "author": "Hoàng Đợi",
   "latest": {
-    "version": "v1.0.0",
-    "release_date": "2026-06-26",
-    "summary": "Phiên bản phát hành chính thức đầu tiên."
+    "version": "v1.0.1",
+    "release_date": "2026-06-28",
+    "summary": "Tối ưu hóa hiệu năng hệ thống và cải thiện trải nghiệm người dùng."
   },
   "changelog": [
+    {
+      "version": "v1.0.1",
+      "release_date": "2026-06-28",
+      "changes": [
+        "Chuyển đổi từ Tailwind CDN sang CSS tĩnh giúp tăng tốc độ tải trang đáng kể.",
+        "Cải thiện thông báo lỗi bảo mật (xử lý nội dung hiển thị trong modal).",
+        "Sửa lỗi nhỏ trong quy trình đăng nhập và đồng bộ dữ liệu."
+      ]
+    },
     {
       "version": "v1.0.0",
       "release_date": "2026-06-26",

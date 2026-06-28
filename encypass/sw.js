@@ -1,5 +1,5 @@
-/* sw.js - v1.0.0 */
-const APP_VERSION = 'v1.0.0';
+/* sw.js - v1.0.1 */
+const APP_VERSION = 'v1.0.1';
 const CACHE_STATIC = `static-${APP_VERSION}`;
 const BASE = '/encypass/';
 const VERSION_FILE = BASE + 'version.json';
@@ -10,7 +10,7 @@ const CRITICAL_ASSETS = [
   BASE + 'manifest.webmanifest',
   BASE + 'version.json',
   BASE + 'libs/lucide.min.js',
-  BASE + 'libs/tailwind.min.js',
+  BASE + 'libs/tailwind.min.css',
   BASE + 'icons/icon-32.png',
   BASE + 'icons/icon-72.png',
   BASE + 'icons/icon-96.png',
@@ -71,7 +71,7 @@ async function verifyCriticalAssets(cache) {
   const must = [
     BASE + 'index.html',
     BASE + 'manifest.webmanifest',
-    BASE + 'libs/tailwind.min.js',
+    BASE + 'libs/tailwind.min.css',
     BASE + 'libs/lucide.min.js',
     BASE + 'icons/icon-192.png',
     BASE + 'icons/icon-512.png'
@@ -197,7 +197,7 @@ self.addEventListener('activate', (event) => {
 
     const critical = [
       BASE + 'index.html',
-      BASE + 'libs/tailwind.min.js',
+      BASE + 'libs/tailwind.min.css',
       BASE + 'libs/lucide.min.js',
       BASE + 'icons/icon-192.png',
       BASE + 'icons/icon-512.png'
