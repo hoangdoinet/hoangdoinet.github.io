@@ -4,11 +4,20 @@
   "website": "https://hoangdoinet.github.io/encypass/",
   "author": "Hoàng Đợi",
   "latest": {
-    "version": "v1.0.1",
-    "release_date": "2026-06-28",
-    "summary": "Tối ưu hóa hiệu năng hệ thống và cải thiện trải nghiệm người dùng."
+    "version": "v1.0.2",
+    "release_date": "2026-06-29",
+    "summary": "Khắc phục triệt để lỗi đồng bộ phiên bản và hoàn thiện quy trình cập nhật PWA ngoại tuyến."
   },
   "changelog": [
+    {
+      "version": "v1.0.2",
+      "release_date": "2026-06-29",
+      "changes": [
+        "Khắc phục triệt để lỗi báo sai 'Đã ở phiên bản mới nhất' (Zombie state) giữa giao diện và Service Worker.",
+        "Nâng cấp luồng truyền dữ liệu (clientVersion), đảm bảo ứng dụng luôn kiểm tra đúng phiên bản giao diện đang chạy.",
+        "Cải thiện cơ chế lưu trữ bộ nhớ đệm (cache) cho file cấu hình, giúp tính năng kiểm tra cập nhật hoạt động mượt mà và chính xác."
+      ]
+    },
     {
       "version": "v1.0.1",
       "release_date": "2026-06-28",

@@ -1,5 +1,5 @@
-/* sw.js - v1.0.1 */
-const APP_VERSION = 'v1.0.1';
+/* sw.js - v1.0.2 */
+const APP_VERSION = 'v1.0.2';
 const CACHE_STATIC = `static-${APP_VERSION}`;
 const BASE = '/encypass/';
 const VERSION_FILE = BASE + 'version.json';
@@ -106,18 +106,15 @@ self.addEventListener('install', (event) => {
     const okMinimal = await verifyCriticalAssets(cache);
 
     if (okMinimal) {
-      console.log('[SW] 🎉 Sẵn sàng OFFLINE 100% sau lần tải đầu tiên');
-      // ✅ chỉ skipWaiting khi tối thiểu đã chắc chắn
-      self.skipWaiting();
+      console.log('[SW] 🎉 Tải tài nguyên thành công. Đang chờ lệnh kích hoạt (skipWaiting)...');
     } else {
       console.error('[SW] 🚨 Thiếu asset tối thiểu → KHÔNG skipWaiting để tránh SW lỗi lên active');
-      // không skipWaiting: để SW cũ vẫn phục vụ, tránh người dùng “mất offline”
     }
   })());
 });
 
-// ========== CHECK UPDATE (CHỈ GỌI KHI TRANG GỬI MESSAGE) ==========
-async function checkForUpdates() {
+// ========== CHECK UPDATE (NHẬN THAM SỐ TỪ GIAO DIỆN) ==========
+async function checkForUpdates(clientVersion) {
   try {
     const res = await fetch(VERSION_FILE + '?t=' + Date.now(), { cache: 'no-cache' });
 
@@ -126,6 +123,9 @@ async function checkForUpdates() {
       await broadcastMessage({ type: 'UPDATE_ERROR', reason: 'HTTP_STATUS', status: res.status });
       return;
     }
+
+    const cache = await caches.open(CACHE_STATIC);
+    await cache.put(VERSION_FILE, res.clone());
 
     let json;
     try {
@@ -140,6 +140,8 @@ async function checkForUpdates() {
 
     if (json.latest && (json.latest.version || typeof json.latest === 'string')) {
       latestVersion = json.latest.version || String(json.latest);
+    } else if (json.version) {
+      latestVersion = json.version;
     }
 
     if (!latestVersion && Array.isArray(json.changelog) && json.changelog.length) {
@@ -152,21 +154,21 @@ async function checkForUpdates() {
       latestVersion = sorted[0].version || null;
     }
 
-    if (!latestVersion && json.version) latestVersion = json.version;
-
     if (!latestVersion) {
       console.log('[SW] ℹ️ Không tìm được phiên bản mới nhất trong version.json.');
       await broadcastMessage({ type: 'UPDATE_ERROR', reason: 'INVALID_JSON' });
       return;
     }
 
-    const cmp = compareVersions(latestVersion, APP_VERSION);
+    const versionToCheck = clientVersion || APP_VERSION;
+    const cmp = compareVersions(latestVersion, versionToCheck);
+    
     if (cmp > 0) {
-      console.log(`[SW] 🔔 Có bản mới: ${APP_VERSION} → ${latestVersion}`);
-      await broadcastMessage({ type: 'UPDATE_AVAILABLE', version: latestVersion, currentVersion: APP_VERSION });
+      console.log(`[SW] 🔔 Có bản mới: ${versionToCheck} → ${latestVersion}`);
+      await broadcastMessage({ type: 'UPDATE_AVAILABLE', version: latestVersion, currentVersion: versionToCheck });
     } else {
       console.log('[SW] ✅ Đang ở phiên bản mới nhất (hoặc mới hơn server).');
-      await broadcastMessage({ type: 'NO_UPDATE', version: latestVersion || APP_VERSION, currentVersion: APP_VERSION });
+      await broadcastMessage({ type: 'NO_UPDATE', version: latestVersion, currentVersion: versionToCheck });
     }
   } catch (e) {
     console.log('[SW] 🌐 Lỗi check update:', e?.message || e);
@@ -243,7 +245,6 @@ self.addEventListener('fetch', (event) => {
   // Chỉ xử lý trong scope /encypass/
   if (!url.pathname.startsWith(BASE)) return;
 
-  // ✅ FIX: so sánh pathname với đúng path version.json
   if (url.pathname === (BASE + 'version.json')) {
     event.respondWith(handleVersionJsonRequest(req));
     return;
@@ -278,7 +279,6 @@ async function handleNavigationRequest() {
   }
 }
 
-// ✅ version.json: network-first + fallback cache (đảm bảo “kiểm tra cập nhật” đúng)
 async function handleVersionJsonRequest(request) {
   const cache = await caches.open(CACHE_STATIC);
 
@@ -309,7 +309,6 @@ async function handleStaticRequest(request) {
     if (net.ok) await cache.put(request, net.clone());
     return net;
   } catch {
-    // ✅ FIX: trả 404 thay vì 204 để dễ debug và đúng semantics
     return new Response('Offline & not cached', { status: 404 });
   }
 }
@@ -336,10 +335,11 @@ button{background:#22c55e;color:#fff;border:none;padding:12px 24px;border-radius
 
 // ========== MESSAGE (TƯƠNG TÁC VỚI TRANG) ==========
 self.addEventListener('message', (event) => {
-  const { type } = event.data || {};
+  const { type, clientVersion } = event.data || {};
   if (type === 'SKIP_WAITING') self.skipWaiting();
-  if (type === 'CHECK_UPDATE') checkForUpdates();
-  if (type === 'FORCE_UPDATE') self.skipWaiting();
+  // ✅ Nhận tham số clientVersion và truyền vào hàm kiểm tra
+  if (type === 'CHECK_UPDATE') checkForUpdates(clientVersion);
+  if (type === 'FORCE_UPDATE') checkForUpdates(clientVersion);
 });
 
 console.log(`[SW ${APP_VERSION}] ✅ Đã tải - OFFLINE 100% GUARANTEED (manual updates)`);

@@ -22,7 +22,7 @@
   <meta property="og:image" content="https://hoangdoinet.github.io/encypass/icons/icon-512.png">
 
   <meta name="theme-color" content="#0d9488">
-  <meta name="version" content="v1.0.1">
+  <meta name="version" content="v1.0.2">
 
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -82,7 +82,7 @@
 		  <img src="/encypass/icons/icon-192.png" alt="EncyPass Logo" class="w-full h-full block rounded-[24%] drop-shadow-md">
 	</div>
     <div class="font-black text-[20px] mt-3 tracking-wide">EncyPass</div>
-    <div class="opacity-80 mt-1.5 text-sm">Phiên bản: <b id="splashVersion">v1.0.1</b></div>
+    <div class="opacity-80 mt-1.5 text-sm">Phiên bản: <b id="splashVersion">v1.0.2</b></div>
   </div>
 
   <div class="max-w-md mx-auto bg-slate-50 min-h-screen pb-24 relative shadow-2xl overflow-hidden">
@@ -461,7 +461,7 @@
     let unsubVerify = null;
 
     lucide.createIcons();
-    const APP_VERSION = 'v1.0.1';
+    const APP_VERSION = 'v1.0.2';
     const CHECK_KEY = "_verify";
     const CHECK_VALUE = "Xác minh";
     const LOCK_STATE_KEY = 'pwm_masterLockState_v2';
@@ -662,7 +662,7 @@
         this._userInitiatedCheck = true; this.lastCheck = Date.now(); 
         window.toggleLoader(true, 'updater', 'Đang kiểm tra bản cập nhật...');
         
-        const sent = await postToSW({type:'CHECK_UPDATE'}); 
+        const sent = await postToSW({ type: 'CHECK_UPDATE', clientVersion: APP_VERSION });
         if (sent){ 
           clearTimeout(this._fallbackTimer); 
           this._fallbackTimer = setTimeout(async ()=>{ 
