@@ -4,11 +4,24 @@
   "website": "https://hoangdoinet.github.io/encypass/",
   "author": "Hoàng Đợi",
   "latest": {
-    "version": "v1.0.2",
-    "release_date": "2026-06-29",
-    "summary": "Khắc phục triệt để lỗi đồng bộ phiên bản và hoàn thiện quy trình cập nhật PWA ngoại tuyến."
+    "version": "v1.0.3",
+    "release_date": "2026-07-04",
+    "summary": "Nâng cấp kiến trúc bảo mật DEK, tối ưu hóa hệ thống thông báo và hoàn thiện trải nghiệm người dùng (UX)."
   },
   "changelog": [
+    {
+      "version": "v1.0.3",
+      "release_date": "2026-07-04",
+      "changes": [
+        "Nâng cấp kiến trúc bảo mật: Áp dụng công nghệ Data Encryption Key (DEK) giúp tăng cường tốc độ mã hóa và bảo mật tối đa.",
+        "Cải thiện UX Form: Thêm hiệu ứng chớp đỏ (ring-invalid) và hiển thị lỗi trực tiếp (inline) dưới các ô nhập liệu khi để trống hoặc nhập sai.",
+        "Khóa bảo mật thông minh: Hiển thị đếm ngược thời gian khóa (live countdown) trực tiếp bên trong hộp thoại cảnh báo khi nhập sai mật khẩu quá nhiều lần.",
+        "Tối ưu hóa hệ thống: Xử lý hàng đợi hộp thoại (Modal Queue) giúp tránh lỗi chồng chéo UI khi có nhiều thông báo cùng lúc.",
+        "Nâng cấp hạ tầng: Cập nhật Firebase SDK lên bản 10.12.2 mới nhất, cải thiện cơ chế lưu trữ ngoại tuyến (persistentLocalCache).",
+        "An toàn dữ liệu: Bổ sung bộ lọc kiểm tra cấu trúc file siêu nghiêm ngặt (validateImportSchema) trước khi khôi phục dữ liệu, chống lỗi hỏng tệp.",
+        "Sửa lỗi & Tối ưu: Hiển thị thông báo lỗi bằng tiếng Việt dễ hiểu hơn thay vì mã lỗi kỹ thuật; Tối ưu hóa thuật toán tạo mật khẩu ngẫu nhiên."
+      ]
+    },
     {
       "version": "v1.0.2",
       "release_date": "2026-06-29",
