@@ -4,11 +4,22 @@
   "website": "https://hoangdoinet.github.io/encypass/",
   "author": "Hoàng Đợi",
   "latest": {
-    "version": "v1.0.3",
-    "release_date": "2026-07-04",
-    "summary": "Nâng cấp kiến trúc bảo mật DEK, tối ưu hóa hệ thống thông báo và hoàn thiện trải nghiệm người dùng (UX)."
+    "version": "v1.0.4",
+    "release_date": "2026-07-22",
+    "summary": "Tối ưu hóa UI/UX với hệ thống quản lý tiến trình tải (Global Loader), cải thiện trải nghiệm sao chép, quản lý trạng thái mạng và nâng cấp bộ cập nhật ứng dụng (App Updater)."
   },
   "changelog": [
+    {
+      "version": "v1.0.4",
+      "release_date": "2026-07-22",
+      "changes": [
+        "Quản lý trạng thái thông minh: Triển khai hệ thống Global Loader mới (activeLoaders), xử lý mượt mà và hiển thị chính xác các trạng thái tải khi thực hiện đa tác vụ (đăng nhập, đồng bộ, mã hóa).",
+        "Trải nghiệm sao chép (Clipboard): Thêm phản hồi trực quan (hiển thị biểu tượng dấu tích xanh) ngay tại nút bấm khi sao chép tên đăng nhập hoặc mật khẩu thành công.",
+        "Giám sát kết nối mạng: Cập nhật giao diện (Connection Indicator) theo thời gian thực, tự động cảnh báo khi thiết bị ngoại tuyến và thông báo khi có mạng trở lại.",
+        "Cải tiến giao diện danh sách: Tích hợp huy hiệu (badge) đánh số thứ tự động cho từng tài khoản, giúp người dùng dễ dàng đối chiếu và quản lý kho dữ liệu.",
+        "Nâng cấp bộ cập nhật (App Updater): Hoàn thiện cơ chế giao tiếp hai chiều với Service Worker, xử lý mượt mà quá trình tải nền và yêu cầu làm mới phiên bản."
+      ]
+    },
     {
       "version": "v1.0.3",
       "release_date": "2026-07-04",

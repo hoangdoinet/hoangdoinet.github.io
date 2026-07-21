@@ -1,5 +1,5 @@
-/* sw.js - 1.0.3 */
-const APP_VERSION = '1.0.3';
+/* sw.js - 1.0.4 */
+const APP_VERSION = '1.0.4';
 const CACHE_STATIC = `static-${APP_VERSION}`;
 const BASE = '/encypass/';
 const VERSION_FILE = BASE + 'version.json';
